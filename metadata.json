@@ -1,0 +1,5 @@
+{
+  "name": "USA Representative Map",
+  "description": "An interactive map of the United States to explore state representatives and government information. View states on a map or in a list, and click to see detailed civic data.",
+  "requestFramePermissions": []
+}

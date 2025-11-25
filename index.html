@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>USA Representative Map</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- All styles are imported via src/index.tsx -->
+</head>
+<body>
+    <div id="root"></div>
+        <script>
+            (function applyStoredTheme() {
+                try {
+                    const storageKey = 'themePreference';
+                    const stored = localStorage.getItem(storageKey);
+                    const isValid = stored === 'light' || stored === 'dark';
+                    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const theme = isValid ? stored : (prefersDark ? 'dark' : 'light');
+                    document.documentElement.dataset.theme = theme;
+                    document.documentElement.style.colorScheme = theme;
+                } catch (err) {
+                    console.warn('Theme bootstrap failed', err);
+                }
+            })();
+        </script>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

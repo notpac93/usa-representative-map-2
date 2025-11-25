@@ -1,0 +1,51 @@
+{
+  "name": "usa-representative-map",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+  "download:tiger": "node scripts/downloadTiger2025.cjs",
+    "build:atlas": "node scripts/buildAtlas.cjs --input data/raw/cb_2023_us_state_5m/cb_2023_us_state_5m.shp --simplify 8 --dissolve STUSPS",
+    "build:atlas:example": "node scripts/buildAtlas.cjs --input data/raw/example.shp --simplify 8 --out data/atlas.generated.ts",
+    "build:atlas:blockgroups": "node scripts/buildAtlasFromBlockGroups.cjs --root data/raw --simplify 8",
+    "build:overlay:urban": "node scripts/buildOverlay.cjs --input 'data/raw/cb_2023_us_state_5m/Urban Areas/cb_2018_us_ua10_500k.shp' --out data/overlays/urbanAreas.generated.ts --key urban-areas --label 'Urban Areas' --simplify 2 --lod 2,6,12",
+    "build:overlay:regions": "node scripts/buildOverlay.cjs --input 'data/raw/cb_2023_us_state_5m/Regions/cb_2018_us_region_500k.shp' --out data/overlays/regions.generated.ts --key regions --label 'US Regions' --simplify 0 --lod 0,4,10",
+    "build:overlay:cd116": "node scripts/buildOverlay.cjs --input 'data/raw/cb_2023_us_state_5m/Congressional Districts 116th Congress/cb_2018_us_cd116_500k.shp' --out data/overlays/cd116.generated.ts --key congressional-districts --label 'Congressional Districts (116th)' --simplify 2 --lod 2,6,12",
+    "build:overlay:counties": "node scripts/buildOverlay.cjs --input 'data/raw/cb_2023_us_state_5m/US County/cb_2018_us_county_500k.shp' --out data/overlays/counties.generated.ts --key counties --label 'Counties' --simplify 2 --lod 2,8,16",
+  "build:cities": "node scripts/buildCities.cjs --input data/raw/places/2025_Gaz_place_national.txt --out data/overlays/cities.generated.ts --year 2025 --minpop 0",
+  "build:city-coverage": "node scripts/buildCityCoverage.cjs --source data/raw/places/2025_Gaz_place_national.txt",
+    "build:overlays:all": "node scripts/buildAllOverlays.cjs",
+    "build:atlas:counties": "node scripts/buildAtlasFromCounties.cjs --input 'data/raw/cb_2023_us_state_5m/US County/cb_2018_us_county_500k.shp' --simplify 8 --out data/atlas.generated.ts --reuse-projection",
+    "build:data:full": "node scripts/fullRebuild.cjs",
+    "scrape:usa-gov": "node scripts/scrapeUsaGov.mjs",
+    "scrape:senate": "node scripts/scrapeSenate.mjs",
+    "scrape:governors": "node scripts/scrapeGovernors.mjs",
+    "scrape:house": "node scripts/scrapeHouse.mjs"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "d3-geo": "^3.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "adm-zip": "^0.5.16",
+    "autoprefixer": "^10.4.20",
+    "mapshaper": "^0.6.64",
+    "playwright": "^1.48.2",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "tsx": "^4.20.6",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

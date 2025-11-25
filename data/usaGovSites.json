@@ -1,0 +1,1069 @@
+[
+  {
+    "state": "Alabama",
+    "sourceUrl": "https://www.usa.gov/states/alabama",
+    "stateGovSites": [
+      {
+        "label": "Alabama",
+        "url": "https://www.alabama.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Kay Ivey",
+        "url": "https://governor.alabama.gov/"
+      },
+      {
+        "label": "Contact Governor Ivey",
+        "url": "https://governor.alabama.gov/contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:19.621Z"
+  },
+  {
+    "state": "Alaska",
+    "sourceUrl": "https://www.usa.gov/states/alaska",
+    "stateGovSites": [
+      {
+        "label": "Alaska homepage",
+        "url": "https://alaska.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Mike Dunleavy",
+        "url": "https://gov.alaska.gov/"
+      },
+      {
+        "label": "Contact Governor Dunleavy",
+        "url": "https://gov.alaska.gov/contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:20.589Z"
+  },
+  {
+    "state": "Arizona",
+    "sourceUrl": "https://www.usa.gov/states/arizona",
+    "stateGovSites": [
+      {
+        "label": "Arizona",
+        "url": "https://az.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Katie Hobbs",
+        "url": "https://azgovernor.gov/governor/meet-governor-katie-hobbs"
+      },
+      {
+        "label": "Contact Governor Hobbs",
+        "url": "https://azgovernor.gov/office-arizona-governor/form/contact-governor-hobbs"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:21.379Z"
+  },
+  {
+    "state": "Arkansas",
+    "sourceUrl": "https://www.usa.gov/states/arkansas",
+    "stateGovSites": [
+      {
+        "label": "Arkansas",
+        "url": "https://portal.arkansas.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Sarah Huckabee Sanders",
+        "url": "https://governor.arkansas.gov/"
+      },
+      {
+        "label": "Contact Governor Sanders",
+        "url": "https://governor.arkansas.gov/online-services/contact-the-governor/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:22.556Z"
+  },
+  {
+    "state": "California",
+    "sourceUrl": "https://www.usa.gov/states/california",
+    "stateGovSites": [
+      {
+        "label": "California",
+        "url": "https://www.ca.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Gavin Newsom",
+        "url": "https://www.gov.ca.gov/"
+      },
+      {
+        "label": "Contact Governor Newsom",
+        "url": "https://www.gov.ca.gov/contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:23.317Z"
+  },
+  {
+    "state": "Colorado",
+    "sourceUrl": "https://www.usa.gov/states/colorado",
+    "stateGovSites": [
+      {
+        "label": "Colorado",
+        "url": "https://www.colorado.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Jared Polis",
+        "url": "https://www.colorado.gov/governor/"
+      },
+      {
+        "label": "Contact Governor Polis",
+        "url": "https://www.colorado.gov/governor/contact-us"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:24.151Z"
+  },
+  {
+    "state": "Connecticut",
+    "sourceUrl": "https://www.usa.gov/states/connecticut",
+    "stateGovSites": [
+      {
+        "label": "Connecticut",
+        "url": "https://portal.ct.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Ned Lamont",
+        "url": "https://portal.ct.gov/governor"
+      },
+      {
+        "label": "Contact Governor Lamont",
+        "url": "https://portal.ct.gov/Office-of-the-Governor/Contact/Email-Governor-Lamont"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:25.295Z"
+  },
+  {
+    "state": "Delaware",
+    "sourceUrl": "https://www.usa.gov/states/delaware",
+    "stateGovSites": [
+      {
+        "label": "Delaware",
+        "url": "https://delaware.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Matt Meyer",
+        "url": "https://governor.delaware.gov/"
+      },
+      {
+        "label": "Contact Governor Meyer",
+        "url": "https://governor.delaware.gov/contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:26.418Z"
+  },
+  {
+    "state": "District of Columbia",
+    "sourceUrl": "https://www.usa.gov/states/district-of-columbia",
+    "stateGovSites": [
+      {
+        "label": "District of Columbia (Washington, DC)",
+        "url": "https://dc.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Mayor Muriel Bowser",
+        "url": "https://mayor.dc.gov/"
+      },
+      {
+        "label": "Contact Mayor Bowser",
+        "url": "https://dcforms.dc.gov/webform/executive-office-mayor-ask-mayor"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:27.423Z"
+  },
+  {
+    "state": "Florida",
+    "sourceUrl": "https://www.usa.gov/states/florida",
+    "stateGovSites": [
+      {
+        "label": "Florida",
+        "url": "https://www.myflorida.com/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Ron DeSantis",
+        "url": "https://www.flgov.com/"
+      },
+      {
+        "label": "Contact Governor DeSantis",
+        "url": "https://flgov.com/eog/leadership/people/ron-desantis/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:28.151Z"
+  },
+  {
+    "state": "Georgia",
+    "sourceUrl": "https://www.usa.gov/states/georgia",
+    "stateGovSites": [
+      {
+        "label": "Georgia",
+        "url": "https://georgia.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Brian P. Kemp",
+        "url": "https://gov.georgia.gov/"
+      },
+      {
+        "label": "Contact Governor Kemp",
+        "url": "https://gov.georgia.gov/contact-us"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:28.997Z"
+  },
+  {
+    "state": "Hawaii",
+    "sourceUrl": "https://www.usa.gov/states/hawaii",
+    "stateGovSites": [
+      {
+        "label": "Hawaii",
+        "url": "https://portal.ehawaii.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Josh Green",
+        "url": "https://governor.hawaii.gov/"
+      },
+      {
+        "label": "Contact Governor Green",
+        "url": "https://governor.hawaii.gov/contact-us/contact-the-governor/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:30.045Z"
+  },
+  {
+    "state": "Idaho",
+    "sourceUrl": "https://www.usa.gov/states/idaho",
+    "stateGovSites": [
+      {
+        "label": "Idaho",
+        "url": "https://www.idaho.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Brad Little",
+        "url": "https://gov.idaho.gov/"
+      },
+      {
+        "label": "Contact Governor Little",
+        "url": "https://gov.idaho.gov/contact/contact-us/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:30.973Z"
+  },
+  {
+    "state": "Illinois",
+    "sourceUrl": "https://www.usa.gov/states/illinois",
+    "stateGovSites": [
+      {
+        "label": "Illinois",
+        "url": "https://www.illinois.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor JB Pritzker",
+        "url": "https://gov.illinois.gov/"
+      },
+      {
+        "label": "Contact Governor Pritzker",
+        "url": "https://gov.illinois.gov/contact-us/contact-the-governor.html"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:31.980Z"
+  },
+  {
+    "state": "Indiana",
+    "sourceUrl": "https://www.usa.gov/states/indiana",
+    "stateGovSites": [
+      {
+        "label": "Indiana",
+        "url": "https://www.in.gov/core/index.html"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Mike Braun",
+        "url": "https://www.in.gov/gov/"
+      },
+      {
+        "label": "Contact Governor Braun",
+        "url": "https://www.in.gov/gov/ask-mike/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:32.702Z"
+  },
+  {
+    "state": "Iowa",
+    "sourceUrl": "https://www.usa.gov/states/iowa",
+    "stateGovSites": [
+      {
+        "label": "Iowa",
+        "url": "https://www.iowa.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Kim Reynolds",
+        "url": "https://governor.iowa.gov/"
+      },
+      {
+        "label": "Contact Governor Reynolds",
+        "url": "https://governor.iowa.gov/contact-office-governor"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:33.754Z"
+  },
+  {
+    "state": "Kansas",
+    "sourceUrl": "https://www.usa.gov/states/kansas",
+    "stateGovSites": [
+      {
+        "label": "Kansas",
+        "url": "https://portal.kansas.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Laura Kelly",
+        "url": "https://www.governor.ks.gov/"
+      },
+      {
+        "label": "Contact Governor Kelly",
+        "url": "https://www.governor.ks.gov/contact/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:34.989Z"
+  },
+  {
+    "state": "Kentucky",
+    "sourceUrl": "https://www.usa.gov/states/kentucky",
+    "stateGovSites": [
+      {
+        "label": "Kentucky",
+        "url": "https://www.kentucky.gov/Pages/home.aspx"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Andy Beshear",
+        "url": "https://governor.ky.gov/"
+      },
+      {
+        "label": "Contact Governor Beshear",
+        "url": "https://governor.ky.gov/contact/contact-us"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:35.889Z"
+  },
+  {
+    "state": "Louisiana",
+    "sourceUrl": "https://www.usa.gov/states/louisiana",
+    "stateGovSites": [
+      {
+        "label": "Louisiana",
+        "url": "https://www.louisiana.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Jeff Landry",
+        "url": "https://gov.louisiana.gov/"
+      },
+      {
+        "label": "Contact Governor Landry",
+        "url": "https://gov.louisiana.gov/page/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:36.672Z"
+  },
+  {
+    "state": "Maine",
+    "sourceUrl": "https://www.usa.gov/states/maine",
+    "stateGovSites": [
+      {
+        "label": "Maine",
+        "url": "https://www.maine.gov/portal/index.html"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Janet T. Mills",
+        "url": "https://www.maine.gov/governor/mills/"
+      },
+      {
+        "label": "Contact Governor Mills",
+        "url": "https://www.maine.gov/governor/mills/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:37.429Z"
+  },
+  {
+    "state": "Maryland",
+    "sourceUrl": "https://www.usa.gov/states/maryland",
+    "stateGovSites": [
+      {
+        "label": "Maryland",
+        "url": "https://www.maryland.gov/Pages/default.aspx"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Wes Moore",
+        "url": "https://governor.maryland.gov/leadership/Pages/governor.aspx"
+      },
+      {
+        "label": "Contact Governor Moore",
+        "url": "https://md.accessgov.com/governor/Forms/Page/cs/contact-the-governor/1"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:38.564Z"
+  },
+  {
+    "state": "Massachusetts",
+    "sourceUrl": "https://www.usa.gov/states/massachusetts",
+    "stateGovSites": [
+      {
+        "label": "Massachusetts",
+        "url": "https://www.mass.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Maura Healey",
+        "url": "https://www.mass.gov/orgs/governor-maura-healey-and-lt-governor-kim-driscoll"
+      },
+      {
+        "label": "Contact Governor Healey",
+        "url": "https://www.mass.gov/forms/email-the-governors-office"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:39.596Z"
+  },
+  {
+    "state": "Michigan",
+    "sourceUrl": "https://www.usa.gov/states/michigan",
+    "stateGovSites": [
+      {
+        "label": "Michigan",
+        "url": "https://www.michigan.gov/som"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Gretchen Whitmer",
+        "url": "https://www.michigan.gov/whitmer"
+      },
+      {
+        "label": "Contact Governor Whitmer",
+        "url": "https://www.michigan.gov/whitmer/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:40.630Z"
+  },
+  {
+    "state": "Minnesota",
+    "sourceUrl": "https://www.usa.gov/states/minnesota",
+    "stateGovSites": [
+      {
+        "label": "Minnesota",
+        "url": "https://mn.gov/portal/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Tim Walz",
+        "url": "https://mn.gov/governor/"
+      },
+      {
+        "label": "Contact Governor Walz",
+        "url": "https://mn.gov/governor/connect/contact-us/contact-form.jsp"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:41.472Z"
+  },
+  {
+    "state": "Mississippi",
+    "sourceUrl": "https://www.usa.gov/states/mississippi",
+    "stateGovSites": [
+      {
+        "label": "Mississippi",
+        "url": "https://www.ms.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Tate Reeves",
+        "url": "https://governorreeves.ms.gov/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:42.593Z"
+  },
+  {
+    "state": "Missouri",
+    "sourceUrl": "https://www.usa.gov/states/missouri",
+    "stateGovSites": [
+      {
+        "label": "Missouri",
+        "url": "https://www.mo.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Mike Kehoe",
+        "url": "https://governor.mo.gov/"
+      },
+      {
+        "label": "Contact Governor Kehoe",
+        "url": "https://governor.mo.gov/contact-us"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:43.731Z"
+  },
+  {
+    "state": "Montana",
+    "sourceUrl": "https://www.usa.gov/states/montana",
+    "stateGovSites": [
+      {
+        "label": "Montana",
+        "url": "https://mt.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Greg Gianforte",
+        "url": "https://governor.mt.gov/"
+      },
+      {
+        "label": "Contact Governor Gianforte",
+        "url": "https://governor.mt.gov/Contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:44.890Z"
+  },
+  {
+    "state": "Nebraska",
+    "sourceUrl": "https://www.usa.gov/states/nebraska",
+    "stateGovSites": [
+      {
+        "label": "Nebraska",
+        "url": "https://www.nebraska.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Jim Pillen",
+        "url": "https://governor.nebraska.gov/"
+      },
+      {
+        "label": "Contact Governor Pillen",
+        "url": "https://governor.nebraska.gov/contact-governor"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:45.602Z"
+  },
+  {
+    "state": "Nevada",
+    "sourceUrl": "https://www.usa.gov/states/nevada",
+    "stateGovSites": [
+      {
+        "label": "Nevada",
+        "url": "https://nv.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Joe Lombardo",
+        "url": "https://gov.nv.gov/"
+      },
+      {
+        "label": "Contact Governor Lombardo",
+        "url": "https://gov.nv.gov/Contact/Contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:46.528Z"
+  },
+  {
+    "state": "New Hampshire",
+    "sourceUrl": "https://www.usa.gov/states/new-hampshire",
+    "stateGovSites": [
+      {
+        "label": "New Hampshire",
+        "url": "https://www.nh.gov/index.htm"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Kelly Ayotte",
+        "url": "https://www.governor.nh.gov/"
+      },
+      {
+        "label": "Contact Governor Ayotte",
+        "url": "https://www.governor.nh.gov/contact-governor-ayotte"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:47.673Z"
+  },
+  {
+    "state": "New Jersey",
+    "sourceUrl": "https://www.usa.gov/states/new-jersey",
+    "stateGovSites": [
+      {
+        "label": "New Jersey",
+        "url": "https://www.nj.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Phil Murphy",
+        "url": "https://www.nj.gov/governor/"
+      },
+      {
+        "label": "Contact Governor Murphy",
+        "url": "https://www.nj.gov/governor/contact/all/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:48.713Z"
+  },
+  {
+    "state": "New Mexico",
+    "sourceUrl": "https://www.usa.gov/states/new-mexico",
+    "stateGovSites": [
+      {
+        "label": "New Mexico",
+        "url": "https://www.nm.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Michelle Lujan Grisham",
+        "url": "https://www.governor.state.nm.us/"
+      },
+      {
+        "label": "Contact Governor Lujan Grisham",
+        "url": "https://www.governor.state.nm.us/contact-the-governor/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:49.782Z"
+  },
+  {
+    "state": "New York",
+    "sourceUrl": "https://www.usa.gov/states/new-york",
+    "stateGovSites": [
+      {
+        "label": "New York",
+        "url": "https://www.ny.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Kathy Hochul",
+        "url": "https://www.governor.ny.gov/"
+      },
+      {
+        "label": "Contact Governor Hochul",
+        "url": "https://www.governor.ny.gov/content/governor-contact-form"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:51.046Z"
+  },
+  {
+    "state": "North Carolina",
+    "sourceUrl": "https://www.usa.gov/states/north-carolina",
+    "stateGovSites": [
+      {
+        "label": "North Carolina",
+        "url": "https://www.nc.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Josh Stein",
+        "url": "https://governor.nc.gov/"
+      },
+      {
+        "label": "Contact Governor Stein",
+        "url": "https://governor.nc.gov/contact/contact-governor-stein"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:51.935Z"
+  },
+  {
+    "state": "North Dakota",
+    "sourceUrl": "https://www.usa.gov/states/north-dakota",
+    "stateGovSites": [
+      {
+        "label": "North Dakota",
+        "url": "https://www.nd.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Kelly Armstrong",
+        "url": "https://www.governor.nd.gov/"
+      },
+      {
+        "label": "Contact Governor Armstrong",
+        "url": "https://www.governor.nd.gov/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:53.034Z"
+  },
+  {
+    "state": "Ohio",
+    "sourceUrl": "https://www.usa.gov/states/ohio",
+    "stateGovSites": [
+      {
+        "label": "Ohio",
+        "url": "https://ohio.gov/home"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Mike DeWine",
+        "url": "https://governor.ohio.gov/home"
+      },
+      {
+        "label": "Contact Governor DeWine",
+        "url": "https://governor.ohio.gov/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:53.963Z"
+  },
+  {
+    "state": "Oklahoma",
+    "sourceUrl": "https://www.usa.gov/states/oklahoma",
+    "stateGovSites": [
+      {
+        "label": "Oklahoma",
+        "url": "https://oklahoma.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor J. Kevin Stitt",
+        "url": "https://oklahoma.gov/governor.html"
+      },
+      {
+        "label": "Contact Governor Stitt",
+        "url": "https://oklahoma.gov/governor/contact.html"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:55.192Z"
+  },
+  {
+    "state": "Oregon",
+    "sourceUrl": "https://www.usa.gov/states/oregon",
+    "stateGovSites": [
+      {
+        "label": "Oregon",
+        "url": "https://www.oregon.gov/pages/index.aspx"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Tina Kotek",
+        "url": "https://www.oregon.gov/gov/Pages/index.aspx"
+      },
+      {
+        "label": "Contact Governor Kotek",
+        "url": "https://www.oregon.gov/gov/pages/contact-us.aspx"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:56.230Z"
+  },
+  {
+    "state": "Pennsylvania",
+    "sourceUrl": "https://www.usa.gov/states/pennsylvania",
+    "stateGovSites": [
+      {
+        "label": "Pennsylvania",
+        "url": "https://www.pa.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Josh Shapiro",
+        "url": "https://www.pa.gov/en/governor.html"
+      },
+      {
+        "label": "Contact Governor Shapiro",
+        "url": "https://www.governor.pa.gov/contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:57.431Z"
+  },
+  {
+    "state": "Rhode Island",
+    "sourceUrl": "https://www.usa.gov/states/rhode-island",
+    "stateGovSites": [
+      {
+        "label": "Rhode Island",
+        "url": "https://www.ri.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Contact Governor Dan McKee",
+        "url": "https://governor.ri.gov/"
+      },
+      {
+        "label": "Contact Governor McKee",
+        "url": "https://governor.ri.gov/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:58.621Z"
+  },
+  {
+    "state": "South Carolina",
+    "sourceUrl": "https://www.usa.gov/states/south-carolina",
+    "stateGovSites": [
+      {
+        "label": "South Carolina",
+        "url": "https://sc.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Henry McMaster",
+        "url": "https://governor.sc.gov/"
+      },
+      {
+        "label": "Contact Governor McMaster",
+        "url": "https://governor.sc.gov/contact-governors-office"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:31:59.386Z"
+  },
+  {
+    "state": "South Dakota",
+    "sourceUrl": "https://www.usa.gov/states/south-dakota",
+    "stateGovSites": [
+      {
+        "label": "South Dakota",
+        "url": "https://www.sd.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Larry Rhoden",
+        "url": "https://governor.sd.gov/"
+      },
+      {
+        "label": "Contact Governor Rhoden",
+        "url": "https://governor.sd.gov/office/contact.aspx"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:00.105Z"
+  },
+  {
+    "state": "Tennessee",
+    "sourceUrl": "https://www.usa.gov/states/tennessee",
+    "stateGovSites": [
+      {
+        "label": "Tennessee",
+        "url": "https://www.tn.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Bill Lee",
+        "url": "https://www.tn.gov/governor.html"
+      },
+      {
+        "label": "Contact Governor Lee",
+        "url": "https://www.tn.gov/governor/contact-us.html"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:00.874Z"
+  },
+  {
+    "state": "Texas",
+    "sourceUrl": "https://www.usa.gov/states/texas",
+    "stateGovSites": [
+      {
+        "label": "Texas",
+        "url": "https://www.texas.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Greg Abbott",
+        "url": "https://gov.texas.gov/"
+      },
+      {
+        "label": "Contact Governor Abbott",
+        "url": "https://gov.texas.gov/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:01.604Z"
+  },
+  {
+    "state": "Utah",
+    "sourceUrl": "https://www.usa.gov/states/utah",
+    "stateGovSites": [
+      {
+        "label": "Utah",
+        "url": "https://www.utah.gov/index.html"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Spencer J. Cox",
+        "url": "https://governor.utah.gov/"
+      },
+      {
+        "label": "Contact Governor Cox",
+        "url": "https://governor.utah.gov/contact/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:02.615Z"
+  },
+  {
+    "state": "Vermont",
+    "sourceUrl": "https://www.usa.gov/states/vermont",
+    "stateGovSites": [
+      {
+        "label": "Vermont",
+        "url": "https://www.vermont.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Phil Scott",
+        "url": "https://governor.vermont.gov/"
+      },
+      {
+        "label": "Contact Governor Scott",
+        "url": "https://governor.vermont.gov/contact"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:03.612Z"
+  },
+  {
+    "state": "Virginia",
+    "sourceUrl": "https://www.usa.gov/states/virginia",
+    "stateGovSites": [
+      {
+        "label": "Virginia",
+        "url": "https://www.virginia.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Glenn Youngkin",
+        "url": "https://www.governor.virginia.gov/"
+      },
+      {
+        "label": "Contact Governor Youngkin",
+        "url": "https://www.governor.virginia.gov/communicating-with-the-governors-office/"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:04.534Z"
+  },
+  {
+    "state": "Washington",
+    "sourceUrl": "https://www.usa.gov/states/washington",
+    "stateGovSites": [
+      {
+        "label": "Washington",
+        "url": "https://wa.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Bob Ferguson",
+        "url": "https://governor.wa.gov/"
+      },
+      {
+        "label": "Contact Governor Ferguson",
+        "url": "https://governor.wa.gov/contacting-governor/contacting-governors-office"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:05.503Z"
+  },
+  {
+    "state": "West Virginia",
+    "sourceUrl": "https://www.usa.gov/states/west-virginia",
+    "stateGovSites": [
+      {
+        "label": "West Virginia",
+        "url": "https://www.wv.gov/Pages/default.aspx"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Patrick Morrisey",
+        "url": "https://governor.wv.gov/"
+      },
+      {
+        "label": "Contact Governor Morrisey",
+        "url": "https://wv.accessgov.com/governor/Forms/Page/submitcomment-governor/contact-governor/0"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:06.604Z"
+  },
+  {
+    "state": "Wisconsin",
+    "sourceUrl": "https://www.usa.gov/states/wisconsin",
+    "stateGovSites": [
+      {
+        "label": "Wisconsin",
+        "url": "https://www.wisconsin.gov/Pages/Home.aspx"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Tony Evers",
+        "url": "https://evers.wi.gov/pages/home.aspx"
+      },
+      {
+        "label": "Contact Governor Evers",
+        "url": "https://evers.wi.gov/Pages/connect.aspx"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:07.828Z"
+  },
+  {
+    "state": "Wyoming",
+    "sourceUrl": "https://www.usa.gov/states/wyoming",
+    "stateGovSites": [
+      {
+        "label": "Wyoming",
+        "url": "https://www.wyo.gov/"
+      }
+    ],
+    "governorSites": [
+      {
+        "label": "Governor Mark Gordon",
+        "url": "https://governor.wyo.gov/"
+      },
+      {
+        "label": "Contact Governor Gordon",
+        "url": "https://governor.wyo.gov/contact/governor"
+      }
+    ],
+    "scrapedAt": "2025-11-19T02:32:08.609Z"
+  }
+]
