@@ -115,6 +115,26 @@ Parameters:
 
 Each run emits `*.geojson` chunks—feed them into `scripts/buildOverlay.cjs` (with `--input` pointing to the generated GeoJSON) to produce the TypeScript overlay modules consumed by the app.
 
+#### Building the Interstate Highways overlay
+
+To visualize the national Interstate network you’ll need the TIGER `PRIMARYROADS` download (one ZIP for the whole country), a GeoJSON conversion, and the overlay builder:
+
+```bash
+# 1. Grab the PRIMARYROADS archive (≈35 MB) and extract it under data/raw/tiger2025
+TIGER_FOLDERS=PRIMARYROADS npm run download:tiger
+
+# 2. Convert it to GeoJSON alongside the county road slices (optional --simplify tweak)
+node scripts/processTigerLayer.cjs \
+   --folder PRIMARYROADS \
+   --out data/overlays/tiger/roads \
+   --simplify 12
+
+# 3. Merge, filter RTTYP="I", and emit data/overlays/interstates.generated.ts
+node scripts/buildInterstatesOverlay.cjs --simplify 3 --lod 1,4,10
+```
+
+The build script reads every `*.geojson` under `data/overlays/tiger/roads`, so you can mix national `PRIMARYROADS` slices with per-county `ROADS` exports if you prefer to scope smaller regions. The resulting overlay is exposed in the UI as “Interstate Highways” and is clipped automatically on the state detail view.
+
 #### Auditing the generated cities overlay
 
 Want to know how complete `data/overlays/cities.generated.ts` is compared to the latest Census place dataset? Run the verifier:

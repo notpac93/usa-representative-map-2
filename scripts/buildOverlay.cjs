@@ -44,23 +44,33 @@ const dissolve = arg.dissolve || null;
 const width = Number(arg.width || 975);
 const height = Number(arg.height || 610);
 
-if (!fs.existsSync(input)) { console.error('Input not found', input); process.exit(1); }
+if (!fs.existsSync(input)) {
+  console.error('Input not found', input);
+  process.exit(1);
+}
 // Support directories (with spaces) by keeping full path for existence checks but
 // providing only the filename (no directories) as the virtual input name to mapshaper.
-const base = input.replace(/\.shp$/i,'');
-const dir = path.dirname(base);
-const fileBase = path.basename(base);
-const parts = ['.shp','.shx','.dbf','.prj'].filter(ext => fs.existsSync(path.join(dir, fileBase + ext)));
-const msInputs = {};
-for (const ext of parts) {
-  const full = path.join(dir, fileBase + ext);
-  msInputs[fileBase + ext] = fs.readFileSync(full);
-}
 
-const shpName = Object.keys(msInputs).find(n=>/\.shp$/i.test(n));
-if(!shpName){
-  console.error('Could not locate .shp among inputs. Provided keys:', Object.keys(msInputs));
-  process.exit(1);
+const inputExt = path.extname(input).toLowerCase();
+const isShapefile = inputExt === '.shp';
+
+let shpName = null;
+let msInputs = null;
+if (isShapefile) {
+  const base = input.replace(/\.shp$/i,'');
+  const dir = path.dirname(base);
+  const fileBase = path.basename(base);
+  const parts = ['.shp','.shx','.dbf','.prj'].filter(ext => fs.existsSync(path.join(dir, fileBase + ext)));
+  msInputs = {};
+  for (const ext of parts) {
+    const full = path.join(dir, fileBase + ext);
+    msInputs[fileBase + ext] = fs.readFileSync(full);
+  }
+  shpName = Object.keys(msInputs).find(n=>/\.shp$/i.test(n));
+  if(!shpName){
+    console.error('Could not locate .shp among inputs. Provided keys:', Object.keys(msInputs));
+    process.exit(1);
+  }
 }
 
 (async () => {
@@ -79,20 +89,28 @@ if(!shpName){
   } catch (e) {
     console.warn('[buildOverlay] CLI attempt failed, trying API (reduced command).', e.message);
   }
-  // API fallback (optional)
-  if(!geojsonStr && mapshaperApi){
+  // API fallback (optional, shapefile only)
+  if(!geojsonStr && isShapefile && mapshaperApi){
     try {
       geojsonStr = await new Promise((resolve,reject)=>{
         const cmd = `-i ${shpName} -o format=geojson out.geojson`;
         mapshaperApi.runCommands(cmd, msInputs, (err, outputs)=>{
           if(err || !outputs) return reject(err || new Error('No outputs from API fallback'));
           const k = Object.keys(outputs).find(k=>/out\.geojson$/i.test(k));
-            if(!k) return reject(new Error('API fallback missing out.geojson'));
+          if(!k) return reject(new Error('API fallback missing out.geojson'));
           resolve(outputs[k].toString('utf8'));
         });
       });
     } catch (e) {
       console.error('[buildOverlay] API fallback failed:', e.message);
+    }
+  }
+  // GeoJSON direct read fallback
+  if(!geojsonStr && !isShapefile) {
+    try {
+      geojsonStr = fs.readFileSync(input, 'utf8');
+    } catch (e) {
+      console.error('Failed to read GeoJSON input:', e.message);
     }
   }
   if(!geojsonStr){

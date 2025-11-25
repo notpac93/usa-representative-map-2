@@ -15,6 +15,24 @@ export interface OverlayMeta {
 
 export const overlayRegistry: OverlayMeta[] = [
   {
+    key: 'interstates',
+    label: 'Interstate Highways',
+    category: 'Transportation',
+    stroke: '#f97316',
+    fill: 'transparent',
+    loader: async () => {
+      const mod: any = await import('./interstates.generated.ts').catch(()=>({}));
+      return (mod.interstatesLayer || mod.default || Object.values(mod)[0]);
+    },
+    legend: [
+      {
+        label: 'Primary interstate',
+        stroke: '#f97316',
+        shape: 'line'
+      }
+    ]
+  },
+  {
     key: 'cities',
     label: 'Cities (2025)',
     category: 'Places',
