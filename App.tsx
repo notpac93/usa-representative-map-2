@@ -58,7 +58,17 @@ const App: React.FC = () => {
         })();
       }
     } catch {}
-    // Auto-activate cities overlay if not already present (guarantee baseline point layer)
+
+    // Always-load hidden base layers like water and essential city points
+    (async () => {
+      try {
+        const waterLayer = await loadOverlay('water-bodies');
+        if (waterLayer) {
+          setOverlays(prev => prev.find(p => p.key === waterLayer.key) ? prev : [...prev, waterLayer]);
+        }
+      } catch {}
+    })();
+
     (async () => {
       try {
         if (!overlays.find(o=>o.key==='cities')) {
@@ -145,7 +155,7 @@ const App: React.FC = () => {
     });
   }
 
-  const activeOverlays = overlays.filter(o => activeOverlayKeys.has(o.key));
+  const activeOverlays = overlays.filter(o => o.key === 'water-bodies' || activeOverlayKeys.has(o.key));
 
   const handleOpenSettings = (tab: InfoPanelTab = 'settings') => {
     setInfoPanelTab(tab);
@@ -300,7 +310,7 @@ const App: React.FC = () => {
                   selectedStateId={selectedStateId}
                   activeOverlays={activeOverlays}
                   overlayControls={overlayRegistry
-                    .filter(meta => meta.key !== 'regions' && meta.key !== 'cities')
+                    .filter(meta => !meta.hidden && meta.key !== 'regions' && meta.key !== 'cities')
                     .map(meta => ({
                       key: meta.key,
                       label: meta.label,
@@ -316,7 +326,6 @@ const App: React.FC = () => {
             <footer className="border-t border-gray-200 dark:border-gray-800 px-2 pt-2 pb-4 flex justify-around bg-gray-50 dark:bg-gray-900/50 flex-shrink-0">
               <button
                 onClick={() => setViewMode('map')}
-                className={`flex items-center space-x-2 px-6 py-2 rounded-full font-semibold transition-colors ${viewMode === 'map' ? 'bg-[hsl(var(--color-primary))] text-white' : 'hover:bg-primary-soft'}`}
                 aria-label="Map View"
               >
                 <IconMap className="w-5 h-5" />

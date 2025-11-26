@@ -37,10 +37,14 @@ export interface OverlayLayer {
   source?: string;      // optional source description / URL
   stroke?: string;
   fill?: string;
+  strokeWidth?: number;
+  lineCap?: 'butt' | 'round' | 'square';
   category?: string;    // grouping/category (e.g., 'Demographics', 'Boundaries')
   legend?: Array<{ label: string; stroke?: string; fill?: string; shape?: 'line' | 'rect' | 'circle' }>; // optional legend entries
   // Optional projection parameters captured at build time to verify alignment consistency
   projectionParams?: { scale: number|null; translate: [number,number]|null };
+  hidden?: boolean;
+  renderOrder?: number;
 }
 
 // City point feature (projected coordinates + original lon/lat)

@@ -51,7 +51,7 @@ function formatCityDisplayName(name?: string | null): string {
 
 const StatePage: React.FC<StatePageProps> = ({ atlas, stateId, detail, onBack, onOfficialSelect, onViewHouseDelegation, overlayControls, activeOverlays }) => {
   const state = atlas.states.find(s => s.id === stateId);
-  const { overlayPaths, cityPoints, activeLabels, legendLayers } = useFilteredOverlays(state, activeOverlays);
+  const { overlayLayers, cityPoints, activeLabels, legendLayers } = useFilteredOverlays(state, activeOverlays);
   const [showAllCities, setShowAllCities] = React.useState(false);
   const [citySearch, setCitySearch] = React.useState('');
 
@@ -221,9 +221,8 @@ const StatePage: React.FC<StatePageProps> = ({ atlas, stateId, detail, onBack, o
         <StateMapView
           atlas={atlas}
           stateId={stateId}
-          showOverlay={overlayPaths.length > 0}
           overlayLabel={overlayLabelSummary}
-          overlayPaths={overlayPaths}
+          overlayLayers={overlayLayers}
           cityPoints={mapCityPoints}
         />
         {legendLayers.length > 0 && (

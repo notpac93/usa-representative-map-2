@@ -10,16 +10,26 @@ import { computeCityPlacements, DecoratedCity, CityLabelPlacement } from '../uti
 
 const ZOOM_TIER_VISIBILITY = [0, 1.35, 2.25] as const;
 
+type StateOverlayLayer = {
+  key: string;
+  label: string;
+  paths: string[];
+  stroke?: string;
+  fill?: string;
+  strokeWidth?: number;
+  lineCap?: 'butt' | 'round' | 'square';
+  hidden?: boolean;
+};
+
 interface StateMapViewProps {
   atlas: Atlas;
   stateId: string;
-  overlayPaths?: string[];
+  overlayLayers?: StateOverlayLayer[];
   overlayLabel?: string;
-  showOverlay?: boolean;
   cityPoints?: CityFeature[];
 }
 
-const StateMapView: React.FC<StateMapViewProps> = ({ atlas, stateId, overlayPaths, overlayLabel, showOverlay, cityPoints }) => {
+const StateMapView: React.FC<StateMapViewProps> = ({ atlas, stateId, overlayLayers, overlayLabel, cityPoints }) => {
   const state = atlas.states.find(s => s.id === stateId);
   const padding = 24;
 
@@ -154,6 +164,10 @@ const StateMapView: React.FC<StateMapViewProps> = ({ atlas, stateId, overlayPath
     k: zoomTransform.k || 1,
   }), [zoomTransform, translateX, translateY]);
 
+  const clipPathId = useMemo(() => `state-clip-${stateId}`, [stateId]);
+  const hasOverlayContent = overlayLayers?.some(layer => layer.paths.length > 0) ?? false;
+  const hasVisibleOverlayContent = overlayLayers?.some(layer => !layer.hidden && layer.paths.length > 0) ?? false;
+
   const MAX_STATE_LABELS = Math.min(stateLabelTier.target, Math.max(zoomEligibleCities.length, 3));
   const stateCityLabelPlacements = useMemo<CityLabelPlacement[]>(() => {
     if (!zoomEligibleCities.length) return [];
@@ -206,24 +220,35 @@ const StateMapView: React.FC<StateMapViewProps> = ({ atlas, stateId, overlayPath
               d={state.path}
               style={{ fill: 'hsl(var(--color-border))', stroke: 'hsl(var(--color-background))', strokeWidth: 0.75 }}
             />
-            {showOverlay && overlayPaths?.length ? (
+            {hasOverlayContent && (
               <>
                 <defs>
-                  <clipPath id={`state-clip-${state.id}`}>
+                  <clipPath id={clipPathId}>
                     <path d={state.path} />
                   </clipPath>
                 </defs>
-                <g className="pointer-events-none" clipPath={`url(#state-clip-${state.id})`}>
-                  {overlayPaths.map((p, i) => (
-                    <path
-                      key={i}
-                      d={p}
-                      style={{ fill: 'none', stroke: 'hsl(var(--color-primary))', vectorEffect: 'non-scaling-stroke', strokeWidth: 0.4, strokeLinecap: 'round' }}
-                    />
-                  ))}
-                </g>
+                {overlayLayers?.map(layer => (
+                  !layer.paths.length ? null : (
+                    <g key={layer.key} className="pointer-events-none" clipPath={`url(#${clipPathId})`}>
+                      {layer.paths.map((p, idx) => (
+                        <path
+                          key={`${layer.key}-${idx}`}
+                          d={p}
+                          style={{
+                            fill: layer.fill || 'none',
+                            stroke: layer.stroke || 'hsl(var(--color-primary))',
+                            vectorEffect: 'non-scaling-stroke',
+                            strokeWidth: layer.strokeWidth ?? 0.4,
+                            strokeLinecap: layer.lineCap || 'round',
+                            opacity: layer.hidden ? 0.85 : 1,
+                          }}
+                        />
+                      ))}
+                    </g>
+                  )
+                ))}
               </>
-            ) : null}
+            )}
             {stateCityLabelPlacements.length > 0 && (
               <g className="pointer-events-none z-10">
                 {stateCityLabelPlacements.map((placement, idx) => {
@@ -273,8 +298,11 @@ const StateMapView: React.FC<StateMapViewProps> = ({ atlas, stateId, overlayPath
         </div>
       </div>
       {overlayLabel && (
-        <div className="mt-1 text-[10px] uppercase tracking-wide text-muted">{overlayLabel}{showOverlay ? '' : ' (hidden)'}
-        </div>)}
+        <div className="mt-1 text-[10px] uppercase tracking-wide text-muted">
+          {overlayLabel}
+          {hasVisibleOverlayContent ? '' : ' (hidden)'}
+        </div>
+      )}
     </div>
   );
 };

@@ -18,8 +18,19 @@ type AppOverlayLayer = OverlayLayer & {
   points?: CityFeature[];
 };
 
+interface StateOverlayLayer {
+  key: string;
+  label: string;
+  paths: string[];
+  stroke?: string;
+  fill?: string;
+  strokeWidth?: number;
+  lineCap?: 'butt' | 'round' | 'square';
+  hidden?: boolean;
+}
+
 interface FilteredOverlaysResult {
-  overlayPaths: string[];
+  overlayLayers: StateOverlayLayer[];
   cityPoints: CityFeature[];
   activeLabels: string[];
   legendLayers: AppOverlayLayer[];
@@ -31,7 +42,7 @@ export function useFilteredOverlays(
 ): FilteredOverlaysResult {
   return useMemo(() => {
     const result: FilteredOverlaysResult = {
-      overlayPaths: [],
+      overlayLayers: [],
       cityPoints: [],
       activeLabels: [],
       legendLayers: [],
@@ -49,13 +60,14 @@ export function useFilteredOverlays(
       const feats = layer.features || [];
       const pointArray = layer.points;
       let hasVisibleFeatures = false;
+      const layerPaths: string[] = [];
 
       for (const feature of feats) {
         if (!feature?.path || !feature?.bbox || !Array.isArray(feature.bbox) || feature.bbox.length !== 4) continue;
         if (!intersects(stateBBox as any, feature.bbox as any)) continue;
         if (applyArtifactFilter && isLikelyArtifact({ featureBBox: feature.bbox as any, stateBBox: stateBBox as any })) continue;
 
-        result.overlayPaths.push(feature.path);
+        layerPaths.push(feature.path);
         hasVisibleFeatures = true;
       }
 
@@ -80,6 +92,19 @@ export function useFilteredOverlays(
             hasVisibleFeatures = true;
           }
         }
+      }
+
+      if (layerPaths.length) {
+        result.overlayLayers.push({
+          key: layer.key,
+          label: layer.label || layer.key,
+          paths: layerPaths,
+          stroke: layer.stroke,
+          fill: layer.fill,
+          strokeWidth: layer.strokeWidth,
+          lineCap: layer.lineCap,
+          hidden: layer.hidden,
+        });
       }
 
       if (hasVisibleFeatures && !layer.hidden && !layer.pointLayer) {

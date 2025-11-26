@@ -10,16 +10,39 @@ export interface OverlayMeta {
   states?: string[]; // if specified, restrict to these state IDs
   fill?: string;
   stroke?: string;
+  strokeWidth?: number;
+  lineCap?: 'butt' | 'round' | 'square';
   category?: string; // group legend
+  hidden?: boolean;
+  renderOrder?: number;
+  legend?: Array<{ label: string; stroke?: string; fill?: string; shape?: 'line' | 'rect' | 'circle' }>;
 }
 
 export const overlayRegistry: OverlayMeta[] = [
   {
+    key: 'water-bodies',
+    label: 'Water & Lakes',
+    category: 'Base',
+    fill: 'rgba(148, 163, 184, 0.28)',
+    stroke: 'rgba(100, 116, 139, 0.55)',
+    strokeWidth: 0.45,
+    lineCap: 'round',
+    hidden: true,
+    renderOrder: -20,
+    loader: async () => {
+      const mod: any = await import('./water.generated.ts').catch(() => ({}));
+      return (mod.waterBodiesLayer || mod.default || Object.values(mod)[0]);
+    },
+  },
+  {
     key: 'interstates',
     label: 'Interstate Highways',
     category: 'Transportation',
-    stroke: '#f97316',
+    stroke: 'rgba(251, 146, 60, 0.85)',
+    strokeWidth: 0.75,
+    lineCap: 'round',
     fill: 'transparent',
+    renderOrder: 20,
     loader: async () => {
       const mod: any = await import('./interstates.generated.ts').catch(()=>({}));
       return (mod.interstatesLayer || mod.default || Object.values(mod)[0]);
@@ -115,7 +138,14 @@ export async function loadOverlay(key: string): Promise<OverlayLayer | null> {
     if (layer) {
       layer.fill = layer.fill || meta.fill;
       layer.stroke = layer.stroke || meta.stroke;
+      layer.strokeWidth = layer.strokeWidth ?? meta.strokeWidth;
+      layer.lineCap = layer.lineCap || meta.lineCap;
       layer.category = layer.category || meta.category;
+      layer.hidden = layer.hidden ?? meta.hidden;
+      layer.renderOrder = layer.renderOrder ?? meta.renderOrder;
+      if (meta.legend && !layer.legend) {
+        layer.legend = meta.legend;
+      }
     }
     return layer;
   } catch (e) {

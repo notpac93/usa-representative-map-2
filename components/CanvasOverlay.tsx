@@ -9,6 +9,7 @@ interface CanvasOverlayProps {
   stroke?: string;
   strokeWidth?: number; // in screen pixels (non-scaling)
   lineCap?: CanvasLineCap;
+  fill?: string;
   // Optional local transform applied after the map transform (for AK/HI insets)
   insetScale?: number;
   insetTx?: number;
@@ -32,6 +33,7 @@ const CanvasOverlay: React.FC<CanvasOverlayProps> = ({
   stroke = '#60a5fa',
   strokeWidth = 0.5,
   lineCap = 'round',
+  fill,
   insetScale,
   insetTx,
   insetTy,
@@ -62,7 +64,7 @@ const CanvasOverlay: React.FC<CanvasOverlayProps> = ({
       canvas.height = targetH;
     }
 
-    // Clear then draw using the current zoom transform
+  // Clear then draw using the current zoom transform
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -82,17 +84,22 @@ const CanvasOverlay: React.FC<CanvasOverlayProps> = ({
     }
 
   // Keep stroke visually constant in CSS px: compensate for zoom (k) and pre-scale
-  ctx.lineWidth = Math.max(0.25, (strokeWidth * dpr) / ((transform.k || 1) * scale));
-    ctx.strokeStyle = stroke;
+    ctx.lineWidth = Math.max(0.25, (strokeWidth * dpr) / ((transform.k || 1) * scale));
     ctx.lineCap = lineCap;
-    ctx.fillStyle = 'transparent';
 
     for (const p of pathObjs) {
-      ctx.stroke(p);
+      if (fill && fill !== 'transparent') {
+        ctx.fillStyle = fill;
+        ctx.fill(p);
+      }
+      if (stroke && stroke !== 'transparent') {
+        ctx.strokeStyle = stroke;
+        ctx.stroke(p);
+      }
     }
 
     ctx.restore();
-  }, [width, height, pathObjs, transform, stroke, strokeWidth, lineCap]);
+  }, [width, height, pathObjs, transform, stroke, strokeWidth, lineCap, fill]);
 
   return (
     <canvas

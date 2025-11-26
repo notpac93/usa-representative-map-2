@@ -125,16 +125,7 @@ const MapView: React.FC<MapViewProps> = ({
   const liveRegionRef = useRef<HTMLDivElement>(null);
 
   // Derived overlay + point data via hook
-  const {
-    overlayPaths,
-    alaskaPaths,
-    hawaiiPaths,
-    visibleCityPoints,
-    visibleAlaskaCityPoints,
-    visibleHawaiiCityPoints,
-    alaskaTransform,
-    hawaiiTransform,
-  } = useMapOverlays({ atlas, activeOverlays, transformK: debouncedTransform.k, diag });
+  const { overlayGroups } = useMapOverlays({ atlas, activeOverlays, transformK: debouncedTransform.k, diag });
 
   const atlasProjection = React.useMemo(() => {
     const proj = d3.geoAlbersUsa();
@@ -154,17 +145,6 @@ const MapView: React.FC<MapViewProps> = ({
       overlayHitCtxRef.current = null;
     };
   }, []);
-
-  // Parse inset transforms like "scale(1.5) translate(tx,ty)"
-  function parseInset(tf: string | undefined): { scale: number; tx: number; ty: number } | null {
-    if (!tf) return null;
-    const m1 = tf.match(/scale\(([-0-9.]+)\)/);
-    const m2 = tf.match(/translate\(([-0-9.]+),\s*([-0-9.]+)\)/);
-    if (!m1 || !m2) return null;
-    return { scale: Number(m1[1]), tx: Number(m2[1]), ty: Number(m2[2]) };
-  }
-  const akInset = parseInset(alaskaTransform);
-  const hiInset = parseInset(hawaiiTransform);
 
   const stateBBoxes = React.useMemo(() => atlas.states.map((state) => ({ id: state.id, bbox: state.bbox })), [atlas.states]);
 
@@ -349,7 +329,7 @@ const MapView: React.FC<MapViewProps> = ({
     const supportsPath2D = typeof Path2D !== 'undefined';
     const entries: OverlayHitEntry[] = [];
     activeOverlays.forEach((layer) => {
-      if ((layer as any).pointLayer) return;
+      if ((layer as any).pointLayer || layer.hidden) return;
       const layerLabel = layer.label || layer.key;
       layer.features?.forEach((feature) => {
         if (!feature?.path || !feature?.bbox) return;
@@ -590,60 +570,6 @@ const MapView: React.FC<MapViewProps> = ({
             );
           })}
 
-          {(overlayPaths.length + alaskaPaths.length + hawaiiPaths.length + visibleCityPoints.length + visibleAlaskaCityPoints.length + visibleHawaiiCityPoints.length) > 0 && (
-            <>
-              {/* Continental overlays are drawn via Canvas for speed */}
-              {false && overlayPaths.length > 0 && (
-                <g className="pointer-events-none" />
-              )}
-              {false && alaskaPaths.length > 0 && alaskaTransform && (
-                <g className="pointer-events-none" transform={alaskaTransform} />
-              )}
-              {false && hawaiiPaths.length > 0 && hawaiiTransform && (
-                <g className="pointer-events-none" transform={hawaiiTransform} />
-              )}
-              {cityLabelPlacements.length > 0 && (
-                <g className="pointer-events-none z-10">
-                  {cityLabelPlacements.map((placement, i) => (
-                    <g key={`pt-${placement.city.id || i}`}>
-                      <circle
-                        cx={placement.city.x}
-                        cy={placement.city.y}
-                        r={placement.markerRadius}
-                        style={{
-                          fill: 'hsl(var(--color-text))',
-                          stroke: 'hsla(var(--color-surface) / 0.95)',
-                          strokeWidth: placement.textStrokeWidth,
-                          vectorEffect: 'non-scaling-stroke',
-                        }}
-                      />
-                      <text
-                        x={placement.labelX}
-                        y={placement.labelY}
-                        fontSize={placement.fontSize}
-                        textAnchor={placement.textAnchor}
-                        style={{
-                          fill: 'hsl(var(--color-text))',
-                          stroke: 'hsla(var(--color-surface) / 0.98)',
-                          strokeWidth: placement.textStrokeWidth,
-                          paintOrder: 'stroke fill',
-                          vectorEffect: 'non-scaling-stroke',
-                          fontFamily: 'var(--font-family-sans)',
-                          fontWeight: 600,
-                          letterSpacing: 0.15,
-                          textRendering: 'geometricPrecision',
-                        }}
-                      >
-                        {placement.text}
-                      </text>
-                    </g>
-                  ))}
-                </g>
-              )}
-              
-            </>
-          )}
-
           {atlas.states
             .filter((s) => ['RI', 'DE', 'VT', 'DC', 'CT'].includes(s.id))
             .map((state) => {
@@ -675,44 +601,62 @@ const MapView: React.FC<MapViewProps> = ({
         </g>
       </svg>
 
-      {/* Canvas overlay layer to render continental overlayPaths efficiently */}
-      {overlayPaths.length > 0 && (
+      {overlayGroups.map((group) => (
         <CanvasOverlay
+          key={`overlay-${group.key}`}
           width={atlas.width}
           height={atlas.height}
-          paths={overlayPaths}
+          paths={group.paths}
           transform={transform}
-          stroke={diag ? 'hsla(var(--color-accent) / 0.75)' : 'hsl(var(--color-primary))'}
-          strokeWidth={diag ? 0.4 : 0.5}
+          stroke={group.stroke || (diag ? 'hsla(var(--color-accent) / 0.75)' : 'hsl(var(--color-primary))')}
+          fill={group.fill}
+          strokeWidth={group.strokeWidth ?? (diag ? 0.4 : 0.5)}
+          lineCap={group.lineCap || 'round'}
         />
-      )}
+      ))}
 
-      {/* Canvas overlay layers for AK and HI insets */}
-      {alaskaPaths.length > 0 && akInset && (
-        <CanvasOverlay
-          width={atlas.width}
-          height={atlas.height}
-          paths={alaskaPaths}
-          transform={transform}
-          insetScale={akInset.scale}
-          insetTx={akInset.tx}
-          insetTy={akInset.ty}
-          stroke={'hsl(var(--color-primary))'}
-          strokeWidth={0.5}
-        />
-      )}
-      {hawaiiPaths.length > 0 && hiInset && (
-        <CanvasOverlay
-          width={atlas.width}
-          height={atlas.height}
-          paths={hawaiiPaths}
-          transform={transform}
-          insetScale={hiInset.scale}
-          insetTx={hiInset.tx}
-          insetTy={hiInset.ty}
-          stroke={'hsl(var(--color-primary))'}
-          strokeWidth={0.5}
-        />
+      {cityLabelPlacements.length > 0 && (
+        <svg
+          viewBox={`0 0 ${atlas.width} ${atlas.height}`}
+          className="absolute inset-0 w-full h-full pointer-events-none z-10"
+        >
+          <g transform={transform.toString()}>
+            {cityLabelPlacements.map((placement, i) => (
+              <g key={`pt-${placement.city.id || i}`}>
+                <circle
+                  cx={placement.city.x}
+                  cy={placement.city.y}
+                  r={placement.markerRadius}
+                  style={{
+                    fill: 'hsl(var(--color-text))',
+                    stroke: 'hsla(var(--color-surface) / 0.95)',
+                    strokeWidth: placement.textStrokeWidth,
+                    vectorEffect: 'non-scaling-stroke',
+                  }}
+                />
+                <text
+                  x={placement.labelX}
+                  y={placement.labelY}
+                  fontSize={placement.fontSize}
+                  textAnchor={placement.textAnchor}
+                  style={{
+                    fill: 'hsl(var(--color-text))',
+                    stroke: 'hsla(var(--color-surface) / 0.98)',
+                    strokeWidth: placement.textStrokeWidth,
+                    paintOrder: 'stroke fill',
+                    vectorEffect: 'non-scaling-stroke',
+                    fontFamily: 'var(--font-family-sans)',
+                    fontWeight: 600,
+                    letterSpacing: 0.15,
+                    textRendering: 'geometricPrecision',
+                  }}
+                >
+                  {placement.text}
+                </text>
+              </g>
+            ))}
+          </g>
+        </svg>
       )}
 
       {hoveredStateName && pointer && (
