@@ -3,8 +3,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const BASE_URL = 'https://www.senate.gov';
-const OUTPUT_JSON = path.resolve('data', 'senators.json');
-const PHOTO_DIR = path.resolve('public', 'senators');
+const OUTPUT_JSON = path.resolve('assets', 'data', 'senators.json');
+const PHOTO_DIR = path.resolve('assets', 'img', 'senators');
 
 const STATES = [
   ['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'], ['CA', 'California'],
@@ -159,7 +159,7 @@ async function main() {
             const filename = `${slug}${ext}`;
             const destination = path.join(PHOTO_DIR, filename);
             await downloadPhoto(senator.photoUrl, destination);
-            photoLocalPath = path.relative(path.resolve('public'), destination).replace(/\\/g, '/');
+            photoLocalPath = path.relative(path.resolve('assets', 'img'), destination).replace(/\\/g, '/');
           } catch (err) {
             console.warn(`   ⚠️  Failed to download photo for ${senator.name}:`, err.message);
           }

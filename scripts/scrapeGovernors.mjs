@@ -3,8 +3,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const LIST_URL = 'https://www.nga.org/governors/';
-const OUTPUT_JSON = path.resolve('data', 'governors.json');
-const PHOTO_DIR = path.resolve('public', 'governors');
+const OUTPUT_JSON = path.resolve('assets', 'data', 'governors.json');
+const PHOTO_DIR = path.resolve('assets', 'img', 'governors');
 
 const wait = (min = 300, max = 700) => new Promise(resolve => setTimeout(resolve, Math.floor(min + Math.random() * (max - min))));
 
@@ -136,9 +136,9 @@ const parseGovernorDetail = async (page, profileUrl) => {
       .find(group => /additional information/i.test(group.querySelector('h4')?.textContent || ''));
     const links = additionalGroup
       ? Array.from(additionalGroup.querySelectorAll('a[href]')).map(anchor => ({
-          label: anchor.textContent?.trim() || anchor.href,
-          url: anchor.href
-        })).filter(link => link.url)
+        label: anchor.textContent?.trim() || anchor.href,
+        url: anchor.href
+      })).filter(link => link.url)
       : [];
 
     const aboutSection = document.querySelector('section[aria-labelledby="about-governor"], section#about-governor');
@@ -226,7 +226,7 @@ async function main() {
           const filename = `${stateSlug}-${slugify(record.governor.name || stateSlug)}${ext}`;
           const destination = path.join(PHOTO_DIR, filename);
           await downloadPhoto(photoSource, destination);
-          record.governor.photoLocalPath = path.relative(path.resolve('public'), destination).replace(/\\/g, '/');
+          record.governor.photoLocalPath = path.relative(path.resolve('assets', 'img'), destination).replace(/\\/g, '/');
         } catch (err) {
           console.warn(`   ⚠️  Photo download failed for ${record.state}:`, err.message);
         }

@@ -23,9 +23,9 @@ export const overlayRegistry: OverlayMeta[] = [
     key: 'water-bodies',
     label: 'Water & Lakes',
     category: 'Base',
-    fill: 'rgba(148, 163, 184, 0.28)',
-    stroke: 'rgba(100, 116, 139, 0.55)',
-    strokeWidth: 0.45,
+    fill: '#a3ccf1',
+    stroke: 'transparent',
+    strokeWidth: 0,
     lineCap: 'round',
     hidden: true,
     renderOrder: -20,
@@ -44,7 +44,7 @@ export const overlayRegistry: OverlayMeta[] = [
     fill: 'transparent',
     renderOrder: 20,
     loader: async () => {
-      const mod: any = await import('./interstates.generated.ts').catch(()=>({}));
+      const mod: any = await import('./interstates.generated.ts').catch(() => ({}));
       return (mod.interstatesLayer || mod.default || Object.values(mod)[0]);
     },
     legend: [
@@ -62,7 +62,7 @@ export const overlayRegistry: OverlayMeta[] = [
     fill: 'rgba(234,179,8,0.25)',
     stroke: '#eab308',
     loader: async () => {
-      const mod: any = await import('./cities.generated.ts').catch(()=>({}));
+      const mod: any = await import('./cities.generated.ts').catch(() => ({}));
       const layer: CityLayer = (mod.citiesLayer || mod.default || Object.values(mod)[0]);
       // We coerce to OverlayLayer shape with stub features; carry point data on a non-typed property for consumers.
       const overlayLike: any = { key: layer.key, label: layer.label, features: [], source: layer.source, stroke: layer.stroke, fill: layer.fill, projectionParams: layer.projectionParams, category: 'Places', hidden: true };
@@ -90,7 +90,7 @@ export const overlayRegistry: OverlayMeta[] = [
     fill: 'rgba(168,85,247,0.25)',
     stroke: '#a855f7',
     loader: async () => {
-      const mod: any = await import('./regions.generated.ts').catch(()=>({}));
+      const mod: any = await import('./regions.generated.ts').catch(() => ({}));
       return (mod.regionsLayer || mod.default || Object.values(mod)[0]);
     }
   },
@@ -101,7 +101,7 @@ export const overlayRegistry: OverlayMeta[] = [
     fill: 'rgba(34,197,94,0.18)',
     stroke: '#22c55e',
     loader: async () => {
-      const mod: any = await import('./counties.generated.ts').catch(()=>({}));
+      const mod: any = await import('./counties.generated.ts').catch(() => ({}));
       return (mod.countiesLayer || mod.default || Object.values(mod)[0]);
     }
   },
@@ -112,7 +112,7 @@ export const overlayRegistry: OverlayMeta[] = [
     fill: 'rgba(16,185,129,0.25)',
     stroke: '#0f766e',
     loader: async () => {
-      const mod: any = await import('./tribalLands.generated.ts').catch(()=>({}));
+      const mod: any = await import('./tribalLands.generated.ts').catch(() => ({}));
       return (mod.tribalLandsLayer || mod.default || Object.values(mod)[0]);
     }
   },
@@ -123,7 +123,7 @@ export const overlayRegistry: OverlayMeta[] = [
     fill: 'rgba(248,113,113,0.2)',
     stroke: '#f87171',
     loader: async () => {
-      const mod: any = await import('./zcta.generated.ts').catch(()=>({}));
+      const mod: any = await import('./zcta.generated.ts').catch(() => ({}));
       return (mod.zctaLayer || mod.default || Object.values(mod)[0]);
     }
   }

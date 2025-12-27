@@ -11,3 +11,14 @@ export async function loadAtlas(): Promise<Atlas> {
   } catch (_) { /* fallthrough */ }
   return manualAtlas;
 }
+
+export async function loadHighResAtlas(): Promise<any> {
+  try {
+    const response = await fetch('/data/atlas-highres.json');
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (e) {
+    console.error('Failed to load high-res atlas', e);
+    return null;
+  }
+}

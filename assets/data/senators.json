@@ -1,0 +1,1802 @@
+[
+  {
+    "state": "Alabama",
+    "stateId": "AL",
+    "sourceUrl": "https://www.senate.gov/states/AL/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:05.849Z",
+    "senators": [
+      {
+        "name": "Tommy Tuberville",
+        "party": "R",
+        "website": "https://www.tuberville.senate.gov/",
+        "contactUrl": "https://www.tuberville.senate.gov/contact/contact-form/",
+        "hometown": "Auburn",
+        "officeAddress": "455 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4124",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#TubervilleAL",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/T000278",
+        "bioguideId": "T000278",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/T/T000278.jpg",
+        "photoLocalPath": "senators/al-tommy-tuberville.jpg"
+      },
+      {
+        "name": "Katie Boyd Britt",
+        "party": "R",
+        "website": "https://www.britt.senate.gov/",
+        "contactUrl": "https://www.britt.senate.gov/contact/",
+        "hometown": "Montgomery",
+        "officeAddress": "416 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5744",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BrittAL",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001319",
+        "bioguideId": "B001319",
+        "photoUrl": "https://www.senate.gov/states/graphics/118/britt.png",
+        "photoLocalPath": "senators/al-katie-boyd-britt.png"
+      }
+    ]
+  },
+  {
+    "state": "Alaska",
+    "stateId": "AK",
+    "sourceUrl": "https://www.senate.gov/states/AK/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:06.730Z",
+    "senators": [
+      {
+        "name": "Lisa Murkowski",
+        "party": "R",
+        "website": "https://www.murkowski.senate.gov/",
+        "contactUrl": "https://www.murkowski.senate.gov/public/index.cfm/contact",
+        "hometown": "Girdwood",
+        "officeAddress": "522 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6665",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MurkowskiAK",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001153",
+        "bioguideId": "M001153",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M001153.jpg",
+        "photoLocalPath": "senators/ak-lisa-murkowski.jpg"
+      },
+      {
+        "name": "Dan Sullivan",
+        "party": "R",
+        "website": "https://www.sullivan.senate.gov/",
+        "contactUrl": "https://www.sullivan.senate.gov/contact/email",
+        "hometown": "Anchorage",
+        "officeAddress": "706 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3004",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SullivanAK",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001198",
+        "bioguideId": "S001198",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001198.jpg",
+        "photoLocalPath": "senators/ak-dan-sullivan.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Arizona",
+    "stateId": "AZ",
+    "sourceUrl": "https://www.senate.gov/states/AZ/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:07.585Z",
+    "senators": [
+      {
+        "name": "Mark Kelly",
+        "party": "D",
+        "website": "https://www.kelly.senate.gov/",
+        "contactUrl": "https://www.kelly.senate.gov/contact/contact-form/",
+        "hometown": "Tucson",
+        "officeAddress": "516 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2235",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#KellyAZ",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/K000377",
+        "bioguideId": "K000377",
+        "photoUrl": "https://www.senate.gov/states/graphics/117/KellyMark.png",
+        "photoLocalPath": "senators/az-mark-kelly.png"
+      },
+      {
+        "name": "Ruben Gallego",
+        "party": "D",
+        "website": "https://www.gallego.senate.gov/",
+        "contactUrl": "https://www.gallego.senate.gov/",
+        "hometown": "Phoenix",
+        "officeAddress": "302 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4521",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#GallegoAZ",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/G000574",
+        "bioguideId": "G000574",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/G/G000574.jpg",
+        "photoLocalPath": "senators/az-ruben-gallego.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Arkansas",
+    "stateId": "AR",
+    "sourceUrl": "https://www.senate.gov/states/AR/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:08.099Z",
+    "senators": [
+      {
+        "name": "John Boozman",
+        "party": "R",
+        "website": "https://www.boozman.senate.gov/",
+        "contactUrl": "https://www.boozman.senate.gov/public/index.cfm/contact",
+        "hometown": "Rogers",
+        "officeAddress": "555 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4843",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BoozmanAR",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001236",
+        "bioguideId": "B001236",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001236.jpg",
+        "photoLocalPath": "senators/ar-john-boozman.jpg"
+      },
+      {
+        "name": "Tom Cotton",
+        "party": "R",
+        "website": "https://www.cotton.senate.gov/",
+        "contactUrl": "https://www.cotton.senate.gov/contact/contact-tom",
+        "hometown": "Little Rock",
+        "officeAddress": "326 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2353",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CottonAR",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001095",
+        "bioguideId": "C001095",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001095.jpg",
+        "photoLocalPath": "senators/ar-tom-cotton.jpg"
+      }
+    ]
+  },
+  {
+    "state": "California",
+    "stateId": "CA",
+    "sourceUrl": "https://www.senate.gov/states/CA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:08.733Z",
+    "senators": [
+      {
+        "name": "Alex Padilla",
+        "party": "D",
+        "website": "https://www.padilla.senate.gov/",
+        "contactUrl": "https://www.padilla.senate.gov/contact/",
+        "hometown": "Los Angeles",
+        "officeAddress": "331 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3553",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#PadillaCA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/P000145",
+        "bioguideId": "P000145",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/P/P000145.jpg",
+        "photoLocalPath": "senators/ca-alex-padilla.jpg"
+      },
+      {
+        "name": "Adam B. Schiff",
+        "party": "D",
+        "website": "https://www.schiff.senate.gov/",
+        "contactUrl": "https://www.schiff.senate.gov/",
+        "hometown": "Burbank",
+        "officeAddress": "112 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3841",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SchiffCA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001150",
+        "bioguideId": "S001150",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001150.jpg",
+        "photoLocalPath": "senators/ca-adam-b-schiff.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Colorado",
+    "stateId": "CO",
+    "sourceUrl": "https://www.senate.gov/states/CO/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:09.382Z",
+    "senators": [
+      {
+        "name": "Michael F. Bennet",
+        "party": "D",
+        "website": "https://www.bennet.senate.gov/",
+        "contactUrl": "https://www.bennet.senate.gov/public/index.cfm/contact",
+        "hometown": "Denver",
+        "officeAddress": "261 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5852",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BennetCO",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001267",
+        "bioguideId": "B001267",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001267.jpg",
+        "photoLocalPath": "senators/co-michael-f-bennet.jpg"
+      },
+      {
+        "name": "John W. Hickenlooper",
+        "party": "D",
+        "website": "https://www.hickenlooper.senate.gov/",
+        "contactUrl": "https://www.hickenlooper.senate.gov/contact/",
+        "hometown": "Denver",
+        "officeAddress": "316 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5941",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HickenlooperCO",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H000273",
+        "bioguideId": "H000273",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H000273.jpg",
+        "photoLocalPath": "senators/co-john-w-hickenlooper.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Connecticut",
+    "stateId": "CT",
+    "sourceUrl": "https://www.senate.gov/states/CT/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:10.191Z",
+    "senators": [
+      {
+        "name": "Richard Blumenthal",
+        "party": "D",
+        "website": "https://www.blumenthal.senate.gov/",
+        "contactUrl": "https://www.blumenthal.senate.gov/contact/",
+        "hometown": "Greenwich",
+        "officeAddress": "503 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2823",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BlumenthalCT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001277",
+        "bioguideId": "B001277",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001277.jpg",
+        "photoLocalPath": "senators/ct-richard-blumenthal.jpg"
+      },
+      {
+        "name": "Christopher Murphy",
+        "party": "D",
+        "website": "https://www.murphy.senate.gov/",
+        "contactUrl": "https://www.murphy.senate.gov/contact",
+        "hometown": "Hartford",
+        "officeAddress": "136 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4041",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MurphyCT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001169",
+        "bioguideId": "M001169",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M001169.jpg",
+        "photoLocalPath": "senators/ct-christopher-murphy.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Delaware",
+    "stateId": "DE",
+    "sourceUrl": "https://www.senate.gov/states/DE/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:12.136Z",
+    "senators": [
+      {
+        "name": "Christopher A. Coons",
+        "party": "D",
+        "website": "https://www.coons.senate.gov/",
+        "contactUrl": "https://www.coons.senate.gov/contact",
+        "hometown": "Wilmington",
+        "officeAddress": "218 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5042",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CoonsDE",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001088",
+        "bioguideId": "C001088",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001088.jpg",
+        "photoLocalPath": "senators/de-christopher-a-coons.jpg"
+      },
+      {
+        "name": "Lisa Blunt Rochester",
+        "party": "D",
+        "website": "https://www.bluntrochester.senate.gov/",
+        "contactUrl": "https://www.bluntrochester.senate.gov/",
+        "hometown": "Wilmington",
+        "officeAddress": "513 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2441",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#Blunt%20RochesterDE",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001303",
+        "bioguideId": "B001303",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001303.jpg",
+        "photoLocalPath": "senators/de-lisa-blunt-rochester.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Florida",
+    "stateId": "FL",
+    "sourceUrl": "https://www.senate.gov/states/FL/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:12.928Z",
+    "senators": [
+      {
+        "name": "Rick Scott",
+        "party": "R",
+        "website": "https://www.rickscott.senate.gov/",
+        "contactUrl": "https://www.rickscott.senate.gov/contact/contact",
+        "hometown": "Naples",
+        "officeAddress": "110 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5274",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#ScottFL",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001217",
+        "bioguideId": "S001217",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001217.jpg",
+        "photoLocalPath": "senators/fl-rick-scott.jpg"
+      },
+      {
+        "name": "Ashley Moody",
+        "party": "R",
+        "website": "https://www.moody.senate.gov/",
+        "contactUrl": "https://www.moody.senate.gov/",
+        "hometown": "Tampa",
+        "officeAddress": "387 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3041",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MoodyFL",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001244",
+        "bioguideId": "M001244",
+        "photoUrl": "https://www.senate.gov/states/graphics/119/moody-ashley.jpg",
+        "photoLocalPath": "senators/fl-ashley-moody.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Georgia",
+    "stateId": "GA",
+    "sourceUrl": "https://www.senate.gov/states/GA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:13.494Z",
+    "senators": [
+      {
+        "name": "Jon Ossoff",
+        "party": "D",
+        "website": "https://www.ossoff.senate.gov/",
+        "contactUrl": "https://www.ossoff.senate.gov/contact-us/",
+        "hometown": "Atlanta",
+        "officeAddress": "317 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3521",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#OssoffGA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/O000174",
+        "bioguideId": "O000174",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/O/O000174.jpg",
+        "photoLocalPath": "senators/ga-jon-ossoff.jpg"
+      },
+      {
+        "name": "Raphael G. Warnock",
+        "party": "D",
+        "website": "https://www.warnock.senate.gov/",
+        "contactUrl": "https://www.warnock.senate.gov/contact/",
+        "hometown": "Atlanta",
+        "officeAddress": "717 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3643",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WarnockGA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000790",
+        "bioguideId": "W000790",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/W/W000790.jpg",
+        "photoLocalPath": "senators/ga-raphael-g-warnock.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Hawaii",
+    "stateId": "HI",
+    "sourceUrl": "https://www.senate.gov/states/HI/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:14.749Z",
+    "senators": [
+      {
+        "name": "Brian Schatz",
+        "party": "D",
+        "website": "https://www.schatz.senate.gov/",
+        "contactUrl": "https://www.schatz.senate.gov/contact",
+        "hometown": "Honolulu",
+        "officeAddress": "722 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3934",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SchatzHI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001194",
+        "bioguideId": "S001194",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001194.jpg",
+        "photoLocalPath": "senators/hi-brian-schatz.jpg"
+      },
+      {
+        "name": "Mazie K. Hirono",
+        "party": "D",
+        "website": "https://www.hirono.senate.gov/",
+        "contactUrl": "https://www.hirono.senate.gov/contact",
+        "hometown": "Honolulu",
+        "officeAddress": "109 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6361",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HironoHI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H001042",
+        "bioguideId": "H001042",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H001042.jpg",
+        "photoLocalPath": "senators/hi-mazie-k-hirono.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Idaho",
+    "stateId": "ID",
+    "sourceUrl": "https://www.senate.gov/states/ID/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:15.511Z",
+    "senators": [
+      {
+        "name": "Mike Crapo",
+        "party": "R",
+        "website": "https://www.crapo.senate.gov/",
+        "contactUrl": "https://www.crapo.senate.gov/contact",
+        "hometown": "Idaho Falls",
+        "officeAddress": "239 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6142",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CrapoID",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C000880",
+        "bioguideId": "C000880",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C000880.jpg",
+        "photoLocalPath": "senators/id-mike-crapo.jpg"
+      },
+      {
+        "name": "James E. Risch",
+        "party": "R",
+        "website": "https://www.risch.senate.gov/",
+        "contactUrl": "https://www.risch.senate.gov/public/index.cfm?p=Email",
+        "hometown": "Boise",
+        "officeAddress": "483 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2752",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#RischID",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/R000584",
+        "bioguideId": "R000584",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/R/R000584.jpg",
+        "photoLocalPath": "senators/id-james-e-risch.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Illinois",
+    "stateId": "IL",
+    "sourceUrl": "https://www.senate.gov/states/IL/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:16.842Z",
+    "senators": [
+      {
+        "name": "Richard J. Durbin",
+        "party": "D",
+        "website": "https://www.durbin.senate.gov/",
+        "contactUrl": "https://www.durbin.senate.gov/contact/",
+        "hometown": "Springfield",
+        "officeAddress": "711 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2152",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#DurbinIL",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/D000563",
+        "bioguideId": "D000563",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/D/D000563.jpg",
+        "photoLocalPath": "senators/il-richard-j-durbin.jpg"
+      },
+      {
+        "name": "Tammy Duckworth",
+        "party": "D",
+        "website": "https://www.duckworth.senate.gov/",
+        "contactUrl": "https://www.duckworth.senate.gov/content/contact-senator",
+        "hometown": "Hoffman Estates",
+        "officeAddress": "524 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2854",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#DuckworthIL",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/D000622",
+        "bioguideId": "D000622",
+        "photoUrl": "https://www.senate.gov/states/graphics/115/Duckworth_Tammy.jpg",
+        "photoLocalPath": "senators/il-tammy-duckworth.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Indiana",
+    "stateId": "IN",
+    "sourceUrl": "https://www.senate.gov/states/IN/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:17.683Z",
+    "senators": [
+      {
+        "name": "Todd Young",
+        "party": "R",
+        "website": "https://www.young.senate.gov/",
+        "contactUrl": "https://www.young.senate.gov/contact",
+        "hometown": "Bargersville",
+        "officeAddress": "185 Dirksen Senate Office Building, Washington DC      20510",
+        "phone": "(202) 224-5623",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#YoungIN",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/Y000064",
+        "bioguideId": "Y000064",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/Y/Y000064.jpg",
+        "photoLocalPath": "senators/in-todd-young.jpg"
+      },
+      {
+        "name": "Jim Banks",
+        "party": "R",
+        "website": "https://www.banks.senate.gov/",
+        "contactUrl": "https://www.banks.senate.gov/",
+        "hometown": "Columbia City",
+        "officeAddress": "303 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4814",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BanksIN",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001299",
+        "bioguideId": "B001299",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001299.jpg",
+        "photoLocalPath": "senators/in-jim-banks.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Iowa",
+    "stateId": "IA",
+    "sourceUrl": "https://www.senate.gov/states/IA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:18.505Z",
+    "senators": [
+      {
+        "name": "Chuck Grassley",
+        "party": "R",
+        "website": "https://www.grassley.senate.gov/",
+        "contactUrl": "https://www.grassley.senate.gov/contact",
+        "hometown": "New Hartford",
+        "officeAddress": "135 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3744",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#GrassleyIA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/G000386",
+        "bioguideId": "G000386",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/G/G000386.jpg",
+        "photoLocalPath": "senators/ia-chuck-grassley.jpg"
+      },
+      {
+        "name": "Joni Ernst",
+        "party": "R",
+        "website": "https://www.ernst.senate.gov/",
+        "contactUrl": "https://www.ernst.senate.gov/public/index.cfm/contact",
+        "hometown": "Red Oak",
+        "officeAddress": "260 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3254",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#ErnstIA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/E000295",
+        "bioguideId": "E000295",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/E/E000295.jpg",
+        "photoLocalPath": "senators/ia-joni-ernst.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Kansas",
+    "stateId": "KS",
+    "sourceUrl": "https://www.senate.gov/states/KS/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:19.502Z",
+    "senators": [
+      {
+        "name": "Jerry Moran",
+        "party": "R",
+        "website": "https://www.moran.senate.gov/",
+        "contactUrl": "https://www.moran.senate.gov/public/index.cfm/e-mail-jerry",
+        "hometown": "Manhattan",
+        "officeAddress": "521 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6521",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MoranKS",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M000934",
+        "bioguideId": "M000934",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M000934.jpg",
+        "photoLocalPath": "senators/ks-jerry-moran.jpg"
+      },
+      {
+        "name": "Roger Marshall",
+        "party": "R",
+        "website": "https://www.marshall.senate.gov/",
+        "contactUrl": "https://www.marshall.senate.gov/contact/",
+        "hometown": "Great Bend",
+        "officeAddress": "479A Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4774",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MarshallKS",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001198",
+        "bioguideId": "M001198",
+        "photoUrl": "https://www.senate.gov/states/graphics/117/marshall-roger.png",
+        "photoLocalPath": "senators/ks-roger-marshall.png"
+      }
+    ]
+  },
+  {
+    "state": "Kentucky",
+    "stateId": "KY",
+    "sourceUrl": "https://www.senate.gov/states/KY/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:20.921Z",
+    "senators": [
+      {
+        "name": "Mitch McConnell",
+        "party": "R",
+        "website": "https://www.mcconnell.senate.gov/",
+        "contactUrl": "https://www.mcconnell.senate.gov/public/index.cfm?p=contact",
+        "hometown": "Louisville",
+        "officeAddress": "317 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2541",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#McConnellKY",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M000355",
+        "bioguideId": "M000355",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M000355.jpg",
+        "photoLocalPath": "senators/ky-mitch-mcconnell.jpg"
+      },
+      {
+        "name": "Rand Paul",
+        "party": "R",
+        "website": "https://www.paul.senate.gov/",
+        "contactUrl": "https://www.paul.senate.gov/connect/email-rand",
+        "hometown": "Bowling Green",
+        "officeAddress": "295 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4343",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#PaulKY",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/P000603",
+        "bioguideId": "P000603",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/P/P000603.jpg",
+        "photoLocalPath": "senators/ky-rand-paul.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Louisiana",
+    "stateId": "LA",
+    "sourceUrl": "https://www.senate.gov/states/LA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:21.525Z",
+    "senators": [
+      {
+        "name": "Bill Cassidy",
+        "party": "R",
+        "website": "https://www.cassidy.senate.gov/",
+        "contactUrl": "https://www.cassidy.senate.gov/contact",
+        "hometown": "Baton Rouge",
+        "officeAddress": "455 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5824",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CassidyLA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001075",
+        "bioguideId": "C001075",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001075.jpg",
+        "photoLocalPath": "senators/la-bill-cassidy.jpg"
+      },
+      {
+        "name": "John Kennedy",
+        "party": "R",
+        "website": "https://www.kennedy.senate.gov/",
+        "contactUrl": "https://www.kennedy.senate.gov/public/email-me",
+        "hometown": "Madisonville",
+        "officeAddress": "437 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4623",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#KennedyLA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/K000393",
+        "bioguideId": "K000393",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/K/K000393.jpg",
+        "photoLocalPath": "senators/la-john-kennedy.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Maine",
+    "stateId": "ME",
+    "sourceUrl": "https://www.senate.gov/states/ME/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:22.388Z",
+    "senators": [
+      {
+        "name": "Susan M. Collins",
+        "party": "R",
+        "website": "https://www.collins.senate.gov/",
+        "contactUrl": "https://www.collins.senate.gov/contact",
+        "hometown": "Bangor",
+        "officeAddress": "413 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2523",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CollinsME",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001035",
+        "bioguideId": "C001035",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001035.jpg",
+        "photoLocalPath": "senators/me-susan-m-collins.jpg"
+      },
+      {
+        "name": "Angus S. King, Jr.",
+        "party": "I",
+        "website": "https://www.king.senate.gov/",
+        "contactUrl": "https://www.king.senate.gov/contact",
+        "hometown": "Brunswick",
+        "officeAddress": "133 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5344",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#KingME",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/K000383",
+        "bioguideId": "K000383",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/K/K000383.jpg",
+        "photoLocalPath": "senators/me-angus-s-king-jr.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Maryland",
+    "stateId": "MD",
+    "sourceUrl": "https://www.senate.gov/states/MD/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:22.993Z",
+    "senators": [
+      {
+        "name": "Chris Van Hollen",
+        "party": "D",
+        "website": "https://www.vanhollen.senate.gov/",
+        "contactUrl": "https://www.vanhollen.senate.gov/contact/email",
+        "hometown": "Kensington",
+        "officeAddress": "730 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4654",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#Van%20HollenMD",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/V000128",
+        "bioguideId": "V000128",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/V/V000128.jpg",
+        "photoLocalPath": "senators/md-chris-van-hollen.jpg"
+      },
+      {
+        "name": "Angela D. Alsobrooks",
+        "party": "D",
+        "website": "https://alsobrooks.senate.gov/",
+        "contactUrl": "https://alsobrooks.senate.gov/",
+        "hometown": "Upper Marlboro",
+        "officeAddress": "374 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4524",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#AlsobrooksMD",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/A000382",
+        "bioguideId": "A000382",
+        "photoUrl": "https://www.senate.gov/states/graphics/119/alsobrooks-angela-d.jpg",
+        "photoLocalPath": "senators/md-angela-d-alsobrooks.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Massachusetts",
+    "stateId": "MA",
+    "sourceUrl": "https://www.senate.gov/states/MA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:23.783Z",
+    "senators": [
+      {
+        "name": "Elizabeth Warren",
+        "party": "D",
+        "website": "https://www.warren.senate.gov/",
+        "contactUrl": "https://www.warren.senate.gov/?p=email_senator",
+        "hometown": "Cambridge",
+        "officeAddress": "311 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4543",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WarrenMA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000817",
+        "bioguideId": "W000817",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/W/W000817.jpg",
+        "photoLocalPath": "senators/ma-elizabeth-warren.jpg"
+      },
+      {
+        "name": "Edward J. Markey",
+        "party": "D",
+        "website": "https://www.markey.senate.gov/",
+        "contactUrl": "https://www.markey.senate.gov/contact",
+        "hometown": "Malden",
+        "officeAddress": "255 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2742",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MarkeyMA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M000133",
+        "bioguideId": "M000133",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M000133.jpg",
+        "photoLocalPath": "senators/ma-edward-j-markey.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Michigan",
+    "stateId": "MI",
+    "sourceUrl": "https://www.senate.gov/states/MI/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:25.145Z",
+    "senators": [
+      {
+        "name": "Gary C. Peters",
+        "party": "D",
+        "website": "https://www.peters.senate.gov/",
+        "contactUrl": "https://www.peters.senate.gov/contact/email-gary",
+        "hometown": "Bloomfield Hills",
+        "officeAddress": "724 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6221",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#PetersMI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/P000595",
+        "bioguideId": "P000595",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/P/P000595.jpg",
+        "photoLocalPath": "senators/mi-gary-c-peters.jpg"
+      },
+      {
+        "name": "Elissa Slotkin",
+        "party": "D",
+        "website": "https://www.slotkin.senate.gov/",
+        "contactUrl": "https://www.slotkin.senate.gov/",
+        "hometown": "Holly",
+        "officeAddress": "291 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4822",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SlotkinMI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001208",
+        "bioguideId": "S001208",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001208.jpg",
+        "photoLocalPath": "senators/mi-elissa-slotkin.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Minnesota",
+    "stateId": "MN",
+    "sourceUrl": "https://www.senate.gov/states/MN/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:25.782Z",
+    "senators": [
+      {
+        "name": "Amy Klobuchar",
+        "party": "D",
+        "website": "https://www.klobuchar.senate.gov/",
+        "contactUrl": "https://www.klobuchar.senate.gov/public/index.cfm/contact",
+        "hometown": "Minneapolis",
+        "officeAddress": "425 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3244",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#KlobucharMN",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/K000367",
+        "bioguideId": "K000367",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/K/K000367.jpg",
+        "photoLocalPath": "senators/mn-amy-klobuchar.jpg"
+      },
+      {
+        "name": "Tina Smith",
+        "party": "D",
+        "website": "https://www.smith.senate.gov/",
+        "contactUrl": "https://www.smith.senate.gov/share-your-opinion/",
+        "hometown": "Minneapolis",
+        "officeAddress": "720 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5641",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SmithMN",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001203",
+        "bioguideId": "S001203",
+        "photoUrl": "https://www.senate.gov/states/MN/graphics/Smith_Tina_state.jpg",
+        "photoLocalPath": "senators/mn-tina-smith.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Mississippi",
+    "stateId": "MS",
+    "sourceUrl": "https://www.senate.gov/states/MS/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:26.476Z",
+    "senators": [
+      {
+        "name": "Roger F. Wicker",
+        "party": "R",
+        "website": "https://www.wicker.senate.gov/",
+        "contactUrl": "https://www.wicker.senate.gov/public/index.cfm/contact",
+        "hometown": "Tupelo",
+        "officeAddress": "425 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6253",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WickerMS",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000437",
+        "bioguideId": "W000437",
+        "photoUrl": "https://www.senate.gov/states/MS/graphics/WickerRoger.jpg",
+        "photoLocalPath": "senators/ms-roger-f-wicker.jpg"
+      },
+      {
+        "name": "Cindy Hyde-Smith",
+        "party": "R",
+        "website": "https://www.hydesmith.senate.gov/",
+        "contactUrl": "https://www.hydesmith.senate.gov/contact-senator",
+        "hometown": "Brookhaven",
+        "officeAddress": "528 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5054",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#Hyde-SmithMS",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H001079",
+        "bioguideId": "H001079",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H001079.jpg",
+        "photoLocalPath": "senators/ms-cindy-hyde-smith.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Missouri",
+    "stateId": "MO",
+    "sourceUrl": "https://www.senate.gov/states/MO/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:26.997Z",
+    "senators": [
+      {
+        "name": "Josh Hawley",
+        "party": "R",
+        "website": "https://www.hawley.senate.gov/",
+        "contactUrl": "https://www.hawley.senate.gov/contact-senator-hawley",
+        "hometown": "Springfield",
+        "officeAddress": "381 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6154",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HawleyMO",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H001089",
+        "bioguideId": "H001089",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H001089.jpg",
+        "photoLocalPath": "senators/mo-josh-hawley.jpg"
+      },
+      {
+        "name": "Eric Schmitt",
+        "party": "R",
+        "website": "https://www.schmitt.senate.gov/",
+        "contactUrl": "https://www.schmitt.senate.gov/contact/",
+        "hometown": "Glendale",
+        "officeAddress": "404 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5721",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SchmittMO",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001227",
+        "bioguideId": "S001227",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001227.jpg",
+        "photoLocalPath": "senators/mo-eric-schmitt.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Montana",
+    "stateId": "MT",
+    "sourceUrl": "https://www.senate.gov/states/MT/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:27.856Z",
+    "senators": [
+      {
+        "name": "Steve Daines",
+        "party": "R",
+        "website": "https://www.daines.senate.gov/",
+        "contactUrl": "https://www.daines.senate.gov/connect/email-steve",
+        "hometown": "Belgrade",
+        "officeAddress": "320 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2651",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#DainesMT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/D000618",
+        "bioguideId": "D000618",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/D/D000618.jpg",
+        "photoLocalPath": "senators/mt-steve-daines.jpg"
+      },
+      {
+        "name": "Tim Sheehy",
+        "party": "R",
+        "website": "https://www.sheehy.senate.gov/",
+        "contactUrl": "https://www.sheehy.senate.gov/",
+        "hometown": "Bozeman",
+        "officeAddress": "124 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2644",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SheehyMT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001232",
+        "bioguideId": "S001232",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001232.jpg",
+        "photoLocalPath": "senators/mt-tim-sheehy.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Nebraska",
+    "stateId": "NE",
+    "sourceUrl": "https://www.senate.gov/states/NE/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:28.420Z",
+    "senators": [
+      {
+        "name": "Deb Fischer",
+        "party": "R",
+        "website": "https://www.fischer.senate.gov/",
+        "contactUrl": "https://www.fischer.senate.gov/public/index.cfm/contact",
+        "hometown": "Lincoln",
+        "officeAddress": "448 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6551",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#FischerNE",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/F000463",
+        "bioguideId": "F000463",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/F/F000463.jpg",
+        "photoLocalPath": "senators/ne-deb-fischer.jpg"
+      },
+      {
+        "name": "Pete Ricketts",
+        "party": "R",
+        "website": "https://www.ricketts.senate.gov/",
+        "contactUrl": "https://www.ricketts.senate.gov/contact/",
+        "hometown": "Omaha",
+        "officeAddress": "139 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4224",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#RickettsNE",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/R000618",
+        "bioguideId": "R000618",
+        "photoUrl": "https://www.senate.gov/states/graphics/118/ricketts.jpg",
+        "photoLocalPath": "senators/ne-pete-ricketts.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Nevada",
+    "stateId": "NV",
+    "sourceUrl": "https://www.senate.gov/states/NV/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:29.095Z",
+    "senators": [
+      {
+        "name": "Catherine Cortez Masto",
+        "party": "D",
+        "website": "https://www.cortezmasto.senate.gov/",
+        "contactUrl": "https://www.cortezmasto.senate.gov/contact",
+        "hometown": "Las Vegas",
+        "officeAddress": "309 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3542",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#Cortez%20MastoNV",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001113",
+        "bioguideId": "C001113",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001113.jpg",
+        "photoLocalPath": "senators/nv-catherine-cortez-masto.jpg"
+      },
+      {
+        "name": "Jacky Rosen",
+        "party": "D",
+        "website": "https://www.rosen.senate.gov/",
+        "contactUrl": "https://www.rosen.senate.gov/contact_jacky",
+        "hometown": "Henderson",
+        "officeAddress": "713 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6244",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#RosenNV",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/R000608",
+        "bioguideId": "R000608",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/R/R000608.jpg",
+        "photoLocalPath": "senators/nv-jacky-rosen.jpg"
+      }
+    ]
+  },
+  {
+    "state": "New Hampshire",
+    "stateId": "NH",
+    "sourceUrl": "https://www.senate.gov/states/NH/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:30.011Z",
+    "senators": [
+      {
+        "name": "Jeanne Shaheen",
+        "party": "D",
+        "website": "https://www.shaheen.senate.gov/",
+        "contactUrl": "https://www.shaheen.senate.gov/contact/contact-jeanne",
+        "hometown": "Madbury",
+        "officeAddress": "506 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2841",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#ShaheenNH",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001181",
+        "bioguideId": "S001181",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S001181.jpg",
+        "photoLocalPath": "senators/nh-jeanne-shaheen.jpg"
+      },
+      {
+        "name": "Margaret Wood Hassan",
+        "party": "D",
+        "website": "https://www.hassan.senate.gov/",
+        "contactUrl": "https://www.hassan.senate.gov/content/contact-senator",
+        "hometown": "Newfields",
+        "officeAddress": "324 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3324",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HassanNH",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H001076",
+        "bioguideId": "H001076",
+        "photoUrl": "https://www.senate.gov/states/graphics/115/Hassan_Maggie.jpg",
+        "photoLocalPath": "senators/nh-margaret-wood-hassan.jpg"
+      }
+    ]
+  },
+  {
+    "state": "New Jersey",
+    "stateId": "NJ",
+    "sourceUrl": "https://www.senate.gov/states/NJ/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:31.004Z",
+    "senators": [
+      {
+        "name": "Cory A. Booker",
+        "party": "D",
+        "website": "https://www.booker.senate.gov/",
+        "contactUrl": "https://www.booker.senate.gov/?p=contact",
+        "hometown": "Newark",
+        "officeAddress": "306 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3224",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BookerNJ",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001288",
+        "bioguideId": "B001288",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001288.jpg",
+        "photoLocalPath": "senators/nj-cory-a-booker.jpg"
+      },
+      {
+        "name": "Andy Kim",
+        "party": "D",
+        "website": "https://www.kim.senate.gov/",
+        "contactUrl": "https://www.kim.senate.gov/",
+        "hometown": "Moorestown",
+        "officeAddress": "520 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4744",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#KimNJ",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/K000394",
+        "bioguideId": "K000394",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/K/K000394.jpg",
+        "photoLocalPath": "senators/nj-andy-kim.jpg"
+      }
+    ]
+  },
+  {
+    "state": "New Mexico",
+    "stateId": "NM",
+    "sourceUrl": "https://www.senate.gov/states/NM/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:31.643Z",
+    "senators": [
+      {
+        "name": "Martin Heinrich",
+        "party": "D",
+        "website": "https://www.heinrich.senate.gov/",
+        "contactUrl": "https://www.heinrich.senate.gov/contact",
+        "hometown": "Albuquerque",
+        "officeAddress": "709 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5521",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HeinrichNM",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H001046",
+        "bioguideId": "H001046",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H001046.jpg",
+        "photoLocalPath": "senators/nm-martin-heinrich.jpg"
+      },
+      {
+        "name": "Ben Ray Luján",
+        "party": "D",
+        "website": "https://www.lujan.senate.gov/",
+        "contactUrl": "https://www.lujan.senate.gov/contact/",
+        "hometown": "Nambe",
+        "officeAddress": "498 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6621",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#Luj%C3%A1nNM",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/L000570",
+        "bioguideId": "L000570",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/L/L000570.jpg",
+        "photoLocalPath": "senators/nm-ben-ray-luja-n.jpg"
+      }
+    ]
+  },
+  {
+    "state": "New York",
+    "stateId": "NY",
+    "sourceUrl": "https://www.senate.gov/states/NY/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:32.438Z",
+    "senators": [
+      {
+        "name": "Charles E. Schumer",
+        "party": "D",
+        "website": "https://www.schumer.senate.gov/",
+        "contactUrl": "https://www.schumer.senate.gov/contact/email-chuck",
+        "hometown": "Brooklyn",
+        "officeAddress": "322 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6542",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SchumerNY",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S000148",
+        "bioguideId": "S000148",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S000148.jpg",
+        "photoLocalPath": "senators/ny-charles-e-schumer.jpg"
+      },
+      {
+        "name": "Kirsten E. Gillibrand",
+        "party": "D",
+        "website": "https://www.gillibrand.senate.gov/",
+        "contactUrl": "https://www.gillibrand.senate.gov/contact/email-me",
+        "hometown": "Albany",
+        "officeAddress": "478 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4451",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#GillibrandNY",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/G000555",
+        "bioguideId": "G000555",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/G/G000555.jpg",
+        "photoLocalPath": "senators/ny-kirsten-e-gillibrand.jpg"
+      }
+    ]
+  },
+  {
+    "state": "North Carolina",
+    "stateId": "NC",
+    "sourceUrl": "https://www.senate.gov/states/NC/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:33.137Z",
+    "senators": [
+      {
+        "name": "Thom Tillis",
+        "party": "R",
+        "website": "https://www.tillis.senate.gov/",
+        "contactUrl": "https://www.tillis.senate.gov/public/index.cfm/email-me",
+        "hometown": "Huntersville",
+        "officeAddress": "113 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6342",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#TillisNC",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/T000476",
+        "bioguideId": "T000476",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/T/T000476.jpg",
+        "photoLocalPath": "senators/nc-thom-tillis.jpg"
+      },
+      {
+        "name": "Ted Budd",
+        "party": "R",
+        "website": "https://www.budd.senate.gov/",
+        "contactUrl": "https://www.budd.senate.gov/contact/",
+        "hometown": "Advance",
+        "officeAddress": "354 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3154",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BuddNC",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001305",
+        "bioguideId": "B001305",
+        "photoUrl": "https://www.senate.gov/states/graphics/118/budd.png",
+        "photoLocalPath": "senators/nc-ted-budd.png"
+      }
+    ]
+  },
+  {
+    "state": "North Dakota",
+    "stateId": "ND",
+    "sourceUrl": "https://www.senate.gov/states/ND/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:33.692Z",
+    "senators": [
+      {
+        "name": "John Hoeven",
+        "party": "R",
+        "website": "https://www.hoeven.senate.gov/",
+        "contactUrl": "https://www.hoeven.senate.gov/contact/contact-the-senator",
+        "hometown": "Bismarck",
+        "officeAddress": "338 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2551",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HoevenND",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H001061",
+        "bioguideId": "H001061",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H001061.jpg",
+        "photoLocalPath": "senators/nd-john-hoeven.jpg"
+      },
+      {
+        "name": "Kevin Cramer",
+        "party": "R",
+        "website": "https://www.cramer.senate.gov/",
+        "contactUrl": "https://www.cramer.senate.gov/contact/contact-kevin",
+        "hometown": "Bismarck",
+        "officeAddress": "313 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2043",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CramerND",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001096",
+        "bioguideId": "C001096",
+        "photoUrl": "https://www.senate.gov/states/graphics/116/CramerKevin.jpg",
+        "photoLocalPath": "senators/nd-kevin-cramer.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Ohio",
+    "stateId": "OH",
+    "sourceUrl": "https://www.senate.gov/states/OH/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:34.708Z",
+    "senators": [
+      {
+        "name": "Bernie Moreno",
+        "party": "R",
+        "website": "https://www.moreno.senate.gov/",
+        "contactUrl": null,
+        "hometown": null,
+        "officeAddress": null,
+        "phone": null,
+        "committeeUrl": null,
+        "bioguideUrl": null,
+        "bioguideId": null,
+        "photoUrl": "https://www.senate.gov/states/graphics/119/moreno-bernie.jpg",
+        "photoLocalPath": "senators/oh-bernie-moreno.jpg"
+      },
+      {
+        "name": "Jon Husted",
+        "party": "R",
+        "website": "https://www.husted.senate.gov/",
+        "contactUrl": null,
+        "hometown": null,
+        "officeAddress": null,
+        "phone": null,
+        "committeeUrl": null,
+        "bioguideUrl": null,
+        "bioguideId": null,
+        "photoUrl": "https://www.senate.gov/states/graphics/119/husted-jon.jpg",
+        "photoLocalPath": "senators/oh-jon-husted.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Oklahoma",
+    "stateId": "OK",
+    "sourceUrl": "https://www.senate.gov/states/OK/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:35.297Z",
+    "senators": [
+      {
+        "name": "James Lankford",
+        "party": "R",
+        "website": "https://www.lankford.senate.gov/",
+        "contactUrl": "https://www.lankford.senate.gov/contact/email",
+        "hometown": "Oklahoma City",
+        "officeAddress": "731 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5754",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#LankfordOK",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/L000575",
+        "bioguideId": "L000575",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/L/L000575.jpg",
+        "photoLocalPath": "senators/ok-james-lankford.jpg"
+      },
+      {
+        "name": "Markwayne Mullin",
+        "party": "R",
+        "website": "https://www.mullin.senate.gov/",
+        "contactUrl": "https://www.mullin.senate.gov/contact/",
+        "hometown": "Westville",
+        "officeAddress": "330 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4721",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MullinOK",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001190",
+        "bioguideId": "M001190",
+        "photoUrl": "https://www.senate.gov/states/graphics/118/mullin.png",
+        "photoLocalPath": "senators/ok-markwayne-mullin.png"
+      }
+    ]
+  },
+  {
+    "state": "Oregon",
+    "stateId": "OR",
+    "sourceUrl": "https://www.senate.gov/states/OR/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:36.188Z",
+    "senators": [
+      {
+        "name": "Ron Wyden",
+        "party": "D",
+        "website": "https://www.wyden.senate.gov/",
+        "contactUrl": "https://www.wyden.senate.gov/contact/",
+        "hometown": "Portland",
+        "officeAddress": "221 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5244",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WydenOR",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000779",
+        "bioguideId": "W000779",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/W/W000779.jpg",
+        "photoLocalPath": "senators/or-ron-wyden.jpg"
+      },
+      {
+        "name": "Jeff Merkley",
+        "party": "D",
+        "website": "https://www.merkley.senate.gov/",
+        "contactUrl": "https://www.merkley.senate.gov/contact/",
+        "hometown": "Portland",
+        "officeAddress": "531 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3753",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MerkleyOR",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001176",
+        "bioguideId": "M001176",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M001176.jpg",
+        "photoLocalPath": "senators/or-jeff-merkley.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Pennsylvania",
+    "stateId": "PA",
+    "sourceUrl": "https://www.senate.gov/states/PA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:36.775Z",
+    "senators": [
+      {
+        "name": "John Fetterman",
+        "party": "D",
+        "website": "https://www.fetterman.senate.gov/",
+        "contactUrl": "https://www.fetterman.senate.gov/contact/",
+        "hometown": "Braddock",
+        "officeAddress": "142 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4254",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#FettermanPA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/F000479",
+        "bioguideId": "F000479",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/F/F000479.jpg",
+        "photoLocalPath": "senators/pa-john-fetterman.jpg"
+      },
+      {
+        "name": "David McCormick",
+        "party": "R",
+        "website": "https://mccormick.senate.gov/",
+        "contactUrl": "https://mccormick.senate.gov/",
+        "hometown": "Pittsburgh",
+        "officeAddress": "702 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6324",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#McCormickPA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001243",
+        "bioguideId": "M001243",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M001243.jpg",
+        "photoLocalPath": "senators/pa-david-mccormick.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Rhode Island",
+    "stateId": "RI",
+    "sourceUrl": "https://www.senate.gov/states/RI/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:37.615Z",
+    "senators": [
+      {
+        "name": "Jack Reed",
+        "party": "D",
+        "website": "https://www.reed.senate.gov/",
+        "contactUrl": "https://www.reed.senate.gov/contact/",
+        "hometown": "Jamestown",
+        "officeAddress": "728 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4642",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#ReedRI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/R000122",
+        "bioguideId": "R000122",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/R/R000122.jpg",
+        "photoLocalPath": "senators/ri-jack-reed.jpg"
+      },
+      {
+        "name": "Sheldon Whitehouse",
+        "party": "D",
+        "website": "https://www.whitehouse.senate.gov/",
+        "contactUrl": "https://www.whitehouse.senate.gov/contact/email-sheldon",
+        "hometown": "Newport",
+        "officeAddress": "530 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2921",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WhitehouseRI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000802",
+        "bioguideId": "W000802",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/W/W000802.jpg",
+        "photoLocalPath": "senators/ri-sheldon-whitehouse.jpg"
+      }
+    ]
+  },
+  {
+    "state": "South Carolina",
+    "stateId": "SC",
+    "sourceUrl": "https://www.senate.gov/states/SC/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:38.315Z",
+    "senators": [
+      {
+        "name": "Lindsey Graham",
+        "party": "R",
+        "website": "https://www.lgraham.senate.gov/",
+        "contactUrl": "https://www.lgraham.senate.gov/public/index.cfm/e-mail-senator-graham",
+        "hometown": "Seneca",
+        "officeAddress": "211 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5972",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#GrahamSC",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/G000359",
+        "bioguideId": "G000359",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/G/G000359.jpg",
+        "photoLocalPath": "senators/sc-lindsey-graham.jpg"
+      },
+      {
+        "name": "Tim Scott",
+        "party": "R",
+        "website": "https://www.scott.senate.gov/",
+        "contactUrl": "https://www.scott.senate.gov/contact/email-me",
+        "hometown": "Charleston",
+        "officeAddress": "104 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6121",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#ScottSC",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S001184",
+        "bioguideId": "S001184",
+        "photoUrl": "https://www.senate.gov/states/graphics/113/Scott_Tim.jpg",
+        "photoLocalPath": "senators/sc-tim-scott.jpg"
+      }
+    ]
+  },
+  {
+    "state": "South Dakota",
+    "stateId": "SD",
+    "sourceUrl": "https://www.senate.gov/states/SD/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:38.896Z",
+    "senators": [
+      {
+        "name": "John Thune",
+        "party": "R",
+        "website": "https://www.thune.senate.gov/",
+        "contactUrl": "https://www.thune.senate.gov/public/index.cfm/contact",
+        "hometown": "Sioux Falls",
+        "officeAddress": "511 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2321",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#ThuneSD",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/T000250",
+        "bioguideId": "T000250",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/T/T000250.jpg",
+        "photoLocalPath": "senators/sd-john-thune.jpg"
+      },
+      {
+        "name": "Mike Rounds",
+        "party": "R",
+        "website": "https://www.rounds.senate.gov/",
+        "contactUrl": "https://www.rounds.senate.gov/contact/email-mike",
+        "hometown": "Fort Pierre",
+        "officeAddress": "716 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5842",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#RoundsSD",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/R000605",
+        "bioguideId": "R000605",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/R/R000605.jpg",
+        "photoLocalPath": "senators/sd-mike-rounds.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Tennessee",
+    "stateId": "TN",
+    "sourceUrl": "https://www.senate.gov/states/TN/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:39.669Z",
+    "senators": [
+      {
+        "name": "Marsha Blackburn",
+        "party": "R",
+        "website": "https://www.blackburn.senate.gov/",
+        "contactUrl": "https://www.blackburn.senate.gov/email-me",
+        "hometown": "Brentwood",
+        "officeAddress": "357 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3344",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BlackburnTN",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001243",
+        "bioguideId": "B001243",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001243.jpg",
+        "photoLocalPath": "senators/tn-marsha-blackburn.jpg"
+      },
+      {
+        "name": "Bill Hagerty",
+        "party": "R",
+        "website": "https://www.hagerty.senate.gov/",
+        "contactUrl": "https://www.hagerty.senate.gov/email-me/",
+        "hometown": "Nashville",
+        "officeAddress": "251 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4944",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#HagertyTN",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/H000601",
+        "bioguideId": "H000601",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/H/H000601.jpg",
+        "photoLocalPath": "senators/tn-bill-hagerty.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Texas",
+    "stateId": "TX",
+    "sourceUrl": "https://www.senate.gov/states/TX/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:40.502Z",
+    "senators": [
+      {
+        "name": "John Cornyn",
+        "party": "R",
+        "website": "https://www.cornyn.senate.gov/",
+        "contactUrl": "https://www.cornyn.senate.gov/contact",
+        "hometown": "Austin",
+        "officeAddress": "517 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2934",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CornynTX",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001056",
+        "bioguideId": "C001056",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001056.jpg",
+        "photoLocalPath": "senators/tx-john-cornyn.jpg"
+      },
+      {
+        "name": "Ted Cruz",
+        "party": "R",
+        "website": "https://www.cruz.senate.gov/",
+        "contactUrl": "https://www.cruz.senate.gov/?p=form&id=16",
+        "hometown": "Houston",
+        "officeAddress": "167 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5922",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CruzTX",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001098",
+        "bioguideId": "C001098",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001098.jpg",
+        "photoLocalPath": "senators/tx-ted-cruz.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Utah",
+    "stateId": "UT",
+    "sourceUrl": "https://www.senate.gov/states/UT/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:41.175Z",
+    "senators": [
+      {
+        "name": "Mike Lee",
+        "party": "R",
+        "website": "https://www.lee.senate.gov/",
+        "contactUrl": "https://www.lee.senate.gov/public/index.cfm/contact",
+        "hometown": "Provo",
+        "officeAddress": "363 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5444",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#LeeUT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/L000577",
+        "bioguideId": "L000577",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/L/L000577.jpg",
+        "photoLocalPath": "senators/ut-mike-lee.jpg"
+      },
+      {
+        "name": "John R. Curtis",
+        "party": "R",
+        "website": "https://www.curtis.senate.gov/",
+        "contactUrl": "https://www.curtis.senate.gov/",
+        "hometown": "Provo",
+        "officeAddress": "502 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5251",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CurtisUT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001114",
+        "bioguideId": "C001114",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001114.jpg",
+        "photoLocalPath": "senators/ut-john-r-curtis.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Vermont",
+    "stateId": "VT",
+    "sourceUrl": "https://www.senate.gov/states/VT/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:42.098Z",
+    "senators": [
+      {
+        "name": "Bernard Sanders",
+        "party": "I",
+        "website": "https://www.sanders.senate.gov/",
+        "contactUrl": "https://www.sanders.senate.gov/contact/",
+        "hometown": "Burlington",
+        "officeAddress": "332 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5141",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#SandersVT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/S000033",
+        "bioguideId": "S000033",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/S/S000033.jpg",
+        "photoLocalPath": "senators/vt-bernard-sanders.jpg"
+      },
+      {
+        "name": "Peter Welch",
+        "party": "D",
+        "website": "https://www.welch.senate.gov/",
+        "contactUrl": "https://www.welch.senate.gov/email-peter/",
+        "hometown": "Norwich",
+        "officeAddress": "115 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4242",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WelchVT",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000800",
+        "bioguideId": "W000800",
+        "photoUrl": "https://www.senate.gov/states/graphics/118/welch.png",
+        "photoLocalPath": "senators/vt-peter-welch.png"
+      }
+    ]
+  },
+  {
+    "state": "Virginia",
+    "stateId": "VA",
+    "sourceUrl": "https://www.senate.gov/states/VA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:42.732Z",
+    "senators": [
+      {
+        "name": "Mark R. Warner",
+        "party": "D",
+        "website": "https://www.warner.senate.gov/",
+        "contactUrl": "https://www.warner.senate.gov/public/index.cfm?p=Contact",
+        "hometown": "Alexandria",
+        "officeAddress": "703 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2023",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#WarnerVA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/W000805",
+        "bioguideId": "W000805",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/W/W000805.jpg",
+        "photoLocalPath": "senators/va-mark-r-warner.jpg"
+      },
+      {
+        "name": "Tim Kaine",
+        "party": "D",
+        "website": "https://www.kaine.senate.gov/",
+        "contactUrl": "https://www.kaine.senate.gov/contact",
+        "hometown": "Richmond",
+        "officeAddress": "231 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-4024",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#KaineVA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/K000384",
+        "bioguideId": "K000384",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/K/K000384.jpg",
+        "photoLocalPath": "senators/va-tim-kaine.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Washington",
+    "stateId": "WA",
+    "sourceUrl": "https://www.senate.gov/states/WA/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:43.692Z",
+    "senators": [
+      {
+        "name": "Patty Murray",
+        "party": "D",
+        "website": "https://www.murray.senate.gov/",
+        "contactUrl": "https://www.murray.senate.gov/write-to-patty/",
+        "hometown": "Seattle",
+        "officeAddress": "154 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-2621",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#MurrayWA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/M001111",
+        "bioguideId": "M001111",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/M/M001111.jpg",
+        "photoLocalPath": "senators/wa-patty-murray.jpg"
+      },
+      {
+        "name": "Maria Cantwell",
+        "party": "D",
+        "website": "https://www.cantwell.senate.gov/",
+        "contactUrl": "https://www.cantwell.senate.gov/public/index.cfm/email-maria",
+        "hometown": "Edmonds",
+        "officeAddress": "511 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3441",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CantwellWA",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C000127",
+        "bioguideId": "C000127",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C000127.jpg",
+        "photoLocalPath": "senators/wa-maria-cantwell.jpg"
+      }
+    ]
+  },
+  {
+    "state": "West Virginia",
+    "stateId": "WV",
+    "sourceUrl": "https://www.senate.gov/states/WV/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:44.294Z",
+    "senators": [
+      {
+        "name": "Shelley Moore Capito",
+        "party": "R",
+        "website": "https://www.capito.senate.gov/",
+        "contactUrl": "https://www.capito.senate.gov/contact/contact-shelley",
+        "hometown": "Charleston",
+        "officeAddress": "170 Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6472",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#CapitoWV",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/C001047",
+        "bioguideId": "C001047",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/C/C001047.jpg",
+        "photoLocalPath": "senators/wv-shelley-moore-capito.jpg"
+      },
+      {
+        "name": "James C. Justice",
+        "party": "R",
+        "website": "https://www.justice.senate.gov/",
+        "contactUrl": "https://www.justice.senate.gov/",
+        "hometown": "Lewisburg",
+        "officeAddress": "G12 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3954",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#JusticeWV",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/J000312",
+        "bioguideId": "J000312",
+        "photoUrl": "https://www.senate.gov/states/graphics/119/justice-jim-wv.jpg",
+        "photoLocalPath": "senators/wv-james-c-justice.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Wisconsin",
+    "stateId": "WI",
+    "sourceUrl": "https://www.senate.gov/states/WI/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:44.891Z",
+    "senators": [
+      {
+        "name": "Ron Johnson",
+        "party": "R",
+        "website": "https://www.ronjohnson.senate.gov/",
+        "contactUrl": "https://www.ronjohnson.senate.gov/public/index.cfm/email-the-senator",
+        "hometown": "Oshkosh",
+        "officeAddress": "328 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5323",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#JohnsonWI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/J000293",
+        "bioguideId": "J000293",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/J/J000293.jpg",
+        "photoLocalPath": "senators/wi-ron-johnson.jpg"
+      },
+      {
+        "name": "Tammy Baldwin",
+        "party": "D",
+        "website": "https://www.baldwin.senate.gov/",
+        "contactUrl": "https://www.baldwin.senate.gov/feedback",
+        "hometown": "Madison",
+        "officeAddress": "141 Hart Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-5653",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BaldwinWI",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001230",
+        "bioguideId": "B001230",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001230.jpg",
+        "photoLocalPath": "senators/wi-tammy-baldwin.jpg"
+      }
+    ]
+  },
+  {
+    "state": "Wyoming",
+    "stateId": "WY",
+    "sourceUrl": "https://www.senate.gov/states/WY/intro.htm",
+    "scrapedAt": "2025-12-27T19:03:45.636Z",
+    "senators": [
+      {
+        "name": "John Barrasso",
+        "party": "R",
+        "website": "https://www.barrasso.senate.gov/",
+        "contactUrl": "https://www.barrasso.senate.gov/public/index.cfm/contact-form",
+        "hometown": "Casper",
+        "officeAddress": "307 Dirksen Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-6441",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#BarrassoWY",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/B001261",
+        "bioguideId": "B001261",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/B/B001261.jpg",
+        "photoLocalPath": "senators/wy-john-barrasso.jpg"
+      },
+      {
+        "name": "Cynthia M. Lummis",
+        "party": "R",
+        "website": "https://www.lummis.senate.gov/",
+        "contactUrl": "https://www.lummis.senate.gov/contact/contact-form/",
+        "hometown": "Cheyenne",
+        "officeAddress": "127A Russell Senate Office Building, Washington DC 20510",
+        "phone": "(202) 224-3424",
+        "committeeUrl": "https://www.senate.gov/general/committee_assignments/assignments.htm#LummisWY",
+        "bioguideUrl": "https://bioguide.congress.gov/search/bio/L000571",
+        "bioguideId": "L000571",
+        "photoUrl": "https://bioguide.congress.gov/bioguide/photo/L/L000571.jpg",
+        "photoLocalPath": "senators/wy-cynthia-m-lummis.jpg"
+      }
+    ]
+  }
+]

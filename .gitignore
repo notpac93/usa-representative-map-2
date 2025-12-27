@@ -1,3 +1,14 @@
+# Flutter/Dart
+build/
+.dart_tool/
+.packages
+.flutter-plugins*
+*.iml
+
+# Data/Raw (large shapes)
+data/raw/
+tmp/
+
 # Logs
 logs
 *.log

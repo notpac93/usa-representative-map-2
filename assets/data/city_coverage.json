@@ -1,0 +1,540 @@
+{
+  "meta": {
+    "generatedAt": "2025-12-27T17:56:49.426Z",
+    "overlayPath": "data/overlays/cities.generated.ts",
+    "sourcePath": "data/raw/places/2025_Gaz_place_national.txt",
+    "minPopulation": 0,
+    "funcstatFilter": "A",
+    "overlayFeatureCount": 19472,
+    "sourceFeatureCount": 19469,
+    "coverageRatio": 0.9992295444039242,
+    "topMissing": [
+      {
+        "id": "0518880",
+        "name": "Diamondhead city",
+        "stateAbbr": "AR",
+        "stateName": "Arkansas",
+        "population": null
+      },
+      {
+        "id": "0649582",
+        "name": "Mountain House city",
+        "stateAbbr": "CA",
+        "stateName": "California",
+        "population": null
+      },
+      {
+        "id": "0812030",
+        "name": "Carbonate town",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "population": null
+      },
+      {
+        "id": "0840550",
+        "name": "Keystone town",
+        "stateAbbr": "CO",
+        "stateName": "Colorado",
+        "population": null
+      },
+      {
+        "id": "1353706",
+        "name": "Mulberry city",
+        "stateAbbr": "GA",
+        "stateName": "Georgia",
+        "population": null
+      },
+      {
+        "id": "2172138",
+        "name": "South Park View city",
+        "stateAbbr": "KY",
+        "stateName": "Kentucky",
+        "population": null
+      },
+      {
+        "id": "2267303",
+        "name": "St. George city",
+        "stateAbbr": "LA",
+        "stateName": "Louisiana",
+        "population": null
+      },
+      {
+        "id": "2703282",
+        "name": "Baldwin city",
+        "stateAbbr": "MN",
+        "stateName": "Minnesota",
+        "population": null
+      },
+      {
+        "id": "2916462",
+        "name": "Corning town",
+        "stateAbbr": "MO",
+        "stateName": "Missouri",
+        "population": null
+      },
+      {
+        "id": "3908859",
+        "name": "Brinkhaven village",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "population": null
+      },
+      {
+        "id": "3942980",
+        "name": "Lewisville village",
+        "stateAbbr": "OH",
+        "stateName": "Ohio",
+        "population": null
+      },
+      {
+        "id": "4049860",
+        "name": "Mule Barn town",
+        "stateAbbr": "OK",
+        "stateName": "Oklahoma",
+        "population": null
+      },
+      {
+        "id": "4251794",
+        "name": "Mount Lebanon municipality",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "population": null
+      },
+      {
+        "id": "4259040",
+        "name": "Penn Hills municipality",
+        "stateAbbr": "PA",
+        "stateName": "Pennsylvania",
+        "population": null
+      },
+      {
+        "id": "5531375",
+        "name": "Greenleaf village",
+        "stateAbbr": "WI",
+        "stateName": "Wisconsin",
+        "population": null
+      }
+    ]
+  },
+  "coverage": {
+    "CO": {
+      "state": "CO",
+      "stateName": "Colorado",
+      "source": 272,
+      "covered": 270,
+      "coverage": 0.9926470588235294,
+      "missingExamples": [
+        "Carbonate town",
+        "Keystone town"
+      ]
+    },
+    "LA": {
+      "state": "LA",
+      "stateName": "Louisiana",
+      "source": 302,
+      "covered": 301,
+      "coverage": 0.9966887417218543,
+      "missingExamples": [
+        "St. George city"
+      ]
+    },
+    "KY": {
+      "state": "KY",
+      "stateName": "Kentucky",
+      "source": 417,
+      "covered": 416,
+      "coverage": 0.9976019184652278,
+      "missingExamples": [
+        "South Park View city"
+      ]
+    },
+    "OH": {
+      "state": "OH",
+      "stateName": "Ohio",
+      "source": 924,
+      "covered": 922,
+      "coverage": 0.9978354978354979,
+      "missingExamples": [
+        "Brinkhaven village",
+        "Lewisville village"
+      ]
+    },
+    "CA": {
+      "state": "CA",
+      "stateName": "California",
+      "source": 483,
+      "covered": 482,
+      "coverage": 0.9979296066252588,
+      "missingExamples": [
+        "Mountain House city"
+      ]
+    },
+    "AR": {
+      "state": "AR",
+      "stateName": "Arkansas",
+      "source": 501,
+      "covered": 500,
+      "coverage": 0.998003992015968,
+      "missingExamples": [
+        "Diamondhead city"
+      ]
+    },
+    "PA": {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "source": 1014,
+      "covered": 1012,
+      "coverage": 0.9980276134122288,
+      "missingExamples": [
+        "Mount Lebanon municipality",
+        "Penn Hills municipality"
+      ]
+    },
+    "GA": {
+      "state": "GA",
+      "stateName": "Georgia",
+      "source": 536,
+      "covered": 535,
+      "coverage": 0.9981343283582089,
+      "missingExamples": [
+        "Mulberry city"
+      ]
+    },
+    "OK": {
+      "state": "OK",
+      "stateName": "Oklahoma",
+      "source": 591,
+      "covered": 590,
+      "coverage": 0.9983079526226735,
+      "missingExamples": [
+        "Mule Barn town"
+      ]
+    },
+    "WI": {
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "source": 608,
+      "covered": 607,
+      "coverage": 0.9983552631578947,
+      "missingExamples": [
+        "Greenleaf village"
+      ]
+    },
+    "MN": {
+      "state": "MN",
+      "stateName": "Minnesota",
+      "source": 856,
+      "covered": 855,
+      "coverage": 0.9988317757009346,
+      "missingExamples": [
+        "Baldwin city"
+      ]
+    },
+    "MO": {
+      "state": "MO",
+      "stateName": "Missouri",
+      "source": 936,
+      "covered": 935,
+      "coverage": 0.9989316239316239,
+      "missingExamples": [
+        "Corning town"
+      ]
+    },
+    "AL": {
+      "state": "AL",
+      "stateName": "Alabama",
+      "source": 463,
+      "covered": 463,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "AK": {
+      "state": "AK",
+      "stateName": "Alaska",
+      "source": 149,
+      "covered": 149,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "AZ": {
+      "state": "AZ",
+      "stateName": "Arizona",
+      "source": 91,
+      "covered": 91,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "CT": {
+      "state": "CT",
+      "stateName": "Connecticut",
+      "source": 29,
+      "covered": 29,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "DE": {
+      "state": "DE",
+      "stateName": "Delaware",
+      "source": 57,
+      "covered": 57,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "FL": {
+      "state": "FL",
+      "stateName": "Florida",
+      "source": 411,
+      "covered": 411,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "ID": {
+      "state": "ID",
+      "stateName": "Idaho",
+      "source": 198,
+      "covered": 198,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "IL": {
+      "state": "IL",
+      "stateName": "Illinois",
+      "source": 1294,
+      "covered": 1294,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "IN": {
+      "state": "IN",
+      "stateName": "Indiana",
+      "source": 565,
+      "covered": 565,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "IA": {
+      "state": "IA",
+      "stateName": "Iowa",
+      "source": 939,
+      "covered": 939,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "KS": {
+      "state": "KS",
+      "stateName": "Kansas",
+      "source": 623,
+      "covered": 623,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "ME": {
+      "state": "ME",
+      "stateName": "Maine",
+      "source": 23,
+      "covered": 23,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "MD": {
+      "state": "MD",
+      "stateName": "Maryland",
+      "source": 157,
+      "covered": 157,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "MA": {
+      "state": "MA",
+      "stateName": "Massachusetts",
+      "source": 58,
+      "covered": 58,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "MI": {
+      "state": "MI",
+      "stateName": "Michigan",
+      "source": 533,
+      "covered": 533,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "MS": {
+      "state": "MS",
+      "stateName": "Mississippi",
+      "source": 299,
+      "covered": 299,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "MT": {
+      "state": "MT",
+      "stateName": "Montana",
+      "source": 126,
+      "covered": 126,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NE": {
+      "state": "NE",
+      "stateName": "Nebraska",
+      "source": 528,
+      "covered": 528,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NV": {
+      "state": "NV",
+      "stateName": "Nevada",
+      "source": 19,
+      "covered": 19,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NH": {
+      "state": "NH",
+      "stateName": "New Hampshire",
+      "source": 13,
+      "covered": 13,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NJ": {
+      "state": "NJ",
+      "stateName": "New Jersey",
+      "source": 323,
+      "covered": 323,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NM": {
+      "state": "NM",
+      "stateName": "New Mexico",
+      "source": 105,
+      "covered": 105,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NY": {
+      "state": "NY",
+      "stateName": "New York",
+      "source": 594,
+      "covered": 594,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "NC": {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "source": 549,
+      "covered": 549,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "ND": {
+      "state": "ND",
+      "stateName": "North Dakota",
+      "source": 355,
+      "covered": 355,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "OR": {
+      "state": "OR",
+      "stateName": "Oregon",
+      "source": 240,
+      "covered": 240,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "RI": {
+      "state": "RI",
+      "stateName": "Rhode Island",
+      "source": 8,
+      "covered": 8,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "SC": {
+      "state": "SC",
+      "stateName": "South Carolina",
+      "source": 271,
+      "covered": 271,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "SD": {
+      "state": "SD",
+      "stateName": "South Dakota",
+      "source": 310,
+      "covered": 310,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "TN": {
+      "state": "TN",
+      "stateName": "Tennessee",
+      "source": 344,
+      "covered": 344,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "TX": {
+      "state": "TX",
+      "stateName": "Texas",
+      "source": 1224,
+      "covered": 1224,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "UT": {
+      "state": "UT",
+      "stateName": "Utah",
+      "source": 255,
+      "covered": 255,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "VT": {
+      "state": "VT",
+      "stateName": "Vermont",
+      "source": 39,
+      "covered": 39,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "VA": {
+      "state": "VA",
+      "stateName": "Virginia",
+      "source": 227,
+      "covered": 227,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "WA": {
+      "state": "WA",
+      "stateName": "Washington",
+      "source": 281,
+      "covered": 281,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "WV": {
+      "state": "WV",
+      "stateName": "West Virginia",
+      "source": 230,
+      "covered": 230,
+      "coverage": 1,
+      "missingExamples": []
+    },
+    "WY": {
+      "state": "WY",
+      "stateName": "Wyoming",
+      "source": 99,
+      "covered": 99,
+      "coverage": 1,
+      "missingExamples": []
+    }
+  }
+}

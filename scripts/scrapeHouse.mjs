@@ -5,12 +5,12 @@ import path from 'node:path';
 const BASE_URL = 'https://www.house.gov/representatives';
 const CLERK_MEMBERS_URL = 'https://clerk.house.gov/Members/ViewMemberProfiles';
 const CLERK_BASE_URL = 'https://clerk.house.gov';
-const OUTPUT_JSON = path.resolve('data', 'houseMembers.json');
-const PHOTO_DIR = path.resolve('public', 'representatives');
+const OUTPUT_JSON = path.resolve('assets', 'data', 'houseMembers.json');
+const PHOTO_DIR = path.resolve('assets', 'img', 'representatives');
 
 const rawStatePairs = [
   ['Alabama', 'AL'], ['Alaska', 'AK'], ['Arizona', 'AZ'], ['Arkansas', 'AR'], ['California', 'CA'],
-  ['Colorado', 'CO'], ['Connecticut', 'CT'], ['Delaware', 'DE'], ['District of Columbia', 'DC'], ['Florida', 'FL'],
+  ['CO', 'Colorado'], ['CT', 'Connecticut'], ['DE', 'Delaware'], ['District of Columbia', 'DC'], ['Florida', 'FL'],
   ['Georgia', 'GA'], ['Hawaii', 'HI'], ['Idaho', 'ID'], ['Illinois', 'IL'], ['Indiana', 'IN'],
   ['Iowa', 'IA'], ['Kansas', 'KS'], ['Kentucky', 'KY'], ['Louisiana', 'LA'], ['Maine', 'ME'],
   ['Maryland', 'MD'], ['Massachusetts', 'MA'], ['Michigan', 'MI'], ['Minnesota', 'MN'], ['Mississippi', 'MS'],
@@ -93,7 +93,7 @@ const parseStateIdFromLabel = (value = '') => {
 const parseClerkProfiles = async (page) => {
   console.info('\n➡️  Loading Clerk.house.gov member profiles for portraits');
   await page.goto(CLERK_MEMBERS_URL, { waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('.members-list_content', { timeout: 20000 }).catch(() => {});
+  await page.waitForSelector('.members-list_content', { timeout: 20000 }).catch(() => { });
 
   const rawProfiles = await page.evaluate(() => {
     const sanitize = (value = '') => value.replace(/\s+/g, ' ').trim();
@@ -199,7 +199,7 @@ const findMatchingClerkProfile = (pool, stateId, representative) => {
   return null;
 };
 
-const relativizePublicPath = (absolutePath) => path.relative(path.resolve('public'), absolutePath).replace(/\\/g, '/');
+const relativizePublicPath = (absolutePath) => path.relative(path.resolve('assets', 'img'), absolutePath).replace(/\\/g, '/');
 
 const downloadClerkPhoto = async (url, slug) => {
   if (!url) return null;
@@ -218,7 +218,7 @@ const downloadClerkPhoto = async (url, slug) => {
 
 const parseMembersFromPage = async (page) => {
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('.view-content table', { timeout: 15000 }).catch(() => {});
+  await page.waitForSelector('.view-content table', { timeout: 15000 }).catch(() => { });
   return page.evaluate(() => {
     const extractText = el => el?.textContent?.replace(/\s+/g, ' ').trim() || '';
     const tables = Array.from(document.querySelectorAll('.view-content table'));
