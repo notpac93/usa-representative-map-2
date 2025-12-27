@@ -3,7 +3,7 @@
     "state": "Alabama",
     "stateId": "AL",
     "sourceUrl": "https://www.nga.org/governors/alabama/",
-    "scrapedAt": "2025-12-27T19:01:26.366Z",
+    "scrapedAt": "2025-12-27T20:13:06.575Z",
     "governor": {
       "name": "Kay Ivey",
       "party": "Republican",
@@ -49,7 +49,7 @@
     "state": "Alaska",
     "stateId": "AK",
     "sourceUrl": "https://www.nga.org/governors/alaska/",
-    "scrapedAt": "2025-12-27T19:01:28.286Z",
+    "scrapedAt": "2025-12-27T20:13:07.814Z",
     "governor": {
       "name": "Mike Dunleavy",
       "party": "Republican",
@@ -91,7 +91,7 @@
     "state": "American Samoa",
     "stateId": "AS",
     "sourceUrl": "https://www.nga.org/governors/american-samoa/",
-    "scrapedAt": "2025-12-27T19:01:29.803Z",
+    "scrapedAt": "2025-12-27T20:13:09.113Z",
     "governor": {
       "name": "Pula’ali’i Nikolao Pula",
       "party": "Republican",
@@ -125,7 +125,7 @@
     "state": "Arizona",
     "stateId": "AZ",
     "sourceUrl": "https://www.nga.org/governors/arizona/",
-    "scrapedAt": "2025-12-27T19:01:31.498Z",
+    "scrapedAt": "2025-12-27T20:13:10.306Z",
     "governor": {
       "name": "Katie Hobbs",
       "party": "Democratic",
@@ -163,7 +163,7 @@
     "state": "Arkansas",
     "stateId": "AR",
     "sourceUrl": "https://www.nga.org/governors/arkansas/",
-    "scrapedAt": "2025-12-27T19:01:33.096Z",
+    "scrapedAt": "2025-12-27T20:13:12.080Z",
     "governor": {
       "name": "Sarah Huckabee Sanders",
       "party": "Republican",
@@ -208,7 +208,7 @@
     "state": "California",
     "stateId": "CA",
     "sourceUrl": "https://www.nga.org/governors/california/",
-    "scrapedAt": "2025-12-27T19:01:34.596Z",
+    "scrapedAt": "2025-12-27T20:13:13.178Z",
     "governor": {
       "name": "Gavin Newsom",
       "party": "Democratic",
@@ -251,7 +251,7 @@
     "state": "Colorado",
     "stateId": "CO",
     "sourceUrl": "https://www.nga.org/governors/colorado/",
-    "scrapedAt": "2025-12-27T19:01:35.961Z",
+    "scrapedAt": "2025-12-27T20:13:15.010Z",
     "governor": {
       "name": "Jared Polis",
       "party": "Democratic",
@@ -290,7 +290,7 @@
     "state": "Connecticut",
     "stateId": "CT",
     "sourceUrl": "https://www.nga.org/governors/connecticut/",
-    "scrapedAt": "2025-12-27T19:01:37.670Z",
+    "scrapedAt": "2025-12-27T20:13:16.296Z",
     "governor": {
       "name": "Ned Lamont",
       "party": "Democratic",
@@ -333,7 +333,7 @@
     "state": "Delaware",
     "stateId": "DE",
     "sourceUrl": "https://www.nga.org/governors/delaware/",
-    "scrapedAt": "2025-12-27T19:01:39.363Z",
+    "scrapedAt": "2025-12-27T20:13:17.732Z",
     "governor": {
       "name": "Matt Meyer",
       "party": "Democratic",
@@ -372,7 +372,7 @@
     "state": "Florida",
     "stateId": "FL",
     "sourceUrl": "https://www.nga.org/governors/florida/",
-    "scrapedAt": "2025-12-27T19:01:40.552Z",
+    "scrapedAt": "2025-12-27T20:13:19.024Z",
     "governor": {
       "name": "Ron DeSantis",
       "party": "Republican",
@@ -416,7 +416,7 @@
     "state": "Georgia",
     "stateId": "GA",
     "sourceUrl": "https://www.nga.org/governors/georgia/",
-    "scrapedAt": "2025-12-27T19:01:42.355Z",
+    "scrapedAt": "2025-12-27T20:13:20.141Z",
     "governor": {
       "name": "Brian Kemp",
       "party": "Republican",
@@ -460,7 +460,7 @@
     "state": "Guam",
     "stateId": "GU",
     "sourceUrl": "https://www.nga.org/governors/guam/",
-    "scrapedAt": "2025-12-27T19:01:44.055Z",
+    "scrapedAt": "2025-12-27T20:13:22.007Z",
     "governor": {
       "name": "Lou Leon Guerrero",
       "party": "Democratic",
@@ -504,7 +504,7 @@
     "state": "Hawaii",
     "stateId": "HI",
     "sourceUrl": "https://www.nga.org/governors/hawaii/",
-    "scrapedAt": "2025-12-27T19:01:45.817Z",
+    "scrapedAt": "2025-12-27T20:13:23.409Z",
     "governor": {
       "name": "Josh Green",
       "party": "Democratic",
@@ -546,7 +546,7 @@
     "state": "Idaho",
     "stateId": "ID",
     "sourceUrl": "https://www.nga.org/governors/idaho/",
-    "scrapedAt": "2025-12-27T19:01:47.203Z",
+    "scrapedAt": "2025-12-27T20:13:24.940Z",
     "governor": {
       "name": "Brad Little",
       "party": "Republican",
@@ -589,7 +589,7 @@
     "state": "Illinois",
     "stateId": "IL",
     "sourceUrl": "https://www.nga.org/governors/illinois/",
-    "scrapedAt": "2025-12-27T19:01:48.396Z",
+    "scrapedAt": "2025-12-27T20:13:26.163Z",
     "governor": {
       "name": "JB Pritzker",
       "party": "Democratic",
@@ -633,7 +633,7 @@
     "state": "Indiana",
     "stateId": "IN",
     "sourceUrl": "https://www.nga.org/governors/indiana/",
-    "scrapedAt": "2025-12-27T19:01:49.751Z",
+    "scrapedAt": "2025-12-27T20:13:27.368Z",
     "governor": {
       "name": "Mike Braun",
       "party": "Republican",
@@ -676,7 +676,7 @@
     "state": "Iowa",
     "stateId": "IA",
     "sourceUrl": "https://www.nga.org/governors/iowa/",
-    "scrapedAt": "2025-12-27T19:01:51.480Z",
+    "scrapedAt": "2025-12-27T20:13:29.159Z",
     "governor": {
       "name": "Kim Reynolds",
       "party": "Republican",
@@ -719,7 +719,7 @@
     "state": "Kansas",
     "stateId": "KS",
     "sourceUrl": "https://www.nga.org/governors/kansas/",
-    "scrapedAt": "2025-12-27T19:01:53.196Z",
+    "scrapedAt": "2025-12-27T20:13:30.774Z",
     "governor": {
       "name": "Laura Kelly",
       "party": "Democratic",
@@ -760,7 +760,7 @@
     "state": "Kentucky",
     "stateId": "KY",
     "sourceUrl": "https://www.nga.org/governors/kentucky/",
-    "scrapedAt": "2025-12-27T19:01:54.961Z",
+    "scrapedAt": "2025-12-27T20:13:32.213Z",
     "governor": {
       "name": "Andy Beshear",
       "party": "Democratic",
@@ -814,7 +814,7 @@
     "state": "Louisiana",
     "stateId": "LA",
     "sourceUrl": "https://www.nga.org/governors/louisiana/",
-    "scrapedAt": "2025-12-27T19:01:56.509Z",
+    "scrapedAt": "2025-12-27T20:13:33.779Z",
     "governor": {
       "name": "Jeff Landry",
       "party": "Republican",
@@ -854,7 +854,7 @@
     "state": "Maine",
     "stateId": "ME",
     "sourceUrl": "https://www.nga.org/governors/maine/",
-    "scrapedAt": "2025-12-27T19:01:58.012Z",
+    "scrapedAt": "2025-12-27T20:13:35.256Z",
     "governor": {
       "name": "Janet Mills",
       "party": "Democratic",
@@ -902,7 +902,7 @@
     "state": "Maryland",
     "stateId": "MD",
     "sourceUrl": "https://www.nga.org/governors/maryland/",
-    "scrapedAt": "2025-12-27T19:01:59.563Z",
+    "scrapedAt": "2025-12-27T20:13:36.921Z",
     "governor": {
       "name": "Wes Moore",
       "party": "Democratic",
@@ -949,7 +949,7 @@
     "state": "Massachusetts",
     "stateId": "MA",
     "sourceUrl": "https://www.nga.org/governors/massachusetts/",
-    "scrapedAt": "2025-12-27T19:02:00.953Z",
+    "scrapedAt": "2025-12-27T20:13:38.432Z",
     "governor": {
       "name": "Maura Healey",
       "party": "Democratic",
@@ -991,7 +991,7 @@
     "state": "Michigan",
     "stateId": "MI",
     "sourceUrl": "https://www.nga.org/governors/michigan/",
-    "scrapedAt": "2025-12-27T19:02:02.436Z",
+    "scrapedAt": "2025-12-27T20:13:40.013Z",
     "governor": {
       "name": "Gretchen Whitmer",
       "party": "Democratic",
@@ -1032,7 +1032,7 @@
     "state": "Minnesota",
     "stateId": "MN",
     "sourceUrl": "https://www.nga.org/governors/minnesota/",
-    "scrapedAt": "2025-12-27T19:02:04.675Z",
+    "scrapedAt": "2025-12-27T20:13:41.546Z",
     "governor": {
       "name": "Tim Walz",
       "party": "Democratic",
@@ -1071,7 +1071,7 @@
     "state": "Mississippi",
     "stateId": "MS",
     "sourceUrl": "https://www.nga.org/governors/mississippi/",
-    "scrapedAt": "2025-12-27T19:02:06.848Z",
+    "scrapedAt": "2025-12-27T20:13:43.116Z",
     "governor": {
       "name": "Tate Reeves",
       "party": "Republican",
@@ -1121,7 +1121,7 @@
     "state": "Missouri",
     "stateId": "MO",
     "sourceUrl": "https://www.nga.org/governors/missouri/",
-    "scrapedAt": "2025-12-27T19:02:08.171Z",
+    "scrapedAt": "2025-12-27T20:13:44.767Z",
     "governor": {
       "name": "Mike Kehoe",
       "party": "Republican",
@@ -1163,7 +1163,7 @@
     "state": "Montana",
     "stateId": "MT",
     "sourceUrl": "https://www.nga.org/governors/montana/",
-    "scrapedAt": "2025-12-27T19:02:10.131Z",
+    "scrapedAt": "2025-12-27T20:13:45.958Z",
     "governor": {
       "name": "Greg Gianforte",
       "party": "Republican",
@@ -1204,7 +1204,7 @@
     "state": "Nebraska",
     "stateId": "NE",
     "sourceUrl": "https://www.nga.org/governors/nebraska/",
-    "scrapedAt": "2025-12-27T19:02:11.660Z",
+    "scrapedAt": "2025-12-27T20:13:47.290Z",
     "governor": {
       "name": "Jim Pillen",
       "party": "Republican",
@@ -1246,7 +1246,7 @@
     "state": "Nevada",
     "stateId": "NV",
     "sourceUrl": "https://www.nga.org/governors/nevada/",
-    "scrapedAt": "2025-12-27T19:02:13.133Z",
+    "scrapedAt": "2025-12-27T20:13:49.058Z",
     "governor": {
       "name": "Joe Lombardo",
       "party": "Republican",
@@ -1287,7 +1287,7 @@
     "state": "New Hampshire",
     "stateId": "NH",
     "sourceUrl": "https://www.nga.org/governors/new-hampshire/",
-    "scrapedAt": "2025-12-27T19:02:14.964Z",
+    "scrapedAt": "2025-12-27T20:13:50.827Z",
     "governor": {
       "name": "Kelly Ayotte",
       "party": "Republican",
@@ -1329,7 +1329,7 @@
     "state": "New Jersey",
     "stateId": "NJ",
     "sourceUrl": "https://www.nga.org/governors/new-jersey/",
-    "scrapedAt": "2025-12-27T19:02:16.996Z",
+    "scrapedAt": "2025-12-27T20:13:52.340Z",
     "governor": {
       "name": "Phil Murphy",
       "party": "Democratic",
@@ -1383,7 +1383,7 @@
     "state": "New Mexico",
     "stateId": "NM",
     "sourceUrl": "https://www.nga.org/governors/new-mexico/",
-    "scrapedAt": "2025-12-27T19:02:19.523Z",
+    "scrapedAt": "2025-12-27T20:13:53.644Z",
     "governor": {
       "name": "Michelle Lujan Grisham",
       "party": "Democratic",
@@ -1425,7 +1425,7 @@
     "state": "New York",
     "stateId": "NY",
     "sourceUrl": "https://www.nga.org/governors/new-york/",
-    "scrapedAt": "2025-12-27T19:02:27.007Z",
+    "scrapedAt": "2025-12-27T20:13:55.489Z",
     "governor": {
       "name": "Kathy Hochul",
       "party": "Democratic",
@@ -1465,7 +1465,7 @@
     "state": "North Carolina",
     "stateId": "NC",
     "sourceUrl": "https://www.nga.org/governors/north-carolina/",
-    "scrapedAt": "2025-12-27T19:02:28.563Z",
+    "scrapedAt": "2025-12-27T20:13:56.841Z",
     "governor": {
       "name": "Josh Stein",
       "party": "Democratic",
@@ -1506,7 +1506,7 @@
     "state": "North Dakota",
     "stateId": "ND",
     "sourceUrl": "https://www.nga.org/governors/north-dakota/",
-    "scrapedAt": "2025-12-27T19:02:29.974Z",
+    "scrapedAt": "2025-12-27T20:13:58.539Z",
     "governor": {
       "name": "Kelly Armstrong",
       "party": "Republican",
@@ -1549,7 +1549,7 @@
     "state": "Northern Mariana Islands",
     "stateId": "MP",
     "sourceUrl": "https://www.nga.org/governors/northern-mariana-islands/",
-    "scrapedAt": "2025-12-27T19:02:31.593Z",
+    "scrapedAt": "2025-12-27T20:14:00.045Z",
     "governor": {
       "name": "David M. Apatang",
       "party": "Republican",
@@ -1586,7 +1586,7 @@
     "state": "Ohio",
     "stateId": "OH",
     "sourceUrl": "https://www.nga.org/governors/ohio/",
-    "scrapedAt": "2025-12-27T19:02:33.368Z",
+    "scrapedAt": "2025-12-27T20:14:01.608Z",
     "governor": {
       "name": "Mike DeWine",
       "party": "Republican",
@@ -1625,7 +1625,7 @@
     "state": "Oklahoma",
     "stateId": "OK",
     "sourceUrl": "https://www.nga.org/governors/oklahoma/",
-    "scrapedAt": "2025-12-27T19:02:38.789Z",
+    "scrapedAt": "2025-12-27T20:14:03.812Z",
     "governor": {
       "name": "Kevin Stitt",
       "party": "Republican",
@@ -1668,7 +1668,7 @@
     "state": "Oregon",
     "stateId": "OR",
     "sourceUrl": "https://www.nga.org/governors/oregon/",
-    "scrapedAt": "2025-12-27T19:02:40.704Z",
+    "scrapedAt": "2025-12-27T20:14:05.369Z",
     "governor": {
       "name": "Tina Kotek",
       "party": "Democratic",
@@ -1713,7 +1713,7 @@
     "state": "Pennsylvania",
     "stateId": "PA",
     "sourceUrl": "https://www.nga.org/governors/pennsylvania/",
-    "scrapedAt": "2025-12-27T19:02:42.522Z",
+    "scrapedAt": "2025-12-27T20:14:07.060Z",
     "governor": {
       "name": "Josh Shapiro",
       "party": "Democratic",
@@ -1761,7 +1761,7 @@
     "state": "Puerto Rico",
     "stateId": "PR",
     "sourceUrl": "https://www.nga.org/governors/puerto-rico/",
-    "scrapedAt": "2025-12-27T19:02:43.745Z",
+    "scrapedAt": "2025-12-27T20:14:08.574Z",
     "governor": {
       "name": "Jenniffer González-Colón",
       "party": "Republican",
@@ -1793,7 +1793,7 @@
     "state": "Rhode Island",
     "stateId": "RI",
     "sourceUrl": "https://www.nga.org/governors/rhode-island/",
-    "scrapedAt": "2025-12-27T19:02:45.411Z",
+    "scrapedAt": "2025-12-27T20:14:10.133Z",
     "governor": {
       "name": "Dan McKee",
       "party": "Democratic",
@@ -1835,7 +1835,7 @@
     "state": "South Carolina",
     "stateId": "SC",
     "sourceUrl": "https://www.nga.org/governors/south-carolina/",
-    "scrapedAt": "2025-12-27T19:02:46.940Z",
+    "scrapedAt": "2025-12-27T20:14:12.042Z",
     "governor": {
       "name": "Henry McMaster",
       "party": "Republican",
@@ -1880,7 +1880,7 @@
     "state": "South Dakota",
     "stateId": "SD",
     "sourceUrl": "https://www.nga.org/governors/south-dakota/",
-    "scrapedAt": "2025-12-27T19:02:48.383Z",
+    "scrapedAt": "2025-12-27T20:14:13.277Z",
     "governor": {
       "name": "Larry Rhoden",
       "party": "Republican",
@@ -1920,7 +1920,7 @@
     "state": "Tennessee",
     "stateId": "TN",
     "sourceUrl": "https://www.nga.org/governors/tennessee/",
-    "scrapedAt": "2025-12-27T19:02:49.660Z",
+    "scrapedAt": "2025-12-27T20:14:15.133Z",
     "governor": {
       "name": "Bill Lee",
       "party": "Republican",
@@ -1961,7 +1961,7 @@
     "state": "Texas",
     "stateId": "TX",
     "sourceUrl": "https://www.nga.org/governors/texas/",
-    "scrapedAt": "2025-12-27T19:02:51.161Z",
+    "scrapedAt": "2025-12-27T20:14:16.452Z",
     "governor": {
       "name": "Greg Abbott",
       "party": "Republican",
@@ -2001,7 +2001,7 @@
     "state": "Utah",
     "stateId": "UT",
     "sourceUrl": "https://www.nga.org/governors/utah/",
-    "scrapedAt": "2025-12-27T19:02:52.529Z",
+    "scrapedAt": "2025-12-27T20:14:17.573Z",
     "governor": {
       "name": "Spencer Cox",
       "party": "Republican",
@@ -2042,7 +2042,7 @@
     "state": "Vermont",
     "stateId": "VT",
     "sourceUrl": "https://www.nga.org/governors/vermont/",
-    "scrapedAt": "2025-12-27T19:02:54.092Z",
+    "scrapedAt": "2025-12-27T20:14:19.141Z",
     "governor": {
       "name": "Phil Scott",
       "party": "Republican",
@@ -2090,7 +2090,7 @@
     "state": "Virgin Islands",
     "stateId": "VI",
     "sourceUrl": "https://www.nga.org/governors/virgin-islands/",
-    "scrapedAt": "2025-12-27T19:02:55.880Z",
+    "scrapedAt": "2025-12-27T20:14:20.675Z",
     "governor": {
       "name": "Albert Bryan",
       "party": "Democratic",
@@ -2131,7 +2131,7 @@
     "state": "Virginia",
     "stateId": "VA",
     "sourceUrl": "https://www.nga.org/governors/virginia/",
-    "scrapedAt": "2025-12-27T19:02:57.317Z",
+    "scrapedAt": "2025-12-27T20:14:22.001Z",
     "governor": {
       "name": "Glenn Youngkin",
       "party": "Republican",
@@ -2173,7 +2173,7 @@
     "state": "Washington",
     "stateId": "WA",
     "sourceUrl": "https://www.nga.org/governors/washington/",
-    "scrapedAt": "2025-12-27T19:02:58.835Z",
+    "scrapedAt": "2025-12-27T20:14:23.491Z",
     "governor": {
       "name": "Bob Ferguson",
       "party": "Democrat",
@@ -2211,7 +2211,7 @@
     "state": "West Virginia",
     "stateId": "WV",
     "sourceUrl": "https://www.nga.org/governors/west-virginia/",
-    "scrapedAt": "2025-12-27T19:03:00.434Z",
+    "scrapedAt": "2025-12-27T20:14:24.724Z",
     "governor": {
       "name": "Patrick Morrisey",
       "party": "Republican",
@@ -2252,7 +2252,7 @@
     "state": "Wisconsin",
     "stateId": "WI",
     "sourceUrl": "https://www.nga.org/governors/wisconsin/",
-    "scrapedAt": "2025-12-27T19:03:01.932Z",
+    "scrapedAt": "2025-12-27T20:14:26.247Z",
     "governor": {
       "name": "Tony Evers",
       "party": "Democratic",
@@ -2294,7 +2294,7 @@
     "state": "Wyoming",
     "stateId": "WY",
     "sourceUrl": "https://www.nga.org/governors/wyoming/",
-    "scrapedAt": "2025-12-27T19:03:03.390Z",
+    "scrapedAt": "2025-12-27T20:14:27.968Z",
     "governor": {
       "name": "Mark Gordon",
       "party": "Republican",

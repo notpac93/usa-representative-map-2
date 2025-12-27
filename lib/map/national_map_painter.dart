@@ -11,10 +11,15 @@ class AtlasPathCache {
   void parseAndCache(Atlas atlas) {
     if (_paths.isNotEmpty) return;
     for (var state in atlas.states) {
-      // parseSvgPathData returns a Path from the SVG d attribute string.
-      // D3 paths from mapshaper are standard SVG.
       _paths[state.id] = parseSvgPathData(state.path);
     }
+  }
+
+  Path? getPathById(String id) => _paths[id];
+
+  void cachePath(String id, String svgPath) {
+    if (_paths.containsKey(id)) return;
+    _paths[id] = parseSvgPathData(svgPath);
   }
 }
 

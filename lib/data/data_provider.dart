@@ -12,6 +12,12 @@ class MapDataProvider extends ChangeNotifier {
   Map<String, List<Representative>>? houseMembers;
   Map<String, List<CityFeature>>? cities;
 
+  List<OverlayFeature>? counties;
+  List<OverlayFeature>? cd116;
+  List<OverlayFeature>? urbanAreas;
+  List<OverlayFeature>? zcta;
+  List<OverlayFeature>? lakes;
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -102,6 +108,17 @@ class MapDataProvider extends ChangeNotifier {
         debugPrint("Cities load error or missing: $e");
       }
 
+      // Load Overlays
+      try {
+        counties = await _loadOverlay('assets/data/overlays/counties.json');
+        cd116 = await _loadOverlay('assets/data/overlays/cd116.json');
+        urbanAreas = await _loadOverlay('assets/data/overlays/urbanAreas.json');
+        zcta = await _loadOverlay('assets/data/overlays/zcta.json');
+        lakes = await _loadOverlay('assets/data/overlays/lakes.json');
+      } catch (e) {
+        debugPrint("Overlay load error: $e");
+      }
+
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -118,4 +135,16 @@ class MapDataProvider extends ChangeNotifier {
   // Standard cb_2023_us_state_5m uses FIPS as ID.
   // `capitals.dart` uses USPS.
   // We need a map. I'll stick to FIPS for matching if possible, or build a helper.
+
+  Future<List<OverlayFeature>> _loadOverlay(String path) async {
+    try {
+      final jsonString = await rootBundle.loadString(path);
+      final jsonMap = json.decode(jsonString);
+      final features = jsonMap['features'] as List;
+      return features.map((f) => OverlayFeature.fromJson(f)).toList();
+    } catch (e) {
+      debugPrint("Failed to load overlay $path: $e");
+      return [];
+    }
+  }
 }

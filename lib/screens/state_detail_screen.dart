@@ -3,11 +3,23 @@ import 'package:provider/provider.dart';
 import '../data/models.dart';
 import '../data/data_provider.dart';
 import '../map/state_map_painter.dart';
+import 'lawmaker_detail_screen.dart';
 
-class StateDetailScreen extends StatelessWidget {
+class StateDetailScreen extends StatefulWidget {
   final String stateId;
 
   const StateDetailScreen({super.key, required this.stateId});
+
+  @override
+  State<StateDetailScreen> createState() => _StateDetailScreenState();
+}
+
+class _StateDetailScreenState extends State<StateDetailScreen> {
+  bool _showCounties = false;
+  bool _showDistricts = false;
+  bool _showUrban = false;
+  bool _showZcta = false;
+  bool _showLakes = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +32,37 @@ class StateDetailScreen extends StatelessWidget {
     }
 
     final stateRecord = atlas.states.cast<StateRecord?>().firstWhere(
-      (s) => s!.id == stateId,
+      (s) => s!.id == widget.stateId,
       orElse: () => null,
     );
 
     if (stateRecord == null) {
       return Scaffold(
         appBar: AppBar(title: const Text("Error")),
-        body: Center(child: Text("State $stateId not found")),
+        body: Center(child: Text("State ${widget.stateId} not found")),
       );
     }
 
     // Retrieve Data
-    final governorData = provider.governors?[stateId];
-    final senatorsList = (provider.senators?[stateId] as List?) ?? [];
-    final houseList = (provider.houseMembers?[stateId] as List?) ?? [];
-    final cityList = provider.cities?[stateId] ?? [];
+    final governorData = provider.governors?[widget.stateId];
+    final senatorsList = (provider.senators?[widget.stateId] as List?) ?? [];
+    final houseList = (provider.houseMembers?[widget.stateId] as List?) ?? [];
+    final cityList = provider.cities?[widget.stateId] ?? [];
+
+    // Retrieve Overlays (National Lists)
+    final counties = provider.counties;
+    final cd116 = provider.cd116;
+    final urbanAreas = provider.urbanAreas;
 
     return Scaffold(
       appBar: AppBar(title: Text(stateRecord.name)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showLayersModal(context);
+        },
+        child: const Icon(Icons.layers),
+        tooltip: "Map Layers",
+      ),
       body: Row(
         children: [
           // Left: Map
@@ -60,6 +84,16 @@ class StateDetailScreen extends StatelessWidget {
                         pathCache: pathCache,
                         zoomLevel: 1.0,
                         cities: cityList,
+                        counties: counties,
+                        cd116: cd116,
+                        urbanAreas: urbanAreas,
+                        showCounties: _showCounties,
+                        showDistricts: _showDistricts,
+                        showUrban: _showUrban,
+                        zcta: provider.zcta,
+                        lakes: provider.lakes,
+                        showZcta: _showZcta,
+                        showLakes: _showLakes,
                       ),
                     ),
                   ),
@@ -82,6 +116,17 @@ class StateDetailScreen extends StatelessWidget {
                   if (governorData != null) ...[
                     Card(
                       child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LawmakerDetailScreen(
+                                lawmaker: governorData,
+                                role: "Governor",
+                              ),
+                            ),
+                          );
+                        },
                         leading: governorData.photoLocalPath != null
                             ? CircleAvatar(
                                 backgroundImage: AssetImage(
@@ -113,6 +158,17 @@ class StateDetailScreen extends StatelessWidget {
                   ),
                   ...senatorsList.map(
                     (sen) => ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LawmakerDetailScreen(
+                              lawmaker: sen,
+                              role: "Senator",
+                            ),
+                          ),
+                        );
+                      },
                       leading: sen.photoLocalPath != null
                           ? CircleAvatar(
                               backgroundImage: AssetImage(
@@ -133,6 +189,17 @@ class StateDetailScreen extends StatelessWidget {
                   ),
                   ...houseList.map(
                     (rep) => ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LawmakerDetailScreen(
+                              lawmaker: rep,
+                              role: "Representative",
+                            ),
+                          ),
+                        );
+                      },
                       leading: rep.photoLocalPath != null
                           ? CircleAvatar(
                               backgroundImage: AssetImage(
@@ -151,6 +218,86 @@ class StateDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLayersModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Map Layers",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const Divider(),
+                  SwitchListTile(
+                    title: const Text("Show Counties"),
+                    value: _showCounties,
+                    onChanged: (val) {
+                      setState(() => _showCounties = val);
+                      setModalState(() {});
+                    },
+                    secondary: const Icon(Icons.grid_on, color: Colors.grey),
+                  ),
+                  SwitchListTile(
+                    title: const Text("Show Congressional Districts"),
+                    value: _showDistricts,
+                    onChanged: (val) {
+                      setState(() => _showDistricts = val);
+                      setModalState(() {});
+                    },
+                    secondary: const Icon(
+                      Icons.people_outline,
+                      color: Colors.purple,
+                    ),
+                  ),
+                  SwitchListTile(
+                    title: const Text("Show Urban Areas"),
+                    value: _showUrban,
+                    onChanged: (val) {
+                      setState(() => _showUrban = val);
+                      setModalState(() {});
+                    },
+                    secondary: const Icon(
+                      Icons.location_city,
+                      color: Colors.orange,
+                    ),
+                  ),
+                  SwitchListTile(
+                    title: const Text("Show Zip Codes"),
+                    value: _showZcta,
+                    onChanged: (val) {
+                      setState(() => _showZcta = val);
+                      setModalState(() {});
+                    },
+                    secondary: const Icon(
+                      Icons.markunread_mailbox,
+                      color: Colors.green,
+                    ),
+                  ),
+                  SwitchListTile(
+                    title: const Text("Show Lakes"),
+                    value: _showLakes,
+                    onChanged: (val) {
+                      setState(() => _showLakes = val);
+                      setModalState(() {});
+                    },
+                    secondary: const Icon(Icons.water, color: Colors.blue),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

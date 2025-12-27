@@ -21,6 +21,7 @@
     "build:overlays:all": "node scripts/buildAllOverlays.cjs",
     "build:atlas:counties": "node scripts/buildAtlasFromCounties.cjs --input 'data/raw/cb_2023_us_state_5m/US County/cb_2018_us_county_500k.shp' --simplify 8 --out data/atlas.generated.ts --reuse-projection",
     "build:data:full": "node scripts/fullRebuild.cjs",
+    "scrape:all": "node scripts/scrapeAll.cjs",
     "scrape:usa-gov": "node scripts/scrapeUsaGov.mjs",
     "scrape:senate": "node scripts/scrapeSenate.mjs",
     "scrape:governors": "node scripts/scrapeGovernors.mjs",

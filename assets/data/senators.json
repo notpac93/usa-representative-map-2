@@ -3,7 +3,7 @@
     "state": "Alabama",
     "stateId": "AL",
     "sourceUrl": "https://www.senate.gov/states/AL/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:05.849Z",
+    "scrapedAt": "2025-12-27T20:14:30.366Z",
     "senators": [
       {
         "name": "Tommy Tuberville",
@@ -39,7 +39,7 @@
     "state": "Alaska",
     "stateId": "AK",
     "sourceUrl": "https://www.senate.gov/states/AK/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:06.730Z",
+    "scrapedAt": "2025-12-27T20:14:31.091Z",
     "senators": [
       {
         "name": "Lisa Murkowski",
@@ -75,7 +75,7 @@
     "state": "Arizona",
     "stateId": "AZ",
     "sourceUrl": "https://www.senate.gov/states/AZ/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:07.585Z",
+    "scrapedAt": "2025-12-27T20:14:31.795Z",
     "senators": [
       {
         "name": "Mark Kelly",
@@ -111,7 +111,7 @@
     "state": "Arkansas",
     "stateId": "AR",
     "sourceUrl": "https://www.senate.gov/states/AR/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:08.099Z",
+    "scrapedAt": "2025-12-27T20:14:32.523Z",
     "senators": [
       {
         "name": "John Boozman",
@@ -147,7 +147,7 @@
     "state": "California",
     "stateId": "CA",
     "sourceUrl": "https://www.senate.gov/states/CA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:08.733Z",
+    "scrapedAt": "2025-12-27T20:14:33.237Z",
     "senators": [
       {
         "name": "Alex Padilla",
@@ -183,7 +183,7 @@
     "state": "Colorado",
     "stateId": "CO",
     "sourceUrl": "https://www.senate.gov/states/CO/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:09.382Z",
+    "scrapedAt": "2025-12-27T20:14:34.011Z",
     "senators": [
       {
         "name": "Michael F. Bennet",
@@ -219,7 +219,7 @@
     "state": "Connecticut",
     "stateId": "CT",
     "sourceUrl": "https://www.senate.gov/states/CT/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:10.191Z",
+    "scrapedAt": "2025-12-27T20:14:34.822Z",
     "senators": [
       {
         "name": "Richard Blumenthal",
@@ -255,7 +255,7 @@
     "state": "Delaware",
     "stateId": "DE",
     "sourceUrl": "https://www.senate.gov/states/DE/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:12.136Z",
+    "scrapedAt": "2025-12-27T20:14:35.466Z",
     "senators": [
       {
         "name": "Christopher A. Coons",
@@ -291,7 +291,7 @@
     "state": "Florida",
     "stateId": "FL",
     "sourceUrl": "https://www.senate.gov/states/FL/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:12.928Z",
+    "scrapedAt": "2025-12-27T20:14:35.954Z",
     "senators": [
       {
         "name": "Rick Scott",
@@ -327,7 +327,7 @@
     "state": "Georgia",
     "stateId": "GA",
     "sourceUrl": "https://www.senate.gov/states/GA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:13.494Z",
+    "scrapedAt": "2025-12-27T20:14:36.615Z",
     "senators": [
       {
         "name": "Jon Ossoff",
@@ -363,7 +363,7 @@
     "state": "Hawaii",
     "stateId": "HI",
     "sourceUrl": "https://www.senate.gov/states/HI/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:14.749Z",
+    "scrapedAt": "2025-12-27T20:14:37.171Z",
     "senators": [
       {
         "name": "Brian Schatz",
@@ -399,7 +399,7 @@
     "state": "Idaho",
     "stateId": "ID",
     "sourceUrl": "https://www.senate.gov/states/ID/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:15.511Z",
+    "scrapedAt": "2025-12-27T20:14:37.853Z",
     "senators": [
       {
         "name": "Mike Crapo",
@@ -435,7 +435,7 @@
     "state": "Illinois",
     "stateId": "IL",
     "sourceUrl": "https://www.senate.gov/states/IL/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:16.842Z",
+    "scrapedAt": "2025-12-27T20:14:38.616Z",
     "senators": [
       {
         "name": "Richard J. Durbin",
@@ -471,7 +471,7 @@
     "state": "Indiana",
     "stateId": "IN",
     "sourceUrl": "https://www.senate.gov/states/IN/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:17.683Z",
+    "scrapedAt": "2025-12-27T20:14:39.115Z",
     "senators": [
       {
         "name": "Todd Young",
@@ -507,7 +507,7 @@
     "state": "Iowa",
     "stateId": "IA",
     "sourceUrl": "https://www.senate.gov/states/IA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:18.505Z",
+    "scrapedAt": "2025-12-27T20:14:40.170Z",
     "senators": [
       {
         "name": "Chuck Grassley",
@@ -543,7 +543,7 @@
     "state": "Kansas",
     "stateId": "KS",
     "sourceUrl": "https://www.senate.gov/states/KS/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:19.502Z",
+    "scrapedAt": "2025-12-27T20:14:41.380Z",
     "senators": [
       {
         "name": "Jerry Moran",
@@ -579,7 +579,7 @@
     "state": "Kentucky",
     "stateId": "KY",
     "sourceUrl": "https://www.senate.gov/states/KY/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:20.921Z",
+    "scrapedAt": "2025-12-27T20:14:41.835Z",
     "senators": [
       {
         "name": "Mitch McConnell",
@@ -615,7 +615,7 @@
     "state": "Louisiana",
     "stateId": "LA",
     "sourceUrl": "https://www.senate.gov/states/LA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:21.525Z",
+    "scrapedAt": "2025-12-27T20:14:42.373Z",
     "senators": [
       {
         "name": "Bill Cassidy",
@@ -651,7 +651,7 @@
     "state": "Maine",
     "stateId": "ME",
     "sourceUrl": "https://www.senate.gov/states/ME/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:22.388Z",
+    "scrapedAt": "2025-12-27T20:14:43.013Z",
     "senators": [
       {
         "name": "Susan M. Collins",
@@ -687,7 +687,7 @@
     "state": "Maryland",
     "stateId": "MD",
     "sourceUrl": "https://www.senate.gov/states/MD/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:22.993Z",
+    "scrapedAt": "2025-12-27T20:14:43.609Z",
     "senators": [
       {
         "name": "Chris Van Hollen",
@@ -723,7 +723,7 @@
     "state": "Massachusetts",
     "stateId": "MA",
     "sourceUrl": "https://www.senate.gov/states/MA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:23.783Z",
+    "scrapedAt": "2025-12-27T20:14:44.102Z",
     "senators": [
       {
         "name": "Elizabeth Warren",
@@ -759,7 +759,7 @@
     "state": "Michigan",
     "stateId": "MI",
     "sourceUrl": "https://www.senate.gov/states/MI/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:25.145Z",
+    "scrapedAt": "2025-12-27T20:14:44.915Z",
     "senators": [
       {
         "name": "Gary C. Peters",
@@ -795,7 +795,7 @@
     "state": "Minnesota",
     "stateId": "MN",
     "sourceUrl": "https://www.senate.gov/states/MN/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:25.782Z",
+    "scrapedAt": "2025-12-27T20:14:45.530Z",
     "senators": [
       {
         "name": "Amy Klobuchar",
@@ -831,7 +831,7 @@
     "state": "Mississippi",
     "stateId": "MS",
     "sourceUrl": "https://www.senate.gov/states/MS/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:26.476Z",
+    "scrapedAt": "2025-12-27T20:14:46.430Z",
     "senators": [
       {
         "name": "Roger F. Wicker",
@@ -867,7 +867,7 @@
     "state": "Missouri",
     "stateId": "MO",
     "sourceUrl": "https://www.senate.gov/states/MO/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:26.997Z",
+    "scrapedAt": "2025-12-27T20:14:47.127Z",
     "senators": [
       {
         "name": "Josh Hawley",
@@ -903,7 +903,7 @@
     "state": "Montana",
     "stateId": "MT",
     "sourceUrl": "https://www.senate.gov/states/MT/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:27.856Z",
+    "scrapedAt": "2025-12-27T20:14:47.771Z",
     "senators": [
       {
         "name": "Steve Daines",
@@ -939,7 +939,7 @@
     "state": "Nebraska",
     "stateId": "NE",
     "sourceUrl": "https://www.senate.gov/states/NE/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:28.420Z",
+    "scrapedAt": "2025-12-27T20:14:48.425Z",
     "senators": [
       {
         "name": "Deb Fischer",
@@ -975,7 +975,7 @@
     "state": "Nevada",
     "stateId": "NV",
     "sourceUrl": "https://www.senate.gov/states/NV/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:29.095Z",
+    "scrapedAt": "2025-12-27T20:14:49.211Z",
     "senators": [
       {
         "name": "Catherine Cortez Masto",
@@ -1011,7 +1011,7 @@
     "state": "New Hampshire",
     "stateId": "NH",
     "sourceUrl": "https://www.senate.gov/states/NH/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:30.011Z",
+    "scrapedAt": "2025-12-27T20:14:49.675Z",
     "senators": [
       {
         "name": "Jeanne Shaheen",
@@ -1047,7 +1047,7 @@
     "state": "New Jersey",
     "stateId": "NJ",
     "sourceUrl": "https://www.senate.gov/states/NJ/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:31.004Z",
+    "scrapedAt": "2025-12-27T20:14:50.373Z",
     "senators": [
       {
         "name": "Cory A. Booker",
@@ -1083,7 +1083,7 @@
     "state": "New Mexico",
     "stateId": "NM",
     "sourceUrl": "https://www.senate.gov/states/NM/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:31.643Z",
+    "scrapedAt": "2025-12-27T20:14:51.050Z",
     "senators": [
       {
         "name": "Martin Heinrich",
@@ -1119,7 +1119,7 @@
     "state": "New York",
     "stateId": "NY",
     "sourceUrl": "https://www.senate.gov/states/NY/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:32.438Z",
+    "scrapedAt": "2025-12-27T20:14:51.820Z",
     "senators": [
       {
         "name": "Charles E. Schumer",
@@ -1155,7 +1155,7 @@
     "state": "North Carolina",
     "stateId": "NC",
     "sourceUrl": "https://www.senate.gov/states/NC/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:33.137Z",
+    "scrapedAt": "2025-12-27T20:14:52.928Z",
     "senators": [
       {
         "name": "Thom Tillis",
@@ -1191,7 +1191,7 @@
     "state": "North Dakota",
     "stateId": "ND",
     "sourceUrl": "https://www.senate.gov/states/ND/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:33.692Z",
+    "scrapedAt": "2025-12-27T20:14:53.574Z",
     "senators": [
       {
         "name": "John Hoeven",
@@ -1227,7 +1227,7 @@
     "state": "Ohio",
     "stateId": "OH",
     "sourceUrl": "https://www.senate.gov/states/OH/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:34.708Z",
+    "scrapedAt": "2025-12-27T20:14:54.141Z",
     "senators": [
       {
         "name": "Bernie Moreno",
@@ -1263,7 +1263,7 @@
     "state": "Oklahoma",
     "stateId": "OK",
     "sourceUrl": "https://www.senate.gov/states/OK/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:35.297Z",
+    "scrapedAt": "2025-12-27T20:14:54.857Z",
     "senators": [
       {
         "name": "James Lankford",
@@ -1299,7 +1299,7 @@
     "state": "Oregon",
     "stateId": "OR",
     "sourceUrl": "https://www.senate.gov/states/OR/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:36.188Z",
+    "scrapedAt": "2025-12-27T20:14:55.698Z",
     "senators": [
       {
         "name": "Ron Wyden",
@@ -1335,7 +1335,7 @@
     "state": "Pennsylvania",
     "stateId": "PA",
     "sourceUrl": "https://www.senate.gov/states/PA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:36.775Z",
+    "scrapedAt": "2025-12-27T20:14:56.846Z",
     "senators": [
       {
         "name": "John Fetterman",
@@ -1371,7 +1371,7 @@
     "state": "Rhode Island",
     "stateId": "RI",
     "sourceUrl": "https://www.senate.gov/states/RI/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:37.615Z",
+    "scrapedAt": "2025-12-27T20:14:57.372Z",
     "senators": [
       {
         "name": "Jack Reed",
@@ -1407,7 +1407,7 @@
     "state": "South Carolina",
     "stateId": "SC",
     "sourceUrl": "https://www.senate.gov/states/SC/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:38.315Z",
+    "scrapedAt": "2025-12-27T20:14:57.957Z",
     "senators": [
       {
         "name": "Lindsey Graham",
@@ -1443,7 +1443,7 @@
     "state": "South Dakota",
     "stateId": "SD",
     "sourceUrl": "https://www.senate.gov/states/SD/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:38.896Z",
+    "scrapedAt": "2025-12-27T20:14:58.590Z",
     "senators": [
       {
         "name": "John Thune",
@@ -1479,7 +1479,7 @@
     "state": "Tennessee",
     "stateId": "TN",
     "sourceUrl": "https://www.senate.gov/states/TN/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:39.669Z",
+    "scrapedAt": "2025-12-27T20:14:59.491Z",
     "senators": [
       {
         "name": "Marsha Blackburn",
@@ -1515,7 +1515,7 @@
     "state": "Texas",
     "stateId": "TX",
     "sourceUrl": "https://www.senate.gov/states/TX/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:40.502Z",
+    "scrapedAt": "2025-12-27T20:15:00.203Z",
     "senators": [
       {
         "name": "John Cornyn",
@@ -1551,7 +1551,7 @@
     "state": "Utah",
     "stateId": "UT",
     "sourceUrl": "https://www.senate.gov/states/UT/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:41.175Z",
+    "scrapedAt": "2025-12-27T20:15:00.721Z",
     "senators": [
       {
         "name": "Mike Lee",
@@ -1587,7 +1587,7 @@
     "state": "Vermont",
     "stateId": "VT",
     "sourceUrl": "https://www.senate.gov/states/VT/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:42.098Z",
+    "scrapedAt": "2025-12-27T20:15:01.189Z",
     "senators": [
       {
         "name": "Bernard Sanders",
@@ -1623,7 +1623,7 @@
     "state": "Virginia",
     "stateId": "VA",
     "sourceUrl": "https://www.senate.gov/states/VA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:42.732Z",
+    "scrapedAt": "2025-12-27T20:15:01.814Z",
     "senators": [
       {
         "name": "Mark R. Warner",
@@ -1659,7 +1659,7 @@
     "state": "Washington",
     "stateId": "WA",
     "sourceUrl": "https://www.senate.gov/states/WA/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:43.692Z",
+    "scrapedAt": "2025-12-27T20:15:02.512Z",
     "senators": [
       {
         "name": "Patty Murray",
@@ -1695,7 +1695,7 @@
     "state": "West Virginia",
     "stateId": "WV",
     "sourceUrl": "https://www.senate.gov/states/WV/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:44.294Z",
+    "scrapedAt": "2025-12-27T20:15:03.037Z",
     "senators": [
       {
         "name": "Shelley Moore Capito",
@@ -1731,7 +1731,7 @@
     "state": "Wisconsin",
     "stateId": "WI",
     "sourceUrl": "https://www.senate.gov/states/WI/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:44.891Z",
+    "scrapedAt": "2025-12-27T20:15:03.622Z",
     "senators": [
       {
         "name": "Ron Johnson",
@@ -1767,7 +1767,7 @@
     "state": "Wyoming",
     "stateId": "WY",
     "sourceUrl": "https://www.senate.gov/states/WY/intro.htm",
-    "scrapedAt": "2025-12-27T19:03:45.636Z",
+    "scrapedAt": "2025-12-27T20:15:04.457Z",
     "senators": [
       {
         "name": "John Barrasso",

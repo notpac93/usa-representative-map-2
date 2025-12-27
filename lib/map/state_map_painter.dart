@@ -11,6 +11,16 @@ class StateMapPainter extends CustomPainter {
   final AtlasPathCache pathCache;
   final double zoomLevel;
   final List<CityFeature> cities; // Pre-filtered cities for the state
+  final List<OverlayFeature>? counties;
+  final List<OverlayFeature>? cd116;
+  final List<OverlayFeature>? urbanAreas;
+  final List<OverlayFeature>? zcta;
+  final List<OverlayFeature>? lakes;
+  final bool showCounties;
+  final bool showDistricts;
+  final bool showUrban;
+  final bool showZcta;
+  final bool showLakes;
 
   final Paint _stateFillPaint = Paint()
     ..color = Colors.white
@@ -23,12 +33,43 @@ class StateMapPainter extends CustomPainter {
     ..color = Colors.black87
     ..style = PaintingStyle.fill;
 
+  // Overlay Paints
+  final Paint _countyPaint = Paint()
+    ..color = Colors.grey.withOpacity(0.5)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.5;
+  final Paint _districtPaint = Paint()
+    ..color = Colors.purple.withOpacity(0.5)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5;
+  final Paint _urbanPaint = Paint()
+    ..color = Colors.orange.withOpacity(0.2)
+    ..style = PaintingStyle.fill;
+  final Paint _zctaPaint = Paint()
+    ..color = Colors.green.withOpacity(0.3)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.5;
+  final Paint _lakesPaint = Paint()
+    ..color =
+        const Color(0xFFA3CCFF) // Light blue
+    ..style = PaintingStyle.fill;
+
   StateMapPainter({
     required this.stateRecord,
     required this.atlas,
     required this.pathCache,
     required this.zoomLevel,
     required this.cities,
+    this.counties,
+    this.cd116,
+    this.urbanAreas,
+    this.zcta,
+    this.lakes,
+    this.showCounties = false,
+    this.showDistricts = false,
+    this.showUrban = false,
+    this.showZcta = false,
+    this.showLakes = false,
   });
 
   @override
@@ -58,12 +99,62 @@ class StateMapPainter extends CustomPainter {
     if (path != null) {
       canvas.drawPath(path, _stateFillPaint);
       canvas.drawPath(path, _stateStrokePaint);
+
+      // *** CLIPPING FIX ***
+      canvas.save();
+      canvas.clipPath(path);
+
+      // Draw Overlays
+      if (showLakes && lakes != null) {
+        _drawOverlay(canvas, lakes!, _lakesPaint);
+      }
+      if (showUrban && urbanAreas != null) {
+        _drawOverlay(canvas, urbanAreas!, _urbanPaint);
+      }
+      if (showZcta && zcta != null) {
+        _drawOverlay(canvas, zcta!, _zctaPaint);
+      }
+      if (showCounties && counties != null) {
+        _drawOverlay(canvas, counties!, _countyPaint);
+      }
+      if (showDistricts && cd116 != null) {
+        _drawOverlay(canvas, cd116!, _districtPaint);
+      }
+
+      canvas.restore();
     }
 
     // Draw Cities (Labels & Markers)
     // We need to calculate Placements using the ported logic.
     // NOTE: In a real app, calculate this OUTSIDE paint if expensive.
     _drawCities(canvas, scale, size);
+  }
+
+  void _drawOverlay(Canvas canvas, List<OverlayFeature> features, Paint paint) {
+    // Filter features that intersect with the state bbox
+    final sBox = stateRecord.bbox;
+    for (var f in features) {
+      // BBox Intersection Check
+      // f.bbox = [minX, minY, maxX, maxY]
+      // sBox   = [minX, minY, maxX, maxY]
+      final intersects =
+          !(f.bbox[0] > sBox[2] ||
+              f.bbox[2] < sBox[0] ||
+              f.bbox[1] > sBox[3] ||
+              f.bbox[3] < sBox[1]);
+
+      if (intersects) {
+        // Retrieve or parse path
+        var path = pathCache.getPathById(f.id);
+        if (path == null) {
+          pathCache.cachePath(f.id, f.path);
+          path = pathCache.getPathById(f.id);
+        }
+        if (path != null) {
+          canvas.drawPath(path, paint);
+        }
+      }
+    }
   }
 
   void _drawCities(Canvas canvas, double scale, Size size) {
@@ -161,6 +252,11 @@ class StateMapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant StateMapPainter oldDelegate) {
-    return oldDelegate.stateRecord.id != stateRecord.id;
+    return oldDelegate.stateRecord.id != stateRecord.id ||
+        oldDelegate.showCounties != showCounties ||
+        oldDelegate.showDistricts != showDistricts ||
+        oldDelegate.showUrban != showUrban ||
+        oldDelegate.showZcta != showZcta ||
+        oldDelegate.showLakes != showLakes;
   }
 }

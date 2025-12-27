@@ -4,14 +4,14 @@ import path from 'node:path';
 
 const DIRECTORY_URL = 'https://www.usa.gov/state-governments';
 const STATE_BASE = 'https://www.usa.gov/states/';
-const OUTPUT_PATH = path.resolve('data', 'usaGovSites.json');
+const OUTPUT_PATH = path.resolve('assets', 'data', 'usaGovSites.json');
 const states = [
-  'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia',
-  'Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine',
-  'Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada',
-  'New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma',
-  'Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont',
-  'Virginia','Washington','West Virginia','Wisconsin','Wyoming'
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia',
+  'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine',
+  'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
+  'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma',
+  'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
 ];
 
 const wait = (min = 400, max = 950) => new Promise((resolve) => {
