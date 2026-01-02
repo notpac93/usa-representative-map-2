@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_drawing/path_drawing.dart';
 import '../data/models.dart';
 import 'national_map_painter.dart'; // For AtlasPathCache
 import '../utils/city_placements.dart';
 import '../utils/city_labeling.dart';
+import '../utils/map_transform.dart';
 
 class StateMapPainter extends CustomPainter {
   final StateRecord stateRecord;
@@ -16,11 +18,14 @@ class StateMapPainter extends CustomPainter {
   final List<OverlayFeature>? urbanAreas;
   final List<OverlayFeature>? zcta;
   final List<OverlayFeature>? lakes;
+  final List<OverlayFeature>? judicial;
   final bool showCounties;
   final bool showDistricts;
   final bool showUrban;
   final bool showZcta;
   final bool showLakes;
+  final bool showJudicial;
+  final List<OverlayFeature>? selectedFeatures; // New selected list
 
   final Paint _stateFillPaint = Paint()
     ..color = Colors.white
@@ -53,6 +58,20 @@ class StateMapPainter extends CustomPainter {
     ..color =
         const Color(0xFFA3CCFF) // Light blue
     ..style = PaintingStyle.fill;
+  final Paint _judicialPaint = Paint()
+    ..color = Colors.brown
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+  final Paint _highlightPaint =
+      Paint() // Gold highlight
+        ..color = const Color(0xFFFFD700).withOpacity(0.8)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3.0;
+
+  final Paint _intersectionFillPaint = Paint()
+    ..color = const Color(0xFFFFD700)
+        .withOpacity(0.5) // Semi-transparent Gold
+    ..style = PaintingStyle.fill;
 
   StateMapPainter({
     required this.stateRecord,
@@ -65,34 +84,28 @@ class StateMapPainter extends CustomPainter {
     this.urbanAreas,
     this.zcta,
     this.lakes,
+    this.judicial,
     this.showCounties = false,
     this.showDistricts = false,
     this.showUrban = false,
     this.showZcta = false,
     this.showLakes = false,
+    this.showJudicial = false,
+    this.selectedFeatures,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // State Bounding Box logic (from React StateMapView.tsx)
-    // We want to zoom into the state's bbox.
-    final bbox = stateRecord.bbox; // [minX, minY, maxX, maxY]
-    final bboxWidth = bbox[2] - bbox[0];
-    final bboxHeight = bbox[3] - bbox[1];
-
-    // Scale to fit canvas
-    final scaleX = size.width / bboxWidth;
-    final scaleY = size.height / bboxHeight;
-    final scale = scaleX < scaleY ? scaleX : scaleY; // fit contain
-
-    // Center logic
-    final offsetX = (size.width - (bboxWidth * scale)) / 2;
-    final offsetY = (size.height - (bboxHeight * scale)) / 2;
+    // State Bounding Box logic via Helper
+    final transform = MapTransform.calculateFit(stateRecord.bbox, size);
 
     // Apply Transform: Translate to center, Scale, then Translate negative bbox min
-    canvas.translate(offsetX, offsetY);
-    canvas.scale(scale);
-    canvas.translate(-bbox[0], -bbox[1]);
+    canvas.translate(transform.offset.dx, transform.offset.dy);
+    canvas.scale(transform.scale);
+    canvas.translate(-transform.bbox[0], -transform.bbox[1]);
+
+    // Expose scale for city drawing
+    final scale = transform.scale;
 
     // Draw the State Path
     final path = pathCache.getPath(stateRecord.id);
@@ -104,6 +117,28 @@ class StateMapPainter extends CustomPainter {
       canvas.save();
       canvas.clipPath(path);
 
+      // *** INVARIANT STROKE WIDTH FIX ***
+      // Calculate effective scale = Base Map Scale * User Zoom
+      // Target stroke width (e.g. 0.5px) should be divided by effective scale
+      // so that when magnified, it appears as 0.5px.
+      // NOTE: `scale` is the Base Map Scale. `zoomLevel` is user zoom.
+      // Wait, `canvas.scale(scale)` is already applied.
+      // So drawing with strokeWidth=1.0 will appear as `scale` pixels thick.
+      // To get 1.0px on screen, we need `1.0 / scale`.
+      // The `InteractiveViewer` applies an ADDITIONAL scale of `zoomLevel`.
+      // So the final on-screen thickness is `width * scale * zoomLevel`.
+      // To maintain constant visual thickness T, we need:
+      // width = T / (scale * zoomLevel).
+
+      final invariantScale = scale * zoomLevel;
+
+      _countyPaint.strokeWidth = 0.5 / invariantScale;
+      _districtPaint.strokeWidth = 1.5 / invariantScale;
+      _zctaPaint.strokeWidth = 0.5 / invariantScale;
+      _judicialPaint.strokeWidth = 1.0 / invariantScale;
+      _highlightPaint.strokeWidth = 4.0 / invariantScale; // Thicker highlight
+      // Urban and Lakes are fills, so no stroke width needed.
+
       // Draw Overlays
       if (showLakes && lakes != null) {
         _drawOverlay(canvas, lakes!, _lakesPaint);
@@ -114,11 +149,61 @@ class StateMapPainter extends CustomPainter {
       if (showZcta && zcta != null) {
         _drawOverlay(canvas, zcta!, _zctaPaint);
       }
+      if (showJudicial && judicial != null) {
+        _drawOverlay(canvas, judicial!, _judicialPaint);
+      }
       if (showCounties && counties != null) {
         _drawOverlay(canvas, counties!, _countyPaint);
       }
       if (showDistricts && cd116 != null) {
         _drawOverlay(canvas, cd116!, _districtPaint);
+      }
+
+      // Draw Highlights (Venn Diagram Style)
+      if (selectedFeatures != null && selectedFeatures!.isNotEmpty) {
+        // 1. Compute Intersection Path
+
+        Path? intersectionPath;
+        for (var f in selectedFeatures!) {
+          var path = pathCache.getPathById(f.id);
+          if (path == null) {
+            try {
+              path = parseSvgPathData(f.path);
+              pathCache.cachePath(f.id, f.path);
+            } catch (_) {
+              continue;
+            }
+          }
+
+          if (intersectionPath == null) {
+            intersectionPath = path;
+          } else {
+            intersectionPath = Path.combine(
+              PathOperation.intersect,
+              intersectionPath,
+              path,
+            );
+          }
+        }
+
+        // 2. Draw Fill (Bottom)
+        if (intersectionPath != null) {
+          canvas.drawPath(intersectionPath, _intersectionFillPaint);
+        }
+
+        // 3. Draw Full Outlines (Top)
+        for (var f in selectedFeatures!) {
+          var path = pathCache.getPathById(f.id);
+          // Should be cached from step 1, but safe check
+          if (path == null) {
+            try {
+              path = parseSvgPathData(f.path);
+            } catch (_) {}
+          }
+          if (path != null) {
+            canvas.drawPath(path, _highlightPaint);
+          }
+        }
       }
 
       canvas.restore();
@@ -253,10 +338,14 @@ class StateMapPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant StateMapPainter oldDelegate) {
     return oldDelegate.stateRecord.id != stateRecord.id ||
+        oldDelegate.zoomLevel != zoomLevel ||
         oldDelegate.showCounties != showCounties ||
         oldDelegate.showDistricts != showDistricts ||
         oldDelegate.showUrban != showUrban ||
         oldDelegate.showZcta != showZcta ||
-        oldDelegate.showLakes != showLakes;
+        oldDelegate.showLakes != showLakes ||
+        oldDelegate.showJudicial != showJudicial ||
+        oldDelegate.selectedFeatures !=
+            selectedFeatures; // Identity check usually fine for list replacement
   }
 }

@@ -40,6 +40,7 @@ dependencies:
   google_fonts: ^6.3.3
   collection: ^1.19.1
   url_launcher: ^6.3.2
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -65,9 +66,11 @@ flutter:
   assets:
     - assets/data/
     - assets/data/overlays/
+    - assets/data/places/
     - assets/img/governors/
     - assets/img/senators/
     - assets/img/representatives/
+    - assets/img/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,0 +1,28 @@
+Navigating to https://www.armunileague.org/member-directory/...
+Expanding table length to 100...
+Headers: [
+  'City',       'Name',
+  'Position',   'County',
+  'Population', 'Classifications',
+  'Address',    'City',
+  'State',      'Zip',
+  'Phone',      'Fax',
+  'Meetings',   'Website'
+]
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+elementHandle.click: Element is not attached to the DOM
+Call log:
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is not stable[22m
+[2m  - retrying click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+
+    at /Users/kennygrimblejr./usa-representative-map-2/scripts/scrape_arkansas_mayors.cjs:83:27 {
+  name: 'Error'
+}
+
+Node.js v24.3.0

@@ -1,0 +1,14 @@
+Navigating to https://www.armunileague.org/member-directory/...
+Expanding table length to 100...
+Headers: [
+  'City',       'Name',
+  'Position',   'County',
+  'Population', 'Classifications',
+  'Address',    'City',
+  'State',      'Zip',
+  'Phone',      'Fax',
+  'Meetings',   'Website'
+]
+
+Scraping complete. Found 626 mayors.
+Saved 593 unique mayors to /Users/kennygrimblejr./usa-representative-map-2/data/mayors_ar_full.json

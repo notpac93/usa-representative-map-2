@@ -1,0 +1,352 @@
+[
+  {
+    "tag": "LI",
+    "text": "Skip to primary navigation",
+    "html": "<a href=\"#genesis-nav-primary\" class=\"screen-reader-shortcut\"> Skip to primary navigation</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Skip to main content",
+    "html": "<a href=\"#genesis-content\" class=\"screen-reader-shortcut\"> Skip to main content</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Skip to footer",
+    "html": "<a href=\"#genesis-footer-widgets\" class=\"screen-reader-shortcut\"> Skip to footer</a>"
+  },
+  {
+    "tag": "P",
+    "text": "Arizona Mayors Roundtable",
+    "html": "<a href=\"https://azmayors.org/\">Arizona Mayors Roundtable</a>"
+  },
+  {
+    "tag": "P",
+    "text": "A project of WestEd with funding from the Helios Education Foundation and the Arizona Community Foundation.",
+    "html": "A project of WestEd with funding from the Helios Education Foundation and the Arizona Community Foundation."
+  },
+  {
+    "tag": "LI",
+    "text": "",
+    "html": "<a href=\"https://azmayors.org/\" itemprop=\"url\"><span itemprop=\"name\">Home</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "ABOUT",
+    "html": "<a href=\"https://azmayors.org/about/\" itemprop=\"url\" class=\"sf-with-ul\"><span itemprop=\"name\">About</span></a>\n<button class=\"sub-menu-toggle dashicons-before dashicons-arrow-down-alt2\" aria-expanded=\"false\" aria-pressed=\"false\"><span class=\"screen-reader-text\">Submenu</span></button><ul class=\"sub-menu\" style=\"\">\n\t<li id=\"menu-item-89\" class=\"menu-item menu-item-type-custom menu-item-object-custom menu-item-89\"><a href=\"/about\" itemprop=\"url\"><span itemprop=\"name\">About Us</span></a></li>\n\t<li id=\"menu-item-75\" class=\"nav-mayors menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-72 current_page_item menu-item-75\"><a href=\"https://azmayors.org/about/mayors/\" aria-current=\"page\" itemprop=\"url\"><span itemprop=\"name\">Mayors</span></a></li>\n\t<li id=\"menu-item-87\" class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-87\"><a href=\"https://azmayors.org/about/collaborators-funders/\" itemprop=\"url\"><span itemprop=\"name\">Collaborators &amp; Funders</span></a></li>\n\t<li id=\"menu-item-86\" class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-86\"><a href=\"https://azmayors.org/about/our-staff/\" itemprop=\"url\"><span itemprop=\"name\">Our Staff</span></a></li>\n</ul>\n"
+  },
+  {
+    "tag": "LI",
+    "text": "About Us",
+    "html": "<a href=\"/about\" itemprop=\"url\"><span itemprop=\"name\">About Us</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Mayors",
+    "html": "<a href=\"https://azmayors.org/about/mayors/\" aria-current=\"page\" itemprop=\"url\"><span itemprop=\"name\">Mayors</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Collaborators & Funders",
+    "html": "<a href=\"https://azmayors.org/about/collaborators-funders/\" itemprop=\"url\"><span itemprop=\"name\">Collaborators &amp; Funders</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Our Staff",
+    "html": "<a href=\"https://azmayors.org/about/our-staff/\" itemprop=\"url\"><span itemprop=\"name\">Our Staff</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "OUR WORK",
+    "html": "<a href=\"https://azmayors.org/our-work/\" itemprop=\"url\" class=\"sf-with-ul\"><span itemprop=\"name\">Our Work</span></a>\n<button class=\"sub-menu-toggle dashicons-before dashicons-arrow-down-alt2\" aria-expanded=\"false\" aria-pressed=\"false\"><span class=\"screen-reader-text\">Submenu</span></button><ul class=\"sub-menu\" style=\"\">\n\t<li id=\"menu-item-247\" class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-247\"><a href=\"https://azmayors.org/our-work/\" itemprop=\"url\"><span itemprop=\"name\">Our Work</span></a></li>\n\t<li id=\"menu-item-66\" class=\"nav-initiatives menu-item menu-item-type-post_type menu-item-object-page menu-item-66\"><a href=\"https://azmayors.org/our-work/initiatives/\" itemprop=\"url\"><span itemprop=\"name\">Local Initiatives</span></a></li>\n\t<li id=\"menu-item-132\" class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-132\"><a href=\"https://azmayors.org/our-work/reports/\" itemprop=\"url\"><span itemprop=\"name\">Reports</span></a></li>\n</ul>\n"
+  },
+  {
+    "tag": "LI",
+    "text": "Our Work",
+    "html": "<a href=\"https://azmayors.org/our-work/\" itemprop=\"url\"><span itemprop=\"name\">Our Work</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Local Initiatives",
+    "html": "<a href=\"https://azmayors.org/our-work/initiatives/\" itemprop=\"url\"><span itemprop=\"name\">Local Initiatives</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Reports",
+    "html": "<a href=\"https://azmayors.org/our-work/reports/\" itemprop=\"url\"><span itemprop=\"name\">Reports</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "CONVENINGS",
+    "html": "<a href=\"https://azmayors.org/convenings/\" itemprop=\"url\"><span itemprop=\"name\">Convenings</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "HELPFUL WEBSITES",
+    "html": "<a href=\"https://azmayors.org/helpful-websites/\" itemprop=\"url\"><span itemprop=\"name\">Helpful Websites</span></a>"
+  },
+  {
+    "tag": "LI",
+    "text": "CONTACT",
+    "html": "<a href=\"https://azmayors.org/contact/\" itemprop=\"url\"><span itemprop=\"name\">Contact</span></a>"
+  },
+  {
+    "tag": "H1",
+    "text": "Mayors",
+    "html": "Mayors"
+  },
+  {
+    "tag": "H3",
+    "text": "CASA GRANDE",
+    "html": "<a href=\"https://azmayors.org/city/casa-grande/\">Casa Grande</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Lisa Navarro Fitzgibbons",
+    "html": "Lisa Navarro Fitzgibbons"
+  },
+  {
+    "tag": "H3",
+    "text": "EL MIRAGE",
+    "html": "<a href=\"https://azmayors.org/city/el-mirage/\">El Mirage</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Alexis Hermosillo",
+    "html": "Alexis Hermosillo"
+  },
+  {
+    "tag": "H3",
+    "text": "FLAGSTAFF",
+    "html": "<a href=\"https://azmayors.org/city/flagstaff/\">Flagstaff</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Becky Daggett",
+    "html": "Becky Daggett"
+  },
+  {
+    "tag": "H3",
+    "text": "FLORENCE",
+    "html": "<a href=\"https://azmayors.org/city/florence/\">Florence</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Keith Eaton",
+    "html": "Keith Eaton"
+  },
+  {
+    "tag": "H3",
+    "text": "FOUNTAIN HILLS",
+    "html": "<a href=\"https://azmayors.org/city/fountain-hills/\">Fountain Hills</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Gerry Friedel",
+    "html": "Gerry Friedel"
+  },
+  {
+    "tag": "H3",
+    "text": "GILBERT",
+    "html": "<a href=\"https://azmayors.org/city/gilbert/\">Gilbert</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Scott Anderson",
+    "html": "Scott Anderson"
+  },
+  {
+    "tag": "H3",
+    "text": "GOODYEAR",
+    "html": "<a href=\"https://azmayors.org/city/goodyear/\">Goodyear</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Joe Pizzillo",
+    "html": "Joe Pizzillo"
+  },
+  {
+    "tag": "H3",
+    "text": "MESA",
+    "html": "<a href=\"https://azmayors.org/city/mesa/\">Mesa</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Mark Freeman",
+    "html": "Mark Freeman"
+  },
+  {
+    "tag": "H3",
+    "text": "NOGALES",
+    "html": "<a href=\"https://azmayors.org/city/nogales/\">Nogales</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Jorge Maldonado",
+    "html": "Jorge Maldonado"
+  },
+  {
+    "tag": "H3",
+    "text": "PHOENIX",
+    "html": "<a href=\"https://azmayors.org/city/phoenix/\">Phoenix</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Kate Gallego",
+    "html": "Kate Gallego"
+  },
+  {
+    "tag": "H3",
+    "text": "SAHUARITA",
+    "html": "<a href=\"https://azmayors.org/city/sahuarita/\">Sahuarita</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Tom Murphy",
+    "html": "Tom Murphy"
+  },
+  {
+    "tag": "H3",
+    "text": "SUPERIOR",
+    "html": "<a href=\"https://azmayors.org/city/superior/\">Superior</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Mila Besich",
+    "html": "Mila Besich"
+  },
+  {
+    "tag": "H3",
+    "text": "TEMPE",
+    "html": "<a href=\"https://azmayors.org/city/tempe/\">Tempe</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Corey Woods",
+    "html": "Corey Woods"
+  },
+  {
+    "tag": "H5",
+    "text": "CHAIR",
+    "html": "Chair"
+  },
+  {
+    "tag": "H3",
+    "text": "TOLLESON",
+    "html": "<a href=\"https://azmayors.org/city/tolleson/\">Tolleson</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Juan F. Rodriguez",
+    "html": " Juan F.   Rodriguez"
+  },
+  {
+    "tag": "H3",
+    "text": "TUCSON",
+    "html": "<a href=\"https://azmayors.org/city/tucson/\">Tucson</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Regina Romero",
+    "html": "Regina Romero"
+  },
+  {
+    "tag": "H3",
+    "text": "YUMA",
+    "html": "<a href=\"https://azmayors.org/city/yuma/\">Yuma</a>"
+  },
+  {
+    "tag": "H4",
+    "text": "Douglas Nicholls",
+    "html": "Douglas Nicholls"
+  },
+  {
+    "tag": "H2",
+    "text": "FOOTER",
+    "html": "Footer"
+  },
+  {
+    "tag": "LI",
+    "text": "HOME",
+    "html": "<a href=\"https://azmayors.org/\" itemprop=\"url\">Home</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "ABOUT",
+    "html": "<a href=\"https://azmayors.org/about/\" itemprop=\"url\">About</a>\n<ul class=\"sub-menu\">\n\t<li class=\"menu-item menu-item-type-custom menu-item-object-custom menu-item-89\"><a href=\"/about\" itemprop=\"url\">About Us</a></li>\n\t<li class=\"nav-mayors menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-72 current_page_item menu-item-75\"><a href=\"https://azmayors.org/about/mayors/\" aria-current=\"page\" itemprop=\"url\">Mayors</a></li>\n\t<li class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-87\"><a href=\"https://azmayors.org/about/collaborators-funders/\" itemprop=\"url\">Collaborators &amp; Funders</a></li>\n\t<li class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-86\"><a href=\"https://azmayors.org/about/our-staff/\" itemprop=\"url\">Our Staff</a></li>\n</ul>\n"
+  },
+  {
+    "tag": "LI",
+    "text": "About Us",
+    "html": "<a href=\"/about\" itemprop=\"url\">About Us</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Mayors",
+    "html": "<a href=\"https://azmayors.org/about/mayors/\" aria-current=\"page\" itemprop=\"url\">Mayors</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Collaborators & Funders",
+    "html": "<a href=\"https://azmayors.org/about/collaborators-funders/\" itemprop=\"url\">Collaborators &amp; Funders</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Our Staff",
+    "html": "<a href=\"https://azmayors.org/about/our-staff/\" itemprop=\"url\">Our Staff</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "OUR WORK",
+    "html": "<a href=\"https://azmayors.org/our-work/\" itemprop=\"url\">Our Work</a>\n<ul class=\"sub-menu\">\n\t<li class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-247\"><a href=\"https://azmayors.org/our-work/\" itemprop=\"url\">Our Work</a></li>\n\t<li class=\"nav-initiatives menu-item menu-item-type-post_type menu-item-object-page menu-item-66\"><a href=\"https://azmayors.org/our-work/initiatives/\" itemprop=\"url\">Local Initiatives</a></li>\n\t<li class=\"menu-item menu-item-type-post_type menu-item-object-page menu-item-132\"><a href=\"https://azmayors.org/our-work/reports/\" itemprop=\"url\">Reports</a></li>\n</ul>\n"
+  },
+  {
+    "tag": "LI",
+    "text": "Our Work",
+    "html": "<a href=\"https://azmayors.org/our-work/\" itemprop=\"url\">Our Work</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Local Initiatives",
+    "html": "<a href=\"https://azmayors.org/our-work/initiatives/\" itemprop=\"url\">Local Initiatives</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "Reports",
+    "html": "<a href=\"https://azmayors.org/our-work/reports/\" itemprop=\"url\">Reports</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "CONVENINGS",
+    "html": "<a href=\"https://azmayors.org/convenings/\" itemprop=\"url\">Convenings</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "HELPFUL WEBSITES",
+    "html": "<a href=\"https://azmayors.org/helpful-websites/\" itemprop=\"url\">Helpful Websites</a>"
+  },
+  {
+    "tag": "LI",
+    "text": "CONTACT",
+    "html": "<a href=\"https://azmayors.org/contact/\" itemprop=\"url\">Contact</a>"
+  },
+  {
+    "tag": "P",
+    "text": "The Roundtable is operated by WestEd — a nonpartisan, nonprofit research, development, and service agency that works with education and other communities to improve outcomes for children, youth, and adults.",
+    "html": "The Roundtable is operated by WestEd — a nonpartisan, nonprofit research, development, and service agency that works with education and other communities to improve outcomes for children, youth, and adults."
+  },
+  {
+    "tag": "P",
+    "text": "This site and its contents copyright © WestEd 1995-2026. All rights reserved.",
+    "html": "This site and its contents copyright © WestEd 1995-2026. All rights reserved."
+  },
+  {
+    "tag": "P",
+    "text": "WestEd Home | Privacy Policy | Disclaimer | Accessibility",
+    "html": "<a href=\"https://www.wested.org/\" target=\"_blank\">WestEd Home</a> | <a href=\"https://www.wested.org/privacy-policy\" target=\"_blank\">Privacy Policy</a> | <a href=\"https://www.wested.org/disclaimer\" target=\"_blank\">Disclaimer</a> | <a href=\"https://www.wested.org/wested-accessibility-statement\" target=\"_blank\">Accessibility</a>"
+  },
+  {
+    "tag": "P",
+    "text": "",
+    "html": ""
+  }
+]

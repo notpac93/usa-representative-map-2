@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'data/data_provider.dart';
 import 'map/national_map_painter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'screens/state_detail_screen.dart';
 
 void main() {
+  // PORT CONFIGURATION: Always run on port 8080 to ensure consistency.
+  // Command: flutter run -d web-server --web-port=8080 --web-hostname=localhost
   runApp(
     MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => MapDataProvider())],
@@ -108,8 +111,17 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Ensure no back button/drawer icon
         title: const Text("USA Representative Map"),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: SvgPicture.asset(
+              'assets/img/logo.svg',
+              width: 32,
+              height: 32,
+            ),
+          ),
           IconButton(icon: const Icon(Icons.info_outline), onPressed: () {}),
         ],
       ),

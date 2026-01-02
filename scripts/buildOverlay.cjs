@@ -82,7 +82,7 @@ if (isShapefile) {
     const tmpOut = path.join(process.cwd(), 'tmp_overlay_out.geojson');
     const dissolvePart = dissolve ? `-dissolve ${dissolve}` : '';
     const clipPart = clip ? `-clip "${clip}" remove-slivers` : '';
-    const cli = `npx mapshaper -i "${input}" ${clipPart} ${dissolvePart} -simplify visvalingam ${simplify}% keep-shapes -o format=geojson precision=0.0001 ${tmpOut}`;
+    const cli = `npx mapshaper -i "${input}" ${clipPart} ${dissolvePart} -proj wgs84 -simplify visvalingam ${simplify}% keep-shapes -o format=geojson precision=0.0001 ${tmpOut}`;
     console.log('[buildOverlay] CLI:', cli);
     execSync(cli, { stdio: 'inherit' });
     if (fs.existsSync(tmpOut)) {

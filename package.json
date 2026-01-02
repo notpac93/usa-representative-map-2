@@ -30,11 +30,12 @@
   "dependencies": {
     "@types/topojson-client": "^3.1.5",
     "d3": "^7.9.0",
-    "d3-geo": "^3.1.0",
+    "d3-geo": "^3.1.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "topojson-client": "^3.1.0",
-    "topojson-server": "^3.0.1"
+    "topojson-server": "^3.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
