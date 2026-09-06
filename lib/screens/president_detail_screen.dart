@@ -25,7 +25,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
   President? _selectedPresident;
   String _searchQuery = '';
   String _selectedFilter = 'all'; // 'all', '2026', '2025', '2024'
-  String _selectedStatusFilter = 'all'; // 'all', 'in-effect', 'revoked', 'amended'
   bool _isLoading = false;
   final Set<String> _expandedOrderIds = <String>{};
 
@@ -163,14 +162,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
         if (!eo.signingDate.startsWith(_selectedFilter)) {
           return false;
         }
-      }
-
-      if (_selectedStatusFilter == 'in-effect') {
-        if (!eo.isInEffect) return false;
-      } else if (_selectedStatusFilter == 'revoked') {
-        if (!eo.isRevoked && !eo.isSuperseded) return false;
-      } else if (_selectedStatusFilter == 'amended') {
-        if (!eo.isAmended) return false;
       }
 
       return true;
@@ -322,7 +313,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                     setState(() {
                       _selectedPresident = p;
                       _selectedFilter = 'all';
-                      _selectedStatusFilter = 'all';
                       _searchQuery = '';
                       _searchController.clear();
                       _displayedOrdersCount = _pageSize;
@@ -655,9 +645,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     required List<ExecutiveOrderRecord> allPresidentOrders,
   }) {
     final totalOrdersCount = allPresidentOrders.length;
-    final totalInEffect = allPresidentOrders.where((o) => o.isInEffect).length;
-    final totalRevoked = allPresidentOrders.where((o) => o.isRevoked || o.isSuperseded).length;
-    final totalAmended = allPresidentOrders.where((o) => o.isAmended).length;
 
     final availableYears = <String>{};
     for (final order in allPresidentOrders) {
@@ -804,24 +791,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
             ),
           ),
 
-          const SizedBox(height: 10),
-
-          // Legal Status Filter Chips with Exact Counts
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _buildStatusFilterChip("All Statuses ($totalOrdersCount)", 'all', null),
-                const SizedBox(width: 8),
-                _buildStatusFilterChip("Active ($totalInEffect)", 'in-effect', const Color(0xFF16A34A)),
-                const SizedBox(width: 8),
-                _buildStatusFilterChip("Revoked ($totalRevoked)", 'revoked', const Color(0xFFDC2626)),
-                const SizedBox(width: 8),
-                _buildStatusFilterChip("Amended ($totalAmended)", 'amended', const Color(0xFFD97706)),
-              ],
-            ),
-          ),
-
           const SizedBox(height: 20),
 
           // List of Executive Orders (Snappy Progressive Rendering)
@@ -931,110 +900,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     );
   }
 
-  Widget _buildStatusFilterChip(String label, String value, Color? dotColor) {
-    final isSelected = _selectedStatusFilter == value;
-    Color activeColor = const Color(0xFF0F172A);
-    if (value == 'in-effect') activeColor = const Color(0xFF15803D);
-    if (value == 'revoked') activeColor = const Color(0xFFB91C1C);
-    if (value == 'amended') activeColor = const Color(0xFFB45309);
-
-    return ChoiceChip(
-      avatar: dotColor != null
-          ? Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.white : dotColor,
-                shape: BoxShape.circle,
-              ),
-            )
-          : null,
-      label: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          color: isSelected ? Colors.white : const Color(0xFF334155),
-        ),
-      ),
-      selected: isSelected,
-      selectedColor: activeColor,
-      backgroundColor: const Color(0xFFF1F5F9),
-      onSelected: (selected) {
-        if (selected) {
-          setState(() {
-            _selectedStatusFilter = value;
-            _displayedOrdersCount = _pageSize;
-          });
-        }
-      },
-    );
-  }
-
-  // Single clean red, yellow, or green indicator for whether the order is active today
-  Widget _buildStatusIndicator(ExecutiveOrderRecord eo) {
-    Color bg;
-    Color border;
-    Color dotColor;
-    String label;
-
-    if (eo.isRevoked) {
-      bg = const Color(0xFFFEF2F2);
-      border = const Color(0xFFFECACA);
-      dotColor = const Color(0xFFDC2626); // Red
-      label = "Revoked";
-    } else if (eo.isSuperseded) {
-      bg = const Color(0xFFFFFBEB);
-      border = const Color(0xFFFDE68A);
-      dotColor = const Color(0xFFD97706); // Yellow/Amber
-      label = "Superseded";
-    } else if (eo.isAmended) {
-      bg = const Color(0xFFFFFBEB);
-      border = const Color(0xFFFDE68A);
-      dotColor = const Color(0xFFD97706); // Yellow/Amber
-      label = "Amended";
-    } else {
-      bg = const Color(0xFFF0FDF4);
-      border = const Color(0xFFBBF7D0);
-      dotColor = const Color(0xFF16A34A); // Green
-      label = "Active";
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(
-              color: dotColor,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w700,
-              color: dotColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Backwards compatibility alias for tests
-  Widget _buildStatusBadge(ExecutiveOrderRecord eo) => _buildStatusIndicator(eo);
-
   Widget _buildSummaryMetaTag(String label, String value) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -1109,9 +974,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                         ),
                       ),
                     ),
-
-                    // Single Red / Yellow / Green Indicator
-                    _buildStatusIndicator(eo),
 
                     // Citation
                     if (eo.citation.isNotEmpty)

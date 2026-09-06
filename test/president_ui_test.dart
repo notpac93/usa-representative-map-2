@@ -189,7 +189,7 @@ void main() {
       expect(find.text('Democratic'), findsOneWidget);
     });
 
-    testWidgets('PresidentDetailScreen renders executive order single status indicator and status filter chips with counts', (tester) async {
+    testWidgets('PresidentDetailScreen renders clean executive order cards and top keyword search', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: PresidentDetailScreen(
@@ -202,14 +202,14 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
       }
 
-      // Check for Status Filter Chips with exact counts
-      expect(find.textContaining('All Statuses'), findsOneWidget);
-      expect(find.textContaining('Active'), findsWidgets);
-      expect(find.textContaining('Revoked'), findsWidgets);
-      expect(find.textContaining('Amended'), findsWidgets);
-
       // Check for top keyword search bar
       expect(find.byType(TextField), findsOneWidget);
+
+      // Verify status filter chips and indicators are not present
+      expect(find.textContaining('All Statuses'), findsNothing);
+
+      // Verify year filter chips are present
+      expect(find.text('All Years'), findsOneWidget);
     });
 
     testWidgets('PresidentDetailScreen supports snappy pagination and loading more orders', (tester) async {
@@ -233,33 +233,6 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.textContaining('Showing 50 of 399 orders'), findsOneWidget);
       }
-    });
-
-    testWidgets('PresidentDetailScreen status filter chip displays status categories', (tester) async {
-      tester.view.physicalSize = const Size(1200, 1600);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: PresidentDetailScreen(
-            initialPresident: testPresident,
-          ),
-        ),
-      );
-
-      for (int i = 0; i < 5; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
-
-      // Check for status filter chips
-      expect(find.textContaining('All Statuses'), findsOneWidget);
-      expect(find.textContaining('Active'), findsWidgets);
-      expect(find.textContaining('Revoked'), findsWidgets);
-      expect(find.textContaining('Amended'), findsWidgets);
     });
   });
 }
