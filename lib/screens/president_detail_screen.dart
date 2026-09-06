@@ -20,6 +20,7 @@ class PresidentDetailScreen extends StatefulWidget {
 class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
   final ScreenshotController _screenshotController = ScreenshotController();
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   President? _selectedPresident;
   String _searchQuery = '';
@@ -28,13 +29,30 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
   bool _isLoading = false;
   final Set<String> _expandedOrderIds = <String>{};
 
+  static const int _pageSize = 25;
+  int _displayedOrdersCount = _pageSize;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _selectedPresident = widget.initialPresident ??
         CivicDataProvider().getCurrentPresident() ??
         CivicDataProvider.defaultPresidents.first;
     _loadData();
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients &&
+        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 400) {
+      _loadMoreOrders();
+    }
+  }
+
+  void _loadMoreOrders() {
+    setState(() {
+      _displayedOrdersCount += _pageSize;
+    });
   }
 
   Future<void> _loadData() async {
@@ -55,6 +73,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -133,7 +153,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
         final matchNum = eo.orderNumber.toLowerCase().contains(q);
         final matchCit = eo.citation.toLowerCase().contains(q);
         final matchSummary = eo.summary?.toLowerCase().contains(q) ?? false;
-        if (!matchTitle && !matchNum && !matchCit && !matchSummary) {
+        final matchDisp = eo.dispositionNotes?.toLowerCase().contains(q) ?? false;
+        if (!matchTitle && !matchNum && !matchCit && !matchSummary && !matchDisp) {
           return false;
         }
       }
@@ -181,6 +202,7 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Center(
               child: ConstrainedBox(
@@ -303,6 +325,7 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                       _selectedStatusFilter = 'all';
                       _searchQuery = '';
                       _searchController.clear();
+                      _displayedOrdersCount = _pageSize;
                     });
                   }
                 },
@@ -630,6 +653,10 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     required List<ExecutiveOrderRecord> allPresidentOrders,
   }) {
     final totalOrdersCount = allPresidentOrders.length;
+    final totalInEffect = allPresidentOrders.where((o) => o.isInEffect).length;
+    final totalRevoked = allPresidentOrders.where((o) => o.isRevoked || o.isSuperseded).length;
+    final totalAmended = allPresidentOrders.where((o) => o.isAmended).length;
+
     final availableYears = <String>{};
     for (final order in allPresidentOrders) {
       if (order.signingDate.length >= 4) {
@@ -640,6 +667,9 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     final displayYears = sortedYears.isNotEmpty
         ? sortedYears
         : (president.current ? ['2026', '2025'] : <String>[]);
+
+    final visibleOrders = orders.take(_displayedOrdersCount).toList();
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -656,7 +686,7 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title and Source Attribution Banner
+          // Section Title & Order Count
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -712,113 +742,48 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
-          // Official Government Source Banner
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.verified, color: Color(0xFF0284C7), size: 18),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: RichText(
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: 12, color: Color(0xFF475569)),
-                      children: [
-                        TextSpan(
-                          text: "Official Government Source: ",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                        ),
-                        TextSpan(
-                          text: "Directly fetched from the Office of the Federal Register (National Archives & Records Administration) and published via GPO GovInfo.",
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Executive Order Legal Effect & Disposition Explainer Banner
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0FDF4),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFBBF7D0)),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.gavel, color: Color(0xFF15803D), size: 18),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: RichText(
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: 12, color: Color(0xFF14532D)),
-                      children: [
-                        TextSpan(
-                          text: "Legal Effect & Disposition Tracking: ",
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF166534)),
-                        ),
-                        TextSpan(
-                          text: "Executive orders carry binding administrative force of law unless revoked or superseded by a subsequent President, overridden by Congress, or enjoined by federal courts. Live disposition notes are provided directly by the Federal Register API.",
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
-          // Search & Filter Controls
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search executive orders by title, order number (e.g. 14423), or subject...",
-                    prefixIcon: const Icon(Icons.search, color: Colors.blueGrey),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear, size: 18),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _searchQuery = '';
-                              });
-                            },
-                          )
-                        : null,
-                    filled: true,
-                    fillColor: const Color(0xFFF1F5F9),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  onChanged: (val) {
-                    setState(() {
-                      _searchQuery = val.trim();
-                    });
-                  },
-                ),
+          // 1. Prominent Top Search Bar for Keywords
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: "Search executive orders by keyword, title, order #, or subject...",
+              prefixIcon: const Icon(Icons.search, color: Color(0xFF1E3A8A)),
+              suffixIcon: _searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, size: 18),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {
+                          _searchQuery = '';
+                          _displayedOrdersCount = _pageSize;
+                        });
+                      },
+                    )
+                  : null,
+              filled: true,
+              fillColor: const Color(0xFFF1F5F9),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
               ),
-            ],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+              ),
+            ),
+            onChanged: (val) {
+              setState(() {
+                _searchQuery = val.trim();
+                _displayedOrdersCount = _pageSize;
+              });
+            },
           ),
 
           const SizedBox(height: 16),
@@ -828,7 +793,7 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildFilterChip("All Orders", 'all'),
+                _buildFilterChip("All Years", 'all'),
                 for (final yr in displayYears) ...[
                   const SizedBox(width: 8),
                   _buildFilterChip("$yr Orders", yr),
@@ -839,25 +804,25 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
 
           const SizedBox(height: 10),
 
-          // Legal Status Filter Chips
+          // Legal Status Filter Chips with Exact Counts
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildStatusFilterChip("All Statuses", 'all', Icons.tune),
+                _buildStatusFilterChip("All Statuses ($totalOrdersCount)", 'all', null),
                 const SizedBox(width: 8),
-                _buildStatusFilterChip("In Effect", 'in-effect', Icons.check_circle),
+                _buildStatusFilterChip("Active ($totalInEffect)", 'in-effect', const Color(0xFF16A34A)),
                 const SizedBox(width: 8),
-                _buildStatusFilterChip("Revoked", 'revoked', Icons.cancel),
+                _buildStatusFilterChip("Revoked ($totalRevoked)", 'revoked', const Color(0xFFDC2626)),
                 const SizedBox(width: 8),
-                _buildStatusFilterChip("Amended", 'amended', Icons.edit_note),
+                _buildStatusFilterChip("Amended ($totalAmended)", 'amended', const Color(0xFFD97706)),
               ],
             ),
           ),
 
           const SizedBox(height: 20),
 
-          // List of Executive Orders
+          // List of Executive Orders (Snappy Progressive Rendering)
           if (orders.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40.0),
@@ -876,17 +841,64 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                 ),
               ),
             )
-          else
+          else ...[
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: orders.length,
+              itemCount: visibleOrders.length,
               separatorBuilder: (context, index) => const SizedBox(height: 14),
               itemBuilder: (context, index) {
-                final eo = orders[index];
+                final eo = visibleOrders[index];
                 return _buildExecutiveOrderCard(eo);
               },
             ),
+
+            // Snappy Load More Footer
+            if (_displayedOrdersCount < orders.length)
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Showing ${visibleOrders.length} of ${orders.length} orders",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.blueGrey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: _loadMoreOrders,
+                            icon: const Icon(Icons.arrow_downward, size: 16),
+                            label: Text("Load More Orders (${orders.length - visibleOrders.length} remaining)"),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF1E3A8A),
+                              side: const BorderSide(color: Color(0xFFCBD5E1)),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _displayedOrdersCount = orders.length;
+                              });
+                            },
+                            child: const Text("Show All"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ],
       ),
     );
@@ -910,13 +922,14 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
         if (selected) {
           setState(() {
             _selectedFilter = value;
+            _displayedOrdersCount = _pageSize;
           });
         }
       },
     );
   }
 
-  Widget _buildStatusFilterChip(String label, String value, IconData icon) {
+  Widget _buildStatusFilterChip(String label, String value, Color? dotColor) {
     final isSelected = _selectedStatusFilter == value;
     Color activeColor = const Color(0xFF0F172A);
     if (value == 'in-effect') activeColor = const Color(0xFF15803D);
@@ -924,11 +937,16 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     if (value == 'amended') activeColor = const Color(0xFFB45309);
 
     return ChoiceChip(
-      avatar: Icon(
-        icon,
-        size: 14,
-        color: isSelected ? Colors.white : activeColor,
-      ),
+      avatar: dotColor != null
+          ? Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.white : dotColor,
+                shape: BoxShape.circle,
+              ),
+            )
+          : null,
       label: Text(
         label,
         style: TextStyle(
@@ -944,43 +962,40 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
         if (selected) {
           setState(() {
             _selectedStatusFilter = value;
+            _displayedOrdersCount = _pageSize;
           });
         }
       },
     );
   }
 
-  Widget _buildStatusBadge(ExecutiveOrderRecord eo) {
+  // Single clean red, yellow, or green indicator for whether the order is active today
+  Widget _buildStatusIndicator(ExecutiveOrderRecord eo) {
     Color bg;
     Color border;
-    Color text;
-    IconData icon;
+    Color dotColor;
     String label;
 
     if (eo.isRevoked) {
-      bg = const Color(0xFFFEE2E2);
-      border = const Color(0xFFFCA5A5);
-      text = const Color(0xFFB91C1C);
-      icon = Icons.cancel;
+      bg = const Color(0xFFFEF2F2);
+      border = const Color(0xFFFECACA);
+      dotColor = const Color(0xFFDC2626); // Red
       label = "Revoked";
     } else if (eo.isSuperseded) {
-      bg = const Color(0xFFFEF3C7);
-      border = const Color(0xFFFCD34D);
-      text = const Color(0xFFB45309);
-      icon = Icons.history;
+      bg = const Color(0xFFFFFBEB);
+      border = const Color(0xFFFDE68A);
+      dotColor = const Color(0xFFD97706); // Yellow/Amber
       label = "Superseded";
     } else if (eo.isAmended) {
-      bg = const Color(0xFFE0F2FE);
-      border = const Color(0xFFBAE6FD);
-      text = const Color(0xFF0369A1);
-      icon = Icons.edit_note;
+      bg = const Color(0xFFFFFBEB);
+      border = const Color(0xFFFDE68A);
+      dotColor = const Color(0xFFD97706); // Yellow/Amber
       label = "Amended";
     } else {
-      bg = const Color(0xFFDCFCE7);
-      border = const Color(0xFF86EFAC);
-      text = const Color(0xFF15803D);
-      icon = Icons.check_circle;
-      label = "In Effect";
+      bg = const Color(0xFFF0FDF4);
+      border = const Color(0xFFBBF7D0);
+      dotColor = const Color(0xFF16A34A); // Green
+      label = "Active";
     }
 
     return Container(
@@ -993,14 +1008,21 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: text),
-          const SizedBox(width: 4),
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(
+              color: dotColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
           Text(
             label,
             style: TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w700,
-              color: text,
+              color: dotColor,
             ),
           ),
         ],
@@ -1008,125 +1030,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     );
   }
 
-  Widget _buildLegalStatusAlert(ExecutiveOrderRecord eo) {
-    Color bg;
-    Color border;
-    Color titleColor;
-    Color bodyColor;
-    IconData icon;
-    String title;
-    String body;
-
-    if (eo.isRevoked) {
-      bg = const Color(0xFFFEF2F2);
-      border = const Color(0xFFFECACA);
-      titleColor = const Color(0xFF991B1B);
-      bodyColor = const Color(0xFF7F1D1D);
-      icon = Icons.warning_amber_rounded;
-      title = "Legal Status: Revoked (No Longer in Effect)";
-      body = eo.statusDetails ?? eo.dispositionNotes ?? "This order has been officially revoked and is no longer binding upon federal agencies.";
-    } else if (eo.isSuperseded) {
-      bg = const Color(0xFFFFFBEB);
-      border = const Color(0xFFFDE68A);
-      titleColor = const Color(0xFF92400E);
-      bodyColor = const Color(0xFF78350F);
-      icon = Icons.history_edu;
-      title = "Legal Status: Superseded by Later Action";
-      body = eo.statusDetails ?? eo.dispositionNotes ?? "This executive order has been superseded by a subsequent presidential action.";
-    } else if (eo.isAmended) {
-      bg = const Color(0xFFF0F9FF);
-      border = const Color(0xFFBAE6FD);
-      titleColor = const Color(0xFF075985);
-      bodyColor = const Color(0xFF0C4A6E);
-      icon = Icons.edit_note;
-      title = "Legal Status: Amended";
-      body = eo.statusDetails ?? eo.dispositionNotes ?? "This executive order remains operative as amended by subsequent executive action.";
-    } else {
-      bg = const Color(0xFFF0FDF4);
-      border = const Color(0xFFBBF7D0);
-      titleColor = const Color(0xFF166534);
-      bodyColor = const Color(0xFF14532D);
-      icon = Icons.verified_user_outlined;
-      title = "Legal Status: In Effect (Active Force of Law)";
-      body = eo.statusDetails ?? "Active and legally binding across federal departments and agencies under Article II. Not revoked or superseded.";
-    }
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: border),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 18, color: titleColor),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12.5,
-                          color: titleColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: border),
-                      ),
-                      child: Text(
-                        "NARA / Federal Register",
-                        style: TextStyle(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w600,
-                          color: titleColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  body,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: bodyColor,
-                    height: 1.3,
-                  ),
-                ),
-                if (eo.dispositionNotes != null && !body.contains(eo.dispositionNotes!)) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    "Disposition Note: ${eo.dispositionNotes!.replaceAll('\r', '').replaceAll('\n', '; ')}",
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: bodyColor.withValues(alpha: 0.9),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Backwards compatibility alias for tests
+  Widget _buildStatusBadge(ExecutiveOrderRecord eo) => _buildStatusIndicator(eo);
 
   Widget _buildSummaryMetaTag(String label, String value) {
     return Container(
@@ -1175,11 +1080,10 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top Badges Row: EO Number, Status & Citation on left, Date on right edge
+          // Top Badges Row: EO Number, Single Red/Yellow/Green Indicator, Citation on left, Date on right
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Left badges
               Expanded(
                 child: Wrap(
                   spacing: 8,
@@ -1204,8 +1108,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                       ),
                     ),
 
-                    // Official Status Badge
-                    _buildStatusBadge(eo),
+                    // Single Red / Yellow / Green Indicator
+                    _buildStatusIndicator(eo),
 
                     // Citation
                     if (eo.citation.isNotEmpty)
@@ -1271,12 +1175,7 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
-
-          // Dedicated Legal Status Alert Section
-          _buildLegalStatusAlert(eo),
-
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
           // Clickable Expand / Collapse Summary toggle
           InkWell(
@@ -1370,6 +1269,30 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                       color: Color(0xFF334155),
                     ),
                   ),
+                  if (eo.dispositionNotes != null && eo.dispositionNotes!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.history, size: 15, color: Color(0xFF475569)),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "Disposition: ${eo.dispositionNotes!.replaceAll('\r', '').replaceAll('\n', '; ')}",
+                              style: const TextStyle(fontSize: 12, color: Color(0xFF334155), fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
@@ -1419,7 +1342,6 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                    elevation: 0,
                   ),
                   onPressed: () => _launchUrl(eo.pdfUrl),
                 ),
@@ -1430,3 +1352,4 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
     );
   }
 }
+

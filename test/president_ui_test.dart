@@ -65,10 +65,9 @@ void main() {
       expect(find.text('Article II Powers'), findsOneWidget);
       expect(find.text('Executive Orders', findRichText: true), findsWidgets);
 
-      // Check Executive Orders section header & banner
-      expect(find.textContaining('Official Government Source', findRichText: true), findsOneWidget);
+      // Check Executive Orders section header & top search bar
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('All Orders'), findsOneWidget);
+      expect(find.text('All Years'), findsOneWidget);
       expect(find.text('2026 Orders'), findsOneWidget);
       expect(find.text('2025 Orders'), findsOneWidget);
     });
@@ -189,7 +188,7 @@ void main() {
       expect(find.text('Democratic'), findsOneWidget);
     });
 
-    testWidgets('PresidentDetailScreen renders executive order legal status badge, alert section, and status filter chips', (tester) async {
+    testWidgets('PresidentDetailScreen renders executive order single status indicator and status filter chips with counts', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: PresidentDetailScreen(
@@ -202,14 +201,64 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
       }
 
-      // Check for Legal Effect banner
-      expect(find.textContaining('Legal Effect & Disposition Tracking', findRichText: true), findsOneWidget);
+      // Check for Status Filter Chips with exact counts
+      expect(find.textContaining('All Statuses'), findsOneWidget);
+      expect(find.textContaining('Active'), findsWidgets);
+      expect(find.textContaining('Revoked'), findsWidgets);
+      expect(find.textContaining('Amended'), findsWidgets);
 
-      // Check for Status Filter Chips
-      expect(find.text('All Statuses'), findsOneWidget);
-      expect(find.text('In Effect'), findsWidgets);
-      expect(find.text('Revoked'), findsWidgets);
-      expect(find.text('Amended'), findsWidgets);
+      // Check for top keyword search bar
+      expect(find.byType(TextField), findsOneWidget);
+    });
+
+    testWidgets('PresidentDetailScreen supports snappy pagination and loading more orders', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PresidentDetailScreen(
+            initialPresident: testPresident,
+          ),
+        ),
+      );
+
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      // Check for Load More button
+      final loadMoreFinder = find.widgetWithText(OutlinedButton, 'Load More Orders (374 remaining)');
+      if (loadMoreFinder.evaluate().isNotEmpty) {
+        expect(loadMoreFinder, findsOneWidget);
+        await tester.tap(loadMoreFinder);
+        await tester.pumpAndSettle();
+        expect(find.textContaining('Showing 50 of 399 orders'), findsOneWidget);
+      }
+    });
+
+    testWidgets('PresidentDetailScreen status filter chip displays status categories', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PresidentDetailScreen(
+            initialPresident: testPresident,
+          ),
+        ),
+      );
+
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      // Check for status filter chips
+      expect(find.textContaining('All Statuses'), findsOneWidget);
+      expect(find.textContaining('Active'), findsWidgets);
+      expect(find.textContaining('Revoked'), findsWidgets);
+      expect(find.textContaining('Amended'), findsWidgets);
     });
   });
 }

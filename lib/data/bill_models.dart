@@ -119,10 +119,10 @@ class ExecutiveOrderRecord {
     this.dispositionNotes,
   });
 
-  bool get isInEffect => status == 'In Effect';
-  bool get isRevoked => status == 'Revoked';
-  bool get isSuperseded => status == 'Superseded';
-  bool get isAmended => status == 'Amended';
+  bool get isInEffect => status.toLowerCase() == 'in effect' || status.toLowerCase() == 'active';
+  bool get isRevoked => status.toLowerCase().contains('revoked');
+  bool get isSuperseded => status.toLowerCase().contains('superseded');
+  bool get isAmended => status.toLowerCase().contains('amended');
   bool get isEnjoined => status.toLowerCase().contains('enjoined');
 
   factory ExecutiveOrderRecord.fromJson(Map<String, dynamic> json) {
