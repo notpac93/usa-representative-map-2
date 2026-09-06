@@ -5,17 +5,19 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:usa_map_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Landing screen smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const UsaMapApp());
+    await tester.pumpAndSettle();
 
-    // Verify that data loading starts
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    // Verify that the landing screen renders title and buttons
+    expect(find.text('Find Your Representatives'), findsOneWidget);
+    expect(find.text('Executive Branch'), findsOneWidget);
+    expect(find.text('Explore National Map'), findsOneWidget);
   });
 }

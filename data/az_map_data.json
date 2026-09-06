@@ -1,0 +1,1430 @@
+{
+  "displayFieldName": "Loc_name",
+  "fieldAliases": {
+    "ObjectID": "ObjectID",
+    "CityName": "CityName",
+    "CityType": "CityType",
+    "MailingAddress": "MailingAddress",
+    "PhysicalAddress": "PhysicalAddress",
+    "Zip_Code": "Zip_Code",
+    "Phone_Number": "Phone_Number",
+    "Fax_Number": "Fax_Number",
+    "Web_Site": "Web_Site",
+    "HallHours": "HallHours"
+  },
+  "geometryType": "esriGeometryPoint",
+  "spatialReference": {
+    "wkid": 2868,
+    "latestWkid": 2868
+  },
+  "fields": [
+    {
+      "name": "ObjectID",
+      "type": "esriFieldTypeOID",
+      "alias": "ObjectID"
+    },
+    {
+      "name": "CityName",
+      "type": "esriFieldTypeString",
+      "alias": "CityName",
+      "length": 255
+    },
+    {
+      "name": "CityType",
+      "type": "esriFieldTypeString",
+      "alias": "CityType",
+      "length": 255
+    },
+    {
+      "name": "MailingAddress",
+      "type": "esriFieldTypeString",
+      "alias": "MailingAddress",
+      "length": 255
+    },
+    {
+      "name": "PhysicalAddress",
+      "type": "esriFieldTypeString",
+      "alias": "PhysicalAddress",
+      "length": 255
+    },
+    {
+      "name": "Zip_Code",
+      "type": "esriFieldTypeDouble",
+      "alias": "Zip_Code"
+    },
+    {
+      "name": "Phone_Number",
+      "type": "esriFieldTypeDouble",
+      "alias": "Phone_Number"
+    },
+    {
+      "name": "Fax_Number",
+      "type": "esriFieldTypeDouble",
+      "alias": "Fax_Number"
+    },
+    {
+      "name": "Web_Site",
+      "type": "esriFieldTypeString",
+      "alias": "Web_Site",
+      "length": 255
+    },
+    {
+      "name": "HallHours",
+      "type": "esriFieldTypeString",
+      "alias": "HallHours",
+      "length": 255
+    }
+  ],
+  "features": [
+    {
+      "attributes": {
+        "ObjectID": 1,
+        "CityName": "Apache Junction",
+        "CityType": "CITY",
+        "MailingAddress": "300 East Superstition Boulevard",
+        "PhysicalAddress": "300 East Superstition Boulevard",
+        "Zip_Code": 85119,
+        "Phone_Number": 4809828002,
+        "Fax_Number": 4809827018,
+        "Web_Site": "www.ajcity.net",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 813975.1866557355,
+        "y": 881873.7542357075
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 2,
+        "CityName": "Avondale",
+        "CityType": "CITY",
+        "MailingAddress": "11465  W Civic Center Dr",
+        "PhysicalAddress": "11465  W Civic Center Dr ",
+        "Zip_Code": 85323,
+        "Phone_Number": 6233331000,
+        "Fax_Number": 6233330101,
+        "Web_Site": "www.avondaleaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 581789.2168341171,
+        "y": 889559.6645708116
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 3,
+        "CityName": "Benson",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 2223",
+        "PhysicalAddress": "120 West 6th Street",
+        "Zip_Code": 85602,
+        "Phone_Number": 5205862245,
+        "Fax_Number": 5205863375,
+        "Web_Site": "www.cityofbenson.com",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1201784.4498713033,
+        "y": 355391.2895891794
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 4,
+        "CityName": "Bisbee",
+        "CityType": "CITY",
+        "MailingAddress": "PO Box 4601",
+        "PhysicalAddress": "915 South Tovreaville Road",
+        "Zip_Code": 85603,
+        "Phone_Number": 5204326000,
+        "Fax_Number": 5204326069,
+        "Web_Site": "www.bisbeeaz.gov",
+        "HallHours": "M-TH 7:30-5:15"
+      },
+      "geometry": {
+        "x": 1328781.9262784838,
+        "y": 153388.69972002486
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 5,
+        "CityName": "Buckeye",
+        "CityType": "CITY",
+        "MailingAddress": "530 East Monroe Avenue",
+        "PhysicalAddress": "530 East Monroe Avenue",
+        "Zip_Code": 85326,
+        "Phone_Number": 6233496000,
+        "Fax_Number": 6233496099,
+        "Web_Site": "www.buckeyeaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 496265.6681742217,
+        "y": 863099.5360083232
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 6,
+        "CityName": "Camp Verde",
+        "CityType": "TOWN",
+        "MailingAddress": "473 South Main Street, Suite 102",
+        "PhysicalAddress": "473 South Main Street, Suite 102",
+        "Zip_Code": 86322,
+        "Phone_Number": 9285540000,
+        "Fax_Number": 9285679061,
+        "Web_Site": "www.campverde.az.gov",
+        "HallHours": "M-TH 7:00-5:00\nF 7:00-11:00"
+      },
+      "geometry": {
+        "x": 719019.792785091,
+        "y": 1296224.9822016123
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 7,
+        "CityName": "Carefree",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 740",
+        "PhysicalAddress": "8 Sundial Circle",
+        "Zip_Code": 85377,
+        "Phone_Number": 4804883686,
+        "Fax_Number": 4804883845,
+        "Web_Site": "www.carefree.org",
+        "HallHours": "M-F 8:00-4:30"
+      },
+      "geometry": {
+        "x": 698572.7895356872,
+        "y": 1027588.5293188568
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 8,
+        "CityName": "Casa Grande",
+        "CityType": "CITY",
+        "MailingAddress": "510 East Florence Boulevard",
+        "PhysicalAddress": "510 East Florence Boulevard",
+        "Zip_Code": 85122,
+        "Phone_Number": 5204218600,
+        "Fax_Number": 4804218602,
+        "Web_Site": "www.casagrandeaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 751899.9509521077,
+        "y": 683978.017104463
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 9,
+        "CityName": "Cave Creek",
+        "CityType": "TOWN",
+        "MailingAddress": "37622 North Cave Creek Road",
+        "PhysicalAddress": "37622 North Cave Creek Road",
+        "Zip_Code": 85331,
+        "Phone_Number": 4804881400,
+        "Fax_Number": 4804882263,
+        "Web_Site": "www.cavecreekaz.gov",
+        "HallHours": "M-TH 7:00-5:00"
+      },
+      "geometry": {
+        "x": 688151.1161197671,
+        "y": 1028553.7718754245
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 10,
+        "CityName": "Chino Valley",
+        "CityType": "TOWN",
+        "MailingAddress": "202 North State Route 89",
+        "PhysicalAddress": "1982 Voss Drive, Suite 204",
+        "Zip_Code": 86323,
+        "Phone_Number": 9286362646,
+        "Fax_Number": 9286362144,
+        "Web_Site": "www.chinoaz.net",
+        "HallHours": "M-TH 7:30-5:00"
+      },
+      "geometry": {
+        "x": 534804.3993583121,
+        "y": 1373624.0162980396
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 11,
+        "CityName": "Clarkdale",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 308",
+        "PhysicalAddress": "39 North 9th Street",
+        "Zip_Code": 86324,
+        "Phone_Number": 9286392400,
+        "Fax_Number": 9286392459,
+        "Web_Site": "www.clarkdale.az.gov",
+        "HallHours": "M-TH 8:00-5:30,\nF 8:00-12:00"
+      },
+      "geometry": {
+        "x": 657885.4051888804,
+        "y": 1372532.8399496796
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 12,
+        "CityName": "Chandler",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 4008",
+        "PhysicalAddress": "175 South Arizona Avenue 5th Floor",
+        "Zip_Code": 85244,
+        "Phone_Number": 4807822000,
+        "Fax_Number": 4807822233,
+        "Web_Site": "www.chandleraz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 723070.7455471401,
+        "y": 837012.0297731499
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 13,
+        "CityName": "Clifton",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 1415",
+        "PhysicalAddress": "510 North Coronado Boulevard",
+        "Zip_Code": 85533,
+        "Phone_Number": 9288654146,
+        "Fax_Number": 9288654472,
+        "Web_Site": "www.cliftonaz.com",
+        "HallHours": "M-TH 7:00-5:00"
+      },
+      "geometry": {
+        "x": 1498848.712318663,
+        "y": 757932.0190320895
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 14,
+        "CityName": "Coolidge",
+        "CityType": "CITY",
+        "MailingAddress": "130 West Central Avenue",
+        "PhysicalAddress": "130 West Central Avenue",
+        "Zip_Code": 85128,
+        "Phone_Number": 5207235361,
+        "Fax_Number": 5207237910,
+        "Web_Site": "www.coolidgeaz.com",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 822593.6670333443,
+        "y": 719754.9313715033
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 15,
+        "CityName": "Cottonwood",
+        "CityType": "CITY",
+        "MailingAddress": "827 North Main Street",
+        "PhysicalAddress": "827 North Main Street",
+        "Zip_Code": 86326,
+        "Phone_Number": 9286345526,
+        "Fax_Number": 9286345520,
+        "Web_Site": "www.cottonwoodaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 666834.6361540478,
+        "y": 1363107.807387889
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 16,
+        "CityName": "Dewey-Humboldt",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 69",
+        "PhysicalAddress": "2735 South Highway 69",
+        "Zip_Code": 86329,
+        "Phone_Number": 9286327362,
+        "Fax_Number": 9286327365,
+        "Web_Site": "www.dhaz.gov",
+        "HallHours": "M-F 8:00-6:00"
+      },
+      "geometry": {
+        "x": 601653.7337203498,
+        "y": 1274741.9082481186
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 17,
+        "CityName": "Duncan",
+        "CityType": "TOWN",
+        "MailingAddress": "506 Southeast Old West Highway",
+        "PhysicalAddress": "506 Southeast Old West Highway",
+        "Zip_Code": 85534,
+        "Phone_Number": 9283592791,
+        "Fax_Number": 9283599146,
+        "Web_Site": "www.townofduncan.us",
+        "HallHours": "M-TH 7:00-5:30"
+      },
+      "geometry": {
+        "x": 1566320.543958623,
+        "y": 635440.9833889971
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 18,
+        "CityName": "El Mirage",
+        "CityType": "CITY",
+        "MailingAddress": "10000 North El Mirage Road",
+        "PhysicalAddress": "10000 North El Mirage Road",
+        "Zip_Code": 85335,
+        "Phone_Number": 6239728116,
+        "Fax_Number": 6238764603,
+        "Web_Site": "www.elmirageaz.gov",
+        "HallHours": "M-TH 7:00-5:30"
+      },
+      "geometry": {
+        "x": 575589.9854653612,
+        "y": 936252.3695948063
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 19,
+        "CityName": "Eloy",
+        "CityType": "CITY",
+        "MailingAddress": "595 North C Street",
+        "PhysicalAddress": "595 North C Street",
+        "Zip_Code": 85131,
+        "Phone_Number": 5204669201,
+        "Fax_Number": 5204663161,
+        "Web_Site": "www.eloyaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 811529.7226032212,
+        "y": 638705.5095472196
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 20,
+        "CityName": "Flagstaff",
+        "CityType": "CITY",
+        "MailingAddress": "211 West Aspen Avenue",
+        "PhysicalAddress": "211 West Aspen Avenue",
+        "Zip_Code": 86001,
+        "Phone_Number": 9282132000,
+        "Fax_Number": 9282132059,
+        "Web_Site": "www.flagstaff.az.gov",
+        "HallHours": "M-F 8:00-5:00\nSummer 7:00-4:00"
+      },
+      "geometry": {
+        "x": 779196.2335099991,
+        "y": 1527929.9766514052
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 21,
+        "CityName": "Eagar",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 1300",
+        "PhysicalAddress": "22 West 2nd Street",
+        "Zip_Code": 85925,
+        "Phone_Number": 9283334128,
+        "Fax_Number": 9283335140,
+        "Web_Site": "www.eagaraz.gov",
+        "HallHours": "M-TH 7:00-5:30"
+      },
+      "geometry": {
+        "x": 1494523.5213861335,
+        "y": 1140719.0100410643
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 22,
+        "CityName": "Florence",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 2670",
+        "PhysicalAddress": "775 North Main Street",
+        "Zip_Code": 85132,
+        "Phone_Number": 5208687500,
+        "Fax_Number": 5208687564,
+        "Web_Site": "www.florenceaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 862441.8367802873,
+        "y": 742115.6286091764
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 23,
+        "CityName": "Fountain Hills",
+        "CityType": "TOWN",
+        "MailingAddress": "16705 East Avenue of the Fountains",
+        "PhysicalAddress": "16705 East Avenue of the Fountains",
+        "Zip_Code": 85268,
+        "Phone_Number": 4808165100,
+        "Fax_Number": 4808373145,
+        "Web_Site": "www.fh.az.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 759522.2655366089,
+        "y": 947584.3738749336
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 24,
+        "CityName": "Gila Bend",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box A",
+        "PhysicalAddress": "644 West Pima Street",
+        "Zip_Code": 85337,
+        "Phone_Number": 9286832255,
+        "Fax_Number": 9286836430,
+        "Web_Site": "www.gilabendaz.org",
+        "HallHours": "M-F 8:00-4:00"
+      },
+      "geometry": {
+        "x": 450675.7148695743,
+        "y": 708436.8186515191
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 25,
+        "CityName": "Gilbert",
+        "CityType": "TOWN",
+        "MailingAddress": "50 East Civic Center Drive",
+        "PhysicalAddress": "50 East Civic Center Drive",
+        "Zip_Code": 85296,
+        "Phone_Number": 4805036000,
+        "Fax_Number": 4804974943,
+        "Web_Site": "www.gilbertaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 739049.2857500392,
+        "y": 848153.0531464025
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 26,
+        "CityName": "Glendale",
+        "CityType": "CITY",
+        "MailingAddress": "5850 West Glendale Avenue",
+        "PhysicalAddress": "5850 West Glendale Avenue",
+        "Zip_Code": 85301,
+        "Phone_Number": 6239302000,
+        "Fax_Number": 6238471399,
+        "Web_Site": "www.glendaleaz.com",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 617994.0627523389,
+        "y": 923671.0886593013
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 27,
+        "CityName": "Globe",
+        "CityType": "CITY",
+        "MailingAddress": "150 North Pine Street",
+        "PhysicalAddress": "150 North Pine Street",
+        "Zip_Code": 85501,
+        "Phone_Number": 9284257146,
+        "Fax_Number": 9284254820,
+        "Web_Site": "www.globeaz.gov",
+        "HallHours": "M-F 8:00-5:00  "
+      },
+      "geometry": {
+        "x": 1044257.1363314771,
+        "y": 873446.0127497525
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 28,
+        "CityName": "Goodyear",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 5100",
+        "PhysicalAddress": "190 North Litchfield Road",
+        "Zip_Code": 85338,
+        "Phone_Number": 6239323910,
+        "Fax_Number": 6239321177,
+        "Web_Site": "www.goodyearaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 564931.9059056063,
+        "y": 891025.9883311653
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 29,
+        "CityName": "Guadalupe",
+        "CityType": "TOWN",
+        "MailingAddress": "9241 South Avenida del Yaqui",
+        "PhysicalAddress": "9241 South Avenida del Yaqui",
+        "Zip_Code": 85283,
+        "Phone_Number": 4807303080,
+        "Fax_Number": 4805055368,
+        "Web_Site": "www.guadalupeaz.org",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 685922.0187788841,
+        "y": 859298.4346711191
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 30,
+        "CityName": "Huachuca City",
+        "CityType": "TOWN",
+        "MailingAddress": "500 North Gonzales Boulevard",
+        "PhysicalAddress": "500 North Gonzales Boulevard",
+        "Zip_Code": 85616,
+        "Phone_Number": 5204561354,
+        "Fax_Number": 5204562230,
+        "Web_Site": "www.huachucacityaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1192284.7944970946,
+        "y": 233327.63666486365
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 31,
+        "CityName": "Jerome",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 335",
+        "PhysicalAddress": "600 Clark Street 89A",
+        "Zip_Code": 86331,
+        "Phone_Number": 9286347943,
+        "Fax_Number": 9286340715,
+        "Web_Site": "www.jerome.az.gov",
+        "HallHours": "M-TH 8:00-5:00"
+      },
+      "geometry": {
+        "x": 640666.1356100442,
+        "y": 1363778.8353255843
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 33,
+        "CityName": "Colorado City",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 70",
+        "PhysicalAddress": "25 South Central Street",
+        "Zip_Code": 86021,
+        "Phone_Number": 9288752646,
+        "Fax_Number": 9288752778,
+        "Web_Site": "www.tocc.us",
+        "HallHours": "M-F 9:00-5:00"
+      },
+      "geometry": {
+        "x": 391176.994078452,
+        "y": 2181373.4909386085
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 37,
+        "CityName": "Holbrook",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 970",
+        "PhysicalAddress": "465 1st Avenue",
+        "Zip_Code": 86025,
+        "Phone_Number": 9285246225,
+        "Fax_Number": 9285242159,
+        "Web_Site": "www.ci.holbrook.az.us",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1226661.783572751,
+        "y": 1425345.3777756272
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 38,
+        "CityName": "Litchfield Park",
+        "CityType": "CITY",
+        "MailingAddress": "214 West Wigwam Boulevard",
+        "PhysicalAddress": "214 West Wigwam Boulevard",
+        "Zip_Code": 85340,
+        "Phone_Number": 6239355033,
+        "Fax_Number": 6239355427,
+        "Web_Site": "www.litchfield-park.org",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 564637.8731207002,
+        "y": 907454.3905746903
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 39,
+        "CityName": "Mammoth",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 130",
+        "PhysicalAddress": "125 North Clark Street",
+        "Zip_Code": 85618,
+        "Phone_Number": 5204872331,
+        "Fax_Number": 5204872152,
+        "Web_Site": "www.townofmammoth.us",
+        "HallHours": "M-F 8:00-4:00"
+      },
+      "geometry": {
+        "x": 1092255.2251966046,
+        "y": 628706.6716693597
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 40,
+        "CityName": "Marana",
+        "CityType": "TOWN",
+        "MailingAddress": "11555 West Civic Center Drive",
+        "PhysicalAddress": "11555 West Civic Center Drive",
+        "Zip_Code": 85653,
+        "Phone_Number": 5203821999,
+        "Fax_Number": 5203821998,
+        "Web_Site": "www.maranaaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 917715.8645284222,
+        "y": 527333.4938231956
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 42,
+        "CityName": "Miami",
+        "CityType": "TOWN",
+        "MailingAddress": "500 West Sullivan Street",
+        "PhysicalAddress": "500 West Sullivan Street",
+        "Zip_Code": 85539,
+        "Phone_Number": 9284734403,
+        "Fax_Number": 9284733003,
+        "Web_Site": "www.miamiaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1019132.2469944454,
+        "y": 874501.7312726394
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 43,
+        "CityName": "Nogales",
+        "CityType": "CITY",
+        "MailingAddress": "777 North Grand Avenue",
+        "PhysicalAddress": "777 North Grand Avenue",
+        "Zip_Code": 85621,
+        "Phone_Number": 5202876571,
+        "Fax_Number": 5202872230,
+        "Web_Site": "www.nogalesaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1007407.3043726981,
+        "y": 127217.73907743745
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 44,
+        "CityName": "Oro Valley",
+        "CityType": "TOWN",
+        "MailingAddress": "11000 North La Canada Drive",
+        "PhysicalAddress": "11000 North La Canada Drive",
+        "Zip_Code": 85737,
+        "Phone_Number": 5202294700,
+        "Fax_Number": 5202970428,
+        "Web_Site": "www.orovalleyaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 984578.6458459795,
+        "y": 513179.61168011697
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 45,
+        "CityName": "Page",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 1180",
+        "PhysicalAddress": "697 Vista Avenue",
+        "Zip_Code": 86040,
+        "Phone_Number": 9286458861,
+        "Fax_Number": 9286454227,
+        "Web_Site": "www.pageaz.gov",
+        "HallHours": "M-TH 7:00-5:30"
+      },
+      "geometry": {
+        "x": 832863.0984727656,
+        "y": 2154245.409505309
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 46,
+        "CityName": "Paradise Valley",
+        "CityType": "TOWN",
+        "MailingAddress": "6401 East Lincoln Drive",
+        "PhysicalAddress": "6401 East Lincoln Drive",
+        "Zip_Code": 85253,
+        "Phone_Number": 4809487411,
+        "Fax_Number": 4809513715,
+        "Web_Site": "www.paradisevalleyaz.gov",
+        "HallHours": "M-F 7:00-4:00"
+      },
+      "geometry": {
+        "x": 692068.8625676578,
+        "y": 920590.2508706468
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 47,
+        "CityName": "Parker",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 610",
+        "PhysicalAddress": "1314 11th Street",
+        "Zip_Code": 85344,
+        "Phone_Number": 9286699265,
+        "Fax_Number": 9286695247,
+        "Web_Site": "www.townofparkerarizona.com",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": -19450.980502262795,
+        "y": 1153446.8168594833
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 48,
+        "CityName": "Payson",
+        "CityType": "TOWN",
+        "MailingAddress": "303 North Beeline Highway",
+        "PhysicalAddress": "303 North Beeline Highway",
+        "Zip_Code": 85541,
+        "Phone_Number": 9284745242,
+        "Fax_Number": 9284744610,
+        "Web_Site": "www.paysonaz.gov",
+        "HallHours": "M-F 7:00-5:00"
+      },
+      "geometry": {
+        "x": 879683.6460569846,
+        "y": 1180627.5439913706
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 49,
+        "CityName": "Peoria",
+        "CityType": "CITY",
+        "MailingAddress": "8401 West Monroe Street",
+        "PhysicalAddress": "8401 West  Monroe Street",
+        "Zip_Code": 85345,
+        "Phone_Number": 6237737000,
+        "Fax_Number": 6237737304,
+        "Web_Site": "www.peoriaaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 601546.3336894677,
+        "y": 937240.7363141278
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 50,
+        "CityName": "Kingman",
+        "CityType": "CITY",
+        "MailingAddress": "310 North 4th Street",
+        "PhysicalAddress": "310 North 4th Street",
+        "Zip_Code": 86401,
+        "Phone_Number": 9287535561,
+        "Fax_Number": 9287536867,
+        "Web_Site": "www.cityofkingman.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 61742.35624085212,
+        "y": 1531606.3570459262
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 51,
+        "CityName": "Phoenix",
+        "CityType": "CITY",
+        "MailingAddress": "200 West Washington Street",
+        "PhysicalAddress": "200 West Washington Street",
+        "Zip_Code": 85003,
+        "Phone_Number": 6022626011,
+        "Fax_Number": 6022563325,
+        "Web_Site": "www.phoenix.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 651061.3554976226,
+        "y": 890751.944632239
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 52,
+        "CityName": "Pima",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 426",
+        "PhysicalAddress": "110 West Center Street",
+        "Zip_Code": 85543,
+        "Phone_Number": 9284852611,
+        "Fax_Number": 9284859230,
+        "Web_Site": "www.pimatown.az.gov",
+        "HallHours": "M-F 8:30-4:00"
+      },
+      "geometry": {
+        "x": 1340587.7408569993,
+        "y": 696255.7654686681
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 53,
+        "CityName": "Pinetop-Lakeside",
+        "CityType": "TOWN",
+        "MailingAddress": "325 West White Mountain Boulevard",
+        "PhysicalAddress": "325 West White Mountain Boulevard",
+        "Zip_Code": 85929,
+        "Phone_Number": 9283688696,
+        "Fax_Number": 9283688528,
+        "Web_Site": "www.pinetoplakesideaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1292496.5629858368,
+        "y": 1149794.2206219593
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 54,
+        "CityName": "Maricopa",
+        "CityType": "CITY",
+        "MailingAddress": "39700 West Civic Center Plaza",
+        "PhysicalAddress": "39700 West Civic Center Plaza",
+        "Zip_Code": 85138,
+        "Phone_Number": 5205689098,
+        "Fax_Number": 5205689120,
+        "Web_Site": "www.maricopa-az.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 675942.7334694066,
+        "y": 744526.9592269793
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 55,
+        "CityName": "Lake Havasu City",
+        "CityType": "CITY",
+        "MailingAddress": "2330 McCulloch Boulevard North",
+        "PhysicalAddress": "2330 McCulloch Boulevard North",
+        "Zip_Code": 86403,
+        "Phone_Number": 9288552116,
+        "Fax_Number": 9288550551,
+        "Web_Site": "www.lhcaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": -24052.186546819685,
+        "y": 1274049.0238010471
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 56,
+        "CityName": "Prescott Valley",
+        "CityType": "TOWN",
+        "MailingAddress": "7501 East Skoog Boulevard",
+        "PhysicalAddress": "7501 East Skoog Boulevard",
+        "Zip_Code": 86314,
+        "Phone_Number": 9287593000,
+        "Fax_Number": 9283593125,
+        "Web_Site": "www.pvaz.net",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 574412.9730554218,
+        "y": 1308476.7189974166
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 57,
+        "CityName": "Mesa",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 1466",
+        "PhysicalAddress": "20 East Main Street",
+        "Zip_Code": 85211,
+        "Phone_Number": 4806442011,
+        "Fax_Number": 4806442175,
+        "Web_Site": "www.mesaaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 726208.8704874547,
+        "y": 878716.8655133635
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 58,
+        "CityName": "Sahuarita",
+        "CityType": "TOWN",
+        "MailingAddress": "375 West Sahuarita Center Way",
+        "PhysicalAddress": "375 West Sahuarita Center Way",
+        "Zip_Code": 85629,
+        "Phone_Number": 5208228800,
+        "Fax_Number": 5208228820,
+        "Web_Site": "www.sahuaritaaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 991763.8437157698,
+        "y": 349138.5973111096
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 61,
+        "CityName": "Scottsdale",
+        "CityType": "CITY",
+        "MailingAddress": "3939 North Drinkwater Boulevard",
+        "PhysicalAddress": "3939 North Drinkwater Boulevard",
+        "Zip_Code": 85251,
+        "Phone_Number": 4803123111,
+        "Fax_Number": 4803122738,
+        "Web_Site": "www.scottsdaleaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 698792.6872332284,
+        "y": 906939.2550380204
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 62,
+        "CityName": "Quartzsite",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 2812",
+        "PhysicalAddress": "465 North Plymouth Avenue",
+        "Zip_Code": 85346,
+        "Phone_Number": 9289274333,
+        "Fax_Number": 9289274400,
+        "Web_Site": "www.quartzsiteaz.org",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 2745.189609553004,
+        "y": 980609.13150442
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 63,
+        "CityName": "Sedona",
+        "CityType": "CITY",
+        "MailingAddress": "102 Roadrunner Drive",
+        "PhysicalAddress": "102 Roadrunner Drive",
+        "Zip_Code": 86336,
+        "Phone_Number": 9282823113,
+        "Fax_Number": 9282047105,
+        "Web_Site": "www.sedonaaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 730891.4638869339,
+        "y": 1405363.0181537468
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 64,
+        "CityName": "Show Low",
+        "CityType": "CITY",
+        "MailingAddress": "180 North 9th Street",
+        "PhysicalAddress": "180 North 9th Street",
+        "Zip_Code": 85901,
+        "Phone_Number": 9285324000,
+        "Fax_Number": 9285324009,
+        "Web_Site": "www.showlowaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1269324.9128421932,
+        "y": 1188101.6525192417
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 65,
+        "CityName": "Sierra Vista",
+        "CityType": "CITY",
+        "MailingAddress": "1011 North Coronado Drive",
+        "PhysicalAddress": "1011 North Coronado Drive",
+        "Zip_Code": 85635,
+        "Phone_Number": 5204583315,
+        "Fax_Number": 5204580584,
+        "Web_Site": "www.sierravistaaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1211884.4006279057,
+        "y": 209399.2375503433
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 66,
+        "CityName": "Queen Creek",
+        "CityType": "TOWN",
+        "MailingAddress": "22358 South Ellsworth Road",
+        "PhysicalAddress": "22358 South Ellsworth Road",
+        "Zip_Code": 85142,
+        "Phone_Number": 4803583000,
+        "Fax_Number": 4803583189,
+        "Web_Site": "www.queencreek.org",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 786025.6594264964,
+        "y": 816605.9714191561
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 67,
+        "CityName": "Somerton",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 638",
+        "PhysicalAddress": "143 North State Avenue",
+        "Zip_Code": 85350,
+        "Phone_Number": 9287227400,
+        "Fax_Number": 9286273794,
+        "Web_Site": "www.cityofsomerton.com",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": -160779.4413869219,
+        "y": 592355.082717124
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 68,
+        "CityName": "South Tucson",
+        "CityType": "CITY",
+        "MailingAddress": "1601 South 6th Avenue",
+        "PhysicalAddress": "1601 South 6th Avenue",
+        "Zip_Code": 85713,
+        "Phone_Number": 5207922424,
+        "Fax_Number": 5206289619,
+        "Web_Site": "www.southtucson.org",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 993556.6069418318,
+        "y": 438490.8486483356
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 69,
+        "CityName": "Springerville",
+        "CityType": "TOWN",
+        "MailingAddress": "418 East Main Street",
+        "PhysicalAddress": "418 East Main Street",
+        "Zip_Code": 85938,
+        "Phone_Number": 9283332656,
+        "Fax_Number": 9283333056,
+        "Web_Site": "www.springervilleaz.gov",
+        "HallHours": "M-TH 7:00-5:30"
+      },
+      "geometry": {
+        "x": 1497564.1012433465,
+        "y": 1149860.9352155388
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 70,
+        "CityName": "Star Valley",
+        "CityType": "TOWN",
+        "MailingAddress": "3675 East Highway 260",
+        "PhysicalAddress": "3675 East Highway 260",
+        "Zip_Code": 85541,
+        "Phone_Number": 9284727752,
+        "Fax_Number": 9284727795,
+        "Web_Site": "www.starvalleyaz.com",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 896906.7174593001,
+        "y": 1184130.2981450355
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 71,
+        "CityName": "San Luis",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 1170",
+        "PhysicalAddress": "1090 East Union Street",
+        "Zip_Code": 85349,
+        "Phone_Number": 9283418520,
+        "Fax_Number": 9283418539,
+        "Web_Site": "www.sanluisaz.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": -181179.40598685216,
+        "y": 556906.8046547597
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 72,
+        "CityName": "Superior",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 218",
+        "PhysicalAddress": "199 North Lobb Avenue",
+        "Zip_Code": 85173,
+        "Phone_Number": 5206895752,
+        "Fax_Number": 5206895822,
+        "Web_Site": "www.superioraz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 949617.3869991817,
+        "y": 835851.9953525519
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 74,
+        "CityName": "Surprise",
+        "CityType": "CITY",
+        "MailingAddress": "16000 N Civic Center Plaza",
+        "PhysicalAddress": "16000 N Civic Center Plaza",
+        "Zip_Code": 85374,
+        "Phone_Number": 6232221000,
+        "Fax_Number": 6232221021,
+        "Web_Site": "www.surpriseaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 562708.6843697433,
+        "y": 956842.0262803126
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 76,
+        "CityName": "Tempe",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 5002",
+        "PhysicalAddress": "31 East 5th Street",
+        "Zip_Code": 85280,
+        "Phone_Number": 4803504311,
+        "Fax_Number": 4803508996,
+        "Web_Site": "www.tempe.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 693195.4099610006,
+        "y": 882183.4856794898
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 77,
+        "CityName": "Thatcher",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 670",
+        "PhysicalAddress": "3700 West Main Street",
+        "Zip_Code": 85552,
+        "Phone_Number": 9284282290,
+        "Fax_Number": 9284287061,
+        "Web_Site": "thatcher.az.gov",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 1361795.3853001676,
+        "y": 679406.0438873539
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 78,
+        "CityName": "Tolleson",
+        "CityType": "CITY",
+        "MailingAddress": "9555 West Van Buren Street",
+        "PhysicalAddress": "9555 West Van Buren Street",
+        "Zip_Code": 85353,
+        "Phone_Number": 6239367111,
+        "Fax_Number": 6239072629,
+        "Web_Site": "www.tollesonaz.org",
+        "HallHours": "M-F 7:30-6:00"
+      },
+      "geometry": {
+        "x": 593427.4607820293,
+        "y": 891421.4531405224
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 81,
+        "CityName": "Tombstone",
+        "CityType": "CITY",
+        "MailingAddress": "P.O. Box 339",
+        "PhysicalAddress": "613 East Allen Street",
+        "Zip_Code": 85638,
+        "Phone_Number": 5204572202,
+        "Fax_Number": 5204573516,
+        "Web_Site": "www.cityoftombstoneaz.gov",
+        "HallHours": "M-F 8:00-5:00"
+      },
+      "geometry": {
+        "x": 1276002.4731071135,
+        "y": 263722.4592652242
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 82,
+        "CityName": "Tusayan",
+        "CityType": "TOWN",
+        "MailingAddress": "P.O. Box 709",
+        "PhysicalAddress": "845 Mustang Dr",
+        "Zip_Code": 86023,
+        "Phone_Number": 9286389909,
+        "Fax_Number": 9286389910,
+        "Web_Site": "tusayan-az.gov",
+        "HallHours": "M-F 9:00-5:00"
+      },
+      "geometry": {
+        "x": 634945.5584368194,
+        "y": 1804082.222325732
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 83,
+        "CityName": "Wickenburg",
+        "CityType": "TOWN",
+        "MailingAddress": "155 North Tegner Street Suite A",
+        "PhysicalAddress": "155 North Tegner Street Suite A",
+        "Zip_Code": 85390,
+        "Phone_Number": 9286845451,
+        "Fax_Number": 6025061580,
+        "Web_Site": "www.wickenburgaz.org",
+        "HallHours": "M-TH 7:00-6:00"
+      },
+      "geometry": {
+        "x": 453044.14332616737,
+        "y": 1081428.0133904
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 85,
+        "CityName": "Willcox",
+        "CityType": "CITY",
+        "MailingAddress": "101 South Railroad Avenue Suite B",
+        "PhysicalAddress": "101 South Railroad Avenue Suite B",
+        "Zip_Code": 85643,
+        "Phone_Number": 5203844271,
+        "Fax_Number": 5203842590,
+        "Web_Site": "www.cityofwillcox.org",
+        "HallHours": "M-TH 7:00-5:30"
+      },
+      "geometry": {
+        "x": 1344685.8565736848,
+        "y": 461444.32778615906
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 87,
+        "CityName": "Williams",
+        "CityType": "CITY",
+        "MailingAddress": "113 South 1st Street",
+        "PhysicalAddress": "113 South 1st Street",
+        "Zip_Code": 86046,
+        "Phone_Number": 9286354451,
+        "Fax_Number": 9286354495,
+        "Web_Site": "www.williamsaz.gov",
+        "HallHours": "M-TH 8:30-5:00"
+      },
+      "geometry": {
+        "x": 619333.3602652503,
+        "y": 1546472.8908778818
+      }
+    },
+    {
+      "attributes": {
+        "ObjectID": 89,
+        "CityName": "Yuma",
+        "CityType": "CITY",
+        "MailingAddress": "One City Plaza",
+        "PhysicalAddress": "One City Plaza",
+        "Zip_Code": 85364,
+        "Phone_Number": 9283735000,
+        "Fax_Number": 9283735012,
+        "Web_Site": "www.yumaaz.gov",
+        "HallHours": "M-TH 7:00-6:00\nEvery other F 7:00-5:00"
+      },
+      "geometry": {
+        "x": -131561.2796346911,
+        "y": 637136.2489288229
+      }
+    }
+  ]
+}

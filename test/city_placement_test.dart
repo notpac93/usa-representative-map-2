@@ -61,7 +61,8 @@ void main() {
 
       expect(result.length, 1);
       final placement = result[0];
-      expect(placement.text, 'Test City');
+      // 'City' suffix is removed by sanitizeCityLabel
+      expect(placement.text, 'Test');
       // Verify bbox is populated
       expect(placement.bbox.length, 4);
     });

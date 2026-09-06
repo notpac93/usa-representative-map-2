@@ -67,6 +67,8 @@ class CityFeature {
   final double lon;
   final double lat;
   final int? population;
+  final bool isCapital;
+  final String? stateId;
 
   CityFeature({
     required this.id,
@@ -76,6 +78,8 @@ class CityFeature {
     required this.lon,
     required this.lat,
     this.population,
+    this.isCapital = false,
+    this.stateId,
   });
 
   factory CityFeature.fromJson(Map<String, dynamic> json) {
@@ -87,6 +91,8 @@ class CityFeature {
       lon: (json['lon'] as num).toDouble(),
       lat: (json['lat'] as num).toDouble(),
       population: json['population'] as int?,
+      isCapital: json['isCapital'] as bool? ?? false,
+      stateId: json['stateId'] as String?,
     );
   }
 }
@@ -141,9 +147,68 @@ class CountyDemographics {
 class SelectedFeature {
   final OverlayFeature feature;
   final String displayName;
-  CountyDemographics? demographics;
+  final CountyDemographics? demographics;
+  final List<String>? intersectingDistrictIds;
+  final List<String>? intersectingJudicialNames;
 
-  SelectedFeature(this.feature, this.displayName, {this.demographics});
+  SelectedFeature(
+    this.feature,
+    this.displayName, {
+    this.demographics,
+    this.intersectingDistrictIds,
+    this.intersectingJudicialNames,
+  });
+}
+
+/// A President record.
+class President {
+  final String id;
+  final String name;
+  final String ordinal;
+  final String party;
+  final bool current;
+  final List<String> terms;
+  final String? vicePresident;
+  final String? phone;
+  final String? address;
+  final String? website;
+  final String? photoUrl;
+  final String? photoLocalPath;
+  final String? bio;
+
+  President({
+    required this.id,
+    required this.name,
+    required this.ordinal,
+    required this.party,
+    required this.current,
+    this.terms = const [],
+    this.vicePresident,
+    this.phone,
+    this.address,
+    this.website,
+    this.photoUrl,
+    this.photoLocalPath,
+    this.bio,
+  });
+
+  factory President.fromJson(Map<String, dynamic> json) {
+    return President(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      ordinal: json['ordinal'] ?? '',
+      party: json['party'] ?? '',
+      current: json['current'] as bool? ?? false,
+      terms: (json['terms'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      vicePresident: json['vicePresident'],
+      phone: json['phone'],
+      address: json['address'],
+      website: json['website'],
+      photoUrl: json['photoUrl'],
+      photoLocalPath: json['photoLocalPath'],
+      bio: json['bio'],
+    );
+  }
 }
 
 /// A Governor record.
@@ -282,6 +347,39 @@ class Mayor {
       city: json['city'] ?? '',
       photoUrl: json['photoUrl'],
       detailsUrl: json['detailsUrl'],
+    );
+  }
+}
+
+/// A Judge record.
+class Judge {
+  final String name;
+  final String title;
+  final String court;
+  final String? appointedBy;
+  final String? party;
+  final String? photoUrl;
+  final String? photoLocalPath;
+
+  Judge({
+    required this.name,
+    required this.title,
+    required this.court,
+    this.appointedBy,
+    this.party,
+    this.photoUrl,
+    this.photoLocalPath,
+  });
+
+  factory Judge.fromJson(Map<String, dynamic> json) {
+    return Judge(
+      name: json['name'] ?? '',
+      title: json['title'] ?? '',
+      court: json['court'] ?? '',
+      appointedBy: json['appointed_by'],
+      party: json['party'],
+      photoUrl: json['photoUrl'],
+      photoLocalPath: json['photoLocalPath'],
     );
   }
 }

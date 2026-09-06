@@ -25,7 +25,8 @@
     "scrape:usa-gov": "node scripts/scrapeUsaGov.mjs",
     "scrape:senate": "node scripts/scrapeSenate.mjs",
     "scrape:governors": "node scripts/scrapeGovernors.mjs",
-    "scrape:house": "node scripts/scrapeHouse.mjs"
+    "scrape:house": "node scripts/scrapeHouse.mjs",
+    "scrape:supreme-court": "node scripts/scrapeSupremeCourt.mjs"
   },
   "dependencies": {
     "@types/topojson-client": "^3.1.5",
@@ -44,7 +45,7 @@
     "adm-zip": "^0.5.16",
     "autoprefixer": "^10.4.20",
     "mapshaper": "^0.6.64",
-    "playwright": "^1.57.0",
+    "playwright": "^1.61.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
     "tsx": "^4.20.6",

@@ -6,8 +6,14 @@ import 'package:collection/collection.dart';
 import '../data/data_provider.dart';
 import '../data/models.dart';
 import '../widgets/jurisdiction_map.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import '../data/civic_data_provider.dart';
+import '../data/bill_models.dart';
 
-class LawmakerDetailScreen extends StatelessWidget {
+class LawmakerDetailScreen extends StatefulWidget {
   final dynamic lawmaker; // Governor, Senator, or Representative
   final String role;
   final String stateId;
@@ -20,11 +26,38 @@ class LawmakerDetailScreen extends StatelessWidget {
   });
 
   @override
+  State<LawmakerDetailScreen> createState() => _LawmakerDetailScreenState();
+}
+
+class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
+  final ScreenshotController _screenshotController = ScreenshotController();
+
+  Future<void> _shareCard() async {
+    try {
+      final image = await _screenshotController.capture(
+        delay: const Duration(milliseconds: 10),
+      );
+      if (image != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final imagePath = await File(
+          '${directory.path}/voter_card.png',
+        ).create();
+        await imagePath.writeAsBytes(image);
+        await Share.shareXFiles([
+          XFile(imagePath.path),
+        ], text: 'Check out this info about my representative!');
+      }
+    } catch (e) {
+      debugPrint("Screenshot Error: $e");
+    }
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
     String name = '';
     String? party;
-    String roleDisplay = role;
+    String roleDisplay = widget.role;
     String? subTitle;
     String? photoLocalPath;
     String? phone;
@@ -33,8 +66,8 @@ class LawmakerDetailScreen extends StatelessWidget {
     List<String> extraInfo = [];
 
     // Extract Data
-    if (lawmaker is Governor) {
-      final g = lawmaker as Governor;
+    if (widget.lawmaker is Governor) {
+      final g = widget.lawmaker as Governor;
       name = g.name;
       party = g.party;
       photoLocalPath = g.photoLocalPath;
@@ -43,16 +76,16 @@ class LawmakerDetailScreen extends StatelessWidget {
       if (g.terms.isNotEmpty) {
         extraInfo.add("Terms:\n${g.terms.join('\n')}");
       }
-    } else if (lawmaker is Senator) {
-      final s = lawmaker as Senator;
+    } else if (widget.lawmaker is Senator) {
+      final s = widget.lawmaker as Senator;
       name = s.name;
       party = s.party;
       photoLocalPath = s.photoLocalPath;
       phone = s.phone;
       address = s.address;
       website = s.website;
-    } else if (lawmaker is Representative) {
-      final r = lawmaker as Representative;
+    } else if (widget.lawmaker is Representative) {
+      final r = widget.lawmaker as Representative;
       name = r.name;
       party = r.party;
       photoLocalPath = r.photoLocalPath;
@@ -62,17 +95,39 @@ class LawmakerDetailScreen extends StatelessWidget {
       if (r.district != null) {
         extraInfo.add("District: ${r.district}");
       }
-    } else if (lawmaker is Mayor) {
-      final m = lawmaker as Mayor;
+    } else if (widget.lawmaker is Mayor) {
+      final m = widget.lawmaker as Mayor;
       name = m.name;
       roleDisplay = "Mayor";
       subTitle = m.city;
       photoLocalPath = null;
       website = m.detailsUrl;
+    } else if (widget.lawmaker is Judge) {
+      final j = widget.lawmaker as Judge;
+      name = j.name;
+      party = j.party;
+      subTitle = "${j.title}, ${j.court}";
+      photoLocalPath = j.photoLocalPath;
+      if (j.appointedBy != null && j.appointedBy!.isNotEmpty) {
+        extraInfo.add(
+          "Appointed by: ${j.appointedBy} (${j.party ?? 'Unknown'})",
+        );
+      }
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(name), elevation: 0),
+      appBar: AppBar(
+        title: Text(name),
+        elevation: 0,
+        actions: [
+          IconButton(
+            key: const Key('share_voter_card_button'),
+            icon: const Icon(Icons.share),
+            tooltip: "Share Voter Card",
+            onPressed: _shareCard,
+          ),
+        ],
+      ),
       backgroundColor: Colors.grey[50],
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -92,14 +147,17 @@ class LawmakerDetailScreen extends StatelessWidget {
                       // Left: Photo & Bio
                       Expanded(
                         flex: 1,
-                        child: _buildProfileCard(
-                          context,
-                          name,
-                          roleDisplay,
-                          party,
-                          subTitle,
-                          photoLocalPath,
-                          lawmaker,
+                        child: Screenshot(
+                          controller: _screenshotController,
+                          child: _buildProfileCard(
+                            context,
+                            name,
+                            roleDisplay,
+                            party,
+                            subTitle,
+                            photoLocalPath,
+                            widget.lawmaker,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 24),
@@ -113,14 +171,17 @@ class LawmakerDetailScreen extends StatelessWidget {
                 else
                   Column(
                     children: [
-                      _buildProfileCard(
-                        context,
-                        name,
-                        roleDisplay,
-                        party,
-                        subTitle,
-                        photoLocalPath,
-                        lawmaker,
+                      Screenshot(
+                        controller: _screenshotController,
+                        child: _buildProfileCard(
+                          context,
+                          name,
+                          roleDisplay,
+                          party,
+                          subTitle,
+                          photoLocalPath,
+                          widget.lawmaker,
+                        ),
                       ),
                       const SizedBox(height: 24),
                       _buildJurisdictionMapWrapper(context),
@@ -143,7 +204,7 @@ class LawmakerDetailScreen extends StatelessWidget {
                       child: _buildSectionCard(
                         context,
                         "Job Duties",
-                        _getJobDuties(role),
+                        _getJobDuties(widget.role),
                         Icons.work_outline,
                       ),
                     ),
@@ -205,6 +266,162 @@ class LawmakerDetailScreen extends StatelessWidget {
                           Icons.info_outline,
                         ),
                       ),
+
+                    // Voting Record & Finance from Civic Data
+                    Builder(
+                      builder: (context) {
+                        final provider = CivicDataProvider();
+                        final votes = provider.getVotesForLawmaker(name);
+                        final finance = provider.getFinanceForLawmaker(name);
+
+                        return Wrap(
+                          spacing: 24,
+                          runSpacing: 24,
+                          children: [
+                            if (votes.isNotEmpty)
+                              _buildGridItem(
+                                width: isDesktop
+                                    ? (constraints.maxWidth - 48 - 24) / 2
+                                    : constraints.maxWidth,
+                                child: Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.how_to_vote,
+                                            color: Colors.blue,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            "Recent Voting Record",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ...votes.map(
+                                        (v) => ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Text('Bill ID: ${v.billId}'),
+                                          trailing: Text(
+                                            v.vote,
+                                            style: TextStyle(
+                                              color: v.vote == 'Yea'
+                                                  ? Colors.green
+                                                  : (v.vote == 'Nay'
+                                                        ? Colors.red
+                                                        : Colors.grey),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            if (finance != null)
+                              _buildGridItem(
+                                width: isDesktop
+                                    ? (constraints.maxWidth - 48 - 24) / 2
+                                    : constraints.maxWidth,
+                                child: Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.monetization_on,
+                                            color: Colors.green,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            "Campaign Finance",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "Total Raised: \$${finance.totalRaised.toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      const Text(
+                                        "Top Donors",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      ...finance.topDonors.map(
+                                        (d) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 4.0,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(d.name),
+                                              Text(
+                                                '\$${d.amount.toStringAsFixed(2)}',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -252,28 +469,30 @@ class LawmakerDetailScreen extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.grey.shade200,
-              image: (lawmaker is Mayor && lawmaker.photoUrl != null)
+              image: (photoLocalPath != null)
                   ? DecorationImage(
-                      image: NetworkImage(lawmaker.photoUrl!),
+                      image: AssetImage('assets/img/$photoLocalPath'),
+                      fit: BoxFit.cover,
+                    )
+                  : ((lawmaker is Mayor && lawmaker.photoUrl != null) ||
+                        (lawmaker is Judge && lawmaker.photoUrl != null))
+                  ? DecorationImage(
+                      image: NetworkImage(
+                        (lawmaker is Mayor)
+                            ? lawmaker.photoUrl!
+                            : (lawmaker as Judge).photoUrl!,
+                      ),
                       fit: BoxFit.cover,
                       onError: (_, __) {},
                     )
-                  : (photoLocalPath != null
-                        ? DecorationImage(
-                            image: AssetImage('assets/img/$photoLocalPath'),
-                            fit: BoxFit.cover,
-                          )
-                        : null),
+                  : null,
             ),
-            child: (lawmaker is Mayor && lawmaker.photoUrl != null)
-                ? null
-                : (photoLocalPath == null
-                      ? Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Colors.grey.shade400,
-                        )
-                      : null),
+            child:
+                (photoLocalPath == null &&
+                    !((lawmaker is Mayor && lawmaker.photoUrl != null) ||
+                        (lawmaker is Judge && lawmaker.photoUrl != null)))
+                ? Icon(Icons.person, size: 50, color: Colors.grey.shade400)
+                : null,
           ),
           const SizedBox(width: 24),
           // Text Details
@@ -363,11 +582,22 @@ class LawmakerDetailScreen extends StatelessWidget {
   }) {
     if (value == null || value.isEmpty) return const SizedBox.shrink();
 
+    final bool isPhone = icon == Icons.phone;
+    final bool isClickable = isLink || isPhone;
+
     final content = InkWell(
-      onTap: isLink
+      onTap: isClickable
           ? () async {
-              final uri = Uri.tryParse(value);
-              if (uri != null && await canLaunchUrl(uri)) await launchUrl(uri);
+              String urlString = value;
+              if (isPhone) {
+                // Keep + and digits for tel: links
+                final cleanedPhone = value.replaceAll(RegExp(r'[^\d+]'), '');
+                urlString = 'tel:$cleanedPhone';
+              }
+              final uri = Uri.tryParse(urlString);
+              if (uri != null && await canLaunchUrl(uri)) {
+                await launchUrl(uri);
+              }
             }
           : null,
       borderRadius: BorderRadius.circular(12),
@@ -401,9 +631,9 @@ class LawmakerDetailScreen extends StatelessWidget {
                   Text(
                     value,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: isLink ? Colors.blue : Colors.black87,
+                      color: isClickable ? Colors.blue : Colors.black87,
                       fontWeight: FontWeight.w500,
-                      decoration: isLink ? TextDecoration.underline : null,
+                      decoration: isClickable ? TextDecoration.underline : null,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -457,27 +687,28 @@ class LawmakerDetailScreen extends StatelessWidget {
   }
 
   Widget _buildJurisdictionMapWrapper(BuildContext context) {
-    if (stateId.isEmpty) return const SizedBox.shrink();
+    if (widget.stateId.isEmpty) return const SizedBox.shrink();
 
     final provider = Provider.of<MapDataProvider>(context, listen: false);
     if (provider.isLoading) return const SizedBox.shrink();
 
     // Normalized FIPS lookup
-    final fips = _stateFips[stateId.toUpperCase()] ?? _stateFips[stateId];
+    final fips =
+        _stateFips[widget.stateId.toUpperCase()] ?? _stateFips[widget.stateId];
     if (fips == null) return const SizedBox.shrink();
 
     // Base State Feature
     StateRecord? stateFeature;
     try {
       stateFeature = provider.atlas?.states.firstWhere(
-        (s) => s.id == stateId || s.id == fips || s.fips == fips,
+        (s) => s.id == widget.stateId || s.id == fips || s.fips == fips,
       );
     } catch (_) {}
 
     if (stateFeature == null) return const SizedBox.shrink();
 
     // If it's a Mayor, we need to load Places asynchronously
-    if (role.toLowerCase() == 'mayor' && lawmaker is Mayor) {
+    if (widget.role.toLowerCase() == 'mayor' && widget.lawmaker is Mayor) {
       return FutureBuilder<List<PlaceFeature>>(
         future: provider.loadPlacesForState(fips),
         builder: (context, snapshot) {
@@ -489,7 +720,7 @@ class LawmakerDetailScreen extends StatelessWidget {
           }
 
           final places = snapshot.data ?? [];
-          final m = lawmaker as Mayor;
+          final m = widget.lawmaker as Mayor;
           Path? targetPath;
           Rect bounds = parseSvgPathData(stateFeature!.path).getBounds();
           // Default bounds to state if city not found
@@ -550,10 +781,10 @@ class LawmakerDetailScreen extends StatelessWidget {
     Rect bounds = contextPath.getBounds();
     double mapHeight = 250;
 
-    if (role.toLowerCase() == 'governor') {
+    if (widget.role.toLowerCase() == 'governor') {
       targetPath = contextPath;
       mapHeight = 200;
-    } else if (role.toLowerCase() == 'senator') {
+    } else if (widget.role.toLowerCase() == 'senator') {
       targetPath = contextPath;
       final nationalPath = Path();
       if (provider.atlas != null) {
@@ -573,9 +804,9 @@ class LawmakerDetailScreen extends StatelessWidget {
         bounds,
         mapHeight,
       );
-    } else if (role.toLowerCase() == 'representative' &&
-        lawmaker is Representative) {
-      final r = lawmaker as Representative;
+    } else if (widget.role.toLowerCase() == 'representative' &&
+        widget.lawmaker is Representative) {
+      final r = widget.lawmaker as Representative;
       if (r.district != null && provider.cd116 != null) {
         // ... existing district logic ...
         String distNum = r.district!;

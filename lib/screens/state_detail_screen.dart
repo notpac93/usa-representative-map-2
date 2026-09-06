@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../data/models.dart';
 import '../data/data_provider.dart';
+import '../utils/official_hierarchy.dart';
+import '../utils/circuit_mapping.dart';
+import '../widgets/territory_summary_card.dart';
 import '../map/state_map_painter.dart';
+import '../map/atlas_path_cache.dart';
 import '../utils/map_transform.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'lawmaker_detail_screen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'section_detail_screen.dart'; // Correctly placed
+import 'voter_rules_screen.dart';
+import 'bill_detail_screen.dart';
+import '../data/civic_data_provider.dart';
+import '../data/bill_models.dart';
 
 class StateDetailScreen extends StatefulWidget {
   final String stateId;
@@ -38,6 +48,13 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
   void initState() {
     super.initState();
     _transformController.addListener(_onZoomChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MapDataProvider>().loadPlacesForState(widget.stateId).then((
+        _,
+      ) {
+        if (mounted) setState(() {});
+      });
+    });
   }
 
   @override
@@ -69,12 +86,12 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
     });
   }
 
-  void _handleTap(
+  Future<void> _handleTap(
     TapUpDetails details,
     Size mapSize,
     StateRecord stateRecord,
     MapDataProvider provider,
-  ) {
+  ) async {
     if (provider.pathCache == null) return;
 
     // 1. Calculate Transform
@@ -137,22 +154,56 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
     if (_showLakes) checkLayer(provider.lakes, "Lake");
     if (_showJudicial) checkLayer(provider.judicial, "Judicial");
 
-    setState(() {
-      if (newSelection.isNotEmpty) {
-        final firstNew = newSelection.first;
-        // Check if already selected -> Toggle Off
+    // After discovering the selected feature, fetch its intersecting districts
+    if (newSelection.isNotEmpty) {
+      final firstNew = newSelection.first;
+      List<String>? intersectingIds;
+      List<String>? intersectingJudicialNames;
+
+      try {
+        final response = await http.post(
+          Uri.parse('http://127.0.0.1:8080/api/intersect_districts'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'path': firstNew.feature.path,
+            'bbox': firstNew.feature.bbox,
+          }),
+        );
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          intersectingIds = List<String>.from(data['intersecting_ids'] ?? []);
+          intersectingJudicialNames = List<String>.from(
+            data['intersecting_judicial_names'] ?? [],
+          );
+        }
+      } catch (e) {
+        debugPrint("API Intersect Error: $e");
+      }
+
+      // Re-create the selection with the fetched data
+      final finalSelection = SelectedFeature(
+        firstNew.feature,
+        firstNew.displayName,
+        demographics: firstNew.demographics,
+        intersectingDistrictIds: intersectingIds,
+        intersectingJudicialNames: intersectingJudicialNames,
+      );
+
+      setState(() {
         bool alreadySelected = _selectedFeatures.any(
-          (sf) => sf.feature.id == firstNew.feature.id,
+          (sf) => sf.feature.id == finalSelection.feature.id,
         );
         if (alreadySelected) {
           _selectedFeatures = [];
         } else {
-          _selectedFeatures = [firstNew]; // Select new
+          _selectedFeatures = [finalSelection];
         }
-      } else {
-        _selectedFeatures = []; // Deselect if clicking empty space
-      }
-    });
+      });
+    } else {
+      setState(() {
+        _selectedFeatures = [];
+      });
+    }
   }
 
   // Helper to filter leaders based on selection
@@ -224,8 +275,36 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
 
     // 2. Reps: Check if District matches (District 1 vs 1st)
     // Also, if selecting a County, we might want to show Reps if we could map them.
-    // For now, only District selection maps to Reps well.
-    if (selection.displayName.startsWith("District")) {
+    // Use intersectingDistrictIds if available!
+    if (selection.intersectingDistrictIds != null &&
+        selection.intersectingDistrictIds!.isNotEmpty) {
+      // The intersecting ids are like "1710". We extract the last digits for the district.
+      // E.g., "1710" -> "10". "1701" -> "1". "1700" -> "0" (At-Large).
+      List<String> validDistricts = [];
+      for (var dId in selection.intersectingDistrictIds!) {
+        if (dId.length >= 4) {
+          // CD116 IDs are usually 4 digits: FIPS(2) + District(2)
+          String dNumStr = dId.substring(2);
+          if (dNumStr == "00" || dNumStr == "98")
+            dNumStr =
+                "1"; // "00" or "98" is usually At-Large, map to "1st" or similar
+          validDistricts.add(int.parse(dNumStr).toString());
+        }
+      }
+
+      for (var rep in allReps) {
+        final repDigits = (rep.district ?? "").replaceAll(
+          RegExp(r'[^0-9]'),
+          '',
+        );
+        String repMatch = repDigits.isEmpty
+            ? "1"
+            : repDigits; // At large -> "1"
+        if (validDistricts.contains(repMatch)) {
+          filtered.add(rep);
+        }
+      }
+    } else if (selection.displayName.startsWith("District")) {
       for (var rep in allReps) {
         // Basic string match: "District 2" vs "2nd"
         // Let's normalize digits.
@@ -244,7 +323,17 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
       }
     }
 
-    // 3. Senators & Governor always relevant
+    // 3. District Judges
+    if (selection.intersectingJudicialNames != null) {
+      for (var courtName in selection.intersectingJudicialNames!) {
+        final judges = provider.districtJudges?[courtName];
+        if (judges != null) {
+          filtered.addAll(judges);
+        }
+      }
+    }
+
+    // 4. Senators & Governor always relevant
     filtered.addAll(allSenators);
     if (governor != null) filtered.add(governor);
 
@@ -296,34 +385,33 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
       // Logic for "Specific Section"
       // user wants: Mayor -> House Rep -> Senator -> Governor
 
-      // Filter primarily by intersection if possible, but for now we might just show relevant ones?
-      // "Most local leader" implies if I click a City, I see Mayor.
-      // If I click a County, I see Reps/Senators/Governor?
-      // Since specific geographic filtering is complex without point-in-poly for every leader,
-      // we will implement the SORTING hierarchy first.
-
-      // TODO: Actual intersection filtering if we had lat/lon for every leader.
-      // For now, we will include ALL state leaders but sorted by hierarchy.
-
-      // Rank: Mayor(1), Rep(2), Senator(3), Governor(4)
-
       var sorted = <dynamic>[];
-      sorted.addAll(mayorList);
-      sorted.addAll(houseList);
-      sorted.addAll(senatorsList);
-      if (governorData != null) sorted.add(governorData);
-
-      // Need real filtering to be useful, but user asking for "Sorting".
-      // We'll simulate "Relevant" by just showing all for now, but sorted bottom-up.
-      // (Improving this would require lat/lon for every leader).
+      sorted.addAll(specificSectionLeaders.where((l) => l is Mayor));
+      sorted.addAll(specificSectionLeaders.where((l) => l is Representative));
+      sorted.addAll(specificSectionLeaders.where((l) => l is Senator));
+      sorted.addAll(specificSectionLeaders.where((l) => l is Governor));
+      sorted.addAll(specificSectionLeaders.where((l) => l is Judge));
 
       displayLeaders = sorted;
     } else {
-      // Default Hierarchy: Governor -> Senator -> Rep -> Mayor
-      if (governorData != null) displayLeaders.add(governorData);
-      displayLeaders.addAll(senatorsList);
-      displayLeaders.addAll(houseList);
-      displayLeaders.addAll(mayorList);
+      // Logic for "Entire State"
+      // User wants: Senator -> Governor -> Mayors -> House Members (or whatever sorted output)
+      var sorted = <dynamic>[];
+      sorted.addAll(senatorsList);
+      if (governorData != null) sorted.add(governorData);
+
+      // Add Circuit Judges for State Level
+      final circuitName = CircuitMapping.getCircuitForState(widget.stateId);
+      if (circuitName != null && provider.circuitJudges != null) {
+        final judges = provider.circuitJudges![circuitName];
+        if (judges != null) {
+          sorted.addAll(judges);
+        }
+      }
+
+      sorted.addAll(mayorList);
+      sorted.addAll(houseList);
+      displayLeaders = sorted;
     }
 
     return Scaffold(
@@ -333,11 +421,7 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: SvgPicture.asset(
-              'assets/img/logo.svg',
-              width: 32,
-              height: 32,
-            ),
+            child: Image.asset('assets/img/logo.png', width: 32, height: 32),
           ),
         ],
       ),
@@ -367,12 +451,14 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
                             provider,
                           ),
                           child: CustomPaint(
+                            size: Size.infinite,
                             painter: StateMapPainter(
                               stateRecord: stateRecord,
                               atlas: atlas,
                               pathCache: pathCache,
                               zoomLevel: _currentZoom,
                               cities: provider.cities?[widget.stateId] ?? [],
+                              places: provider.getCachedPlaces(widget.stateId),
                               counties: provider.counties,
                               cd116: provider.cd116,
                               urbanAreas: provider.urbanAreas,
@@ -598,16 +684,95 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
                         ),
                       ),
                     ),
-
-                    const Divider(height: 32, thickness: 1),
-                    Text(
-                      "State Leadership",
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                   ],
+
+                  // Voting Rules Button (Always visible for the State)
+                  ElevatedButton.icon(
+                    key: const Key('voter_rules_button'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VoterRulesScreen(
+                            stateName: stateRecord.name,
+                            stateId: widget.stateId,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.how_to_vote),
+                    label: const Text("View Voter ID & Rules Guide"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // BILLS SECTION
+                  Text(
+                    "Legislation & Bills",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  FutureBuilder(
+                    future: CivicDataProvider().loadData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final bills = CivicDataProvider().getBillsForState(
+                        widget.stateId,
+                      );
+                      if (bills.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text("No upcoming bills found."),
+                        );
+                      }
+                      return Column(
+                        children: bills
+                            .map(
+                              (b) => Card(
+                                child: ListTile(
+                                  title: Text(
+                                    b.title,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text('Status: ${b.status}'),
+                                  trailing: const Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BillDetailScreen(bill: b),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+
+                  Text(
+                    "State Leadership",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 16),
 
                   // 2. FULL CATEGORIZED LIST (Pushed Down)
                   Text(
@@ -776,9 +941,16 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
       name = leader.name;
       party = leader.party;
       photoPath = leader.photoLocalPath;
+    } else if (leader is Judge) {
+      role = "Judge";
+      name = leader.name;
+      party = leader.party;
+      subtitle = leader.title;
+      photoUrl = leader.photoUrl;
     }
 
     return ListTile(
+      key: Key('lawmaker_tile_$name'),
       onTap: () {
         Navigator.push(
           context,

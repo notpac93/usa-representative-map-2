@@ -1,0 +1,52 @@
+[
+    {
+        "name": "Ron Anders",
+        "city": "Auburn, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/6308169471e7c182558c5129_62e3fdc61046b08a54452ae0_Ron%20Anders%20-%20Auburn-p-800.webp"
+    },
+    {
+        "name": "Randall Woodfin",
+        "city": "Birmingham, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/63081a0157d0c365222f5a32_62e3f6d43458f604563e8d58_Woodfin2022headshot-p-800.webp"
+    },
+    {
+        "name": "Tab Bowling",
+        "city": "Decatur, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/63082930fd522b3e7c720ccc_62e3fdc621fbc2e94ff4724c_mayor_bkgd_bowling-1024x480-p-800%20copy.png"
+    },
+    {
+        "name": "Mark Saliba",
+        "city": "Dothan, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/630829682e34d83510f839f7_City%20of%20Dothan%20Head%20Shots-36.jpg"
+    },
+    {
+        "name": "Frank Brocato",
+        "city": "Hoover, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/632a072cc3cae4444f0387fb_Untitled%20design%20(59).png"
+    },
+    {
+        "name": "Tommy Battle",
+        "city": "Huntsville, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/6316e1ac14248522f5cb269b_4B1E0FB1-2A28-4CB5-B563-07E6B2BB5C67.jpeg"
+    },
+    {
+        "name": "Paul Finley",
+        "city": "Madison, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/632a07be263e5e90495f569e_unnamed.jpeg"
+    },
+    {
+        "name": "Sandy Stimpson",
+        "city": "Mobile, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/63082f63ff3979220542f8e3_62e3fdc73e7ca50260802ad6_Stimpson%20headshot-p-800%20copy.png"
+    },
+    {
+        "name": "Steven Reed",
+        "city": "Montgomery, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/63082ec23257d8a2f7fbf2ca_MAYOR%20REED%20HEADSHOT%202_OFFICIAL.JPG"
+    },
+    {
+        "name": "Walt Maddox",
+        "city": "Tuscaloosa, AL",
+        "photoUrl": "https://cdn.prod.website-files.com/630815da442e8538a9c814da/63082f1ae33a108d3758f280_Walt%20Maddox%20Tuscaloosa%20Headshot.jpg"
+    }
+]

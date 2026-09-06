@@ -1,0 +1,527 @@
+[
+  {
+    "city": "Avondale",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Buckeye",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Bisbee",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Benson",
+    "searchUrl": "https://www.bensonaz.gov/search.php?q=Mayor",
+    "profileUrl": "http://www.cityofbenson.com/government/city_council/mayor_and_council.php",
+    "name": "Joe A. Konrad\n                     P. O. Box",
+    "photoUrl": "http://www.cityofbenson.com/Mayor%20Konrad%201%20-%20Copy.jpeg"
+  },
+  {
+    "city": "Apache Junction",
+    "searchUrl": "https://www.apachejunctionaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.apachejunctionaz.gov/directory.aspx?eid=8",
+    "name": "Chip Wilson",
+    "photoUrl": "https://www.apachejunctionaz.gov/ImageRepository/Document?documentID=22975"
+  },
+  {
+    "city": "Carefree",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Camp Verde",
+    "searchUrl": "https://www.campverde.az.gov/search.php?q=Mayor",
+    "profileUrl": "http://www.campverde.az.gov/government/town_council/history_of_mayors_council.php",
+    "name": "History of s Council",
+    "photoUrl": null
+  },
+  {
+    "city": "Casa Grande",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Chino Valley",
+    "searchUrl": "https://www.chinoaz.net/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.chinoaz.net/directory.aspx?eid=135",
+    "name": "Tom Armstrong",
+    "photoUrl": "https://www.chinoaz.net/ImageRepository/Document?documentID=7654"
+  },
+  {
+    "city": "Cave Creek",
+    "searchUrl": "https://www.cavecreekaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.cavecreekaz.gov/documentcenter/view/3769",
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Clarkdale",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Clifton",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Cottonwood",
+    "searchUrl": "http://www.cottonwoodaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "http://www.cottonwoodaz.gov/directory.aspx?eid=127",
+    "name": "Tim Elinski",
+    "photoUrl": null
+  },
+  {
+    "city": "Chandler",
+    "searchUrl": "https://www.chandleraz.gov/search?keyword=Mayor",
+    "profileUrl": "http://www.chandleraz.gov/government/mayor-and-council",
+    "name": "Christine Ellis",
+    "photoUrl": "http://www.chandleraz.gov/sites/default/files/2021-01/mayor_kevin_hartke.jpg"
+  },
+  {
+    "city": "Coolidge",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "El Mirage",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Eloy",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Dewey-Humboldt",
+    "searchUrl": "https://www.dhaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.dhaz.gov/directory.aspx?eid=59",
+    "name": "Matthew Fenn",
+    "photoUrl": "https://www.dhaz.gov/ImageRepository/Document?documentID=5450"
+  },
+  {
+    "city": "Duncan",
+    "searchUrl": "https://www.national-park.com/?s=Mayor",
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Flagstaff",
+    "searchUrl": "https://www.flagstaff.az.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.flagstaff.az.gov/directory.aspx?eid=1130",
+    "name": "Becky Daggett",
+    "photoUrl": "https://www.flagstaff.az.gov/ImageRepository/Document?documentID=65484"
+  },
+  {
+    "city": "Gilbert",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Eagar",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Fountain Hills",
+    "searchUrl": "https://www.fountainhillsaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.fountainhillsaz.gov/directory.aspx?eid=86",
+    "name": "Gerry Friedel",
+    "photoUrl": "https://www.fountainhillsaz.gov/ImageRepository/Document?documentID=8491"
+  },
+  {
+    "city": "Gila Bend",
+    "searchUrl": "https://www.gilabendaz.org/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.gilabendaz.org/directory.aspx?eid=6",
+    "name": "Tommy Lee Sikes",
+    "photoUrl": null
+  },
+  {
+    "city": "Florence",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Guadalupe",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Goodyear",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Huachuca City",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Globe",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Glendale",
+    "searchUrl": "https://www.glendaleaz.gov/Content-search?dlv_OC%20CL%20City%20Site%20Search=(keyword=mayor)",
+    "profileUrl": "https://www.glendaleaz.gov/News/Whats-New/Mayor-Council-Installation-Ceremony",
+    "name": "Take Oaths",
+    "photoUrl": null
+  },
+  {
+    "city": "Colorado City",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Mammoth",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Litchfield Park",
+    "searchUrl": "https://www.litchfieldpark.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.litchfieldpark.gov/directory.aspx?eid=31",
+    "name": "Tom Schoaf",
+    "photoUrl": null
+  },
+  {
+    "city": "Holbrook",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Jerome",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Miami",
+    "searchUrl": "https://miamiaz.gov/?s=Mayor",
+    "profileUrl": "https://miamiaz.gov/mayor-and-council/mayor-and-council/",
+    "name": "Sammy Gonzales",
+    "photoUrl": "https://miamiaz.gov/wp-content/uploads/2024/08/Mayor-Medina-1.png"
+  },
+  {
+    "city": "Nogales",
+    "searchUrl": "https://www.nogalesaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.nogalesaz.gov/311/mayor-and-council",
+    "name": "Jorge Maldonado\nHome",
+    "photoUrl": "https://www.nogalesaz.gov/ImageRepository/Document?documentId=386"
+  },
+  {
+    "city": "Oro Valley",
+    "searchUrl": "https://www.orovalleyaz.gov/Content-search?dlv_OC%20CL%20Public%20Site%20Search=(keyword=mayor)",
+    "profileUrl": "https://www.orovalleyaz.gov/Government/Mayor-and-Council",
+    "name": "Winfield\nEmail",
+    "photoUrl": "https://www.orovalleyaz.gov/files/assets/public/v/1/images-depts/mayor-and-council/councilgroup2024.jpg?dimension=pageimagefullwidth&w=1140"
+  },
+  {
+    "city": "Page",
+    "searchUrl": "https://cityofpage.org/",
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Marana",
+    "searchUrl": "https://www.maranaaz.gov/Search-results?dlv_OC%20CL%20CityofMarana%20Site%20Search=(keyword=mayor)",
+    "profileUrl": "https://www.maranaaz.gov/Government/Mayor-Council",
+    "name": "Roxanne Ziegler",
+    "photoUrl": null
+  },
+  {
+    "city": "Payson",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Kingman",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Peoria",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Parker",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Paradise Valley",
+    "searchUrl": "https://www.paradisevalleyaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.paradisevalleyaz.gov/directory.aspx?did=21",
+    "name": "& Council",
+    "photoUrl": null
+  },
+  {
+    "city": "Maricopa",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Phoenix",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Pima",
+    "searchUrl": "https://www.pimatown.az.gov/search.php#gsc.tab=0&gsc.q=Mayor&gsc.page=1",
+    "profileUrl": "https://www.google.com/search?client=ms-google-coop&q=Mayor&cx=7742d36e21b74b5a4",
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Lake Havasu City",
+    "searchUrl": "http://www.lhcaz.gov/results?indexCatalogue=main%2Dsearch&searchQuery=Mayor",
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Pinetop-Lakeside",
+    "searchUrl": "https://www.pinetoplakesideaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.pinetoplakesideaz.gov/directory.aspx?eid=20",
+    "name": "Stephanie Irwin",
+    "photoUrl": "https://www.pinetoplakesideaz.gov/ImageRepository/Document?documentID=974"
+  },
+  {
+    "city": "Prescott Valley",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Scottsdale",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Quartzsite",
+    "searchUrl": "https://www.ci.quartzsite.az.us/search.php?q=Mayor",
+    "profileUrl": "https://www.ci.quartzsite.az.us/government/mayor.php",
+    "name": "Related Pages\nMayor\nBoards",
+    "photoUrl": null
+  },
+  {
+    "city": "Mesa",
+    "searchUrl": "https://www.mesaaz.gov/Search?dlv_OC%20CL%20Public%20Site%20Search=(keyword=mayor)",
+    "profileUrl": "https://www.mesaaz.gov/Government/Mayor-City-Council",
+    "name": "Mark Freeman\n\nMayor",
+    "photoUrl": "https://www.mesaaz.gov/files/assets/public/v/2/government/mayorcouncil/mayor-and-council.jpg"
+  },
+  {
+    "city": "Sahuarita",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Sierra Vista",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Sedona",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Somerton",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Queen Creek",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Show Low",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "South Tucson",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Springerville",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Star Valley",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "San Luis",
+    "searchUrl": "https://www.sanluisaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.sanluisaz.gov/directory.aspx?eid=168",
+    "name": "Nieves Riedel",
+    "photoUrl": "https://www.sanluisaz.gov/ImageRepository/Document?documentID=10889"
+  },
+  {
+    "city": "Superior",
+    "searchUrl": "http://www.superioraz.gov/index.php/component/finder/search?q=Mayor&Itemid=101",
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Surprise",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Tempe",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Thatcher",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Tolleson",
+    "searchUrl": "https://www.tolleson.az.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://www.tolleson.az.gov/directory.aspx?eid=137",
+    "name": "Juan F. Rodriguez",
+    "photoUrl": "https://www.tolleson.az.gov/ImageRepository/Document?documentID=2413"
+  },
+  {
+    "city": "Tombstone",
+    "searchUrl": "https://cityoftombstoneaz.gov/",
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Tusayan",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Wickenburg",
+    "searchUrl": "https://wickenburgaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1",
+    "profileUrl": "https://wickenburgaz.gov/directory.aspx?eid=209",
+    "name": "BG Bratcher",
+    "photoUrl": "https://wickenburgaz.gov/ImageRepository/Document?documentID=10858"
+  },
+  {
+    "city": "Willcox",
+    "searchUrl": "https://cityofwillcox.org/?s=Mayor",
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Williams",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  },
+  {
+    "city": "Yuma",
+    "searchUrl": null,
+    "profileUrl": null,
+    "name": null,
+    "photoUrl": null
+  }
+]

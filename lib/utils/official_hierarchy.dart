@@ -36,12 +36,13 @@ class OfficialHierarchy {
   /// Lower number = Higher Authority (Top of list).
   static int _getUniversalRank(dynamic official) {
     // User Preferred Order:
-    // 1. President (Future)
+    // 1. President
     // 2. Governor
     // 3. Senators
     // 4. Representatives
     // 5. Local (Mayors, County Judges, etc.)
 
+    if (official is President) return 10;
     if (official is Governor) return 20;
 
     // Legislative

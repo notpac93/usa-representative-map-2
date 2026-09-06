@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'models.dart';
-import '../map/national_map_painter.dart'; // For AtlasPathCache
+import '../map/atlas_path_cache.dart';
+import '../utils/fips_mapping.dart';
 
 class MapDataProvider extends ChangeNotifier {
   Atlas? atlas;
@@ -11,7 +12,11 @@ class MapDataProvider extends ChangeNotifier {
   Map<String, List<Senator>>? senators;
   Map<String, List<Representative>>? houseMembers;
   Map<String, List<CityFeature>>? cities;
+  List<CityFeature>? nationalCities;
   Map<String, List<Mayor>>? mayors;
+  List<Judge>? supremeCourt;
+  Map<String, List<Judge>>? circuitJudges;
+  Map<String, List<Judge>>? districtJudges;
   Map<String, CountyDemographics>? countyDemo;
   Map<String, CountyDemographics>? districtDemo;
 
@@ -116,6 +121,47 @@ class MapDataProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint("Mayors load error: $e");
     }
+
+    // Load Supreme Court
+    try {
+      final scString = await rootBundle.loadString(
+        'assets/data/supreme_court.json',
+      );
+      final scList = json.decode(scString) as List;
+      supremeCourt = scList.map((e) => Judge.fromJson(e)).toList();
+    } catch (e) {
+      debugPrint("Supreme Court load error: $e");
+    }
+
+    // Load Circuit Judges
+    try {
+      final cString = await rootBundle.loadString(
+        'assets/data/circuit_judges.json',
+      );
+      final cMap = json.decode(cString) as Map<String, dynamic>;
+      circuitJudges = {};
+      cMap.forEach((court, list) {
+        final jList = list as List;
+        circuitJudges![court] = jList.map((e) => Judge.fromJson(e)).toList();
+      });
+    } catch (e) {
+      debugPrint("Circuit Judges load error: $e");
+    }
+
+    // Load District Judges
+    try {
+      final dString = await rootBundle.loadString(
+        'assets/data/district_judges.json',
+      );
+      final dMap = json.decode(dString) as Map<String, dynamic>;
+      districtJudges = {};
+      dMap.forEach((court, list) {
+        final jList = list as List;
+        districtJudges![court] = jList.map((e) => Judge.fromJson(e)).toList();
+      });
+    } catch (e) {
+      debugPrint("District Judges load error: $e");
+    }
   }
 
   Future<void> _loadCities() async {
@@ -128,6 +174,7 @@ class MapDataProvider extends ChangeNotifier {
       final features = citiesJson['features'] as List;
 
       cities = {};
+      final Map<String, int> _lsadRanks = {};
 
       // 2. Load Census Population Updates (if available)
       Map<String, Map<String, int>> popUpdates = {};
@@ -151,24 +198,86 @@ class MapDataProvider extends ChangeNotifier {
         // No updates found, ignore
       }
 
-      for (var f in features) {
-        // Convert to CityFeature
-        // Access raw properties first
-        final properties = f['properties'] as Map<String, dynamic>?;
-        final stateId = properties?['stateId'] as String?;
+      const stateCapitals = {
+        'AL': 'Montgomery',
+        'AK': 'Juneau',
+        'AZ': 'Phoenix',
+        'AR': 'Little Rock',
+        'CA': 'Sacramento',
+        'CO': 'Denver',
+        'CT': 'Hartford',
+        'DE': 'Dover',
+        'FL': 'Tallahassee',
+        'GA': 'Atlanta',
+        'HI': 'Honolulu',
+        'ID': 'Boise',
+        'IL': 'Springfield',
+        'IN': 'Indianapolis',
+        'IA': 'Des Moines',
+        'KS': 'Topeka',
+        'KY': 'Frankfort',
+        'LA': 'Baton Rouge',
+        'ME': 'Augusta',
+        'MD': 'Annapolis',
+        'MA': 'Boston',
+        'MI': 'Lansing',
+        'MN': 'St. Paul',
+        'MS': 'Jackson',
+        'MO': 'Jefferson City',
+        'MT': 'Helena',
+        'NE': 'Lincoln',
+        'NV': 'Carson City',
+        'NH': 'Concord',
+        'NJ': 'Trenton',
+        'NM': 'Santa Fe',
+        'NY': 'Albany',
+        'NC': 'Raleigh',
+        'ND': 'Bismarck',
+        'OH': 'Columbus',
+        'OK': 'Oklahoma City',
+        'OR': 'Salem',
+        'PA': 'Harrisburg',
+        'RI': 'Providence',
+        'SC': 'Columbia',
+        'SD': 'Pierre',
+        'TN': 'Nashville',
+        'TX': 'Austin',
+        'UT': 'Salt Lake City',
+        'VT': 'Montpelier',
+        'VA': 'Richmond',
+        'WA': 'Olympia',
+        'WV': 'Charleston',
+        'WI': 'Madison',
+        'WY': 'Cheyenne',
+        'DC': 'Washington',
+      };
 
-        // Update Population if new data exists
-        int? population = f['population'] as int?; // existing
-        final name = f['name'] as String;
+      for (var f in features) {
+        // Support either flattened or nested structure
+        final stateId =
+            f['stateId'] as String? ??
+            (f['properties'] as Map<String, dynamic>?)?['stateId'] as String?;
+        final rawName = f['name'] as String;
+
+        // Clean name
+        final name = rawName
+            .replaceAll(' city', '')
+            .replaceAll(' town', '')
+            .replaceAll(' village', '')
+            .replaceAll(' CDP', '')
+            .replaceAll(' borough', '')
+            .replaceAll(' municipality', '');
+
+        final isCapital = stateId != null && stateCapitals[stateId] == name;
+
+        int? population = f['population'] as int?;
 
         if (stateId != null && popUpdates.containsKey(stateId)) {
-          // Try exact match "Austin city"
-          if (popUpdates[stateId]!.containsKey(name)) {
-            population = popUpdates[stateId]![name];
+          if (popUpdates[stateId]!.containsKey(rawName)) {
+            population = popUpdates[stateId]![rawName];
           }
         }
 
-        // Re-construct with potentially updated population
         final city = CityFeature(
           id: f['id'] as String,
           name: name,
@@ -177,13 +286,63 @@ class MapDataProvider extends ChangeNotifier {
           lon: (f['lon'] as num).toDouble(),
           lat: (f['lat'] as num).toDouble(),
           population: population,
+          isCapital: isCapital,
+          stateId: stateId,
         );
+
+        // Store temporary LSAD rank as part of sorting, but we don't need to persist it in model
+        int lsadRank = 0;
+        if (rawName.endsWith(' city'))
+          lsadRank = 4;
+        else if (rawName.endsWith(' borough') ||
+            rawName.endsWith(' municipality'))
+          lsadRank = 3;
+        else if (rawName.endsWith(' town') || rawName.endsWith(' village'))
+          lsadRank = 2;
+        else if (rawName.endsWith(' CDP'))
+          lsadRank = 1;
 
         if (stateId != null) {
           if (cities![stateId] == null) cities![stateId] = [];
           cities![stateId]!.add(city);
+          // We can attach the lsadRank to a map for sorting
+          _lsadRanks[city.id] = lsadRank;
         }
       }
+
+      // Sort the cities for rendering occlusion priority
+      for (final stateCities in cities!.values) {
+        stateCities.sort((a, b) {
+          // 1. Capital first
+          if (a.isCapital && !b.isCapital) return -1;
+          if (!a.isCapital && b.isCapital) return 1;
+
+          // 2. Population
+          final popA = a.population ?? 0;
+          final popB = b.population ?? 0;
+          if (popA != popB) {
+            return popB.compareTo(popA); // Descending
+          }
+
+          // 3. Fallback to LSAD
+          final lsadA = _lsadRanks[a.id] ?? 0;
+          final lsadB = _lsadRanks[b.id] ?? 0;
+          return lsadB.compareTo(lsadA);
+        });
+      }
+
+      // Create a globally sorted list for the national map
+      nationalCities = cities!.values.expand((e) => e).toList();
+      nationalCities!.sort((a, b) {
+        if (a.isCapital && !b.isCapital) return -1;
+        if (!a.isCapital && b.isCapital) return 1;
+        final popA = a.population ?? 0;
+        final popB = b.population ?? 0;
+        if (popA != popB) return popB.compareTo(popA);
+        final lsadA = _lsadRanks[a.id] ?? 0;
+        final lsadB = _lsadRanks[b.id] ?? 0;
+        return lsadB.compareTo(lsadA);
+      });
     } catch (e) {
       debugPrint("Cities load error or missing: $e");
     }
@@ -224,13 +383,17 @@ class MapDataProvider extends ChangeNotifier {
   // Cache for Places (lazy loaded)
   final Map<String, List<PlaceFeature>> _placesCache = {};
 
+  List<PlaceFeature>? getCachedPlaces(String stateFips) =>
+      _placesCache[stateFips];
+
   Future<List<PlaceFeature>> loadPlacesForState(String stateFips) async {
     if (_placesCache.containsKey(stateFips)) {
       return _placesCache[stateFips]!;
     }
 
     try {
-      final path = 'assets/data/places/$stateFips.json';
+      final fips = FipsMapping.getFips(stateFips);
+      final path = 'assets/data/places/$fips.json';
       final jsonString = await rootBundle.loadString(path);
       final jsonMap = json.decode(jsonString);
       final features = jsonMap['features'] as List;

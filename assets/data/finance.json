@@ -1,0 +1,26 @@
+[
+  {
+    "lawmakerId": "Maria Cantwell",
+    "totalRaised": 4500000.0,
+    "topDonors": [
+      {
+        "name": "Healthcare PAC",
+        "amount": 150000.0
+      },
+      {
+        "name": "Technology Workers Union",
+        "amount": 80000.0
+      }
+    ]
+  },
+  {
+    "lawmakerId": "Greg Abbott",
+    "totalRaised": 12500000.0,
+    "topDonors": [
+      {
+        "name": "Energy Sector PAC",
+        "amount": 450000.0
+      }
+    ]
+  }
+]

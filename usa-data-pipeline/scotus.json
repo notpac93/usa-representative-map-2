@@ -1,0 +1,38 @@
+[
+  {
+    "name": "John Roberts",
+    "title": "Chief Justice of the United States"
+  },
+  {
+    "name": "Clarence Thomas",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Samuel Alito",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Sonia Sotomayor",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Elena Kagan",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Neil Gorsuch",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Brett Kavanaugh",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Amy Coney Barrett",
+    "title": "Associate Justice"
+  },
+  {
+    "name": "Ketanji Brown Jackson",
+    "title": "Associate Justice"
+  }
+]

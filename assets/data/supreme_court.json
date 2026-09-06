@@ -1,0 +1,83 @@
+[
+  {
+    "name": "John G. Roberts Jr.",
+    "title": "Chief Justice of the United States",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "George W. Bush",
+    "party": "Republican",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/4/43/Official_portrait_of_John_Roberts_2011.jpg",
+    "photoLocalPath": "supremecourt/john_g__roberts_jr_.jpg"
+  },
+  {
+    "name": "Clarence Thomas",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "George H. W. Bush",
+    "party": "Republican",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Clarence_Thomas_official_SCOTUS_portrait.jpg",
+    "photoLocalPath": "supremecourt/clarence_thomas.jpg"
+  },
+  {
+    "name": "Samuel A. Alito Jr.",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "George W. Bush",
+    "party": "Republican",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Samuel_Alito_official_photo.jpg/800px-Samuel_Alito_official_photo.jpg",
+    "photoLocalPath": "supremecourt/samuel_a__alito_jr_.jpg"
+  },
+  {
+    "name": "Sonia Sotomayor",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "Barack Obama",
+    "party": "Democratic",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/0/05/Sonia_Sotomayor_in_SCOTUS_robe.jpg",
+    "photoLocalPath": "supremecourt/sonia_sotomayor.jpg"
+  },
+  {
+    "name": "Elena Kagan",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "Barack Obama",
+    "party": "Democratic",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Elena_Kagan_Official_SCOTUS_Portrait_%282013%29.jpg",
+    "photoLocalPath": "supremecourt/elena_kagan.jpg"
+  },
+  {
+    "name": "Neil M. Gorsuch",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "Donald Trump",
+    "party": "Republican",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/7/77/Neil_Gorsuch_official_portrait.jpg",
+    "photoLocalPath": "supremecourt/neil_m__gorsuch.jpg"
+  },
+  {
+    "name": "Brett M. Kavanaugh",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "Donald Trump",
+    "party": "Republican",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Brett_Kavanaugh_Official_Portrait.jpg",
+    "photoLocalPath": "supremecourt/brett_m__kavanaugh.jpg"
+  },
+  {
+    "name": "Amy Coney Barrett",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "Donald Trump",
+    "party": "Republican",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/Amy_Coney_Barrett_official_portrait.jpg",
+    "photoLocalPath": "supremecourt/amy_coney_barrett.jpg"
+  },
+  {
+    "name": "Ketanji Brown Jackson",
+    "title": "Associate Justice",
+    "court": "Supreme Court of the United States",
+    "appointed_by": "Joseph R. Biden",
+    "party": "Democratic",
+    "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/Ketanji_Brown_Jackson_%282022%29.jpg",
+    "photoLocalPath": "supremecourt/ketanji_brown_jackson.jpg"
+  }
+]

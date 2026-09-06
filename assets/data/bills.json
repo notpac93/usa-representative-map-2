@@ -1,0 +1,244 @@
+[
+  {
+    "id": "US-118-S7",
+    "title": "A bill to authorize an additional district judgeship for the district of Idaho.",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the House Committee on the Judiciary.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Mike Crapo"
+    ]
+  },
+  {
+    "id": "US-118-S6",
+    "title": "Balanced Budget Accountability Act",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the House Committee on House Administration.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Steve Daines"
+    ]
+  },
+  {
+    "id": "US-118-S25",
+    "title": "Assault Weapons Ban of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on the Judiciary.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Dianne Feinstein"
+    ]
+  },
+  {
+    "id": "US-118-S3500",
+    "title": "Natural Climate Solutions Research and Extension Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the Subcommittee on Conservation, Research, and Biotechnology.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Edward Markey"
+    ]
+  },
+  {
+    "id": "US-118-S3698",
+    "title": "Words Matter for the District of Columbia Courts Act",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the House Committee on Oversight and Accountability.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Jerry Moran"
+    ]
+  },
+  {
+    "id": "US-118-S12",
+    "title": "A bill to prohibit the government of the District of Columbia from using Federal funds to allow individuals who are not citizens of the United States to vote in any election, and for other purposes.",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the House Committee on Oversight and Accountability.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Ted Cruz"
+    ]
+  },
+  {
+    "id": "US-118-S14",
+    "title": "Age 21 Act",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "ASSUMING FIRST SPONSORSHIP - Mrs. McBath asked unanimous consent that she may hereafter be considered as the first sponsor of H.R. 698, a bill originally introduced by Representative Cicilline, for the purpose of adding cosponsors and requesting reprintings pursuant to clause 7 of rule XII. Agreed to without objection.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Dianne Feinstein"
+    ]
+  },
+  {
+    "id": "US-118-S4236",
+    "title": "AI Grand Challenges Act of 2024",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the House Committee on Science, Space, and Technology.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Cory Booker"
+    ]
+  },
+  {
+    "id": "US-118-S20",
+    "title": "Federal Land Freedom Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the Subcommittee on Energy and Mineral Resources.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Markwayne Mullin"
+    ]
+  },
+  {
+    "id": "US-118-S1378",
+    "title": "Connecting Our Medical Providers with Links to Expand Tailored and Effective Care",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the Subcommittee on Health.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Catherine Cortez Masto"
+    ]
+  },
+  {
+    "id": "US-118-S2632",
+    "title": "Visa Processing Improvement Act",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on the Judiciary.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Amy Klobuchar"
+    ]
+  },
+  {
+    "id": "US-118-S94",
+    "title": "Investing in State Energy Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on Energy and Natural Resources.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Jeanne Shaheen"
+    ]
+  },
+  {
+    "id": "US-118-S601",
+    "title": "Flood Insurance Affordability Act",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on Banking, Housing, and Urban Affairs.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "John Kennedy"
+    ]
+  },
+  {
+    "id": "US-118-S17",
+    "title": "Sunlight for Unaccountable Non-profits (SUN) Act",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on Finance.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Jon Tester"
+    ]
+  },
+  {
+    "id": "US-118-S1038",
+    "title": "Drug Price Transparency in Medicaid Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the Subcommittee on Health.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Peter Welch"
+    ]
+  },
+  {
+    "id": "US-118-S15",
+    "title": "Ensuring Accurate and Complete Abortion Data Reporting Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the Subcommittee on Health.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Joni Ernst"
+    ]
+  },
+  {
+    "id": "US-118-S8",
+    "title": "Improving Health Insurance Affordability Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Referred to the Subcommittee on Health.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Jeanne Shaheen"
+    ]
+  },
+  {
+    "id": "US-118-S35",
+    "title": "New Parents Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on Finance.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Marco Rubio"
+    ]
+  },
+  {
+    "id": "US-118-S2977",
+    "title": "Increase America’s Research Capacity Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on Health, Education, Labor, and Pensions.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Raphael Warnock"
+    ]
+  },
+  {
+    "id": "US-118-S33",
+    "title": "MMEDS Act of 2023",
+    "description": "Automatically parsed from govinfo XML.",
+    "status": "Read twice and referred to the Committee on Finance.",
+    "stateId": "US",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Marco Rubio"
+    ]
+  },
+  {
+    "id": "TX-88-SB1",
+    "title": "Texas Property Tax Relief Act",
+    "description": "Mock bill injected because API key is missing.",
+    "status": "Passed",
+    "stateId": "TX",
+    "upcomingDate": null,
+    "sponsorIds": [
+      "Greg Abbott"
+    ]
+  },
+  {
+    "id": "CA-AB-123",
+    "title": "California Clean Energy Act",
+    "description": "Mock bill for California.",
+    "status": "In Committee",
+    "stateId": "CA",
+    "upcomingDate": "2024-11-01",
+    "sponsorIds": [
+      "Gavin Newsom"
+    ]
+  }
+]

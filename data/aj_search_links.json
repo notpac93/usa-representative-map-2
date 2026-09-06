@@ -1,0 +1,342 @@
+[
+  {
+    "text": "Skip to Main Content",
+    "href": "https://www.apachejunctionaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1#contentarea",
+    "html": "<a href=\"#contentarea\" target=\"_self\" class=\"skipToContentLink\">Skip to Main Content</a>"
+  },
+  {
+    "text": "Create a Website Account",
+    "href": "https://www.apachejunctionaz.gov/MyAccount/ProfileCreate",
+    "html": "<a href=\"/MyAccount/ProfileCreate\" role=\"link\" class=\"myConnections\" id=\"signedOutToolbarCreateProfileButton\">Create a Website Account</a>"
+  },
+  {
+    "text": "Website Sign In",
+    "href": "https://www.apachejunctionaz.gov/MyAccount",
+    "html": "<a href=\"/MyAccount\" role=\"link\" class=\"button\" id=\"loggedOutToolbarSignInButton\"><span>Website Sign In</span></a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/",
+    "html": "<a id=\"bannerLogoTS-13\" style=\"\t\t\tdisplay: block; text-align: center;\n\" class=\"bannerObject\" href=\"/\" target=\"_self\"><img alt=\"Home Page\" class=\"bannerObject\" height=\"59\" src=\"/ImageRepository/Document?documentID=22883\" width=\"236\"></a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/Search/Results",
+    "html": "<a href=\"/Search/Results\" id=\"btnSearchIcon\" class=\"widgetSearchButton widgetSearchButtonff426487-7a3e-4129-9e5c-4de363c9a0b7\" role=\"button\"><img alt=\"Search\" class=\"imageHover\" data-hover=\"/ImageRepository/Document?documentID=22885\" data-image=\"/ImageRepository/Document?documentID=22884\" src=\"/ImageRepository/Document?documentID=22884\"></a>"
+  },
+  {
+    "text": "OUR COMMUNITY",
+    "href": "https://www.apachejunctionaz.gov/55/Our-Community",
+    "html": "<a role=\"menuitem\" aria-haspopup=\"true\" aria-expanded=\"false\" id=\"mainNavOurCommunity\" class=\"navMainItem mainNavItem mainNavItem1\" href=\"/55/Our-Community\" target=\"_self\">   Our Community </a>"
+  },
+  {
+    "text": "VISITORS",
+    "href": "https://visitaj.com/",
+    "html": "<a role=\"menuitem\" id=\"mainNavVisitors\" class=\"navMainItem mainNavItem mainNavItem2\" href=\"https://visitaj.com/\" target=\"_self\">   Visitors </a>"
+  },
+  {
+    "text": "BUSINESS",
+    "href": "https://www.apachejunctionaz.gov/27/Business",
+    "html": "<a role=\"menuitem\" aria-haspopup=\"true\" aria-expanded=\"false\" id=\"mainNavBusiness\" class=\"navMainItem mainNavItem mainNavItem3\" href=\"/27/Business\" target=\"_self\">   Business </a>"
+  },
+  {
+    "text": "GOVERNMENT",
+    "href": "https://www.apachejunctionaz.gov/8/Government",
+    "html": "<a role=\"menuitem\" aria-haspopup=\"true\" aria-expanded=\"false\" id=\"mainNavGovernment\" class=\"navMainItem mainNavItem mainNavItem4\" href=\"/8/Government\" target=\"_self\">   Government </a>"
+  },
+  {
+    "text": "I WANT TO...",
+    "href": "https://www.apachejunctionaz.gov/7/I-Want-To",
+    "html": "<a role=\"menuitem\" aria-haspopup=\"true\" aria-expanded=\"false\" id=\"mainNavIWantTo\" class=\"navMainItem mainNavItem mainNavItem5\" href=\"/7/I-Want-To\" target=\"_self\">   I Want To... </a>"
+  },
+  {
+    "text": "Home",
+    "href": "https://www.apachejunctionaz.gov/",
+    "html": "<a class=\"breadCrumb\" href=\"/\">Home</a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/Search",
+    "html": "<a title=\"Search this site\" href=\"/Search\">\n\t\t\t<img width=\"74\" height=\"74\" alt=\"Search icon\" src=\"/Areas/Search/Assets/Images/HomeModuleIconLarge.png\">\n\t\t</a>"
+  },
+  {
+    "text": "Search",
+    "href": "https://www.apachejunctionaz.gov/Search",
+    "html": "<a href=\"/Search\" title=\"Go back to the search home page\">Search</a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1#",
+    "html": "<a href=\"#\" class=\"searchSite cp-search-submit\">\n\t\t\t\t\t\t\t<svg id=\"iconSearch\" viewBox=\"0 0 25 25\">\n\t\t\t\t\t\t\t\t<title>Submit Search</title>\n\t\t\t\t\t\t\t\t<path style=\"fill:currentcolor;\" d=\"M25,24.458l-6.563-6.537c1.78-1.905,2.879-4.455,2.879-7.262C21.316,4.781,16.535,0,10.657,0S0,4.781,0,10.659 s4.78,10.659,10.657,10.659c2.697,0,5.155-1.015,7.034-2.671l6.573,6.547L25,24.458z M10.657,20.27c-1.295,0-2.554-0.254-3.74-0.755 c-1.144-0.484-2.172-1.178-3.055-2.06c-0.881-0.88-1.574-1.909-2.06-3.056c-0.501-1.182-0.755-2.44-0.755-3.74 S1.301,8.1,1.802,6.918c0.485-1.146,1.178-2.173,2.06-3.056c0.884-0.883,1.912-1.575,3.055-2.059 c1.184-0.501,2.444-0.756,3.74-0.756c1.298,0,2.557,0.255,3.741,0.756c1.145,0.485,2.172,1.177,3.055,2.059 c0.883,0.884,1.576,1.913,2.06,3.056c0.501,1.184,0.755,2.444,0.755,3.74s-0.254,2.556-0.755,3.74 c-0.485,1.146-1.178,2.173-2.06,3.056c-0.883,0.882-1.91,1.574-3.055,2.06C13.213,20.016,11.954,20.27,10.657,20.27z\"></path>\n\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t</a>"
+  },
+  {
+    "text": "Advanced Search",
+    "href": "https://www.apachejunctionaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1#advancedSearch",
+    "html": "<a id=\"advancedSearch\" href=\"#advancedSearch\" style=\"display: inline-block;\">Advanced Search</a>"
+  },
+  {
+    "text": "Standard Search",
+    "href": "https://www.apachejunctionaz.gov/Search?searchPhrase=Mayor&pageNumber=1&perPage=10&departmentId=-1#standardSearch",
+    "html": "<a id=\"standardSearch\" href=\"#standardSearch\" style=\"display: none;\">Standard Search</a>"
+  },
+  {
+    "text": "Mayor & City Council",
+    "href": "https://www.apachejunctionaz.gov/54/city-council",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/54/city-council\">Mayor &amp; City Council</a>"
+  },
+  {
+    "text": "Mayor",
+    "href": "https://www.apachejunctionaz.gov/directory.aspx?eid=8",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/directory.aspx?eid=8\">Mayor</a>"
+  },
+  {
+    "text": "(602) 361-6135",
+    "href": "tel:6023616135",
+    "html": "<a href=\"tel:6023616135\">(602) 361-6135</a>"
+  },
+  {
+    "text": "walterchip@aol.com",
+    "href": "mailto:walterchip@aol.com",
+    "html": "<a href=\"mailto:walterchip@aol.com\">walterchip@aol.com</a>"
+  },
+  {
+    "text": "Vice Mayor",
+    "href": "https://www.apachejunctionaz.gov/directory.aspx?eid=93",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/directory.aspx?eid=93\">Vice Mayor</a>"
+  },
+  {
+    "text": "(480) 253-7297",
+    "href": "tel:4802537297",
+    "html": "<a href=\"tel:4802537297\">(480) 253-7297</a>"
+  },
+  {
+    "text": "rschroeder@apachejunctionaz.gov",
+    "href": "mailto:rschroeder@apachejunctionaz.gov",
+    "html": "<a href=\"mailto:rschroeder@apachejunctionaz.gov\">rschroeder@apachejunctionaz.gov</a>"
+  },
+  {
+    "text": "Mayor & City Council",
+    "href": "https://www.apachejunctionaz.gov/54/City-Council",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/54/City-Council\">Mayor &amp; City Council</a>"
+  },
+  {
+    "text": "Contact Our Leadership Team",
+    "href": "https://www.apachejunctionaz.gov/139/meet-our-leadership-team",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/139/meet-our-leadership-team\">Contact Our Leadership Team&nbsp;</a>"
+  },
+  {
+    "text": "Mayor & City Council",
+    "href": "https://www.apachejunctionaz.gov/directory.aspx?did=3",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/directory.aspx?did=3\">Mayor &amp; City Council</a>"
+  },
+  {
+    "text": "(480) 474-5066",
+    "href": "tel:4804745066",
+    "html": "<a href=\"tel:4804745066\">(480) 474-5066</a>"
+  },
+  {
+    "text": "Our City Council",
+    "href": "https://www.apachejunctionaz.gov/282/our-city-council",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/282/our-city-council\">Our City Council</a>"
+  },
+  {
+    "text": "How can I contact Mayor and Councilmembers?",
+    "href": "https://www.apachejunctionaz.gov/faq.aspx?qid=193",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/faq.aspx?qid=193\">How can I contact Mayor and Councilmembers?</a>"
+  },
+  {
+    "text": "When are City Council meetings held?",
+    "href": "https://www.apachejunctionaz.gov/faq.aspx?qid=54",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/faq.aspx?qid=54\">When are City Council meetings held?</a>"
+  },
+  {
+    "text": "Can I speak at regular meetings?",
+    "href": "https://www.apachejunctionaz.gov/faq.aspx?qid=56",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/faq.aspx?qid=56\">Can I speak at regular meetings?</a>"
+  },
+  {
+    "text": "2",
+    "href": "javascript:changePage('paginationSearchResults',2)",
+    "html": "<a data-pagenum=\"2\" href=\"javascript:changePage('paginationSearchResults',2)\" id=\"paging_2\">2</a>"
+  },
+  {
+    "text": "3",
+    "href": "javascript:changePage('paginationSearchResults',3)",
+    "html": "<a data-pagenum=\"3\" href=\"javascript:changePage('paginationSearchResults',3)\" id=\"paging_3\">3</a>"
+  },
+  {
+    "text": "4",
+    "href": "javascript:changePage('paginationSearchResults',4)",
+    "html": "<a data-pagenum=\"4\" href=\"javascript:changePage('paginationSearchResults',4)\" id=\"paging_4\">4</a>"
+  },
+  {
+    "text": "5",
+    "href": "javascript:changePage('paginationSearchResults',5)",
+    "html": "<a data-pagenum=\"5\" href=\"javascript:changePage('paginationSearchResults',5)\" id=\"paging_5\">5</a>"
+  },
+  {
+    "text": "110",
+    "href": "javascript:changePage('paginationSearchResults',110)",
+    "html": "<a data-pagenum=\"110\" href=\"javascript:changePage('paginationSearchResults',110)\" id=\"paging_110\">110</a>"
+  },
+  {
+    "text": "►",
+    "href": "javascript:changePage('paginationSearchResults',2)",
+    "html": "<a class=\"next arrow\" data-pagenum=\"2\" href=\"javascript:changePage('paginationSearchResults',2)\">►</a>"
+  },
+  {
+    "text": "City Code Online",
+    "href": "https://codelibrary.amlegal.com/codes/apachejunction/latest/overview",
+    "html": "<a href=\"https://codelibrary.amlegal.com/codes/apachejunction/latest/overview\" target=\"_self\" class=\"navMainItem secondaryNavItem cpComponent\" data-type=\"SecondaryMainItem\">City Code Online</a>"
+  },
+  {
+    "text": "City Council Meetings",
+    "href": "https://www.apachejunctionaz.gov/54/City-Council",
+    "html": "<a href=\"/54/City-Council\" target=\"_self\" class=\"navMainItem secondaryNavItem cpComponent\" data-type=\"SecondaryMainItem\">City Council Meetings</a>"
+  },
+  {
+    "text": "Employment",
+    "href": "https://www.apachejunctionaz.gov/818/Employment",
+    "html": "<a href=\"/818/Employment\" target=\"_self\" class=\"navMainItem secondaryNavItem cpComponent\" data-type=\"SecondaryMainItem\">Employment</a>"
+  },
+  {
+    "text": "Explore City Maps",
+    "href": "https://www.apachejunctionaz.gov/472/Maps-GIS",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/472/Maps-GIS\" target=\"_blank\" class=\"fancyButton fancyButton207 \" aria-label=\"Explore City Maps Opens in new window\" rel=\"noopener\">\n\t\t<span>\n\t\t\t<span><span class=\"text\">Explore City Maps</span></span>\n\t\t</span>\n\t</a>"
+  },
+  {
+    "text": "Access Public Records",
+    "href": "https://www.apachejunctionaz.gov/74/City-Clerk",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/74/City-Clerk\" target=\"_blank\" class=\"fancyButton fancyButton208 \" aria-label=\"Access Public Records Opens in new window\" rel=\"noopener\">\n\t\t<span>\n\t\t\t<span><span class=\"text\">Access Public Records</span></span>\n\t\t</span>\n\t</a>"
+  },
+  {
+    "text": "Stay Informed",
+    "href": "https://www.apachejunctionaz.gov/621/Stay-Connected",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/621/Stay-Connected\" target=\"_self\" class=\"fancyButton fancyButton209 \">\n\t\t<span>\n\t\t\t<span><span class=\"text\">Stay Informed</span></span>\n\t\t</span>\n\t</a>"
+  },
+  {
+    "text": "Jobs / Volunteer",
+    "href": "https://www.governmentjobs.com/careers/apachejunctionaz",
+    "html": "<a href=\"https://www.governmentjobs.com/careers/apachejunctionaz\" target=\"_self\" class=\"fancyButton fancyButton210 \">\n\t\t<span>\n\t\t\t<span><span class=\"text\">Jobs / Volunteer&nbsp;</span></span>\n\t\t</span>\n\t</a>"
+  },
+  {
+    "text": "Report an Issue",
+    "href": "https://www.apachejunctionaz.gov/Forms.aspx",
+    "html": "<a href=\"https://www.apachejunctionaz.gov/Forms.aspx\" target=\"_self\" class=\"fancyButton fancyButton211 \">\n\t\t<span>\n\t\t\t<span><span class=\"text\">Report an Issue</span></span>\n\t\t</span>\n\t</a>"
+  },
+  {
+    "text": "Pets",
+    "href": "https://www.apachejunctionaz.gov/162/Paws-Claws-Care-Center",
+    "html": "<a href=\"/162/Paws-Claws-Care-Center\" target=\"_self\" class=\"fancyButton fancyButton212 \">\n\t\t<span>\n\t\t\t<span><span class=\"text\">Pets</span></span>\n\t\t</span>\n\t</a>"
+  },
+  {
+    "text": "480-982-8002",
+    "href": "tel:4809828002",
+    "html": "<a href=\"tel:4809828002\" target=\"_self\" class=\"Hyperlink\">480-982-8002</a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/facebook",
+    "html": "<a class=\"widgetDesc widgetGraphicLinksLink\" href=\"/facebook\" target=\"_self\" aria-label=\"Facebook graphic\"><img src=\"/ImageRepository/Document?documentID=22886\" class=\"graphicButtonLink\" alt=\"Facebook\" onmouseover=\"this.src='/ImageRepository/Document?documentID=22886'\" onmouseout=\"this.src='/ImageRepository/Document?documentID=22886'\" onfocus=\"this.src='/ImageRepository/Document?documentID=22886'\" onblur=\"this.src='/ImageRepository/Document?documentID=22886'\"> </a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.instagram.com/cityofapachejunction/",
+    "html": "<a class=\"widgetDesc widgetGraphicLinksLink\" href=\"https://www.instagram.com/cityofapachejunction/\" target=\"_self\" aria-label=\"Instagram graphic\"><img src=\"/ImageRepository/Document?documentID=22887\" class=\"graphicButtonLink\" alt=\"Instagram\" onmouseover=\"this.src='/ImageRepository/Document?documentID=22887'\" onmouseout=\"this.src='/ImageRepository/Document?documentID=22887'\" onfocus=\"this.src='/ImageRepository/Document?documentID=22887'\" onblur=\"this.src='/ImageRepository/Document?documentID=22887'\"> </a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/twitter",
+    "html": "<a class=\"widgetDesc widgetGraphicLinksLink\" href=\"/twitter\" target=\"_self\" aria-label=\"Twitter graphic\"><img src=\"/ImageRepository/Document?documentID=22889\" class=\"graphicButtonLink\" alt=\"Twitter\" onmouseover=\"this.src='/ImageRepository/Document?documentID=22889'\" onmouseout=\"this.src='/ImageRepository/Document?documentID=22889'\" onfocus=\"this.src='/ImageRepository/Document?documentID=22889'\" onblur=\"this.src='/ImageRepository/Document?documentID=22889'\"> </a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.linkedin.com/company/city-of-apache-junction/",
+    "html": "<a class=\"widgetDesc widgetGraphicLinksLink\" href=\"https://www.linkedin.com/company/city-of-apache-junction/\" target=\"_self\" aria-label=\"1024px-LinkedIn_logo_initials graphic\"><img src=\"/ImageRepository/Document?documentID=26509\" class=\"graphicButtonLink\" alt=\"1024px-LinkedIn_logo_initials\" onmouseover=\"this.src='/ImageRepository/Document?documentID=26509'\" onmouseout=\"this.src='/ImageRepository/Document?documentID=26509'\" onfocus=\"this.src='/ImageRepository/Document?documentID=26509'\" onblur=\"this.src='/ImageRepository/Document?documentID=26509'\"> </a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/1060/Newsletter-Sign-Up",
+    "html": "<a class=\"widgetDesc widgetGraphicLinksLink\" href=\"https://www.apachejunctionaz.gov/1060/Newsletter-Sign-Up\" target=\"_self\" aria-label=\"Newsletter Icon graphic\"><img src=\"/ImageRepository/Document?documentID=26521\" class=\"graphicButtonLink\" alt=\"Newsletter Icon\" onmouseover=\"this.src='/ImageRepository/Document?documentID=26521'\" onmouseout=\"this.src='/ImageRepository/Document?documentID=26521'\" onfocus=\"this.src='/ImageRepository/Document?documentID=26521'\" onblur=\"this.src='/ImageRepository/Document?documentID=26521'\"> </a>"
+  },
+  {
+    "text": "",
+    "href": "https://www.apachejunctionaz.gov/youtube",
+    "html": "<a class=\"widgetDesc widgetGraphicLinksLink\" href=\"/youtube\" target=\"_self\" aria-label=\"YouTube graphic\"><img src=\"/ImageRepository/Document?documentID=22890\" class=\"graphicButtonLink\" alt=\"YouTube\" onmouseover=\"this.src='/ImageRepository/Document?documentID=22890'\" onmouseout=\"this.src='/ImageRepository/Document?documentID=22890'\" onfocus=\"this.src='/ImageRepository/Document?documentID=22890'\" onblur=\"this.src='/ImageRepository/Document?documentID=22890'\"> </a>"
+  },
+  {
+    "text": "QUICK LINKS",
+    "href": "https://www.apachejunctionaz.gov/QuickLinks.aspx?CID=30",
+    "html": "<a style=\"\" href=\"/QuickLinks.aspx?CID=30\">Quick Links</a>"
+  },
+  {
+    "text": "City Code Online",
+    "href": "https://codelibrary.amlegal.com/codes/apachejunction/latest/overview",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"https://codelibrary.amlegal.com/codes/apachejunction/latest/overview\" target=\"_self\">City Code Online</a>"
+  },
+  {
+    "text": "City Council Meetings",
+    "href": "https://www.apachejunctionaz.gov/54",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/54\" target=\"_self\">City Council Meetings</a>"
+  },
+  {
+    "text": "Employment",
+    "href": "https://www.apachejunctionaz.gov/818",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/818\" target=\"_self\">Employment</a>"
+  },
+  {
+    "text": "Notify Me®",
+    "href": "https://www.apachejunctionaz.gov/list.aspx",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/list.aspx\" target=\"_self\">Notify Me®</a>"
+  },
+  {
+    "text": "Volunteering",
+    "href": "https://www.apachejunctionaz.gov/462",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/462\" target=\"_self\">Volunteering</a>"
+  },
+  {
+    "text": "SITE LINKS",
+    "href": "https://www.apachejunctionaz.gov/QuickLinks.aspx?CID=47",
+    "html": "<a style=\"\" href=\"/QuickLinks.aspx?CID=47\">Site Links</a>"
+  },
+  {
+    "text": "Home",
+    "href": "https://www.apachejunctionaz.gov/",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/\" target=\"_self\">Home</a>"
+  },
+  {
+    "text": "Site Map",
+    "href": "https://www.apachejunctionaz.gov/sitemap",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/sitemap\" target=\"_self\">Site Map</a>"
+  },
+  {
+    "text": "Accessibility",
+    "href": "https://www.apachejunctionaz.gov/accessibility",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/accessibility\" target=\"_self\">Accessibility</a>"
+  },
+  {
+    "text": "Copyright Notices",
+    "href": "https://www.apachejunctionaz.gov/copyright",
+    "html": "<a class=\"widgetDesc widgetQuickLinksLink\" href=\"/copyright\" target=\"_self\">Copyright Notices</a>"
+  },
+  {
+    "text": "CivicPlus®",
+    "href": "https://connect.civicplus.com/referral",
+    "html": "<a href=\"https://connect.civicplus.com/referral\">CivicPlus®</a>"
+  },
+  {
+    "text": "Translate",
+    "href": "https://translate.google.com/",
+    "html": "<a class=\"VIpgJd-ZVi9od-l4eHX-hSRGPd\" href=\"https://translate.google.com\" target=\"_blank\" rel=\"noopener\"><img src=\"https://www.gstatic.com/images/branding/googlelogo/1x/googlelogo_color_42x16dp.png\" width=\"37px\" height=\"14px\" style=\"padding-right: 3px\" alt=\"Google Translate\">Translate</a>"
+  },
+  {
+    "text": "",
+    "href": "",
+    "html": "<a id=\"arrowPrev_banner1\" tabindex=\"0\" class=\"arrowNew prev\" aria-label=\"Banner Arrow Previous\"><svg style=\" \" class=\"\"><use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"#iconSlideshowArrowLeft\"></use></svg></a>"
+  },
+  {
+    "text": "",
+    "href": "",
+    "html": "<a id=\"arrowNext_banner1\" tabindex=\"0\" class=\"arrowNew next\" aria-label=\"Banner Arrow Next\"><svg style=\" \" class=\"\"><use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"#iconSlideshowArrowRight\"></use></svg></a>"
+  }
+]

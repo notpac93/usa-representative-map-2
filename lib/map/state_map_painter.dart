@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_drawing/path_drawing.dart';
 import '../data/models.dart';
-import 'national_map_painter.dart'; // For AtlasPathCache
-import '../utils/city_placements.dart';
-import '../utils/city_labeling.dart';
+import 'atlas_path_cache.dart';
+import 'city_renderer.dart';
 import '../utils/map_transform.dart';
 
 class StateMapPainter extends CustomPainter {
@@ -13,6 +12,7 @@ class StateMapPainter extends CustomPainter {
   final AtlasPathCache pathCache;
   final double zoomLevel;
   final List<CityFeature> cities; // Pre-filtered cities for the state
+  final List<PlaceFeature>? places; // City outlines
   final List<OverlayFeature>? counties;
   final List<OverlayFeature>? cd116;
   final List<OverlayFeature>? urbanAreas;
@@ -79,6 +79,7 @@ class StateMapPainter extends CustomPainter {
     required this.pathCache,
     required this.zoomLevel,
     required this.cities,
+    required this.places,
     this.counties,
     this.cd116,
     this.urbanAreas,
@@ -157,6 +158,32 @@ class StateMapPainter extends CustomPainter {
       }
       if (showDistricts && cd116 != null) {
         _drawOverlay(canvas, cd116!, _districtPaint);
+      }
+
+      // Draw City Outlines (Places) with fade-in on zoom
+      if (places != null && places!.isNotEmpty && zoomLevel > 1.5) {
+        double opacity = (zoomLevel - 1.5) / 1.5;
+        if (opacity > 0.4) opacity = 0.4; // Max opacity 0.4
+
+        final Paint placeFill = Paint()
+          ..color = Colors.blueGrey.withValues(alpha: opacity * 0.15)
+          ..style = PaintingStyle.fill;
+        final Paint placeStroke = Paint()
+          ..color = Colors.blueGrey.withValues(alpha: opacity)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.5 / invariantScale;
+
+        for (var p in places!) {
+          var path = pathCache.getPathById(p.id);
+          if (path == null) {
+            pathCache.cachePath(p.id, p.path);
+            path = pathCache.getPathById(p.id);
+          }
+          if (path != null) {
+            canvas.drawPath(path, placeFill);
+            canvas.drawPath(path, placeStroke);
+          }
+        }
       }
 
       // Draw Highlights (Venn Diagram Style)
@@ -243,96 +270,13 @@ class StateMapPainter extends CustomPainter {
   }
 
   void _drawCities(Canvas canvas, double scale, Size size) {
-    // 1. Decorate Cities
-    // 1. Decorate Cities
-    // Simple heuristic: Top 3 cities by population get marquee status (bold/larger).
-    // (Assuming cities are passed unsorted or we want to enforce it).
-    final sortedCities = List<CityFeature>.from(cities);
-    sortedCities.sort(
-      (a, b) => (b.population ?? 0).compareTo(a.population ?? 0),
+    CityRenderer.drawCities(
+      canvas,
+      cities,
+      scale,
+      zoomLevel,
+      pathCache: pathCache,
     );
-
-    final decoratedCities = sortedCities.asMap().entries.map((entry) {
-      final index = entry.key;
-      final c = entry.value;
-      final isMarquee = index < 3; // Top 3 are "marquee"
-      final isCapital = false; // TODO: Load capital data if needed
-
-      return DecoratedCity(
-        feature: c,
-        normalizedName: normalizeCityName(c.name),
-        displayName: c.name,
-        isMarquee: isMarquee,
-        isCapital: isCapital,
-        placementJitter: jitterFromString(c.name),
-      );
-    }).toList();
-
-    // 2. Setup Options
-    // Base scale is relative to the STATE view.
-    // In React app, we used `totalZoom` which was styleZoom * baseMapScale.
-    // Here, `scale` IS essentially that multiplier relative to Atlas units?
-    // Atlas units are generic.
-    // `scale` transforms generic 500-sized atlas coords to Screen Logic Pixels.
-    // If bboxWidth is 50, and screen is 300, scale is 6.
-
-    final options = ComputePlacementOptions(
-      normalizedZoom:
-          scale / 5.0, // Arbitrary normalization factor similar to D3
-      transform: [
-        0,
-        0,
-        1.0,
-      ], // We are already transformed via canvas, so logic assumes 0,0 origin relative to state
-      viewWidth: size.width,
-      viewHeight: size.height,
-      baseMarkerRadius:
-          2.0 /
-          scale, // Scale down radius in Atlas Units so it stays constant on screen
-      baseFontSize: 13.0 / scale, // Target 13px screen size
-      baseOffsetX: 6.0 / scale,
-      baseOffsetY: 6.0 / scale,
-      strokeWidth: 2.0 / scale,
-      detailZoomFactor: 1.0,
-      labelPaddingScale: 1.0,
-    );
-
-    // 3. Compute
-    final placements = computeCityPlacements(decoratedCities, options);
-
-    for (var placement in placements) {
-      canvas.drawCircle(
-        Offset(placement.city.x, placement.city.y),
-        2.5 / scale,
-        _cityMarkerPaint,
-      );
-
-      final textSpan = TextSpan(
-        text: placement.text,
-        style: GoogleFonts.inter(
-          color: Colors.black,
-          fontSize: placement.fontSize,
-          fontWeight: FontWeight.w500,
-        ),
-      );
-      final textPainter = TextPainter(
-        text: textSpan,
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      // Use computed label position
-      textPainter.paint(
-        canvas,
-        Offset(placement.labelX, placement.labelY - placement.fontSize),
-      ); // Adjust for baseline? Flutter draws at top-left.
-      // placement.labelY is baseline in React logic? The code said `bottom`.
-      // Flutter TextPainter paints top-left.
-      // We might need to adjust Y by height.
-      // The placement logic return `labelY` as TOP? No, `textY` was bottom?
-      // `top = textY - textHeight`.
-      // `placement.labelY` = `chosenPlacement.y` = `textY` (bottom).
-      // So we should paint at `labelY - textHeight`.
-    }
   }
 
   @override

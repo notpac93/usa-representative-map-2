@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:path_drawing/path_drawing.dart';
+import '../data/civic_data_provider.dart';
+import '../data/bill_models.dart';
+import 'bill_detail_screen.dart';
 import '../data/models.dart';
 import '../data/data_provider.dart';
 import '../map/feature_focus_painter.dart';
@@ -206,11 +209,7 @@ class _SectionDetailScreenState extends State<SectionDetailScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: SvgPicture.asset(
-              'assets/img/logo.svg',
-              width: 32,
-              height: 32,
-            ),
+            child: Image.asset('assets/img/logo.png', width: 32, height: 32),
           ),
         ],
         title: Text(widget.selectedFeature.displayName),
@@ -336,95 +335,174 @@ class _SectionDetailScreenState extends State<SectionDetailScreen> {
           Expanded(
             flex: 1,
             child: Container(
-              child: TerritorySummaryCard(
-                stateId: widget.stateId,
-                title: widget.selectedFeature.displayName,
-                subtitle: "Located in the US.", // Or state name if available
-                population: widget.selectedFeature.demographics?.population,
-                republicanPct: widget.selectedFeature.demographics?.republican,
-                democratPct: widget.selectedFeature.demographics?.democrat,
-                officials: OfficialHierarchy.sortOfficials(
-                  () {
-                    final combined = [
-                      ...widget.sortedLeaders,
-                      ..._countyMayors,
-                    ];
-                    final unique = <String, dynamic>{};
-                    for (var official in combined) {
-                      // Create a unique key
-                      String key = "";
-                      if (official is Mayor) {
-                        key = "mayor_${official.name}_${official.city}";
-                      } else if (official is Representative) {
-                        key = "rep_${official.name}_${official.district}";
-                      } else if (official is Senator) {
-                        key = "sen_${official.name}";
-                      } else if (official is Governor) {
-                        key = "gov_${official.name}";
-                      } else {
-                        key = official.toString();
-                      }
-                      unique[key] = official;
-                    }
-                    return unique.values.toList();
-                  }(),
-                  prioritizeWhere: _selectedCityId != null
-                      ? (official) {
-                          if (official is! Mayor) return false;
-                          // Get the selected city name
-                          final selectedCity = _places.firstWhere(
-                            (p) => p.id == _selectedCityId,
-                            orElse: () => PlaceFeature(
-                              id: '',
-                              name: '',
-                              path: '',
-                              lsad: '',
-                              stateFips: '',
-                              bbox: const [0, 0, 0, 0],
+              color: Colors.grey[50],
+              child: ListView(
+                children: [
+                  TerritorySummaryCard(
+                    stateId: widget.stateId,
+                    title: widget.selectedFeature.displayName,
+                    subtitle:
+                        "Located in the US.", // Or state name if available
+                    population: widget.selectedFeature.demographics?.population,
+                    republicanPct:
+                        widget.selectedFeature.demographics?.republican,
+                    democratPct: widget.selectedFeature.demographics?.democrat,
+                    officials: OfficialHierarchy.sortOfficials(
+                      () {
+                        final combined = [
+                          ...widget.sortedLeaders,
+                          ..._countyMayors,
+                        ];
+                        final unique = <String, dynamic>{};
+                        for (var official in combined) {
+                          // Create a unique key
+                          String key = "";
+                          if (official is Mayor) {
+                            key = "mayor_${official.name}_${official.city}";
+                          } else if (official is Representative) {
+                            key = "rep_${official.name}_${official.district}";
+                          } else if (official is Senator) {
+                            key = "sen_${official.name}";
+                          } else if (official is Governor) {
+                            key = "gov_${official.name}";
+                          } else {
+                            key = official.toString();
+                          }
+                          unique[key] = official;
+                        }
+                        return unique.values.toList();
+                      }(),
+                      prioritizeWhere: _selectedCityId != null
+                          ? (official) {
+                              if (official is! Mayor) return false;
+                              // Get the selected city name
+                              final selectedCity = _places.firstWhere(
+                                (p) => p.id == _selectedCityId,
+                                orElse: () => PlaceFeature(
+                                  id: '',
+                                  name: '',
+                                  path: '',
+                                  lsad: '',
+                                  stateFips: '',
+                                  bbox: const [0, 0, 0, 0],
+                                ),
+                              );
+
+                              // Normalize both names for comparison
+                              var cityName = selectedCity.name.toLowerCase();
+                              for (final suffix in [
+                                " city",
+                                " town",
+                                " village",
+                                " borough",
+                              ]) {
+                                if (cityName.endsWith(suffix)) {
+                                  cityName = cityName
+                                      .substring(
+                                        0,
+                                        cityName.length - suffix.length,
+                                      )
+                                      .trim();
+                                  break;
+                                }
+                              }
+
+                              var mayorCity = official.city.toLowerCase();
+                              if (mayorCity.contains(',')) {
+                                mayorCity = mayorCity.split(',')[0].trim();
+                              }
+
+                              return mayorCity == cityName;
+                            }
+                          : null,
+                    ),
+                    selectedCityId: _selectedCityId,
+                    selectedCityName: _selectedCityId != null
+                        ? _places
+                              .firstWhere(
+                                (p) => p.id == _selectedCityId,
+                                orElse: () => PlaceFeature(
+                                  id: '',
+                                  name: 'Unknown',
+                                  path: '',
+                                  lsad: '',
+                                  stateFips: '',
+                                  bbox: const [0, 0, 0, 0],
+                                ),
+                              )
+                              .name
+                        : null,
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "Local & State Legislation",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: FutureBuilder(
+                      future: CivicDataProvider().loadData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        // For section, show state bills.
+                        final bills = CivicDataProvider().getBillsForState(
+                          widget.stateId,
+                        );
+                        if (bills.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              "No relevant bills found for this jurisdiction.",
                             ),
                           );
-
-                          // Normalize both names for comparison
-                          var cityName = selectedCity.name.toLowerCase();
-                          for (final suffix in [
-                            " city",
-                            " town",
-                            " village",
-                            " borough",
-                          ]) {
-                            if (cityName.endsWith(suffix)) {
-                              cityName = cityName
-                                  .substring(0, cityName.length - suffix.length)
-                                  .trim();
-                              break;
-                            }
-                          }
-
-                          var mayorCity = official.city.toLowerCase();
-                          if (mayorCity.contains(',')) {
-                            mayorCity = mayorCity.split(',')[0].trim();
-                          }
-
-                          return mayorCity == cityName;
                         }
-                      : null,
-                ),
-                selectedCityId: _selectedCityId,
-                selectedCityName: _selectedCityId != null
-                    ? _places
-                          .firstWhere(
-                            (p) => p.id == _selectedCityId,
-                            orElse: () => PlaceFeature(
-                              id: '',
-                              name: 'Unknown',
-                              path: '',
-                              lsad: '',
-                              stateFips: '',
-                              bbox: const [0, 0, 0, 0],
-                            ),
-                          )
-                          .name
-                    : null,
+                        return Column(
+                          children: bills
+                              .map(
+                                (b) => Card(
+                                  child: ListTile(
+                                    title: Text(
+                                      b.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text('Status: ${b.status}'),
+                                    trailing: const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              BillDetailScreen(bill: b),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
           ),

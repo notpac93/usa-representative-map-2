@@ -1,13 +1,27 @@
 # Flutter/Dart
 build/
+build_admin/
+build_smoke*/
+xml_usc*/
 .dart_tool/
 .packages
 .flutter-plugins*
 *.iml
 
+# Rust
+target/
+usa-data-pipeline/target/
+
+# Environment / secrets
+.env
+*.env
+usa-data-pipeline/.env
+
 # Data/Raw (large shapes)
 data/raw/
 tmp/
+scratch/
+test_parse
 
 # Logs
 logs

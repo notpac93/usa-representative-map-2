@@ -1,34 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 import '../data/models.dart';
-
-/// Caches parsed Paths to avoid expensive re-parsing on every paint.
-class AtlasPathCache {
-  final Map<String, Path> _paths = {};
-
-  Path? getPath(String stateId) => _paths[stateId];
-
-  void parseAndCache(Atlas atlas) {
-    if (_paths.isNotEmpty) return;
-    for (var state in atlas.states) {
-      _paths[state.id] = parseSvgPathData(state.path);
-    }
-  }
-
-  Path? getPathById(String id) => _paths[id];
-
-  void cachePath(String id, String svgPath) {
-    if (_paths.containsKey(id)) return;
-    _paths[id] = parseSvgPathData(svgPath);
-  }
-}
+import 'city_renderer.dart';
+import 'state_label_renderer.dart';
+import 'atlas_path_cache.dart';
 
 class NationalMapPainter extends CustomPainter {
   final Atlas atlas;
   final AtlasPathCache pathCache;
   final String? selectedStateId;
   final String? hoveredStateId;
-  final double zoomLevel;
+  final TransformationController? transformController;
+  final List<CityFeature> cities;
 
   // Paints (created once or passed in would be better, but lazy init here is fine for now)
   final Paint _fillPaint = Paint()..style = PaintingStyle.fill;
@@ -42,8 +25,9 @@ class NationalMapPainter extends CustomPainter {
     required this.pathCache,
     this.selectedStateId,
     this.hoveredStateId,
-    required this.zoomLevel,
-  }) {
+    this.transformController,
+    this.cities = const [],
+  }) : super(repaint: transformController) {
     // Ensure cache is populated
     pathCache.parseAndCache(atlas);
   }
@@ -62,6 +46,7 @@ class NationalMapPainter extends CustomPainter {
     final offsetX = (size.width - (atlas.width * scale)) / 2;
     final offsetY = (size.height - (atlas.height * scale)) / 2;
 
+    canvas.save();
     canvas.translate(offsetX, offsetY);
     canvas.scale(scale);
 
@@ -84,12 +69,39 @@ class NationalMapPainter extends CustomPainter {
       canvas.drawPath(path, _fillPaint);
       canvas.drawPath(path, _strokePaint);
     }
+
+    // Determine dynamic zoom level from InteractiveViewer
+    double currentZoom = 1.0;
+    if (transformController != null) {
+      currentZoom = transformController!.value.getMaxScaleOnAxis();
+    }
+
+    // Draw state labels first, which returns the occupied bounds of the state names
+    final List<Rect> stateLabelBounds = StateLabelRenderer.drawStateLabels(
+      canvas,
+      atlas,
+      scale,
+      currentZoom,
+    );
+
+    // Draw cities using the shared renderer, passing state label bounds
+    CityRenderer.drawCities(
+      canvas,
+      cities,
+      scale,
+      currentZoom,
+      isNationalMap: true,
+      pathCache: pathCache,
+      existingOccupiedSpaces: stateLabelBounds,
+    );
+
+    canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant NationalMapPainter oldDelegate) {
     return oldDelegate.selectedStateId != selectedStateId ||
         oldDelegate.hoveredStateId != hoveredStateId ||
-        oldDelegate.zoomLevel != zoomLevel;
+        oldDelegate.cities != cities;
   }
 }

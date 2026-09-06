@@ -1,0 +1,548 @@
+[
+  {
+    "city": "Apache Junction",
+    "website": "http://www.ajcity.net",
+    "phone": 4809828002,
+    "address": "300 East Superstition Boulevard"
+  },
+  {
+    "city": "Avondale",
+    "website": "http://www.avondaleaz.gov",
+    "phone": 6233331000,
+    "address": "11465  W Civic Center Dr "
+  },
+  {
+    "city": "Benson",
+    "website": "http://www.cityofbenson.com",
+    "phone": 5205862245,
+    "address": "120 West 6th Street"
+  },
+  {
+    "city": "Bisbee",
+    "website": "http://www.bisbeeaz.gov",
+    "phone": 5204326000,
+    "address": "915 South Tovreaville Road"
+  },
+  {
+    "city": "Buckeye",
+    "website": "http://www.buckeyeaz.gov",
+    "phone": 6233496000,
+    "address": "530 East Monroe Avenue"
+  },
+  {
+    "city": "Camp Verde",
+    "website": "http://www.campverde.az.gov",
+    "phone": 9285540000,
+    "address": "473 South Main Street, Suite 102"
+  },
+  {
+    "city": "Carefree",
+    "website": "http://www.carefree.org",
+    "phone": 4804883686,
+    "address": "8 Sundial Circle"
+  },
+  {
+    "city": "Casa Grande",
+    "website": "http://www.casagrandeaz.gov",
+    "phone": 5204218600,
+    "address": "510 East Florence Boulevard"
+  },
+  {
+    "city": "Cave Creek",
+    "website": "http://www.cavecreekaz.gov",
+    "phone": 4804881400,
+    "address": "37622 North Cave Creek Road"
+  },
+  {
+    "city": "Chino Valley",
+    "website": "http://www.chinoaz.net",
+    "phone": 9286362646,
+    "address": "1982 Voss Drive, Suite 204"
+  },
+  {
+    "city": "Clarkdale",
+    "website": "http://www.clarkdale.az.gov",
+    "phone": 9286392400,
+    "address": "39 North 9th Street"
+  },
+  {
+    "city": "Chandler",
+    "website": "http://www.chandleraz.gov",
+    "phone": 4807822000,
+    "address": "175 South Arizona Avenue 5th Floor"
+  },
+  {
+    "city": "Clifton",
+    "website": "http://www.cliftonaz.com",
+    "phone": 9288654146,
+    "address": "510 North Coronado Boulevard"
+  },
+  {
+    "city": "Coolidge",
+    "website": "http://www.coolidgeaz.com",
+    "phone": 5207235361,
+    "address": "130 West Central Avenue"
+  },
+  {
+    "city": "Cottonwood",
+    "website": "http://www.cottonwoodaz.gov",
+    "phone": 9286345526,
+    "address": "827 North Main Street"
+  },
+  {
+    "city": "Dewey-Humboldt",
+    "website": "http://www.dhaz.gov",
+    "phone": 9286327362,
+    "address": "2735 South Highway 69"
+  },
+  {
+    "city": "Duncan",
+    "website": "http://www.townofduncan.us",
+    "phone": 9283592791,
+    "address": "506 Southeast Old West Highway"
+  },
+  {
+    "city": "El Mirage",
+    "website": "http://www.elmirageaz.gov",
+    "phone": 6239728116,
+    "address": "10000 North El Mirage Road"
+  },
+  {
+    "city": "Eloy",
+    "website": "http://www.eloyaz.gov",
+    "phone": 5204669201,
+    "address": "595 North C Street"
+  },
+  {
+    "city": "Flagstaff",
+    "website": "http://www.flagstaff.az.gov",
+    "phone": 9282132000,
+    "address": "211 West Aspen Avenue"
+  },
+  {
+    "city": "Eagar",
+    "website": "http://www.eagaraz.gov",
+    "phone": 9283334128,
+    "address": "22 West 2nd Street"
+  },
+  {
+    "city": "Florence",
+    "website": "http://www.florenceaz.gov",
+    "phone": 5208687500,
+    "address": "775 North Main Street"
+  },
+  {
+    "city": "Fountain Hills",
+    "website": "http://www.fh.az.gov",
+    "phone": 4808165100,
+    "address": "16705 East Avenue of the Fountains"
+  },
+  {
+    "city": "Gila Bend",
+    "website": "http://www.gilabendaz.org",
+    "phone": 9286832255,
+    "address": "644 West Pima Street"
+  },
+  {
+    "city": "Gilbert",
+    "website": "http://www.gilbertaz.gov",
+    "phone": 4805036000,
+    "address": "50 East Civic Center Drive"
+  },
+  {
+    "city": "Glendale",
+    "website": "http://www.glendaleaz.com",
+    "phone": 6239302000,
+    "address": "5850 West Glendale Avenue"
+  },
+  {
+    "city": "Globe",
+    "website": "http://www.globeaz.gov",
+    "phone": 9284257146,
+    "address": "150 North Pine Street"
+  },
+  {
+    "city": "Goodyear",
+    "website": "http://www.goodyearaz.gov",
+    "phone": 6239323910,
+    "address": "190 North Litchfield Road"
+  },
+  {
+    "city": "Guadalupe",
+    "website": "http://www.guadalupeaz.org",
+    "phone": 4807303080,
+    "address": "9241 South Avenida del Yaqui"
+  },
+  {
+    "city": "Huachuca City",
+    "website": "http://www.huachucacityaz.gov",
+    "phone": 5204561354,
+    "address": "500 North Gonzales Boulevard"
+  },
+  {
+    "city": "Jerome",
+    "website": "http://www.jerome.az.gov",
+    "phone": 9286347943,
+    "address": "600 Clark Street 89A"
+  },
+  {
+    "city": "Colorado City",
+    "website": "http://www.tocc.us",
+    "phone": 9288752646,
+    "address": "25 South Central Street"
+  },
+  {
+    "city": "Holbrook",
+    "website": "http://www.ci.holbrook.az.us",
+    "phone": 9285246225,
+    "address": "465 1st Avenue"
+  },
+  {
+    "city": "Litchfield Park",
+    "website": "http://www.litchfield-park.org",
+    "phone": 6239355033,
+    "address": "214 West Wigwam Boulevard"
+  },
+  {
+    "city": "Mammoth",
+    "website": "http://www.townofmammoth.us",
+    "phone": 5204872331,
+    "address": "125 North Clark Street"
+  },
+  {
+    "city": "Marana",
+    "website": "http://www.maranaaz.gov",
+    "phone": 5203821999,
+    "address": "11555 West Civic Center Drive"
+  },
+  {
+    "city": "Miami",
+    "website": "http://www.miamiaz.gov",
+    "phone": 9284734403,
+    "address": "500 West Sullivan Street"
+  },
+  {
+    "city": "Nogales",
+    "website": "http://www.nogalesaz.gov",
+    "phone": 5202876571,
+    "address": "777 North Grand Avenue"
+  },
+  {
+    "city": "Oro Valley",
+    "website": "http://www.orovalleyaz.gov",
+    "phone": 5202294700,
+    "address": "11000 North La Canada Drive"
+  },
+  {
+    "city": "Page",
+    "website": "http://www.pageaz.gov",
+    "phone": 9286458861,
+    "address": "697 Vista Avenue"
+  },
+  {
+    "city": "Paradise Valley",
+    "website": "http://www.paradisevalleyaz.gov",
+    "phone": 4809487411,
+    "address": "6401 East Lincoln Drive"
+  },
+  {
+    "city": "Parker",
+    "website": "http://www.townofparkerarizona.com",
+    "phone": 9286699265,
+    "address": "1314 11th Street"
+  },
+  {
+    "city": "Payson",
+    "website": "http://www.paysonaz.gov",
+    "phone": 9284745242,
+    "address": "303 North Beeline Highway"
+  },
+  {
+    "city": "Peoria",
+    "website": "http://www.peoriaaz.gov",
+    "phone": 6237737000,
+    "address": "8401 West  Monroe Street"
+  },
+  {
+    "city": "Kingman",
+    "website": "http://www.cityofkingman.gov",
+    "phone": 9287535561,
+    "address": "310 North 4th Street"
+  },
+  {
+    "city": "Phoenix",
+    "website": "http://www.phoenix.gov",
+    "phone": 6022626011,
+    "address": "200 West Washington Street"
+  },
+  {
+    "city": "Pima",
+    "website": "http://www.pimatown.az.gov",
+    "phone": 9284852611,
+    "address": "110 West Center Street"
+  },
+  {
+    "city": "Pinetop-Lakeside",
+    "website": "http://www.pinetoplakesideaz.gov",
+    "phone": 9283688696,
+    "address": "325 West White Mountain Boulevard"
+  },
+  {
+    "city": "Maricopa",
+    "website": "http://www.maricopa-az.gov",
+    "phone": 5205689098,
+    "address": "39700 West Civic Center Plaza"
+  },
+  {
+    "city": "Lake Havasu City",
+    "website": "http://www.lhcaz.gov",
+    "phone": 9288552116,
+    "address": "2330 McCulloch Boulevard North"
+  },
+  {
+    "city": "Prescott Valley",
+    "website": "http://www.pvaz.net",
+    "phone": 9287593000,
+    "address": "7501 East Skoog Boulevard"
+  },
+  {
+    "city": "Mesa",
+    "website": "http://www.mesaaz.gov",
+    "phone": 4806442011,
+    "address": "20 East Main Street"
+  },
+  {
+    "city": "Sahuarita",
+    "website": "http://www.sahuaritaaz.gov",
+    "phone": 5208228800,
+    "address": "375 West Sahuarita Center Way"
+  },
+  {
+    "city": "Scottsdale",
+    "website": "http://www.scottsdaleaz.gov",
+    "phone": 4803123111,
+    "address": "3939 North Drinkwater Boulevard"
+  },
+  {
+    "city": "Quartzsite",
+    "website": "http://www.quartzsiteaz.org",
+    "phone": 9289274333,
+    "address": "465 North Plymouth Avenue"
+  },
+  {
+    "city": "Sedona",
+    "website": "http://www.sedonaaz.gov",
+    "phone": 9282823113,
+    "address": "102 Roadrunner Drive"
+  },
+  {
+    "city": "Show Low",
+    "website": "http://www.showlowaz.gov",
+    "phone": 9285324000,
+    "address": "180 North 9th Street"
+  },
+  {
+    "city": "Sierra Vista",
+    "website": "http://www.sierravistaaz.gov",
+    "phone": 5204583315,
+    "address": "1011 North Coronado Drive"
+  },
+  {
+    "city": "Queen Creek",
+    "website": "http://www.queencreek.org",
+    "phone": 4803583000,
+    "address": "22358 South Ellsworth Road"
+  },
+  {
+    "city": "Somerton",
+    "website": "http://www.cityofsomerton.com",
+    "phone": 9287227400,
+    "address": "143 North State Avenue"
+  },
+  {
+    "city": "South Tucson",
+    "website": "http://www.southtucson.org",
+    "phone": 5207922424,
+    "address": "1601 South 6th Avenue"
+  },
+  {
+    "city": "Springerville",
+    "website": "http://www.springervilleaz.gov",
+    "phone": 9283332656,
+    "address": "418 East Main Street"
+  },
+  {
+    "city": "Star Valley",
+    "website": "http://www.starvalleyaz.com",
+    "phone": 9284727752,
+    "address": "3675 East Highway 260"
+  },
+  {
+    "city": "San Luis",
+    "website": "http://www.sanluisaz.gov",
+    "phone": 9283418520,
+    "address": "1090 East Union Street"
+  },
+  {
+    "city": "Superior",
+    "website": "http://www.superioraz.gov",
+    "phone": 5206895752,
+    "address": "199 North Lobb Avenue"
+  },
+  {
+    "city": "Surprise",
+    "website": "http://www.surpriseaz.gov",
+    "phone": 6232221000,
+    "address": "16000 N Civic Center Plaza"
+  },
+  {
+    "city": "Tempe",
+    "website": "http://www.tempe.gov",
+    "phone": 4803504311,
+    "address": "31 East 5th Street"
+  },
+  {
+    "city": "Thatcher",
+    "website": "http://thatcher.az.gov",
+    "phone": 9284282290,
+    "address": "3700 West Main Street"
+  },
+  {
+    "city": "Tolleson",
+    "website": "http://www.tollesonaz.org",
+    "phone": 6239367111,
+    "address": "9555 West Van Buren Street"
+  },
+  {
+    "city": "Tombstone",
+    "website": "http://www.cityoftombstoneaz.gov",
+    "phone": 5204572202,
+    "address": "613 East Allen Street"
+  },
+  {
+    "city": "Tusayan",
+    "website": "http://tusayan-az.gov",
+    "phone": 9286389909,
+    "address": "845 Mustang Dr"
+  },
+  {
+    "city": "Wickenburg",
+    "website": "http://www.wickenburgaz.org",
+    "phone": 9286845451,
+    "address": "155 North Tegner Street Suite A"
+  },
+  {
+    "city": "Willcox",
+    "website": "http://www.cityofwillcox.org",
+    "phone": 5203844271,
+    "address": "101 South Railroad Avenue Suite B"
+  },
+  {
+    "city": "Williams",
+    "website": "http://www.williamsaz.gov",
+    "phone": 9286354451,
+    "address": "113 South 1st Street"
+  },
+  {
+    "city": "Yuma",
+    "website": "http://www.yumaaz.gov",
+    "phone": 9283735000,
+    "address": "One City Plaza"
+  },
+  {
+    "city": "Bullhead City",
+    "website": "https://www.bullheadcity.com",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Douglas",
+    "website": "https://www.douglasaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Fredonia",
+    "website": "https://www.fredoniaaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Hayden",
+    "website": "https://www.haydenaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Kearny",
+    "website": "https://www.kearnyaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Patagonia",
+    "website": "https://www.patagoniaaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Safford",
+    "website": "https://www.saffordaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Snowflake",
+    "website": "https://www.snowflakeaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "St. Johns",
+    "website": "https://www.sjc.az.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Taylor",
+    "website": "https://www.tayloraz.org",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Wellton",
+    "website": "https://www.welltonaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Winkelman",
+    "website": "https://www.winkelmangov.com",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Winslow",
+    "website": "https://www.winslowaz.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Youngtown",
+    "website": "https://www.youngtownaz.org",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Prescott",
+    "website": "https://www.prescott-az.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  },
+  {
+    "city": "Tucson",
+    "website": "https://www.tucson.gov",
+    "phone": "Unknown",
+    "address": "Unknown"
+  }
+]

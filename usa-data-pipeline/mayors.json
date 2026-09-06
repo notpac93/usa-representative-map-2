@@ -1,0 +1,387 @@
+[
+  {
+    "city": "Walford",
+    "state": "Iowa",
+    "mayor": "Todd Gibbs"
+  },
+  {
+    "city": "Montezuma",
+    "state": "Iowa",
+    "mayor": "Colin Watts"
+  },
+  {
+    "city": "Grimes",
+    "state": "Iowa",
+    "mayor": "Scott Mikkelsen"
+  },
+  {
+    "city": "Coon Rapids",
+    "state": "Iowa",
+    "mayor": "Jeff Anthofer"
+  },
+  {
+    "city": "North Liberty",
+    "state": "Iowa",
+    "mayor": "Chris Hoffman"
+  },
+  {
+    "city": "Denver",
+    "state": "Colorado",
+    "mayor": "Michael Johnston"
+  },
+  {
+    "city": "Newark",
+    "state": "Delaware",
+    "mayor": "Jerry Clifton"
+  },
+  {
+    "city": "Wilmington",
+    "state": "Delaware",
+    "mayor": "John Carney"
+  },
+  {
+    "city": "Baltimore",
+    "state": "Maryland",
+    "mayor": "Brandon Scott"
+  },
+  {
+    "city": "Stratford",
+    "state": "Iowa",
+    "mayor": "Brian Ouverson"
+  },
+  {
+    "city": "Roanoke",
+    "state": "Virginia",
+    "mayor": "Joseph L. Cobb"
+  },
+  {
+    "city": "Williamsburg",
+    "state": "Virginia",
+    "mayor": "Douglas G. Pons"
+  },
+  {
+    "city": "Hopewell",
+    "state": "Virginia",
+    "mayor": "Johnny Partin"
+  },
+  {
+    "city": "Lynchburg",
+    "state": "Virginia",
+    "mayor": "Larry Taylor"
+  },
+  {
+    "city": "Prairie City",
+    "state": "Iowa",
+    "mayor": "Chad Alleger"
+  },
+  {
+    "city": "Winchester",
+    "state": "Virginia",
+    "mayor": "Les Veach"
+  },
+  {
+    "city": "Carson City",
+    "state": "Nevada",
+    "mayor": "Lori Bagwell"
+  },
+  {
+    "city": "Salem",
+    "state": "Virginia",
+    "mayor": "Renée Ferris Turk"
+  },
+  {
+    "city": "Covington",
+    "state": "Virginia",
+    "mayor": "Tom H. Sibold Jr."
+  },
+  {
+    "city": "Danville",
+    "state": "Virginia",
+    "mayor": "Alonzo Jones"
+  },
+  {
+    "city": "Weddington",
+    "state": "North Carolina",
+    "mayor": "Jim Bell"
+  },
+  {
+    "city": "Bristol",
+    "state": "Virginia",
+    "mayor": "Becky Nave"
+  },
+  {
+    "city": "Martinsville",
+    "state": "Virginia",
+    "mayor": "LC Jones"
+  },
+  {
+    "city": "St. Louis",
+    "state": "Missouri",
+    "mayor": "Tishaura Jones"
+  },
+  {
+    "city": "Le Grand",
+    "state": "Iowa",
+    "mayor": "Shane Sweitzer"
+  },
+  {
+    "city": "Rockford",
+    "state": "Iowa",
+    "mayor": "Scott Johnson"
+  },
+  {
+    "city": "Newport News",
+    "state": "Virginia",
+    "mayor": "Phillip Jones"
+  },
+  {
+    "city": "Casey",
+    "state": "Iowa",
+    "mayor": "Nicholas Lindberg"
+  },
+  {
+    "city": "North Las Vegas",
+    "state": "Nevada",
+    "mayor": "Pamela Goynes-Brown"
+  },
+  {
+    "city": "Portsmouth",
+    "state": "Virginia",
+    "mayor": "Shannon E. Glover"
+  },
+  {
+    "city": "Kilgore",
+    "state": "Texas",
+    "mayor": "Ronnie E. Spradlin III"
+  },
+  {
+    "city": "Anchorage",
+    "state": "Alaska",
+    "mayor": "Suzanne LaFrance"
+  },
+  {
+    "city": "Petersburg",
+    "state": "Virginia",
+    "mayor": "Samuel Parham"
+  },
+  {
+    "city": "Roland",
+    "state": "Iowa",
+    "mayor": "Kurtis Bower"
+  },
+  {
+    "city": "Hampton",
+    "state": "Virginia",
+    "mayor": "Jimmy Gray"
+  },
+  {
+    "city": "Colonial Heights",
+    "state": "Virginia",
+    "mayor": "T. Gregory Kochuba"
+  },
+  {
+    "city": "West Bend",
+    "state": "Iowa",
+    "mayor": "Kimberly Johnson"
+  },
+  {
+    "city": "Selma",
+    "state": "Texas",
+    "mayor": "Tom Daly"
+  },
+  {
+    "city": "Franklin",
+    "state": "Virginia",
+    "mayor": "Robert \"Bobby\" Cutchins"
+  },
+  {
+    "city": "Richmond",
+    "state": "Virginia",
+    "mayor": "Danny Avula"
+  },
+  {
+    "city": "Manassas Park",
+    "state": "Virginia",
+    "mayor": "Jeanette Rishell"
+  },
+  {
+    "city": "Virginia Beach",
+    "state": "Virginia",
+    "mayor": "Bobby Dyer"
+  },
+  {
+    "city": "San Francisco",
+    "state": "California",
+    "mayor": "Daniel Lurie"
+  },
+  {
+    "city": "Poquoson",
+    "state": "Virginia",
+    "mayor": "David A. Hux"
+  },
+  {
+    "city": "Manassas",
+    "state": "Virginia",
+    "mayor": "Michelle Davis-Younger"
+  },
+  {
+    "city": "Charlottesville",
+    "state": "Virginia",
+    "mayor": "Juandiego Wade"
+  },
+  {
+    "city": "Pleasantville",
+    "state": "Iowa",
+    "mayor": "Kody Jurgens"
+  },
+  {
+    "city": "Fredericksburg",
+    "state": "Virginia",
+    "mayor": "Kerry P. Devine"
+  },
+  {
+    "city": "Radford",
+    "state": "Virginia",
+    "mayor": "David Horton"
+  },
+  {
+    "city": "Suffolk",
+    "state": "Virginia",
+    "mayor": "Michael Duman"
+  },
+  {
+    "city": "Nashua",
+    "state": "Iowa",
+    "mayor": "Alex Anthofer"
+  },
+  {
+    "city": "Nora Springs",
+    "state": "Iowa",
+    "mayor": "Randy Hassman"
+  },
+  {
+    "city": "New York City",
+    "state": "New York",
+    "mayor": "Zohran Mamdani"
+  },
+  {
+    "city": "Cockrell Hill",
+    "state": "Texas",
+    "mayor": "Luis D. Carrera"
+  },
+  {
+    "city": "Emporia",
+    "state": "Virginia",
+    "mayor": "Carolyn Carey"
+  },
+  {
+    "city": "Falls Church",
+    "state": "Virginia",
+    "mayor": "Letty Hardi"
+  },
+  {
+    "city": "Carlisle",
+    "state": "Iowa",
+    "mayor": "Drew Merrifield"
+  },
+  {
+    "city": "Shelby",
+    "state": "Iowa",
+    "mayor": "Ron Kroll"
+  },
+  {
+    "city": "Buena Vista",
+    "state": "Virginia",
+    "mayor": "Tyson Cooper"
+  },
+  {
+    "city": "Suffolk",
+    "state": "Virginia",
+    "mayor": "Chris Jones"
+  },
+  {
+    "city": "Buckeye",
+    "state": "Arizona",
+    "mayor": "Eric Orsborn"
+  },
+  {
+    "city": "Pleasant Hill",
+    "state": "Iowa",
+    "mayor": "Sara Kurovski"
+  },
+  {
+    "city": "Harrisonburg",
+    "state": "Virginia",
+    "mayor": "Deanna R. Reed"
+  },
+  {
+    "city": "Stuart",
+    "state": "Iowa",
+    "mayor": "Dick Cook"
+  },
+  {
+    "city": "Fairbank",
+    "state": "Iowa",
+    "mayor": "Jason Kayser"
+  },
+  {
+    "city": "Fairfax",
+    "state": "Virginia",
+    "mayor": "Catherine S. Read"
+  },
+  {
+    "city": "Clive",
+    "state": "Iowa",
+    "mayor": "John Edwards"
+  },
+  {
+    "city": "Staunton",
+    "state": "Virginia",
+    "mayor": "Michele Edwards"
+  },
+  {
+    "city": "Cascade",
+    "state": "Iowa",
+    "mayor": "Steve Knepper"
+  },
+  {
+    "city": "Waynesboro",
+    "state": "Virginia",
+    "mayor": "Kenny Lee"
+  },
+  {
+    "city": "Dyersville",
+    "state": "Iowa",
+    "mayor": "Jeff Jacque"
+  },
+  {
+    "city": "Alexandria",
+    "state": "Virginia",
+    "mayor": "Alyia Gaskins"
+  },
+  {
+    "city": "Chesapeake",
+    "state": "Virginia",
+    "mayor": "Rick West"
+  },
+  {
+    "city": "Juneau",
+    "state": "Alaska",
+    "mayor": "Beth Weldon"
+  },
+  {
+    "city": "Gilmore City",
+    "state": "Iowa",
+    "mayor": "Landon Bailey"
+  },
+  {
+    "city": "Galax",
+    "state": "Virginia",
+    "mayor": "Willie Greene"
+  },
+  {
+    "city": "Lexington",
+    "state": "Virginia",
+    "mayor": "Frank W. Friedman"
+  }
+]
