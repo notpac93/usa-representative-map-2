@@ -64,6 +64,7 @@ void main() {
       // Check Article II Powers
       expect(find.text('Article II Powers'), findsOneWidget);
       expect(find.text('Executive Orders', findRichText: true), findsWidgets);
+      expect(find.textContaining('Order Permanence', findRichText: true), findsOneWidget);
 
       // Check Executive Orders section header & top search bar
       expect(find.byType(TextField), findsOneWidget);

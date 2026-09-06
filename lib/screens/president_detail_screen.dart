@@ -617,6 +617,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
           _buildPowerBullet("Federal Appointments", "Appoints Supreme Court Justices, federal judges, ambassadors, and cabinet heads."),
           const SizedBox(height: 10),
           _buildPowerBullet("Legislation & Veto", "Signs acts of Congress into law or exercises presidential veto authority."),
+          const SizedBox(height: 10),
+          _buildPowerBullet("Order Permanence", "Remain in effect indefinitely across administrations until revoked, amended, or overturned."),
         ],
       ),
     );
