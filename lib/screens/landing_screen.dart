@@ -96,7 +96,37 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 6),
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEFF6FF),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: const Color(0xFFBFDBFE)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.how_to_vote, size: 14, color: Color(0xFF1D4ED8)),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          'Prioritizing Upcoming 2026 Elections • Candidates, Ballot Measures & Reps',
+                          style: const TextStyle(
+                            color: Color(0xFF1E40AF),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
                 Container(
                   constraints: const BoxConstraints(maxWidth: 640),
                   child: Autocomplete<SearchResult>(

@@ -204,6 +204,26 @@ class SearchHandler {
       );
     }
 
+    final isElectionMatch = 'upcoming elections'.contains(lowerQuery) ||
+        'election'.startsWith(lowerQuery) ||
+        'elections'.startsWith(lowerQuery) ||
+        'ballot'.startsWith(lowerQuery) ||
+        'candidate'.startsWith(lowerQuery) ||
+        'candidates'.startsWith(lowerQuery) ||
+        'propositions'.startsWith(lowerQuery) ||
+        'voting'.startsWith(lowerQuery);
+
+    if (isElectionMatch) {
+      results.add(
+        SearchResult(
+          type: SearchResultType.zipCode,
+          title: 'Upcoming 2026 Elections & Ballot Hub',
+          subtitle: 'Electoral Candidates, Ballot Propositions, Key Deadlines & Officials',
+          stateId: 'US',
+        ),
+      );
+    }
+
     // 1. SMART ADDRESS & ZIP CODE PARSING
     // Check if query contains a 5-digit ZIP code anywhere (e.g., '123 Main St, 90210' or '90210')
     final zipMatch = RegExp(r'\b(\d{5})\b').firstMatch(rawQuery);

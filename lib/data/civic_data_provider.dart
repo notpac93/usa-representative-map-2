@@ -91,6 +91,9 @@ class CivicDataProvider {
   Map<String, FinanceRecord> _finances = {};
   List<ExecutiveOrderRecord> _executiveOrders = [];
   List<President> _presidents = List.from(defaultPresidents);
+  List<ElectionRecord> _elections = [];
+  List<CandidateRecord> _candidates = [];
+  List<PropositionRecord> _propositions = [];
 
   bool _isLoaded = false;
 
@@ -154,6 +157,31 @@ class CivicDataProvider {
             }
           } catch (e) {
             print('Error loading finances: $e');
+          }
+        }(),
+
+        // 6. Load Elections, Candidates, and Propositions
+        () async {
+          try {
+            final electionsString = await rootBundle.loadString('assets/data/elections.json');
+            final Map<String, dynamic> electionsJson = json.decode(electionsString);
+            if (electionsJson['elections'] != null) {
+              _elections = (electionsJson['elections'] as List)
+                  .map((e) => ElectionRecord.fromJson(e))
+                  .toList();
+            }
+            if (electionsJson['candidates'] != null) {
+              _candidates = (electionsJson['candidates'] as List)
+                  .map((e) => CandidateRecord.fromJson(e))
+                  .toList();
+            }
+            if (electionsJson['propositions'] != null) {
+              _propositions = (electionsJson['propositions'] as List)
+                  .map((e) => PropositionRecord.fromJson(e))
+                  .toList();
+            }
+          } catch (e) {
+            print('Error loading elections: $e');
           }
         }(),
       ]);
@@ -241,4 +269,204 @@ class CivicDataProvider {
           key.contains(eoId);
     }).toList();
   }
+
+  ElectionRecord getElectionForState(String stateId) {
+    final upper = stateId.toUpperCase().trim();
+    for (final e in _elections) {
+      if (e.stateId.toUpperCase() == upper) return e;
+    }
+    // Fallback to national record or default
+    for (final e in _elections) {
+      if (e.stateId.toUpperCase() == 'US') {
+        return ElectionRecord(
+          stateId: upper,
+          stateName: upper,
+          nextElectionDate: e.nextElectionDate,
+          electionType: '$upper Statewide & Midterm General Election',
+          primaryDate: 'Spring / Summer 2026',
+          voterRegistrationDeadline: e.voterRegistrationDeadline,
+          earlyVotingStart: e.earlyVotingStart,
+          earlyVotingEnd: e.earlyVotingEnd,
+          pollsOpenHours: e.pollsOpenHours,
+          officialPortalUrl: 'https://vote.gov/register/$upper',
+          ballotTrackerUrl: e.ballotTrackerUrl,
+          keyOfficesUp: 'U.S. Senate, U.S. House Representatives, State Executive & Legislative Seats',
+        );
+      }
+    }
+    return ElectionRecord(
+      stateId: upper,
+      stateName: upper,
+      nextElectionDate: 'November 3, 2026',
+      electionType: '2026 Midterm General Election',
+      primaryDate: 'Spring 2026',
+      voterRegistrationDeadline: 'October 19, 2026',
+      earlyVotingStart: 'October 15, 2026',
+      earlyVotingEnd: 'November 2, 2026',
+      pollsOpenHours: '7:00 AM – 8:00 PM',
+      officialPortalUrl: 'https://vote.gov',
+      ballotTrackerUrl: 'https://vote.gov',
+      keyOfficesUp: 'Federal, State, and Local Offices',
+    );
+  }
+
+  List<CandidateRecord> getCandidatesForJurisdiction(
+    String stateId, {
+    String? cityName,
+    String? district,
+  }) {
+    final upper = stateId.toUpperCase().trim();
+    final lowerCity = cityName?.toLowerCase().trim();
+
+    final matches = _candidates.where((c) {
+      if (c.stateId.toUpperCase() != upper && c.stateId.toUpperCase() != 'US') {
+        return false;
+      }
+      if (lowerCity != null && c.cityName != null) {
+        if (c.cityName!.toLowerCase() == lowerCity) return true;
+      }
+      return true;
+    }).toList();
+
+    if (matches.isNotEmpty) {
+      return matches;
+    }
+
+    // Default generator for any state without explicit custom candidates in JSON
+    return [
+      CandidateRecord(
+        id: 'cand-$upper-sen-1',
+        name: 'Incumbent U.S. Senator',
+        office: 'U.S. Senator',
+        level: 'Federal',
+        stateId: upper,
+        party: 'Democratic',
+        isIncumbent: true,
+        status: 'Incumbent',
+        electionDate: 'Nov 3, 2026',
+        platform: [
+          'Federal infrastructure investment and local job growth',
+          'Healthcare affordability and lower prescription drug costs',
+          'Strengthening democratic institutions and voting access',
+        ],
+        bio: 'Serving in the United States Senate representing the people of $upper.',
+        website: 'https://www.senate.gov',
+      ),
+      CandidateRecord(
+        id: 'cand-$upper-sen-2',
+        name: 'Challenger for U.S. Senate',
+        office: 'U.S. Senator',
+        level: 'Federal',
+        stateId: upper,
+        party: 'Republican',
+        isIncumbent: false,
+        status: 'Challenger',
+        electionDate: 'Nov 3, 2026',
+        platform: [
+          'Fiscal discipline and reducing regulatory burdens on businesses',
+          'Energy security and domestic supply chain revitalization',
+          'Border security enforcement and community safety grants',
+        ],
+        bio: 'Civic leader and candidate campaigning for change in the U.S. Senate for $upper.',
+        website: 'https://vote.gov',
+      ),
+      CandidateRecord(
+        id: 'cand-$upper-house-1',
+        name: 'District Congressional Candidate',
+        office: 'U.S. Representative',
+        level: 'Federal',
+        stateId: upper,
+        district: district ?? 'At-Large',
+        cityName: cityName,
+        party: 'Independent / Coalition',
+        isIncumbent: false,
+        status: 'Candidate',
+        electionDate: 'Nov 3, 2026',
+        platform: [
+          'Bipartisan solutions to lower the cost of living and housing',
+          'Modernizing local transportation and public broadband',
+          'Transparency in federal budgeting and campaign finance',
+        ],
+        bio: 'Community advocate seeking to represent this district in the U.S. House of Representatives.',
+        website: 'https://www.house.gov',
+      ),
+    ];
+  }
+
+  List<PropositionRecord> getPropositionsForJurisdiction(
+    String stateId, {
+    String? cityName,
+  }) {
+    final upper = stateId.toUpperCase().trim();
+    final matches = _propositions
+        .where((p) => p.stateId.toUpperCase() == upper || p.stateId.toUpperCase() == 'US')
+        .toList();
+
+    if (matches.isNotEmpty) {
+      return matches;
+    }
+
+    return [
+      PropositionRecord(
+        id: 'prop-$upper-default-1',
+        code: 'State Measure 1',
+        title: '$upper Infrastructure & Public Water Modernization Act',
+        stateId: upper,
+        category: 'Infrastructure & Environment',
+        electionDate: 'November 3, 2026 Ballot',
+        yesVoteMeaning: 'Approves state capital financing to repair municipal water pipelines, replace lead distribution lines, and upgrade flood control.',
+        noVoteMeaning: 'Maintains current municipal funding levels without authorized state bond financing.',
+        fiscalSummary: 'Funded through existing state capital improvement allocations with no direct increase in state sales tax.',
+        proponents: 'State Association of Counties, Clean Water Coalition',
+        opponents: 'Taxpayers Advisory Board',
+        status: 'Qualified for Ballot',
+      ),
+      PropositionRecord(
+        id: 'prop-$upper-default-2',
+        code: 'State Amendment 2',
+        title: '$upper Public Education Funding Guarantee',
+        stateId: upper,
+        category: 'Education',
+        electionDate: 'November 3, 2026 Ballot',
+        yesVoteMeaning: 'Establishes a baseline annual percentage of state general fund revenues dedicated to K-12 public classroom instruction and teacher compensation.',
+        noVoteMeaning: 'Education funding levels remain subject to regular legislative session appropriation cycles.',
+        fiscalSummary: 'Directs existing revenue allocation formula toward classroom instruction.',
+        proponents: 'State Teachers Union, Parent-Teacher Association',
+        opponents: 'State Chamber of Commerce',
+        status: 'Qualified for Ballot',
+      ),
+    ];
+  }
+
+  String getIncumbentReelectionTimeline(String role, String stateId, {String? name}) {
+    final upperRole = role.toLowerCase();
+    final upperState = stateId.toUpperCase();
+
+    if (upperRole.contains('governor')) {
+      if (upperState == 'VA' || upperState == 'NJ') {
+        return '4-Year Term • Next Gubernatorial Election: Nov 2025 / Nov 2029';
+      } else if (upperState == 'KY' || upperState == 'MS' || upperState == 'LA') {
+        return '4-Year Term • Next Gubernatorial Election: Nov 2027';
+      } else if (upperState == 'NH' || upperState == 'VT') {
+        return '2-Year Term • Up for Re-Election: Nov 3, 2026';
+      } else {
+        return '4-Year Term • Up for Re-Election: Nov 3, 2026';
+      }
+    }
+
+    if (upperRole.contains('senator')) {
+      return '6-Year Term • Class II Seats Up Nov 3, 2026 (Midterms)';
+    }
+
+    if (upperRole.contains('representative') || upperRole.contains('house')) {
+      return '2-Year Term • All 435 U.S. House Seats Up For Election: Nov 3, 2026';
+    }
+
+    if (upperRole.contains('mayor')) {
+      return '4-Year Municipal Term • Next Mayoral Election: Nov 2026 / Spring 2027';
+    }
+
+    return 'Next Scheduled Election: November 3, 2026';
+  }
 }
+

@@ -76,6 +76,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/data/
+    - assets/data/elections.json
     - assets/data/bills.json
     - assets/data/votes.json
     - assets/data/finance.json
