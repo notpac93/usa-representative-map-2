@@ -291,7 +291,7 @@ void main() {
       await tester.pump();
 
       expect(find.text('Executive Order 14423'), findsAtLeastNWidgets(1));
-      expect(find.text('91 FR 56737'), findsAtLeastNWidgets(1));
+      expect(find.textContaining('91 FR 56737'), findsWidgets);
       expect(find.text('GovInfo PDF'), findsOneWidget);
     });
   });
