@@ -32,7 +32,13 @@
   <title>usa_map_app</title>
   <link rel="manifest" href="manifest.json">
 </head>
-<body style="overscroll-behavior: none; overscroll-behavior-x: none; overscroll-behavior-y: none;">
+  <!-- PDF.js support for printing package -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.2.146/pdf.min.js"></script>
+  <script type="text/javascript">
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.2.146/pdf.worker.min.js";
+    }
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

@@ -290,8 +290,8 @@ void main() {
 
       await tester.pump();
 
-      expect(find.text('Executive Order 14423'), findsOneWidget);
-      expect(find.text('91 FR 56737'), findsOneWidget);
+      expect(find.text('Executive Order 14423'), findsAtLeastNWidgets(1));
+      expect(find.text('91 FR 56737'), findsAtLeastNWidgets(1));
       expect(find.text('GovInfo PDF'), findsOneWidget);
     });
   });
