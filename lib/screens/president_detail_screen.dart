@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import '../data/civic_data_provider.dart';
 import '../data/bill_models.dart';
 import '../data/models.dart';
+import 'order_pdf_viewer_screen.dart';
 
 class PresidentDetailScreen extends StatefulWidget {
   final President? initialPresident;
@@ -1179,37 +1180,27 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
 
           const SizedBox(height: 16),
 
-          // Action Buttons: Federal Register link & GovInfo PDF link
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
-            children: [
-              if (eo.url.isNotEmpty)
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.open_in_new, size: 15),
-                  label: const Text("Federal Register Doc"),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF0F172A),
-                    side: const BorderSide(color: Color(0xFFCBD5E1)),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                  onPressed: () => _launchUrl(eo.url),
+          // Single Action Button: See Official Order (Opens in-app PDF Viewer)
+          ElevatedButton.icon(
+            icon: const Icon(Icons.picture_as_pdf_outlined, size: 16),
+            label: const Text("See Official Order"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1E3A8A),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => OrderPdfViewerScreen(order: eo),
                 ),
-
-              if (eo.pdfUrl.isNotEmpty)
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.picture_as_pdf, size: 15),
-                  label: const Text("Official PDF (GovInfo)"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E3A8A),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                  onPressed: () => _launchUrl(eo.pdfUrl),
-                ),
-            ],
+              );
+            },
           ),
         ],
       ),

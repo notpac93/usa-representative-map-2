@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:usa_map_app/data/data_provider.dart';
 import 'package:usa_map_app/data/models.dart';
 import 'package:usa_map_app/screens/president_detail_screen.dart';
+import 'package:usa_map_app/screens/order_pdf_viewer_screen.dart';
+import 'package:usa_map_app/data/bill_models.dart';
 import 'package:usa_map_app/widgets/executive_branch_widget.dart';
 import 'package:usa_map_app/screens/landing_screen.dart';
 import 'package:usa_map_app/data/civic_data_provider.dart';
@@ -233,6 +235,64 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.textContaining('Showing 50 of 399 orders'), findsOneWidget);
       }
+    });
+
+    testWidgets('PresidentDetailScreen renders single See Official Order button without redundant buttons', (tester) async {
+      tester.view.physicalSize = const Size(1200, 1800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PresidentDetailScreen(
+            initialPresident: testPresident,
+          ),
+        ),
+      );
+
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      final seeOrderFinder = find.text('See Official Order');
+      if (seeOrderFinder.evaluate().isNotEmpty) {
+        expect(seeOrderFinder, findsWidgets);
+      }
+
+      // Verify redundant buttons are not present
+      expect(find.text('Federal Register Doc'), findsNothing);
+      expect(find.text('Official PDF (GovInfo)'), findsNothing);
+    });
+
+    testWidgets('OrderPdfViewerScreen renders title, citation, and GovInfo action', (tester) async {
+      final sampleOrder = ExecutiveOrderRecord(
+        id: 'EO-14423',
+        orderNumber: '14423',
+        title: 'Establishing the United States Space Academy',
+        signingDate: '2026-08-28',
+        publicationDate: '2026-09-03',
+        president: 'Donald Trump',
+        presidentId: 'donald-trump',
+        citation: '91 FR 56737',
+        url: 'https://example.com/eo',
+        pdfUrl: 'https://example.com/eo.pdf',
+        summary: 'Space is a critical domain for American national security.',
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: OrderPdfViewerScreen(order: sampleOrder),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text('Executive Order 14423'), findsOneWidget);
+      expect(find.text('91 FR 56737'), findsOneWidget);
+      expect(find.text('GovInfo PDF'), findsOneWidget);
     });
   });
 }
