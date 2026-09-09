@@ -10,7 +10,7 @@ class CongressScrollSection extends StatefulWidget {
 
   const CongressScrollSection({
     super.key,
-    this.height = 110,
+    this.height = 205,
     this.width,
     this.isDocked = true,
   });
@@ -60,7 +60,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   void _maneuverBackward() {
     if (_scrollController.hasClients) {
-      final target = (_scrollController.offset - 220).clamp(
+      final target = (_scrollController.offset - 295).clamp(
         0.0,
         _scrollController.position.maxScrollExtent,
       );
@@ -74,7 +74,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   void _maneuverForward() {
     if (_scrollController.hasClients) {
-      final target = (_scrollController.offset + 220).clamp(
+      final target = (_scrollController.offset + 295).clamp(
         0.0,
         _scrollController.position.maxScrollExtent,
       );
@@ -114,7 +114,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
       },
       child: Container(
         width: widget.width ?? double.infinity,
-        height: widget.height ?? 110,
+        height: widget.height ?? 205,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: isDocked
@@ -127,8 +127,8 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
               : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 14,
               offset: isDocked
                   ? const Offset(0, -3)
                   : const Offset(0, 4),
@@ -139,22 +139,24 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
           children: [
             // Left Title Block: Congress & Leadership
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(
                           Icons.groups,
-                          size: 15,
+                          size: 20,
                           color: Color(0xFF1E3A8A),
                         ),
                       ),
@@ -162,7 +164,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                       const Text(
                         'Congress',
                         style: TextStyle(
-                          fontSize: 13.5,
+                          fontSize: 17,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF1E3A8A),
                           letterSpacing: 0.2,
@@ -170,35 +172,53 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 5),
                   const Text(
-                    'Leadership',
+                    '119th Congress • Leadership',
                     style: TextStyle(
-                      fontSize: 10.5,
+                      fontSize: 11.5,
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 4),
+                  const Text(
+                    '100 Senators • 435 Reps',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      color: Color(0xFF94A3B8),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   InkWell(
                     onTap: () => _openCongressScreen(0),
-                    child: const Row(
-                      children: [
-                        Text(
-                          'All 535 Members',
-                          style: TextStyle(
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w600,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEFF6FF),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: const Color(0xFFBFDBFE)),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'All 535 Members',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF1E3A8A),
+                            ),
+                          ),
+                          SizedBox(width: 3),
+                          Icon(
+                            Icons.arrow_forward,
+                            size: 13,
                             color: Color(0xFF1E3A8A),
                           ),
-                        ),
-                        SizedBox(width: 2),
-                        Icon(
-                          Icons.arrow_forward,
-                          size: 11,
-                          color: Color(0xFF1E3A8A),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -218,7 +238,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: const Icon(
                       Icons.chevron_left,
-                      size: 24,
+                      size: 30,
                       color: Color(0xFF1E3A8A),
                     ),
                   ),
@@ -226,7 +246,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
               ),
             ),
 
-            // Horizontal auto-scrolling list of leader cards
+            // Horizontal auto-scrolling list of large leader cards
             Expanded(
               child: MouseRegion(
                 onEnter: (_) {
@@ -235,9 +255,9 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                 child: ListView.separated(
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                   itemCount: _leaders.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  separatorBuilder: (_, __) => const SizedBox(width: 14),
                   itemBuilder: (context, index) {
                     final leader = _leaders[index];
                     final isCardHovered = _hoveredIndex == index;
@@ -263,68 +283,71 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 180),
-                          width: 235,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
-                          ),
+                          width: 295,
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: isCardHovered
                                 ? const Color(0xFFF8FAFC)
                                 : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: isCardHovered
-                                  ? const Color(0xFF1E3A8A).withOpacity(0.3)
-                                  : const Color(0xFFF1F5F9),
-                              width: 1.2,
+                                  ? const Color(0xFF1E3A8A).withOpacity(0.4)
+                                  : const Color(0xFFE2E8F0),
+                              width: 1.4,
                             ),
                             boxShadow: isCardHovered
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
+                                      color: const Color(0xFF1E3A8A).withOpacity(0.09),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
                                     ),
                                   ]
-                                : [],
+                                : [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
                           ),
                           child: Row(
                             children: [
-                              // Portrait avatar with party colored rim
+                              // Large Portrait avatar (68x68)
                               Container(
-                                width: 44,
-                                height: 44,
+                                width: 68,
+                                height: 68,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: leader.party == 'R'
-                                        ? const Color(0xFFDC2626).withOpacity(0.5)
-                                        : const Color(0xFF2563EB).withOpacity(0.5),
-                                    width: 1.8,
+                                        ? const Color(0xFFDC2626).withOpacity(0.65)
+                                        : const Color(0xFF2563EB).withOpacity(0.65),
+                                    width: 2.5,
                                   ),
                                 ),
                                 child: ClipOval(
                                   child: Image.asset(
                                     leader.assetPath,
-                                    width: 44,
-                                    height: 44,
+                                    width: 68,
+                                    height: 68,
                                     fit: BoxFit.cover,
-                                    cacheWidth: 120,
-                                    cacheHeight: 120,
+                                    cacheWidth: 160,
+                                    cacheHeight: 160,
                                     errorBuilder: (context, error, stackTrace) =>
                                         Container(
                                       color: const Color(0xFFE2E8F0),
                                       child: const Icon(
                                         Icons.person,
-                                        size: 24,
+                                        size: 34,
                                         color: Color(0xFF64748B),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 14),
                               // Leader Info
                               Expanded(
                                 child: Column(
@@ -334,37 +357,38 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                     Text(
                                       leader.name,
                                       style: const TextStyle(
-                                        fontSize: 12.5,
+                                        fontSize: 15.5,
                                         fontWeight: FontWeight.w700,
                                         color: Color(0xFF0F172A),
+                                        letterSpacing: -0.2,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 1),
+                                    const SizedBox(height: 3),
                                     Text(
                                       leader.title,
                                       style: const TextStyle(
-                                        fontSize: 10.5,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color: Color(0xFF475569),
+                                        color: Color(0xFF334155),
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 2),
+                                    const SizedBox(height: 6),
                                     Row(
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 5,
-                                            vertical: 1,
+                                            horizontal: 7,
+                                            vertical: 2.5,
                                           ),
                                           decoration: BoxDecoration(
                                             color: leader.party == 'R'
                                                 ? const Color(0xFFFEF2F2)
                                                 : const Color(0xFFEFF6FF),
-                                            borderRadius: BorderRadius.circular(4),
+                                            borderRadius: BorderRadius.circular(5),
                                             border: Border.all(
                                               color: leader.party == 'R'
                                                   ? const Color(0xFFFCA5A5)
@@ -375,7 +399,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                           child: Text(
                                             '${leader.party} • ${leader.chamber}',
                                             style: TextStyle(
-                                              fontSize: 9.0,
+                                              fontSize: 10,
                                               fontWeight: FontWeight.w600,
                                               color: leader.party == 'R'
                                                   ? const Color(0xFFB91C1C)
@@ -383,13 +407,13 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 4),
+                                        const SizedBox(width: 8),
                                         Flexible(
                                           child: Text(
                                             leader.state,
                                             style: const TextStyle(
-                                              fontSize: 9.5,
-                                              color: Color(0xFF94A3B8),
+                                              fontSize: 11.5,
+                                              color: Color(0xFF64748B),
                                               fontWeight: FontWeight.w500,
                                             ),
                                             overflow: TextOverflow.ellipsis,
@@ -423,7 +447,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: const Icon(
                       Icons.chevron_right,
-                      size: 24,
+                      size: 30,
                       color: Color(0xFF1E3A8A),
                     ),
                   ),

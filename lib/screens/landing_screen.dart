@@ -72,7 +72,7 @@ class _LandingScreenState extends State<LandingScreen> {
     }
   }
 
-  Widget _buildSearchCenter(MapDataProvider provider, {bool isWidescreen = false, double maxWidth = 520}) {
+  Widget _buildSearchCenter(MapDataProvider provider, {bool isWidescreen = false, double maxWidth = 560}) {
     final searchBoxMaxWidth = isWidescreen ? maxWidth : 640.0;
 
     return Column(
@@ -81,23 +81,24 @@ class _LandingScreenState extends State<LandingScreen> {
       children: [
         Image.asset(
           'assets/img/logo.png',
-          height: isWidescreen ? 68 : 72,
+          height: isWidescreen ? 90 : 72,
           fit: BoxFit.contain,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         Text(
           'Find Your Representatives',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            fontSize: isWidescreen ? 23 : 24,
+            fontSize: isWidescreen ? 29 : 24,
             color: const Color(0xFF0F172A),
+            letterSpacing: -0.3,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         Container(
           constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
           decoration: BoxDecoration(
             color: const Color(0xFFEFF6FF),
             borderRadius: BorderRadius.circular(20),
@@ -107,14 +108,14 @@ class _LandingScreenState extends State<LandingScreen> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.how_to_vote, size: 14, color: Color(0xFF1D4ED8)),
-              const SizedBox(width: 6),
+              const Icon(Icons.how_to_vote, size: 15, color: Color(0xFF1D4ED8)),
+              const SizedBox(width: 8),
               Flexible(
                 child: Text(
                   'Prioritizing Upcoming 2026 Elections • Candidates, Ballot Measures & Reps',
-                  style: const TextStyle(
-                    color: Color(0xFF1E40AF),
-                    fontSize: 11,
+                  style: TextStyle(
+                    color: const Color(0xFF1E40AF),
+                    fontSize: isWidescreen ? 12.5 : 11,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
@@ -124,7 +125,7 @@ class _LandingScreenState extends State<LandingScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
         Container(
           constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
           child: Autocomplete<SearchResult>(
@@ -155,39 +156,44 @@ class _LandingScreenState extends State<LandingScreen> {
                   }
                   onEditingComplete();
                 },
+                style: TextStyle(fontSize: isWidescreen ? 15.5 : 14),
                 decoration: InputDecoration(
                   hintText: 'Enter your home address, ZIP code, city, or state...',
                   hintStyle: TextStyle(
-                    fontSize: 13.5,
+                    fontSize: isWidescreen ? 14.5 : 13.5,
                     color: Colors.blueGrey.shade400,
                   ),
                   prefixIcon: const Icon(
                     Icons.search,
                     color: Color(0xFF1E3A8A),
+                    size: 22,
                   ),
                   suffixIcon: controller.text.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18),
+                          icon: const Icon(Icons.clear, size: 20),
                           onPressed: () {
                             controller.clear();
                           },
                         )
                       : null,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide(color: Colors.blueGrey.shade200),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide(color: Colors.blueGrey.shade200),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: const BorderSide(color: Color(0xFF1E3A8A), width: 2),
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: isWidescreen ? 16 : 12,
+                  ),
                 ),
                 onSubmitted: (value) async {
                   final query = value.trim();
@@ -276,25 +282,25 @@ class _LandingScreenState extends State<LandingScreen> {
             },
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 10,
+          runSpacing: 10,
           alignment: WrapAlignment.center,
           children: [
             OutlinedButton.icon(
               onPressed: _navigateToMap,
-              icon: const Icon(Icons.map, size: 16, color: Color(0xFF1E3A8A)),
+              icon: const Icon(Icons.map, size: 17, color: Color(0xFF1E3A8A)),
               label: const Text('Explore National Map'),
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFF1E3A8A),
                 side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
             ),
             OutlinedButton.icon(
@@ -305,17 +311,17 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                 );
               },
-              icon: const Icon(Icons.account_balance, size: 16, color: Color(0xFF1E3A8A)),
+              icon: const Icon(Icons.account_balance, size: 17, color: Color(0xFF1E3A8A)),
               label: const Text('Executive Branch'),
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFF1E3A8A),
                 side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
             ),
             OutlinedButton.icon(
@@ -326,17 +332,17 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                 );
               },
-              icon: const Icon(Icons.groups, size: 16, color: Color(0xFF1E3A8A)),
+              icon: const Icon(Icons.groups, size: 17, color: Color(0xFF1E3A8A)),
               label: const Text('Legislative Branch'),
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFF1E3A8A),
                 side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
             ),
             OutlinedButton.icon(
@@ -347,21 +353,45 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                 );
               },
-              icon: const Icon(Icons.balance, size: 16, color: Color(0xFF1E3A8A)),
+              icon: const Icon(Icons.balance, size: 17, color: Color(0xFF1E3A8A)),
               label: const Text('Judicial Branch'),
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFF1E3A8A),
                 side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
             ),
           ],
         ),
+        if (isWidescreen) ...[
+          const SizedBox(height: 18),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.verified, size: 14, color: Colors.blueGrey.shade400),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  'Federal Civic Directory • All 3 Branches of U.S. Government',
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.blueGrey.shade500,
+                    letterSpacing: 0.1,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
@@ -394,29 +424,36 @@ class _LandingScreenState extends State<LandingScreen> {
             );
           }
 
-          // Edge-Docked 3-Branch Federal Dashboard (Desktop & iPad):
-          // 1. Executive is snapped to the LEFT edge (left: 0, top: 0)
-          // 2. Supreme Court / Judicial is snapped to the RIGHT edge (right: 0, top: 0)
-          // 3. Congress is snapped to the BOTTOM edge (bottom: 0, left: 0, right: 0)
-          // 4. Center Search is placed between the left and right panels, above the bottom ribbon.
-          final leftWidth = constraints.maxWidth < 1150 ? 270.0 : 300.0;
-          final rightWidth = constraints.maxWidth < 1150 ? 300.0 : 330.0;
-          const congressHeight = 112.0;
-          final centerMaxWidth = (constraints.maxWidth - leftWidth - rightWidth - 36).clamp(380.0, 560.0);
+          // 4 Major Quadrants Layout (Desktop & iPad):
+          // 1. Executive fills the LEFT quadrant (left: 0, top: 0, width: leftWidth, height: topQuadrantHeight)
+          // 2. Supreme Court fills the RIGHT quadrant (right: 0, top: 0, width: rightWidth, height: topQuadrantHeight)
+          // 3. Congress fills the entire BOTTOM quadrant (bottom: 0, left: 0, right: 0, height: congressHeight)
+          // 4. Center Search Hub fills the CENTER quadrant
+          final congressHeight = constraints.maxHeight < 760 ? 185.0 : 205.0;
+          final topQuadrantHeight = constraints.maxHeight - congressHeight;
+
+          final leftWidth = constraints.maxWidth < 1180
+              ? 330.0
+              : (constraints.maxWidth < 1440 ? 385.0 : 440.0);
+          final rightWidth = constraints.maxWidth < 1180
+              ? 370.0
+              : (constraints.maxWidth < 1440 ? 425.0 : 475.0);
+          final centerMaxWidth = (constraints.maxWidth - leftWidth - rightWidth - 32)
+              .clamp(360.0, 680.0);
 
           return SizedBox(
             width: constraints.maxWidth,
             height: constraints.maxHeight,
             child: Stack(
               children: [
-                // Center Search Hub (Positioned between left & right panels, above bottom ribbon)
+                // Center Search Hub (Spanning between left & right quadrants, above bottom Congress)
                 Positioned.fill(
                   left: leftWidth,
                   right: rightWidth,
                   bottom: congressHeight,
                   child: Center(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
                       child: _buildSearchCenter(
                         provider,
                         isWidescreen: true,
@@ -426,35 +463,39 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                 ),
 
-                // Left Edge Docked Section: Executive Branch (President & VP)
+                // Left Quadrant: Executive Branch (President, VP & Cabinet)
                 Positioned(
                   left: 0,
                   top: 0,
                   width: leftWidth,
+                  height: topQuadrantHeight,
                   child: ExecutiveSectionCard(
                     isDocked: true,
                     width: leftWidth,
+                    height: topQuadrantHeight,
                   ),
                 ),
 
-                // Right Edge Docked Section: Judicial Branch / Supreme Court (3x3 Grid)
+                // Right Quadrant: Judicial Branch / Supreme Court (3x3 Grid of 9 Justices)
                 Positioned(
                   right: 0,
                   top: 0,
                   width: rightWidth,
+                  height: topQuadrantHeight,
                   child: JudicialSectionCard(
                     isDocked: true,
                     width: rightWidth,
+                    height: topQuadrantHeight,
                   ),
                 ),
 
-                // Bottom Edge Docked Section: Congress Auto-Scroll Ribbon
+                // Bottom Quadrant: Congress Leadership Auto-Scroll Ribbon
                 Positioned(
                   left: 0,
                   right: 0,
                   bottom: 0,
                   height: congressHeight,
-                  child: const CongressScrollSection(
+                  child: CongressScrollSection(
                     height: congressHeight,
                     isDocked: true,
                   ),

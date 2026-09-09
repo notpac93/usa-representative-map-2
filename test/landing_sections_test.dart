@@ -67,7 +67,7 @@ void main() {
 
       // Congress content
       expect(find.text('Congress'), findsOneWidget);
-      expect(find.text('Leadership'), findsOneWidget);
+      expect(find.textContaining('Leadership'), findsOneWidget);
       expect(find.text('Mike Johnson'), findsWidgets);
     });
 
