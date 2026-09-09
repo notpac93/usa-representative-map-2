@@ -151,12 +151,12 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
         color: Colors.white,
         borderRadius: isDocked
             ? const BorderRadius.only(
-                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
               )
             : BorderRadius.circular(16),
         border: isDocked
             ? const Border(
-                left: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                right: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
                 bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
               )
             : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
@@ -164,11 +164,11 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 10,
-            offset: isDocked ? const Offset(-2, 3) : const Offset(0, 4),
+            offset: isDocked ? const Offset(2, 3) : const Offset(0, 4),
           ),
         ],
       ),
-      padding: EdgeInsets.fromLTRB(14, isDocked ? 14 : 14, isDocked ? 18 : 14, 14),
+      padding: EdgeInsets.fromLTRB(isDocked ? 18 : 14, 14, 14, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

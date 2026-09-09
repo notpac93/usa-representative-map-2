@@ -5,13 +5,13 @@ import '../screens/congress_screen.dart';
 
 class CongressScrollSection extends StatefulWidget {
   final double? height;
-  final double width;
+  final double? width;
   final bool isDocked;
 
   const CongressScrollSection({
     super.key,
-    this.height,
-    this.width = 280,
+    this.height = 110,
+    this.width,
     this.isDocked = true,
   });
 
@@ -60,7 +60,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   void _maneuverBackward() {
     if (_scrollController.hasClients) {
-      final target = (_scrollController.offset - 140).clamp(
+      final target = (_scrollController.offset - 220).clamp(
         0.0,
         _scrollController.position.maxScrollExtent,
       );
@@ -74,7 +74,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   void _maneuverForward() {
     if (_scrollController.hasClients) {
-      final target = (_scrollController.offset + 140).clamp(
+      final target = (_scrollController.offset + 220).clamp(
         0.0,
         _scrollController.position.maxScrollExtent,
       );
@@ -103,6 +103,8 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   @override
   Widget build(BuildContext context) {
+    final isDocked = widget.isDocked;
+
     return MouseRegion(
       onExit: (_) {
         setState(() {
@@ -111,124 +113,120 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
         });
       },
       child: Container(
-        width: widget.width,
-        height: widget.height,
+        width: widget.width ?? double.infinity,
+        height: widget.height ?? 110,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: widget.isDocked
+          borderRadius: isDocked
               ? BorderRadius.zero
               : BorderRadius.circular(16),
-          border: widget.isDocked
+          border: isDocked
               ? const Border(
-                  right: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                  top: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
                 )
               : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
               blurRadius: 10,
-              offset: widget.isDocked
-                  ? const Offset(2, 0)
+              offset: isDocked
+                  ? const Offset(0, -3)
                   : const Offset(0, 4),
             ),
           ],
         ),
-        child: Column(
+        child: Row(
           children: [
-            // Header with title and edge maneuver buttons (< and >)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 10, 8),
-              child: Row(
+            // Left Title Block: Congress & Leadership
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.groups,
-                      size: 16,
-                      color: Color(0xFF1E3A8A),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E3A8A).withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Icon(
+                          Icons.groups,
+                          size: 15,
+                          color: Color(0xFF1E3A8A),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Congress',
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1E3A8A),
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    'Leadership',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      color: Color(0xFF64748B),
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(height: 4),
+                  InkWell(
+                    onTap: () => _openCongressScreen(0),
+                    child: const Row(
                       children: [
                         Text(
-                          'Congress',
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1E3A8A),
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                        Text(
-                          'Leadership',
+                          'All 535 Members',
                           style: TextStyle(
                             fontSize: 10.5,
-                            color: Color(0xFF64748B),
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1E3A8A),
                           ),
+                        ),
+                        SizedBox(width: 2),
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 11,
+                          color: Color(0xFF1E3A8A),
                         ),
                       ],
-                    ),
-                  ),
-                  // Edge maneuver buttons: < and >
-                  Tooltip(
-                    message: 'Scroll backward',
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: _maneuverBackward,
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFCBD5E1)),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Icon(
-                            Icons.keyboard_arrow_up,
-                            size: 16,
-                            color: Color(0xFF1E3A8A),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Tooltip(
-                    message: 'Scroll forward',
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: _maneuverForward,
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFCBD5E1)),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 16,
-                            color: Color(0xFF1E3A8A),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF1F5F9)),
+            const VerticalDivider(width: 1, color: Color(0xFFE2E8F0)),
 
-            // Scrollable cards list
+            // Backward maneuver button (<)
+            Tooltip(
+              message: 'Scroll left',
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _maneuverBackward,
+                  child: Container(
+                    height: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 24,
+                      color: Color(0xFF1E3A8A),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Horizontal auto-scrolling list of leader cards
             Expanded(
               child: MouseRegion(
                 onEnter: (_) {
@@ -236,9 +234,10 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                 },
                 child: ListView.separated(
                   controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   itemCount: _leaders.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 6),
+                  separatorBuilder: (_, __) => const SizedBox(width: 10),
                   itemBuilder: (context, index) {
                     final leader = _leaders[index];
                     final isCardHovered = _hoveredIndex == index;
@@ -264,9 +263,10 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 180),
+                          width: 235,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 6,
+                            horizontal: 10,
+                            vertical: 8,
                           ),
                           decoration: BoxDecoration(
                             color: isCardHovered
@@ -329,23 +329,23 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       leader.name,
                                       style: const TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 12.5,
                                         fontWeight: FontWeight.w700,
                                         color: Color(0xFF0F172A),
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 1.5),
+                                    const SizedBox(height: 1),
                                     Text(
                                       leader.title,
                                       style: const TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 10.5,
                                         fontWeight: FontWeight.w500,
                                         color: Color(0xFF475569),
                                       ),
@@ -375,7 +375,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                           child: Text(
                                             '${leader.party} • ${leader.chamber}',
                                             style: TextStyle(
-                                              fontSize: 9.5,
+                                              fontSize: 9.0,
                                               fontWeight: FontWeight.w600,
                                               color: leader.party == 'R'
                                                   ? const Color(0xFFB91C1C)
@@ -384,12 +384,16 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                           ),
                                         ),
                                         const SizedBox(width: 4),
-                                        Text(
-                                          leader.state,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            color: Color(0xFF94A3B8),
-                                            fontWeight: FontWeight.w500,
+                                        Flexible(
+                                          child: Text(
+                                            leader.state,
+                                            style: const TextStyle(
+                                              fontSize: 9.5,
+                                              color: Color(0xFF94A3B8),
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
                                         ),
                                       ],
@@ -406,30 +410,23 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                 ),
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF1F5F9)),
-            // Bottom "Explore Congress" action
-            InkWell(
-              onTap: () => _openCongressScreen(0),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'All 535 Members',
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1E3A8A),
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 13,
+
+            // Forward maneuver button (>)
+            Tooltip(
+              message: 'Scroll right',
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _maneuverForward,
+                  child: Container(
+                    height: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: const Icon(
+                      Icons.chevron_right,
+                      size: 24,
                       color: Color(0xFF1E3A8A),
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

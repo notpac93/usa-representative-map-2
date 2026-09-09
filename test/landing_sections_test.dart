@@ -87,15 +87,15 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Find maneuver down (forward) button
-      final forwardBtn = find.byIcon(Icons.keyboard_arrow_down);
+      // Find maneuver right (forward) button
+      final forwardBtn = find.byTooltip('Scroll right');
       expect(forwardBtn, findsOneWidget);
 
       await tester.tap(forwardBtn);
       await tester.pump(const Duration(milliseconds: 300));
 
-      // Find maneuver up (backward) button
-      final backwardBtn = find.byIcon(Icons.keyboard_arrow_up);
+      // Find maneuver left (backward) button
+      final backwardBtn = find.byTooltip('Scroll left');
       expect(backwardBtn, findsOneWidget);
 
       await tester.tap(backwardBtn);

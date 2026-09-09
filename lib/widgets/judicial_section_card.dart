@@ -108,24 +108,24 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
         color: Colors.white,
         borderRadius: isDocked
             ? const BorderRadius.only(
-                topLeft: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
               )
             : BorderRadius.circular(16),
         border: isDocked
             ? const Border(
                 left: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
-                top: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
               )
             : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 10,
-            offset: isDocked ? const Offset(-2, -3) : const Offset(0, 4),
+            offset: isDocked ? const Offset(-2, 3) : const Offset(0, 4),
           ),
         ],
       ),
-      padding: EdgeInsets.fromLTRB(12, 12, isDocked ? 16 : 12, isDocked ? 16 : 12),
+      padding: EdgeInsets.fromLTRB(12, 12, isDocked ? 18 : 12, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

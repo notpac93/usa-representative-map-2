@@ -395,26 +395,28 @@ class _LandingScreenState extends State<LandingScreen> {
           }
 
           // Edge-Docked 3-Branch Federal Dashboard (Desktop & iPad):
-          // 1. Congress is snapped to the LEFT edge (left: 0, top: 0, bottom: 0)
-          // 2. Executive is snapped to the TOP-RIGHT corner (top: 0, right: 0)
-          // 3. Judicial is snapped to the BOTTOM-RIGHT corner (bottom: 0, right: 0)
-          // 4. Center Search is placed between the left and right panels.
-          final leftWidth = constraints.maxWidth < 1150 ? 260.0 : 280.0;
+          // 1. Executive is snapped to the LEFT edge (left: 0, top: 0)
+          // 2. Supreme Court / Judicial is snapped to the RIGHT edge (right: 0, top: 0)
+          // 3. Congress is snapped to the BOTTOM edge (bottom: 0, left: 0, right: 0)
+          // 4. Center Search is placed between the left and right panels, above the bottom ribbon.
+          final leftWidth = constraints.maxWidth < 1150 ? 270.0 : 300.0;
           final rightWidth = constraints.maxWidth < 1150 ? 300.0 : 330.0;
-          final centerMaxWidth = (constraints.maxWidth - leftWidth - rightWidth - 48).clamp(380.0, 560.0);
+          const congressHeight = 112.0;
+          final centerMaxWidth = (constraints.maxWidth - leftWidth - rightWidth - 36).clamp(380.0, 560.0);
 
           return SizedBox(
             width: constraints.maxWidth,
             height: constraints.maxHeight,
             child: Stack(
               children: [
-                // Center Search Hub (Positioned between docked left and right panels)
+                // Center Search Hub (Positioned between left & right panels, above bottom ribbon)
                 Positioned.fill(
                   left: leftWidth,
                   right: rightWidth,
+                  bottom: congressHeight,
                   child: Center(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
                       child: _buildSearchCenter(
                         provider,
                         isWidescreen: true,
@@ -424,40 +426,37 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                 ),
 
-                // Left Edge Docked Section: Congress Auto-Scroll
+                // Left Edge Docked Section: Executive Branch (President & VP)
                 Positioned(
                   left: 0,
                   top: 0,
-                  bottom: 0,
                   width: leftWidth,
-                  child: CongressScrollSection(
-                    width: leftWidth,
+                  child: ExecutiveSectionCard(
                     isDocked: true,
+                    width: leftWidth,
                   ),
                 ),
 
-                // Right Edge Docked Column: Executive (Top) & Judicial (Bottom)
+                // Right Edge Docked Section: Judicial Branch / Supreme Court (3x3 Grid)
                 Positioned(
                   right: 0,
                   top: 0,
-                  bottom: 0,
                   width: rightWidth,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      // Snapped to TOP-RIGHT
-                      ExecutiveSectionCard(
-                        isDocked: true,
-                        width: rightWidth,
-                      ),
+                  child: JudicialSectionCard(
+                    isDocked: true,
+                    width: rightWidth,
+                  ),
+                ),
 
-                      // Snapped to BOTTOM-RIGHT
-                      JudicialSectionCard(
-                        isDocked: true,
-                        width: rightWidth,
-                      ),
-                    ],
+                // Bottom Edge Docked Section: Congress Auto-Scroll Ribbon
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: congressHeight,
+                  child: const CongressScrollSection(
+                    height: congressHeight,
+                    isDocked: true,
                   ),
                 ),
               ],
