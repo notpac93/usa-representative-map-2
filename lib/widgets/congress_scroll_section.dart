@@ -274,102 +274,77 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 180),
-                          width: 295,
-                          padding: const EdgeInsets.all(14),
+                          width: 170,
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           decoration: BoxDecoration(
                             color: isCardHovered
-                                ? const Color(0xFFF8FAFC)
-                                : Colors.white,
+                                ? const Color(0xFFF1F5F9).withOpacity(0.75)
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isCardHovered
-                                  ? const Color(0xFF1E3A8A).withOpacity(0.4)
-                                  : const Color(0xFFE2E8F0),
-                              width: 1.4,
-                            ),
-                            boxShadow: isCardHovered
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(0xFF1E3A8A).withOpacity(0.09),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ]
-                                : [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.02),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ],
                           ),
-                          child: Row(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Large Portrait avatar (72x72)
+                              // Centered Large Portrait avatar (90x90)
                               Container(
-                                width: 72,
-                                height: 72,
+                                width: 90,
+                                height: 90,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: leader.party == 'R'
-                                        ? const Color(0xFFDC2626).withOpacity(0.65)
-                                        : const Color(0xFF2563EB).withOpacity(0.65),
-                                    width: 2.6,
+                                        ? const Color(0xFFDC2626).withOpacity(0.7)
+                                        : const Color(0xFF2563EB).withOpacity(0.7),
+                                    width: 3.0,
                                   ),
                                 ),
                                 child: ClipOval(
                                   child: Image.asset(
                                     leader.assetPath,
-                                    width: 72,
-                                    height: 72,
+                                    width: 90,
+                                    height: 90,
                                     fit: BoxFit.cover,
-                                    cacheWidth: 160,
-                                    cacheHeight: 160,
+                                    cacheWidth: 200,
+                                    cacheHeight: 200,
                                     errorBuilder: (context, error, stackTrace) =>
                                         Container(
                                       color: const Color(0xFFE2E8F0),
                                       child: const Icon(
                                         Icons.person,
-                                        size: 36,
+                                        size: 44,
                                         color: Color(0xFF64748B),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 14),
-                              // Leader Info: Name & Title only
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      leader.name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xFF0F172A),
-                                        letterSpacing: -0.2,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      leader.title,
-                                      style: const TextStyle(
-                                        fontSize: 12.5,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF475569),
-                                        height: 1.25,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
+                              const SizedBox(height: 8),
+                              // Leader Info: Centered Name & Title
+                              Text(
+                                leader.name,
+                                style: const TextStyle(
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF0F172A),
+                                  letterSpacing: -0.2,
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                leader.title,
+                                style: const TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF475569),
+                                  height: 1.2,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),

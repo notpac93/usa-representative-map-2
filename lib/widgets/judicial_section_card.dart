@@ -210,9 +210,9 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.82,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 0.78,
                 ),
                 itemCount: _justices.length,
                 itemBuilder: (context, index) {
@@ -232,31 +232,14 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                         onTap: _openSupremeCourtScreen,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 150),
-                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                           decoration: BoxDecoration(
                             color: isHovered
-                                ? const Color(0xFFF1F5F9)
+                                ? const Color(0xFFF1F5F9).withOpacity(0.85)
                                 : (justice.isChief
-                                    ? const Color(0xFFFFFBEB)
-                                    : const Color(0xFFF8FAFC)),
+                                    ? const Color(0xFFFFFBEB).withOpacity(0.4)
+                                    : Colors.transparent),
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: isHovered
-                                  ? const Color(0xFF1E3A8A)
-                                  : (justice.isChief
-                                      ? const Color(0xFFFDE68A)
-                                      : const Color(0xFFE2E8F0)),
-                              width: justice.isChief ? 1.8 : 1.2,
-                            ),
-                            boxShadow: isHovered
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(0xFF1E3A8A).withOpacity(0.1),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ]
-                                : [],
                           ),
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
@@ -264,33 +247,33 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Prominent Justice avatar (64x64)
+                                // Prominent Justice avatar (76x76)
                                 Container(
-                                  width: 64,
-                                  height: 64,
+                                  width: 76,
+                                  height: 76,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: justice.isChief
                                           ? const Color(0xFFD97706)
-                                          : const Color(0xFF94A3B8),
-                                      width: justice.isChief ? 2.6 : 1.8,
+                                          : const Color(0xFF94A3B8).withOpacity(0.7),
+                                      width: justice.isChief ? 2.8 : 1.8,
                                     ),
                                   ),
                                   child: ClipOval(
                                     child: Image.asset(
                                       justice.assetPath,
-                                      width: 64,
-                                      height: 64,
+                                      width: 76,
+                                      height: 76,
                                       fit: BoxFit.cover,
-                                      cacheWidth: 150,
-                                      cacheHeight: 150,
+                                      cacheWidth: 180,
+                                      cacheHeight: 180,
                                       errorBuilder: (context, error, stackTrace) =>
                                           Container(
                                         color: const Color(0xFFE2E8F0),
                                         child: const Icon(
                                           Icons.person,
-                                          size: 32,
+                                          size: 38,
                                           color: Color(0xFF64748B),
                                         ),
                                       ),

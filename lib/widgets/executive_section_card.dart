@@ -44,66 +44,47 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
       child: GestureDetector(
         onTap: _openExecutiveScreen,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           decoration: BoxDecoration(
-            color: isHovered ? const Color(0xFFF8FAFC) : Colors.white,
+            color: isHovered
+                ? const Color(0xFFF1F5F9).withOpacity(0.75)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: isHovered
-                  ? const Color(0xFF1E3A8A).withOpacity(0.4)
-                  : const Color(0xFFE2E8F0),
-              width: 1.5,
-            ),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFF1E3A8A).withOpacity(0.09),
-                      blurRadius: 14,
-                      offset: const Offset(0, 5),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Extra Large Avatar (92x92)
+              // Extra Large Avatar (110x110)
               Container(
-                width: 92,
-                height: 92,
+                width: 110,
+                height: 110,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: party == 'Republican'
                         ? const Color(0xFFDC2626).withOpacity(0.7)
                         : const Color(0xFF2563EB).withOpacity(0.7),
-                    width: 3.0,
+                    width: 3.2,
                   ),
                 ),
                 child: ClipOval(
                   child: isVance
                       ? Image.memory(
                           jdVanceBytes,
-                          width: 92,
-                          height: 92,
+                          width: 110,
+                          height: 110,
                           fit: BoxFit.cover,
                           errorBuilder: (ctx, err, stack) => Image.asset(
                             assetPath,
-                            width: 92,
-                            height: 92,
+                            width: 110,
+                            height: 110,
                             fit: BoxFit.cover,
                             errorBuilder: (ctx2, err2, stack2) => Container(
                               color: const Color(0xFFE2E8F0),
                               child: const Icon(
                                 Icons.person,
-                                size: 48,
+                                size: 54,
                                 color: Color(0xFF64748B),
                               ),
                             ),
@@ -111,16 +92,16 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                         )
                       : Image.asset(
                           assetPath,
-                          width: 92,
-                          height: 92,
+                          width: 110,
+                          height: 110,
                           fit: BoxFit.cover,
-                          cacheWidth: 200,
-                          cacheHeight: 200,
+                          cacheWidth: 240,
+                          cacheHeight: 240,
                           errorBuilder: (context, error, stackTrace) => Container(
                             color: const Color(0xFFE2E8F0),
                             child: const Icon(
                               Icons.person,
-                              size: 48,
+                              size: 54,
                               color: Color(0xFF64748B),
                             ),
                           ),
