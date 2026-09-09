@@ -21,7 +21,6 @@ class ExecutiveSectionCard extends StatefulWidget {
 class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
   bool _isHoveredCard1 = false;
   bool _isHoveredCard2 = false;
-  bool _isHoveredOverview = false;
 
   void _openExecutiveScreen() {
     Navigator.of(context).push(
@@ -35,8 +34,6 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
     required String assetPath,
     required String party,
     required bool isVance,
-    required String term,
-    required String duties,
     required bool isHovered,
     required ValueChanged<bool> onHoverChanged,
   }) {
@@ -48,10 +45,10 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
         onTap: _openExecutiveScreen,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
           decoration: BoxDecoration(
             color: isHovered ? const Color(0xFFF8FAFC) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: isHovered
                   ? const Color(0xFF1E3A8A).withOpacity(0.4)
@@ -61,9 +58,9 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
             boxShadow: isHovered
                 ? [
                     BoxShadow(
-                      color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
+                      color: const Color(0xFF1E3A8A).withOpacity(0.09),
+                      blurRadius: 14,
+                      offset: const Offset(0, 5),
                     ),
                   ]
                 : [
@@ -77,36 +74,36 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Large Avatar (80x80)
+              // Extra Large Avatar (92x92)
               Container(
-                width: 80,
-                height: 80,
+                width: 92,
+                height: 92,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: party == 'Republican'
                         ? const Color(0xFFDC2626).withOpacity(0.7)
                         : const Color(0xFF2563EB).withOpacity(0.7),
-                    width: 2.8,
+                    width: 3.0,
                   ),
                 ),
                 child: ClipOval(
                   child: isVance
                       ? Image.memory(
                           jdVanceBytes,
-                          width: 80,
-                          height: 80,
+                          width: 92,
+                          height: 92,
                           fit: BoxFit.cover,
                           errorBuilder: (ctx, err, stack) => Image.asset(
                             assetPath,
-                            width: 80,
-                            height: 80,
+                            width: 92,
+                            height: 92,
                             fit: BoxFit.cover,
                             errorBuilder: (ctx2, err2, stack2) => Container(
                               color: const Color(0xFFE2E8F0),
                               child: const Icon(
                                 Icons.person,
-                                size: 40,
+                                size: 48,
                                 color: Color(0xFF64748B),
                               ),
                             ),
@@ -114,24 +111,24 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                         )
                       : Image.asset(
                           assetPath,
-                          width: 80,
-                          height: 80,
+                          width: 92,
+                          height: 92,
                           fit: BoxFit.cover,
-                          cacheWidth: 180,
-                          cacheHeight: 180,
+                          cacheWidth: 200,
+                          cacheHeight: 200,
                           errorBuilder: (context, error, stackTrace) => Container(
                             color: const Color(0xFFE2E8F0),
                             child: const Icon(
                               Icons.person,
-                              size: 40,
+                              size: 48,
                               color: Color(0xFF64748B),
                             ),
                           ),
                         ),
                 ),
               ),
-              const SizedBox(width: 14),
-              // Details
+              const SizedBox(width: 16),
+              // Name & Title
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +137,7 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                     Text(
                       name,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF0F172A),
                         letterSpacing: -0.2,
@@ -148,66 +145,16 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 5),
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF334155),
+                        fontSize: 13.5,
+                        color: Color(0xFF475569),
                         fontWeight: FontWeight.w500,
+                        height: 1.3,
                       ),
                       maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 2.5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFEF2F2),
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: const Color(0xFFFCA5A5),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: Text(
-                            party,
-                            style: const TextStyle(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFFB91C1C),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            term,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Color(0xFF64748B),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      duties,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Color(0xFF94A3B8),
-                        fontWeight: FontWeight.w400,
-                      ),
-                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -252,7 +199,7 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+          // Clean Header (Title + View Details)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -260,59 +207,47 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: const Color(0xFF1E3A8A).withOpacity(0.08),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.account_balance,
-                        size: 20,
+                        size: 19,
                         color: Color(0xFF1E3A8A),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Executive Branch',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF1E3A8A),
-                              letterSpacing: 0.2,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            'Article II • The Presidency & Administration',
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              color: Color(0xFF64748B),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(width: 8),
+                    const Flexible(
+                      child: Text(
+                        'Executive Branch',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1E3A8A),
+                          letterSpacing: 0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 8),
               InkWell(
                 onTap: _openExecutiveScreen,
                 borderRadius: BorderRadius.circular(6),
                 child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         'View Details',
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF1E3A8A),
                         ),
@@ -320,7 +255,7 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                       SizedBox(width: 2),
                       Icon(
                         Icons.chevron_right,
-                        size: 16,
+                        size: 15,
                         color: Color(0xFF1E3A8A),
                       ),
                     ],
@@ -331,7 +266,7 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
           ),
           const SizedBox(height: 16),
           const Divider(height: 1, color: Color(0xFFE2E8F0)),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           // Scrollable/Flexible Quadrant Content
           Expanded(
@@ -346,12 +281,10 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                     assetPath: 'assets/img/presidents/donald_trump.jpg',
                     party: 'Republican',
                     isVance: false,
-                    term: '2025–Present',
-                    duties: 'Head of State & Gov • Commander-in-Chief',
                     isHovered: _isHoveredCard1,
                     onHoverChanged: (val) => setState(() => _isHoveredCard1 = val),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
 
                   // Vice President
                   _buildLeaderPortrait(
@@ -360,108 +293,8 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                     assetPath: 'assets/img/presidents/jd_vance.jpg',
                     party: 'Republican',
                     isVance: true,
-                    term: '2025–Present',
-                    duties: 'President of Senate • Succession Order #1',
                     isHovered: _isHoveredCard2,
                     onHoverChanged: (val) => setState(() => _isHoveredCard2 = val),
-                  ),
-                  const SizedBox(height: 14),
-
-                  // Administration & Cabinet Overview Card
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    onEnter: (_) => setState(() => _isHoveredOverview = true),
-                    onExit: (_) => setState(() => _isHoveredOverview = false),
-                    child: GestureDetector(
-                      onTap: _openExecutiveScreen,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: _isHoveredOverview
-                              ? const Color(0xFFEFF6FF)
-                              : const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: _isHoveredOverview
-                                ? const Color(0xFF93C5FD)
-                                : const Color(0xFFE2E8F0),
-                            width: 1.3,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: const Icon(
-                                    Icons.business,
-                                    size: 16,
-                                    color: Color(0xFF1E3A8A),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                const Expanded(
-                                  child: Text(
-                                    'Cabinet & Federal Departments',
-                                    style: TextStyle(
-                                      fontSize: 13.5,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xFF0F172A),
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              '15 Executive Departments • 2.9M Civilian & Military Personnel enforcing federal law and national policy.',
-                              style: TextStyle(
-                                fontSize: 11.5,
-                                color: Color(0xFF475569),
-                                height: 1.35,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    'Explore Cabinet & Orders',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: _isHoveredOverview
-                                          ? const Color(0xFF1D4ED8)
-                                          : const Color(0xFF1E3A8A),
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  size: 13,
-                                  color: _isHoveredOverview
-                                      ? const Color(0xFF1D4ED8)
-                                      : const Color(0xFF1E3A8A),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),

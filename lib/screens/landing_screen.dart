@@ -368,30 +368,6 @@ class _LandingScreenState extends State<LandingScreen> {
             ),
           ],
         ),
-        if (isWidescreen) ...[
-          const SizedBox(height: 18),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.verified, size: 14, color: Colors.blueGrey.shade400),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  'Federal Civic Directory • All 3 Branches of U.S. Government',
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.blueGrey.shade500,
-                    letterSpacing: 0.1,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
-            ],
-          ),
-        ],
       ],
     );
   }

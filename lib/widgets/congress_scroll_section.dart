@@ -139,7 +139,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
           children: [
             // Left Title Block: Congress & Leadership
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,19 +174,10 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                   ),
                   const SizedBox(height: 5),
                   const Text(
-                    '119th Congress • Leadership',
+                    'Leadership',
                     style: TextStyle(
-                      fontSize: 11.5,
+                      fontSize: 12,
                       color: Color(0xFF64748B),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    '100 Senators • 435 Reps',
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      color: Color(0xFF94A3B8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -314,24 +305,24 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                           ),
                           child: Row(
                             children: [
-                              // Large Portrait avatar (68x68)
+                              // Large Portrait avatar (72x72)
                               Container(
-                                width: 68,
-                                height: 68,
+                                width: 72,
+                                height: 72,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: leader.party == 'R'
                                         ? const Color(0xFFDC2626).withOpacity(0.65)
                                         : const Color(0xFF2563EB).withOpacity(0.65),
-                                    width: 2.5,
+                                    width: 2.6,
                                   ),
                                 ),
                                 child: ClipOval(
                                   child: Image.asset(
                                     leader.assetPath,
-                                    width: 68,
-                                    height: 68,
+                                    width: 72,
+                                    height: 72,
                                     fit: BoxFit.cover,
                                     cacheWidth: 160,
                                     cacheHeight: 160,
@@ -340,7 +331,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                       color: const Color(0xFFE2E8F0),
                                       child: const Icon(
                                         Icons.person,
-                                        size: 34,
+                                        size: 36,
                                         color: Color(0xFF64748B),
                                       ),
                                     ),
@@ -348,7 +339,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                 ),
                               ),
                               const SizedBox(width: 14),
-                              // Leader Info
+                              // Leader Info: Name & Title only
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,7 +348,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                     Text(
                                       leader.name,
                                       style: const TextStyle(
-                                        fontSize: 15.5,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w700,
                                         color: Color(0xFF0F172A),
                                         letterSpacing: -0.2,
@@ -365,62 +356,17 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 3),
+                                    const SizedBox(height: 4),
                                     Text(
                                       leader.title,
                                       style: const TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 12.5,
                                         fontWeight: FontWeight.w500,
-                                        color: Color(0xFF334155),
+                                        color: Color(0xFF475569),
+                                        height: 1.25,
                                       ),
-                                      maxLines: 1,
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 7,
-                                            vertical: 2.5,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: leader.party == 'R'
-                                                ? const Color(0xFFFEF2F2)
-                                                : const Color(0xFFEFF6FF),
-                                            borderRadius: BorderRadius.circular(5),
-                                            border: Border.all(
-                                              color: leader.party == 'R'
-                                                  ? const Color(0xFFFCA5A5)
-                                                  : const Color(0xFF93C5FD),
-                                              width: 0.8,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            '${leader.party} • ${leader.chamber}',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w600,
-                                              color: leader.party == 'R'
-                                                  ? const Color(0xFFB91C1C)
-                                                  : const Color(0xFF1D4ED8),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Flexible(
-                                          child: Text(
-                                            leader.state,
-                                            style: const TextStyle(
-                                              fontSize: 11.5,
-                                              color: Color(0xFF64748B),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   ],
                                 ),
