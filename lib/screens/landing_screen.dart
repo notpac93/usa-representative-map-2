@@ -408,14 +408,15 @@ class _LandingScreenState extends State<LandingScreen> {
           final congressHeight = constraints.maxHeight < 760 ? 185.0 : 205.0;
           final topQuadrantHeight = constraints.maxHeight - congressHeight;
 
+          // Generously sized quadrants for Executive and Judicial sections
           final leftWidth = constraints.maxWidth < 1180
-              ? 330.0
-              : (constraints.maxWidth < 1440 ? 385.0 : 440.0);
+              ? 360.0
+              : (constraints.maxWidth < 1480 ? 430.0 : 490.0);
           final rightWidth = constraints.maxWidth < 1180
-              ? 370.0
-              : (constraints.maxWidth < 1440 ? 425.0 : 475.0);
+              ? 420.0
+              : (constraints.maxWidth < 1480 ? 490.0 : 560.0);
           final centerMaxWidth = (constraints.maxWidth - leftWidth - rightWidth - 32)
-              .clamp(360.0, 680.0);
+              .clamp(360.0, 720.0);
 
           return SizedBox(
             width: constraints.maxWidth,

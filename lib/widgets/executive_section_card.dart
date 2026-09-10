@@ -36,6 +36,7 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
     required bool isVance,
     required bool isHovered,
     required ValueChanged<bool> onHoverChanged,
+    required double avatarSize,
   }) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -45,70 +46,77 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
         onTap: _openExecutiveScreen,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           decoration: BoxDecoration(
             color: isHovered
-                ? const Color(0xFFF1F5F9).withOpacity(0.75)
+                ? const Color(0xFFF1F5F9).withOpacity(0.85)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Extra Large Avatar (110x110)
+              // Extra Large Avatar
               Container(
-                width: 110,
-                height: 110,
+                width: avatarSize,
+                height: avatarSize,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: party == 'Republican'
-                        ? const Color(0xFFDC2626).withOpacity(0.7)
-                        : const Color(0xFF2563EB).withOpacity(0.7),
-                    width: 3.2,
+                        ? const Color(0xFFDC2626).withOpacity(0.75)
+                        : const Color(0xFF2563EB).withOpacity(0.75),
+                    width: 3.6,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.10),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: ClipOval(
                   child: isVance
                       ? Image.memory(
                           jdVanceBytes,
-                          width: 110,
-                          height: 110,
+                          width: avatarSize,
+                          height: avatarSize,
                           fit: BoxFit.cover,
                           errorBuilder: (ctx, err, stack) => Image.asset(
                             assetPath,
-                            width: 110,
-                            height: 110,
+                            width: avatarSize,
+                            height: avatarSize,
                             fit: BoxFit.cover,
                             errorBuilder: (ctx2, err2, stack2) => Container(
                               color: const Color(0xFFE2E8F0),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.person,
-                                size: 54,
-                                color: Color(0xFF64748B),
+                                size: avatarSize * 0.5,
+                                color: const Color(0xFF64748B),
                               ),
                             ),
                           ),
                         )
                       : Image.asset(
                           assetPath,
-                          width: 110,
-                          height: 110,
+                          width: avatarSize,
+                          height: avatarSize,
                           fit: BoxFit.cover,
-                          cacheWidth: 240,
-                          cacheHeight: 240,
+                          cacheWidth: 320,
+                          cacheHeight: 320,
                           errorBuilder: (context, error, stackTrace) => Container(
                             color: const Color(0xFFE2E8F0),
-                            child: const Icon(
+                            child: Icon(
                               Icons.person,
-                              size: 54,
-                              color: Color(0xFF64748B),
+                              size: avatarSize * 0.5,
+                              color: const Color(0xFF64748B),
                             ),
                           ),
                         ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 18),
               // Name & Title
               Expanded(
                 child: Column(
@@ -118,10 +126,10 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                     Text(
                       name,
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 19.5,
+                        fontWeight: FontWeight.w800,
                         color: Color(0xFF0F172A),
-                        letterSpacing: -0.2,
+                        letterSpacing: -0.3,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -130,10 +138,10 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 13.5,
+                        fontSize: 14,
                         color: Color(0xFF475569),
                         fontWeight: FontWeight.w500,
-                        height: 1.3,
+                        height: 1.35,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -253,32 +261,40 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  // President
-                  _buildLeaderPortrait(
-                    name: 'Donald J. Trump',
-                    title: '47th President of the United States',
-                    assetPath: 'assets/img/presidents/donald_trump.jpg',
-                    party: 'Republican',
-                    isVance: false,
-                    isHovered: _isHoveredCard1,
-                    onHoverChanged: (val) => setState(() => _isHoveredCard1 = val),
-                  ),
-                  const SizedBox(height: 16),
+              child: () {
+                final double avatarSize = (widget.width != null && widget.width! >= 420)
+                    ? 140.0
+                    : ((widget.width != null && widget.width! >= 360) ? 128.0 : 115.0);
 
-                  // Vice President
-                  _buildLeaderPortrait(
-                    name: 'JD Vance',
-                    title: 'Vice President of the United States',
-                    assetPath: 'assets/img/presidents/jd_vance.jpg',
-                    party: 'Republican',
-                    isVance: true,
-                    isHovered: _isHoveredCard2,
-                    onHoverChanged: (val) => setState(() => _isHoveredCard2 = val),
-                  ),
-                ],
-              ),
+                return Column(
+                  children: [
+                    // President
+                    _buildLeaderPortrait(
+                      name: 'Donald J. Trump',
+                      title: '47th President of the United States',
+                      assetPath: 'assets/img/presidents/donald_trump.jpg',
+                      party: 'Republican',
+                      isVance: false,
+                      isHovered: _isHoveredCard1,
+                      onHoverChanged: (val) => setState(() => _isHoveredCard1 = val),
+                      avatarSize: avatarSize,
+                    ),
+                    const SizedBox(height: 18),
+
+                    // Vice President
+                    _buildLeaderPortrait(
+                      name: 'JD Vance',
+                      title: 'Vice President of the United States',
+                      assetPath: 'assets/img/presidents/jd_vance.jpg',
+                      party: 'Republican',
+                      isVance: true,
+                      isHovered: _isHoveredCard2,
+                      onHoverChanged: (val) => setState(() => _isHoveredCard2 = val),
+                      avatarSize: avatarSize,
+                    ),
+                  ],
+                );
+              }(),
             ),
           ),
         ],

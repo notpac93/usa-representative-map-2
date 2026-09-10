@@ -205,118 +205,136 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 0.78,
-                ),
-                itemCount: _justices.length,
-                itemBuilder: (context, index) {
-                  final justice = _justices[index];
-                  final isHovered = _hoveredIndex == index;
+              child: () {
+                final double cardWidth = widget.width ?? 480.0;
+                final double avatarSize = cardWidth >= 520
+                    ? 96.0
+                    : (cardWidth >= 450 ? 88.0 : (cardWidth >= 380 ? 80.0 : 72.0));
+                final double childAspect = cardWidth >= 500 ? 0.85 : 0.80;
 
-                  return Tooltip(
-                    message: '${justice.fullName}\n${justice.title}',
-                    waitDuration: const Duration(milliseconds: 250),
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      onEnter: (_) => setState(() => _hoveredIndex = index),
-                      onExit: (_) => setState(() {
-                        if (_hoveredIndex == index) _hoveredIndex = -1;
-                      }),
-                      child: GestureDetector(
-                        onTap: _openSupremeCourtScreen,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-                          decoration: BoxDecoration(
-                            color: isHovered
-                                ? const Color(0xFFF1F5F9).withOpacity(0.85)
-                                : (justice.isChief
-                                    ? const Color(0xFFFFFBEB).withOpacity(0.4)
-                                    : Colors.transparent),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Prominent Justice avatar (76x76)
-                                Container(
-                                  width: 76,
-                                  height: 76,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: justice.isChief
-                                          ? const Color(0xFFD97706)
-                                          : const Color(0xFF94A3B8).withOpacity(0.7),
-                                      width: justice.isChief ? 2.8 : 1.8,
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: childAspect,
+                  ),
+                  itemCount: _justices.length,
+                  itemBuilder: (context, index) {
+                    final justice = _justices[index];
+                    final isHovered = _hoveredIndex == index;
+
+                    return Tooltip(
+                      message: '${justice.fullName}\n${justice.title}',
+                      waitDuration: const Duration(milliseconds: 250),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) => setState(() => _hoveredIndex = index),
+                        onExit: (_) => setState(() {
+                          if (_hoveredIndex == index) _hoveredIndex = -1;
+                        }),
+                        child: GestureDetector(
+                          onTap: _openSupremeCourtScreen,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                            decoration: BoxDecoration(
+                              color: isHovered
+                                  ? const Color(0xFFF1F5F9).withOpacity(0.9)
+                                  : (justice.isChief
+                                      ? const Color(0xFFFFFBEB).withOpacity(0.5)
+                                      : Colors.transparent),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Prominent Justice avatar
+                                  Container(
+                                    width: avatarSize,
+                                    height: avatarSize,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: justice.isChief
+                                            ? const Color(0xFFD97706)
+                                            : const Color(0xFF94A3B8).withOpacity(0.75),
+                                        width: justice.isChief ? 3.2 : 2.2,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: justice.isChief
+                                              ? const Color(0xFFD97706).withOpacity(0.25)
+                                              : Colors.black.withOpacity(0.08),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      justice.assetPath,
-                                      width: 76,
-                                      height: 76,
-                                      fit: BoxFit.cover,
-                                      cacheWidth: 180,
-                                      cacheHeight: 180,
-                                      errorBuilder: (context, error, stackTrace) =>
-                                          Container(
-                                        color: const Color(0xFFE2E8F0),
-                                        child: const Icon(
-                                          Icons.person,
-                                          size: 38,
-                                          color: Color(0xFF64748B),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        justice.assetPath,
+                                        width: avatarSize,
+                                        height: avatarSize,
+                                        fit: BoxFit.cover,
+                                        cacheWidth: 260,
+                                        cacheHeight: 260,
+                                        errorBuilder: (context, error, stackTrace) =>
+                                            Container(
+                                          color: const Color(0xFFE2E8F0),
+                                          child: Icon(
+                                            Icons.person,
+                                            size: avatarSize * 0.5,
+                                            color: const Color(0xFF64748B),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  justice.shortName,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: justice.isChief
-                                        ? FontWeight.w700
-                                        : FontWeight.w600,
-                                    color: const Color(0xFF0F172A),
+                                  const SizedBox(height: 7),
+                                  Text(
+                                    justice.shortName,
+                                    style: TextStyle(
+                                      fontSize: 14.5,
+                                      fontWeight: justice.isChief
+                                          ? FontWeight.w800
+                                          : FontWeight.w700,
+                                      color: const Color(0xFF0F172A),
+                                      letterSpacing: -0.2,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  justice.isChief ? 'Chief Justice' : 'Associate',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    color: justice.isChief
-                                        ? const Color(0xFFB45309)
-                                        : const Color(0xFF64748B),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    justice.isChief ? 'Chief Justice' : 'Associate',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: justice.isChief
+                                          ? const Color(0xFFB45309)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                );
+              }(),
             ),
           ),
         ],
