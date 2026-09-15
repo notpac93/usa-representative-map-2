@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../data/models.dart';
+import '../design/civic_icons.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
 
@@ -330,7 +331,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
           if (_addressAlreadyMatched) ...[
             const Row(
               children: [
-                Icon(Icons.check_circle, color: Color(0xFF047857), size: 18),
+                Icon(CivicIcons.success, color: Color(0xFF047857), size: 18),
                 SizedBox(width: 7),
                 Text(
                   'Matched to your federal delegation',
@@ -353,7 +354,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
             child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.lock_outline, color: _blue, size: 21),
+                Icon(CivicIcons.privacy, color: _blue, size: 21),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -440,7 +441,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
         const SizedBox(height: 6),
         OutlinedButton.icon(
           onPressed: () => setState(() => _step = 0),
-          icon: const Icon(Icons.edit_outlined),
+          icon: const Icon(CivicIcons.edit),
           label: const Text('Edit message'),
           style: OutlinedButton.styleFrom(
             minimumSize: const Size.fromHeight(48),
@@ -461,9 +462,10 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
       child: Row(
         children: [
           if (_step > 0) ...[
-            TextButton(
+            TextButton.icon(
               onPressed: () => setState(() => _step--),
-              child: const Text('Back'),
+              icon: const Icon(CivicIcons.back),
+              label: const Text('Back'),
             ),
             const SizedBox(width: 8),
           ],
@@ -483,7 +485,16 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
                       dimension: 22,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(_step == 0 ? 'Continue' : 'Review message'),
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _step == 0 ? CivicIcons.forward : CivicIcons.review,
+                        ),
+                        const SizedBox(width: 9),
+                        Text(_step == 0 ? 'Continue' : 'Review message'),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -629,7 +640,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.check_circle_outline,
+                        CivicIcons.success,
                         size: 19,
                         color: Color(0xFF047857),
                       ),
@@ -646,19 +657,20 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
             ],
             const SizedBox(height: 12),
             if (_deliveryResult == null)
-              FilledButton(
+              FilledButton.icon(
                 key: const Key('direct-delivery-submit'),
                 onPressed: _submittingDirect ? null : _submitDirect,
-                child: _submittingDirect
+                icon: _submittingDirect
                     ? const SizedBox.square(
                         dimension: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Text(
-                        isPreview
-                            ? 'Preview submission'
-                            : 'Submit message to ${_selectedRecipients.length} ${_selectedRecipients.length == 1 ? 'office' : 'offices'}',
-                      ),
+                    : Icon(isPreview ? CivicIcons.review : CivicIcons.send),
+                label: Text(
+                  isPreview
+                      ? 'Preview submission'
+                      : 'Submit message to ${_selectedRecipients.length} ${_selectedRecipients.length == 1 ? 'office' : 'offices'}',
+                ),
               )
             else ...[
               if (_deliveryResult!.wasDuplicate)
@@ -896,9 +908,7 @@ class _DeliveryResultRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(
-              accepted || delivered
-                  ? Icons.check_circle_outline
-                  : Icons.error_outline,
+              accepted || delivered ? CivicIcons.success : CivicIcons.error,
               color: color,
             ),
             const SizedBox(width: 10),
@@ -982,7 +992,7 @@ class _ReviewCard extends StatelessWidget {
                 IconButton(
                   tooltip: 'Copy subject',
                   onPressed: onCopySubject,
-                  icon: const Icon(Icons.copy_outlined),
+                  icon: const Icon(CivicIcons.copy),
                 ),
               ],
             ),
@@ -991,7 +1001,7 @@ class _ReviewCard extends StatelessWidget {
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: onCopyMessage,
-              icon: const Icon(Icons.copy),
+              icon: const Icon(CivicIcons.copy),
               label: const Text('Copy message'),
             ),
             const Divider(height: 28),

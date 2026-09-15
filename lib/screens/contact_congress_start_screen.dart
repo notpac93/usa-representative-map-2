@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../data/data_provider.dart';
 import '../data/models.dart';
+import '../design/civic_icons.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
 import '../utils/search_handler.dart';
@@ -235,7 +236,7 @@ class _ContactCongressStartScreenState
               child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lock_outline, color: _blue, size: 21),
+                  Icon(CivicIcons.privacy, color: _blue, size: 21),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -269,7 +270,7 @@ class _ContactCongressStartScreenState
                       dimension: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.location_searching),
+                  : const Icon(CivicIcons.matched),
               label: Text(
                 _lookingUp ? 'Matching your district…' : 'Find my members',
               ),
@@ -323,7 +324,7 @@ class _ContactCongressStartScreenState
           ),
           child: Row(
             children: [
-              const Icon(Icons.check_circle, color: Color(0xFF047857)),
+              const Icon(CivicIcons.success, color: Color(0xFF047857)),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -356,8 +357,8 @@ class _ContactCongressStartScreenState
                 foregroundColor: _blue,
                 child: Icon(
                   recipient.chamber == CongressionalChamber.house
-                      ? Icons.home_work_outlined
-                      : Icons.account_balance_outlined,
+                      ? CivicIcons.house
+                      : CivicIcons.senate,
                 ),
               ),
               title: Text(
@@ -366,7 +367,7 @@ class _ContactCongressStartScreenState
               ),
               subtitle: Text(recipient.role),
               trailing: const Icon(
-                Icons.check_circle,
+                CivicIcons.success,
                 color: Color(0xFF047857),
               ),
             ),
@@ -375,7 +376,7 @@ class _ContactCongressStartScreenState
         FilledButton.icon(
           key: const Key('continue-to-compose-button'),
           onPressed: () => _continueToCompose(stateName),
-          icon: const Icon(Icons.edit_outlined),
+          icon: const Icon(CivicIcons.write),
           label: Text(
             'Write to ${_recipients.length} ${_recipients.length == 1 ? 'office' : 'offices'}',
           ),

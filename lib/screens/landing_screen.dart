@@ -9,8 +9,10 @@ import 'president_detail_screen.dart';
 import 'congress_screen.dart';
 import 'supreme_court_screen.dart';
 import '../data/civic_data_provider.dart';
+import '../design/civic_icons.dart';
 import '../widgets/executive_section_card.dart';
 import '../widgets/congress_scroll_section.dart';
+import '../widgets/civic_icon_badge.dart';
 import '../widgets/judicial_section_card.dart';
 import 'contact_congress_start_screen.dart';
 
@@ -107,7 +109,11 @@ class _LandingScreenState extends State<LandingScreen> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.how_to_vote, size: 15, color: Color(0xFF1D4ED8)),
+              const Icon(
+                CivicIcons.election,
+                size: 17,
+                color: Color(0xFF1D4ED8),
+              ),
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
@@ -164,13 +170,13 @@ class _LandingScreenState extends State<LandingScreen> {
                         color: Colors.blueGrey.shade400,
                       ),
                       prefixIcon: const Icon(
-                        Icons.search,
+                        CivicIcons.search,
                         color: Color(0xFF1E3A8A),
                         size: 22,
                       ),
                       suffixIcon: controller.text.isNotEmpty
                           ? IconButton(
-                              icon: const Icon(Icons.clear, size: 20),
+                              icon: const Icon(CivicIcons.close, size: 20),
                               onPressed: () {
                                 controller.clear();
                               },
@@ -254,20 +260,20 @@ class _LandingScreenState extends State<LandingScreen> {
                           ),
                           leading: Icon(
                             option.type == SearchResultType.address
-                                ? Icons.home
+                                ? CivicIcons.homeAddress
                                 : option.type == SearchResultType.president
-                                ? Icons.account_balance
+                                ? CivicIcons.president
                                 : option.type == SearchResultType.congress
-                                ? Icons.domain
+                                ? CivicIcons.congress
                                 : option.type == SearchResultType.supremeCourt
-                                ? Icons.balance
+                                ? CivicIcons.court
                                 : option.type == SearchResultType.state
-                                ? Icons.map
+                                ? CivicIcons.state
                                 : option.type == SearchResultType.city
-                                ? Icons.location_city
+                                ? CivicIcons.city
                                 : option.type == SearchResultType.county
-                                ? Icons.landscape
-                                : Icons.mark_as_unread,
+                                ? CivicIcons.county
+                                : CivicIcons.message,
                             color: option.type == SearchResultType.address
                                 ? const Color(0xFF0284C7)
                                 : option.type == SearchResultType.president
@@ -283,7 +289,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 : const Color(0xFF2563EB),
                           ),
                           trailing: const Icon(
-                            Icons.arrow_forward,
+                            CivicIcons.forward,
                             size: 16,
                             color: Colors.blueGrey,
                           ),
@@ -307,7 +313,11 @@ class _LandingScreenState extends State<LandingScreen> {
           children: [
             OutlinedButton.icon(
               onPressed: _navigateToMap,
-              icon: const Icon(Icons.map, size: 17, color: Color(0xFF1E3A8A)),
+              icon: const Icon(
+                CivicIcons.explore,
+                size: 18,
+                color: Color(0xFF1E3A8A),
+              ),
               label: const Text('Explore National Map'),
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -336,7 +346,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   );
                 },
                 icon: const Icon(
-                  Icons.account_balance,
+                  CivicIcons.president,
                   size: 17,
                   color: Color(0xFF1E3A8A),
                 ),
@@ -365,7 +375,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   );
                 },
                 icon: const Icon(
-                  Icons.groups,
+                  CivicIcons.congress,
                   size: 17,
                   color: Color(0xFF1E3A8A),
                 ),
@@ -396,7 +406,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   );
                 },
                 icon: const Icon(
-                  Icons.balance,
+                  CivicIcons.court,
                   size: 17,
                   color: Color(0xFF1E3A8A),
                 ),
@@ -433,7 +443,13 @@ class _LandingScreenState extends State<LandingScreen> {
                       builder: (_) => const ContactCongressStartScreen(),
                     ),
                   ),
-            icon: const Icon(Icons.forum_outlined),
+            icon: const CivicIconBadge(
+              icon: CivicIcons.send,
+              size: 36,
+              iconSize: 21,
+              foregroundColor: Colors.white,
+              backgroundColor: Color(0x33FFFFFF),
+            ),
             label: const Text('Contact Congress'),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(48),

@@ -41,6 +41,7 @@ dependencies:
   flutter_svg: ^2.2.3
   path_drawing: ^1.0.1
   google_fonts: ^6.3.3
+  material_symbols_icons: ^4.2960.0
   collection: ^1.19.1
   url_launcher: ^6.3.2
   csv: ^6.0.0
