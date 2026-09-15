@@ -1,13 +1,19 @@
 # Contact Congress Delivery Contract
 
-Status: client boundary implemented; direct delivery intentionally disabled
+Status: one-submit client flow implemented; direct delivery intentionally disabled
 
 ## Current behavior
 
 The Flutter app uses `PlaceholderCongressionalDeliveryGateway` by default.
-It cannot attempt House CWC or Senate SCWC delivery and the review screen says
-that nothing has been sent. Constituents can still copy their message and open
-each verified official House or Senate contact page.
+The final screen sends one typed request containing every selected office through
+that gateway. The placeholder performs no network request and returns a separate
+`unavailable` result for each office, so the complete interaction can be tested
+without implying that Congress received anything.
+
+The production swap point is the `CongressionalDeliveryGateway` passed into
+`ContactCongressStartScreen`. It will call an application-owned backend; the UI,
+single-submit action, idempotency key, request model, progress state, and
+per-office result rendering do not need to change when credentials arrive.
 
 ## Security boundary
 
@@ -48,9 +54,10 @@ Do not map an HTTP success to `delivered`. Use `acceptedForRouting` only when
 the approved chamber documentation says the acknowledgement means gateway
 acceptance for routing. Reserve `delivered` until a chamber provides an
 authoritative status with that meaning. A timeout or unknown response becomes
-`failed`, never success, and the official-site recovery path stays visible.
+`failed`, never success. The app keeps the draft available and shows the affected
+office separately for retry or follow-up.
 
-## Required backend controls before enabling the button
+## Required backend controls before enabling live delivery
 
 - confirmed constituent email and explicit authorization evidence;
 - server-side bot/risk checks and rate limits;

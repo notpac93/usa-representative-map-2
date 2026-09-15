@@ -328,7 +328,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'You’ll review everything before opening each official website to submit it.',
+              'You’ll review everything once before submitting the same message to your selected offices.',
               style: TextStyle(color: Color(0xFFBFDBFE), fontSize: 12),
             ),
           ],

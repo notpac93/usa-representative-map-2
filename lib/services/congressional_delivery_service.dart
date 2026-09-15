@@ -10,7 +10,7 @@ enum CongressionalDeliveryStatus {
   /// The app backend is not configured or the chamber has not been approved.
   unavailable,
 
-  /// The office requires the constituent to finish on its official website.
+  /// The backend needs another app or user action before it can route this.
   needsUserAction,
 
   /// The chamber gateway accepted the message for routing. This is not proof
@@ -23,7 +23,7 @@ enum CongressionalDeliveryStatus {
   /// A non-retryable rejection returned by the backend or chamber.
   rejected,
 
-  /// A temporary failure; the official-site handoff remains available.
+  /// A temporary failure; the app may retry or notify the constituent.
   failed,
 }
 
@@ -88,11 +88,9 @@ class CongressionalOfficeDeliveryResult {
   final String message;
   final String? receiptId;
 
-  bool get requiresOfficialSite =>
-      status == CongressionalDeliveryStatus.unavailable ||
-      status == CongressionalDeliveryStatus.needsUserAction ||
-      status == CongressionalDeliveryStatus.rejected ||
-      status == CongressionalDeliveryStatus.failed;
+  bool get requiresFollowUp =>
+      status != CongressionalDeliveryStatus.acceptedForRouting &&
+      status != CongressionalDeliveryStatus.delivered;
 }
 
 class CongressionalDeliveryResult {
@@ -143,7 +141,7 @@ class PlaceholderCongressionalDeliveryGateway
             recipient: recipient,
             status: CongressionalDeliveryStatus.unavailable,
             message:
-                '${recipient.chamber == CongressionalChamber.house ? 'House CWC' : 'Senate SCWC'} approval is not configured. Use the official website.',
+                '${recipient.chamber == CongressionalChamber.house ? 'House CWC' : 'Senate SCWC'} API placeholder: approval and credentials are not configured. Nothing was transmitted.',
           ),
       ],
     );

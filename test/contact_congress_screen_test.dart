@@ -21,7 +21,7 @@ void main() {
     ),
   ];
 
-  testWidgets('completes assisted flow without claiming direct delivery', (
+  testWidgets('completes one-submit preview without claiming delivery', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(900, 1800);
@@ -70,14 +70,22 @@ void main() {
     await tester.tap(find.byKey(const Key('contact-continue-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Ready for the official sites'), findsOneWidget);
+    expect(find.text('Review and submit'), findsOneWidget);
     expect(
-      find.textContaining('This app has not sent your message.'),
+      find.textContaining('this preview will not transmit anything'),
       findsOneWidget,
     );
-    expect(find.text('Submit to each office'), findsOneWidget);
-    expect(find.text('Alex Senator'), findsOneWidget);
-    expect(find.text('Jordan Senator'), findsOneWidget);
+    expect(find.text('Alex Senator • Senate SCWC'), findsOneWidget);
+    expect(find.text('Jordan Senator • Senate SCWC'), findsOneWidget);
+    expect(find.text('Preview submission'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('direct-delivery-submit')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Submission preview complete'), findsOneWidget);
+    expect(find.text('Alex Senator • Not sent'), findsOneWidget);
+    expect(find.text('Jordan Senator • Not sent'), findsOneWidget);
+    expect(find.textContaining('Nothing was transmitted'), findsNWidgets(2));
   });
 
   test('accepts only official House and Senate HTTPS URLs', () {
@@ -178,24 +186,28 @@ void main() {
       find.textContaining('Exact Representative was added'),
       findsOneWidget,
     );
-    expect(find.text('Exact Representative'), findsOneWidget);
     expect(find.text('Different Representative'), findsNothing);
-    expect(find.textContaining('Official website'), findsNWidgets(3));
+    expect(find.text('Exact Representative • House CWC'), findsOneWidget);
   });
 
   testWidgets(
-    'placeholder UI says nothing was sent and offers no send button',
+    'placeholder UI offers one safe preview button and no website handoff',
     (tester) async {
       await _pumpAtReview(tester, recipients: recipients);
       tester.view.physicalSize = const Size(390, 844);
       await tester.pump();
 
       expect(
-        find.byKey(const Key('direct-delivery-unavailable')),
+        find.byKey(const Key('direct-delivery-placeholder')),
         findsOneWidget,
       );
-      expect(find.textContaining('Nothing has been sent'), findsOneWidget);
-      expect(find.byKey(const Key('direct-delivery-submit')), findsNothing);
+      expect(find.textContaining('Nothing will be sent'), findsOneWidget);
+      expect(find.byKey(const Key('direct-delivery-submit')), findsOneWidget);
+      expect(find.textContaining('Official website'), findsNothing);
+      expect(
+        find.byKey(const Key('contact-office-Alex Senator')),
+        findsNothing,
+      );
     },
   );
 
@@ -214,7 +226,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Alex Senator • Accepted for routing'), findsOneWidget);
-    expect(find.text('Jordan Senator • Action needed'), findsOneWidget);
+    expect(find.text('Jordan Senator • Needs attention'), findsOneWidget);
     expect(find.textContaining('not read by staff'), findsOneWidget);
   });
 
@@ -308,7 +320,7 @@ class _MixedGateway implements CongressionalDeliveryGateway {
         CongressionalOfficeDeliveryResult(
           recipient: request.recipients.last,
           status: CongressionalDeliveryStatus.needsUserAction,
-          message: 'Finish on the official website.',
+          message: 'Additional verification is required.',
         ),
       ],
     );

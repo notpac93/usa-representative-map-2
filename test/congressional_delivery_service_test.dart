@@ -49,7 +49,7 @@ void main() {
         everyElement(
           predicate((office) {
             return (office as CongressionalOfficeDeliveryResult)
-                .requiresOfficialSite;
+                .requiresFollowUp;
           }),
         ),
       );
@@ -73,7 +73,7 @@ void main() {
               CongressionalOfficeDeliveryResult(
                 recipient: senate,
                 status: CongressionalDeliveryStatus.needsUserAction,
-                message: 'Finish on the senator’s official website.',
+                message: 'Additional verification is required.',
               ),
             ],
           );

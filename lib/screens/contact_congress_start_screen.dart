@@ -20,7 +20,6 @@ class ContactCongressStartScreen extends StatefulWidget {
     this.senatorsByState,
     this.houseMembersByState,
     this.districtLookup,
-    this.urlLauncher,
     this.deliveryGateway = const PlaceholderCongressionalDeliveryGateway(),
   });
 
@@ -28,7 +27,6 @@ class ContactCongressStartScreen extends StatefulWidget {
   final Map<String, List<Senator>>? senatorsByState;
   final Map<String, List<Representative>>? houseMembersByState;
   final ContactDistrictLookup? districtLookup;
-  final ContactUrlLauncher? urlLauncher;
   final CongressionalDeliveryGateway deliveryGateway;
 
   @override
@@ -519,7 +517,6 @@ class _ContactCongressStartScreenState
           stateName: stateName,
           recipients: _recipients,
           initialAddress: _match!.matchedAddress,
-          urlLauncher: widget.urlLauncher,
           deliveryGateway: widget.deliveryGateway,
         ),
       ),

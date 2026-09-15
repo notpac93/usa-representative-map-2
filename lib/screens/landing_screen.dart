@@ -451,7 +451,7 @@ class _LandingScreenState extends State<LandingScreen> {
         ),
         const SizedBox(height: 7),
         const Text(
-          'Write once, then send through each official congressional website.',
+          'Write once, then submit the same message to your congressional offices.',
           textAlign: TextAlign.center,
           style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
         ),

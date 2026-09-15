@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../data/models.dart';
 import '../services/congressional_delivery_service.dart';
@@ -32,21 +31,19 @@ class ContactCongressRecipient {
   }
 }
 
-typedef ContactUrlLauncher = Future<bool> Function(Uri uri);
 typedef ContactDistrictLookup =
     Future<CongressionalDistrictLookupResult> Function(
       CongressionalDistrictAddress address,
     );
 
-/// An assisted handoff to official congressional contact forms.
+/// A one-message congressional submission flow.
 ///
-/// This screen intentionally does not claim to send a message. It helps a
-/// constituent prepare it once, then opens each recipient's official website.
+/// The UI submits only through [CongressionalDeliveryGateway]. The default
+/// placeholder exercises the complete flow without transmitting anything.
 class ContactCongressScreen extends StatefulWidget {
   final String stateName;
   final List<ContactCongressRecipient> recipients;
   final String? initialAddress;
-  final ContactUrlLauncher? urlLauncher;
   final List<Representative> houseCandidates;
   final ContactDistrictLookup? districtLookup;
   final CongressionalDeliveryGateway deliveryGateway;
@@ -56,7 +53,6 @@ class ContactCongressScreen extends StatefulWidget {
     required this.stateName,
     required this.recipients,
     this.initialAddress,
-    this.urlLauncher,
     this.houseCandidates = const [],
     this.districtLookup,
     this.deliveryGateway = const PlaceholderCongressionalDeliveryGateway(),
@@ -183,7 +179,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
           ),
           const SizedBox(height: 6),
           const Text(
-            'We’ll keep your message ready while you visit each official congressional website.',
+            'Write one message and choose which of your congressional offices should receive it.',
             style: TextStyle(color: Color(0xFF475569), height: 1.4),
           ),
           const SizedBox(height: 18),
@@ -392,21 +388,24 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
   }
 
   Widget _buildReviewStep() {
+    final isPreview = !_deliveryService.canAttemptDirectDelivery;
     return ListView(
       key: const Key('contact-review-step'),
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
       children: [
         Text(
-          'Ready for the official sites',
+          'Review and submit',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             color: _navy,
             fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'This app has not sent your message. Copy it, open each official website, fill in the form, and press that site’s submit button.',
-          style: TextStyle(color: Color(0xFF475569), height: 1.4),
+        Text(
+          isPreview
+              ? 'Confirm the message and offices below. The one-submit workflow is ready, but congressional API credentials are placeholders, so this preview will not transmit anything.'
+              : 'Confirm the message and offices below. One submission sends the same message to every selected office.',
+          style: const TextStyle(color: Color(0xFF475569), height: 1.4),
         ),
         const SizedBox(height: 18),
         if (_districtNotice != null) ...[
@@ -437,43 +436,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
               _copy(_messageController.text.trim(), 'Message copied'),
         ),
         const SizedBox(height: 18),
-        _buildDirectDeliveryCard(),
-        const SizedBox(height: 18),
-        const Text(
-          'Submit to each office',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-            color: _navy,
-          ),
-        ),
-        const SizedBox(height: 6),
-        const Text(
-          'You will leave the app. Your message remains copied for easy pasting.',
-          style: TextStyle(color: Color(0xFF64748B)),
-        ),
-        const SizedBox(height: 12),
-        for (final recipient in _selectedRecipients) ...[
-          Card(
-            margin: const EdgeInsets.only(bottom: 10),
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: Color(0xFFE2E8F0)),
-            ),
-            child: ListTile(
-              key: Key('contact-office-${recipient.name}'),
-              minVerticalPadding: 12,
-              title: Text(
-                recipient.name,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              subtitle: Text('${recipient.role} • Official website'),
-              trailing: const Icon(Icons.open_in_new, color: _blue),
-              onTap: () => _openOfficialSite(recipient),
-            ),
-          ),
-        ],
+        _buildSubmissionCard(),
         const SizedBox(height: 6),
         OutlinedButton.icon(
           onPressed: () => setState(() => _step = 0),
@@ -623,32 +586,8 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
   String _recipientKey(ContactCongressRecipient recipient) =>
       recipient.bioguideId ?? '${recipient.chamber.name}:${recipient.name}';
 
-  Widget _buildDirectDeliveryCard() {
-    if (!_deliveryService.canAttemptDirectDelivery) {
-      return Container(
-        key: const Key('direct-delivery-unavailable'),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFCBD5E1)),
-        ),
-        child: const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.info_outline, color: Color(0xFF475569)),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Direct delivery through the app is not available yet. Nothing has been sent. Use each official website below.',
-                style: TextStyle(color: Color(0xFF334155), height: 1.4),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
+  Widget _buildSubmissionCard() {
+    final isPreview = !_deliveryService.canAttemptDirectDelivery;
     return Card(
       key: const Key('direct-delivery-card'),
       elevation: 0,
@@ -662,15 +601,49 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Send through the app',
-              style: TextStyle(fontWeight: FontWeight.w800, color: _navy),
+            Text(
+              _deliveryResult == null
+                  ? 'Submit once to every office'
+                  : isPreview
+                  ? 'Submission preview complete'
+                  : 'Submission results',
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                color: _navy,
+                fontSize: 17,
+              ),
             ),
             const SizedBox(height: 5),
-            const Text(
-              'We will report each office separately. “Accepted” means accepted by the chamber for routing, not read by staff.',
-              style: TextStyle(color: Color(0xFF475569), height: 1.35),
+            Text(
+              isPreview
+                  ? 'Preview mode: House CWC and Senate SCWC are not connected. Nothing will be sent to Congress.'
+                  : 'We will report each office separately. “Accepted” means accepted by the chamber for routing, not read by staff.',
+              key: isPreview ? const Key('direct-delivery-placeholder') : null,
+              style: const TextStyle(color: Color(0xFF475569), height: 1.35),
             ),
+            if (_deliveryResult == null) ...[
+              const SizedBox(height: 14),
+              for (final recipient in _selectedRecipients)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        size: 19,
+                        color: Color(0xFF047857),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '${recipient.name} • ${recipient.chamber == CongressionalChamber.house ? 'House CWC' : 'Senate SCWC'}',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
             const SizedBox(height: 12),
             if (_deliveryResult == null)
               FilledButton(
@@ -682,7 +655,9 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(
-                        'Send to ${_selectedRecipients.length} ${_selectedRecipients.length == 1 ? 'office' : 'offices'}',
+                        isPreview
+                            ? 'Preview submission'
+                            : 'Submit message to ${_selectedRecipients.length} ${_selectedRecipients.length == 1 ? 'office' : 'offices'}',
                       ),
               )
             else ...[
@@ -740,7 +715,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
                 recipient: recipient,
                 status: CongressionalDeliveryStatus.failed,
                 message:
-                    'Delivery could not be confirmed. Use the official website.',
+                    'Delivery could not be confirmed. Nothing will be reported as accepted.',
               ),
           ],
         );
@@ -771,31 +746,6 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
     ).showSnackBar(SnackBar(content: Text(confirmation)));
   }
 
-  Future<void> _openOfficialSite(ContactCongressRecipient recipient) async {
-    await Clipboard.setData(
-      ClipboardData(text: _messageController.text.trim()),
-    );
-    final uri = Uri.tryParse(recipient.officialUrl);
-    if (!recipient.hasVerifiedOfficialUrl || uri == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This official website link could not be verified.'),
-        ),
-      );
-      return;
-    }
-
-    final opened = widget.urlLauncher != null
-        ? await widget.urlLauncher!(uri)
-        : await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the official website.')),
-      );
-    }
-  }
-
   String? _required(String? value) =>
       (value ?? '').trim().isEmpty ? 'This field is required' : null;
 
@@ -821,7 +771,7 @@ class _ProgressHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['Write', 'Your details', 'Official sites'];
+    const labels = ['Write', 'Your details', 'Review & submit'];
     final overallStep = currentStep + 2;
     return Semantics(
       label: 'Step $overallStep of 4: ${labels[currentStep]}',
@@ -932,8 +882,8 @@ class _DeliveryResultRow extends StatelessWidget {
     final label = switch (result.status) {
       CongressionalDeliveryStatus.acceptedForRouting => 'Accepted for routing',
       CongressionalDeliveryStatus.delivered => 'Delivered',
-      CongressionalDeliveryStatus.needsUserAction => 'Action needed',
-      CongressionalDeliveryStatus.unavailable => 'Unavailable',
+      CongressionalDeliveryStatus.needsUserAction => 'Needs attention',
+      CongressionalDeliveryStatus.unavailable => 'Not sent',
       CongressionalDeliveryStatus.rejected => 'Not accepted',
       CongressionalDeliveryStatus.failed => 'Could not confirm',
     };

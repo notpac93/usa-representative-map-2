@@ -41,9 +41,11 @@ offered later as clearly separate official-directory links.
 6. **Reply details:** reuse the matched address; collect name, email, and explicit
    residency/message authorization.
 7. **Review:** show the exact recipients, full message, and contact details.
-8. **Deliver or hand off:** keep direct send disabled while credentials are absent;
-   provide honest per-office official-site actions and preserve the message for
-   copying.
+8. **Submit once:** send one idempotent request containing the message and all
+   selected offices through the delivery gateway. While credentials are absent,
+   the placeholder performs no network request and returns a truthful per-office
+   `Not sent` result. Once approved, the backend routes House recipients to CWC
+   and Senate recipients to SCWC without changing the user flow.
 
 ## Production completion plan
 
@@ -90,8 +92,8 @@ offered later as clearly separate official-directory links.
   request/result contract.
 - Map acknowledgements conservatively. `Accepted for routing` must never become
   `Delivered` or `Read` without an authoritative chamber status.
-- Preserve official-form handoff for an unapproved chamber, suspended office,
-  outage, or permanent rejection.
+- Keep the draft recoverable for an unapproved chamber, suspended office, outage,
+  or permanent rejection; never silently report partial success.
 
 ### 5. Optional other-office experience
 
@@ -109,7 +111,8 @@ offered later as clearly separate official-directory links.
 - Territory and vacancy behavior is explicit and source-correct.
 - Address change invalidates the prior recipient match.
 - No-match and ambiguity cannot reach direct delivery.
-- Final review names every selected office and shows the exact message.
+- Final review names every selected office, shows the exact message, and offers
+  one submission action rather than an office-by-office website workflow.
 - Duplicate delivery is impossible under retry/double-tap fault tests.
 - Keyboard, screen reader, dynamic type, mobile web, and low-bandwidth paths pass.
 
@@ -118,8 +121,9 @@ offered later as clearly separate official-directory links.
 On 2026-09-15, the four-step Flutter web flow was exercised in the browser using
 the public California State Capitol address. ZIP `95814` filled Sacramento and
 California locally; the Census lookup returned CA-7; the roster produced Alex
-Padilla, Adam B. Schiff, and Doris Matsui; and the flow reached the explicitly
-non-sending official-site handoff. No congressional form was opened or submitted.
+Padilla, Adam B. Schiff, and Doris Matsui. The UI has since replaced the former
+official-site handoff with one gateway-backed submission action whose placeholder
+mode transmits nothing.
 
 ## Official sources
 
