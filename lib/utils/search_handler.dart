@@ -3,7 +3,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../data/data_provider.dart';
 
-enum SearchResultType { state, county, city, zipCode, president, supremeCourt, congress, address }
+enum SearchResultType {
+  state,
+  county,
+  city,
+  zipCode,
+  president,
+  supremeCourt,
+  congress,
+  address,
+}
 
 class SearchResult {
   final SearchResultType type;
@@ -85,23 +94,63 @@ class SearchHandler {
   bool _isLoaded = false;
 
   static const Map<String, String> stateCodeToName = {
-    'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas',
-    'CA': 'California', 'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware',
-    'DC': 'District of Columbia', 'FL': 'Florida', 'GA': 'Georgia', 'HI': 'Hawaii',
-    'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
-    'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine',
-    'MD': 'Maryland', 'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota',
-    'MS': 'Mississippi', 'MO': 'Missouri', 'MT': 'Montana', 'NE': 'Nebraska',
-    'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey', 'NM': 'New Mexico',
-    'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
-    'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island',
-    'SC': 'South Carolina', 'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas',
-    'UT': 'Utah', 'VT': 'Vermont', 'VA': 'Virginia', 'WA': 'Washington',
-    'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming', 'PR': 'Puerto Rico',
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DE': 'Delaware',
+    'DC': 'District of Columbia',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming',
+    'PR': 'Puerto Rico',
   };
 
   static final Map<String, String> stateNameToCode = {
-    for (var entry in stateCodeToName.entries) entry.value.toLowerCase(): entry.key,
+    for (var entry in stateCodeToName.entries)
+      entry.value.toLowerCase(): entry.key,
   };
 
   Future<void> loadData() async {
@@ -125,6 +174,14 @@ class SearchHandler {
     }
   }
 
+  /// Returns the app's local ZIP metadata without sending an address anywhere.
+  Future<ZipCodeRecord?> findZip(String zip) async {
+    if (!_isLoaded) await loadData();
+    final value = zip.trim();
+    if (value.length < 5) return null;
+    return _zipMap[value.substring(0, 5)];
+  }
+
   Future<List<SearchResult>> search(
     String query,
     MapDataProvider provider,
@@ -140,7 +197,8 @@ class SearchHandler {
     List<SearchResult> results = [];
 
     // 0. Search Federal Branches (Executive, Legislative, Judicial)
-    final isPresMatch = 'the president'.contains(lowerQuery) ||
+    final isPresMatch =
+        'the president'.contains(lowerQuery) ||
         'president'.startsWith(lowerQuery) ||
         'executive orders'.contains(lowerQuery) ||
         'executive order'.contains(lowerQuery) ||
@@ -161,7 +219,8 @@ class SearchHandler {
       );
     }
 
-    final isCongressMatch = 'congress'.contains(lowerQuery) ||
+    final isCongressMatch =
+        'congress'.contains(lowerQuery) ||
         'the congress'.contains(lowerQuery) ||
         'senate'.startsWith(lowerQuery) ||
         'senator'.startsWith(lowerQuery) ||
@@ -183,7 +242,8 @@ class SearchHandler {
       );
     }
 
-    final isScotusMatch = 'supreme court'.contains(lowerQuery) ||
+    final isScotusMatch =
+        'supreme court'.contains(lowerQuery) ||
         'scotus'.startsWith(lowerQuery) ||
         'judicial'.startsWith(lowerQuery) ||
         'judicial branch'.contains(lowerQuery) ||
@@ -204,7 +264,8 @@ class SearchHandler {
       );
     }
 
-    final isElectionMatch = 'upcoming elections'.contains(lowerQuery) ||
+    final isElectionMatch =
+        'upcoming elections'.contains(lowerQuery) ||
         'election'.startsWith(lowerQuery) ||
         'elections'.startsWith(lowerQuery) ||
         'ballot'.startsWith(lowerQuery) ||
@@ -218,7 +279,8 @@ class SearchHandler {
         SearchResult(
           type: SearchResultType.zipCode,
           title: 'Upcoming 2026 Elections & Ballot Hub',
-          subtitle: 'Electoral Candidates, Ballot Propositions, Key Deadlines & Officials',
+          subtitle:
+              'Electoral Candidates, Ballot Propositions, Key Deadlines & Officials',
           stateId: 'US',
         ),
       );
@@ -243,7 +305,8 @@ class SearchHandler {
             SearchResult(
               type: SearchResultType.address,
               title: '$streetPart, ${record.city}, ${record.state} $zip',
-              subtitle: 'Your Representatives at this address • ${record.city}, ${record.state} (${record.county} County)',
+              subtitle:
+                  'Your Representatives at this address • ${record.city}, ${record.state} (${record.county} County)',
               streetAddress: streetPart,
               cityName: record.city,
               stateId: record.state,
@@ -258,7 +321,8 @@ class SearchHandler {
             SearchResult(
               type: SearchResultType.zipCode,
               title: '$zip — ${record.city}, ${record.state}',
-              subtitle: 'Your Representatives in ${record.city}, ${record.state} (${record.county} County)',
+              subtitle:
+                  'Your Representatives in ${record.city}, ${record.state} (${record.county} County)',
               cityName: record.city,
               stateId: record.state,
               countyName: record.county,
@@ -273,7 +337,11 @@ class SearchHandler {
     // 2. DIGIT PREFIX MATCH (User typing zip code, e.g., '902', '750', etc.)
     if (RegExp(r'^\d+$').hasMatch(rawQuery)) {
       final matchingZips = _zipCodes
-          .where((z) => z.zipCode.startsWith(rawQuery) && (zipMatch == null || z.zipCode != zipMatch.group(1)))
+          .where(
+            (z) =>
+                z.zipCode.startsWith(rawQuery) &&
+                (zipMatch == null || z.zipCode != zipMatch.group(1)),
+          )
           .take(8);
 
       for (var z in matchingZips) {
@@ -281,7 +349,8 @@ class SearchHandler {
           SearchResult(
             type: SearchResultType.zipCode,
             title: '${z.zipCode} — ${z.city}, ${z.state}',
-            subtitle: 'Your Representatives in ${z.city}, ${z.state} (${z.county} County)',
+            subtitle:
+                'Your Representatives in ${z.city}, ${z.state} (${z.county} County)',
             stateId: z.state,
             cityName: z.city,
             countyName: z.county,
@@ -295,7 +364,11 @@ class SearchHandler {
 
     // 3. STREET ADDRESS WITH CITY & STATE (e.g. '123 Main St, Austin, TX' or '1600 Pennsylvania Ave, Washington, DC')
     if (rawQuery.contains(',')) {
-      final parts = rawQuery.split(',').map((p) => p.trim()).where((p) => p.isNotEmpty).toList();
+      final parts = rawQuery
+          .split(',')
+          .map((p) => p.trim())
+          .where((p) => p.isNotEmpty)
+          .toList();
       if (parts.length >= 2) {
         final lastPart = parts.last.toUpperCase();
         final firstPart = parts.first;
@@ -313,19 +386,25 @@ class SearchHandler {
           if (parts.length >= 3) {
             final street = firstPart;
             final city = parts[1];
-            final key = '${city.toLowerCase()}_${targetStateCode.toLowerCase()}';
+            final key =
+                '${city.toLowerCase()}_${targetStateCode.toLowerCase()}';
             final matchedZips = _cityStateMap[key];
             final county = (matchedZips != null && matchedZips.isNotEmpty)
                 ? matchedZips.first.county
                 : '';
-            final lat = (matchedZips != null && matchedZips.isNotEmpty) ? matchedZips.first.latitude : null;
-            final lon = (matchedZips != null && matchedZips.isNotEmpty) ? matchedZips.first.longitude : null;
+            final lat = (matchedZips != null && matchedZips.isNotEmpty)
+                ? matchedZips.first.latitude
+                : null;
+            final lon = (matchedZips != null && matchedZips.isNotEmpty)
+                ? matchedZips.first.longitude
+                : null;
 
             results.add(
               SearchResult(
                 type: SearchResultType.address,
                 title: '$street, $city, $targetStateCode',
-                subtitle: 'Your Representatives at this address in $city, $targetStateCode ${county.isNotEmpty ? '($county County)' : ''}',
+                subtitle:
+                    'Your Representatives at this address in $city, $targetStateCode ${county.isNotEmpty ? '($county County)' : ''}',
                 streetAddress: street,
                 cityName: city,
                 stateId: targetStateCode,
@@ -337,7 +416,8 @@ class SearchHandler {
           } else if (parts.length == 2) {
             // Could be [City, State] or [Street, State]
             final cityCandidate = firstPart;
-            final key = '${cityCandidate.toLowerCase()}_${targetStateCode.toLowerCase()}';
+            final key =
+                '${cityCandidate.toLowerCase()}_${targetStateCode.toLowerCase()}';
             final matchedZips = _cityStateMap[key];
 
             if (matchedZips != null && matchedZips.isNotEmpty) {
@@ -346,7 +426,8 @@ class SearchHandler {
                 SearchResult(
                   type: SearchResultType.city,
                   title: '${firstMatch.city}, $targetStateCode',
-                  subtitle: 'Your Representatives in ${firstMatch.city}, $targetStateCode (${firstMatch.county} County)',
+                  subtitle:
+                      'Your Representatives in ${firstMatch.city}, $targetStateCode (${firstMatch.county} County)',
                   cityName: firstMatch.city,
                   stateId: targetStateCode,
                   countyName: firstMatch.county,
@@ -372,12 +453,14 @@ class SearchHandler {
     }
 
     // 4. STREET ADDRESS STARTER (e.g. '123 Main St' or '742 Evergreen')
-    if (RegExp(r'^\d+\s+[a-zA-Z]').hasMatch(rawQuery) && !rawQuery.contains(',')) {
+    if (RegExp(r'^\d+\s+[a-zA-Z]').hasMatch(rawQuery) &&
+        !rawQuery.contains(',')) {
       results.add(
         SearchResult(
           type: SearchResultType.address,
           title: rawQuery,
-          subtitle: 'Add your city, state, or ZIP (e.g., "$rawQuery, Springfield, IL") to find your exact representatives',
+          subtitle:
+              'Add your city, state, or ZIP (e.g., "$rawQuery, Springfield, IL") to find your exact representatives',
           streetAddress: rawQuery,
         ),
       );
@@ -385,17 +468,20 @@ class SearchHandler {
 
     // 5. SEARCH STATES (e.g. 'California', 'CA', 'Texas', 'TX')
     if (provider.atlas != null) {
-      final stateMatches = provider.atlas!.states.where((s) {
-        return s.name.toLowerCase().startsWith(lowerQuery) ||
-            s.id.toLowerCase() == lowerQuery;
-      }).take(4);
+      final stateMatches = provider.atlas!.states
+          .where((s) {
+            return s.name.toLowerCase().startsWith(lowerQuery) ||
+                s.id.toLowerCase() == lowerQuery;
+          })
+          .take(4);
 
       for (var s in stateMatches) {
         results.add(
           SearchResult(
             type: SearchResultType.state,
             title: '${s.name} (${s.id})',
-            subtitle: 'Your Statewide Representatives (Governor & 2 U.S. Senators)',
+            subtitle:
+                'Your Statewide Representatives (Governor & 2 U.S. Senators)',
             stateId: s.id,
           ),
         );
@@ -418,7 +504,8 @@ class SearchHandler {
           SearchResult(
             type: SearchResultType.city,
             title: '${z.city}, ${z.state}',
-            subtitle: 'Your Representatives in ${z.city}, ${z.state} (${z.county} County)',
+            subtitle:
+                'Your Representatives in ${z.city}, ${z.state} (${z.county} County)',
             stateId: z.state,
             cityName: z.city,
             countyName: z.county,
@@ -432,7 +519,8 @@ class SearchHandler {
           SearchResult(
             type: SearchResultType.city,
             title: '${z.city}, ${z.state}',
-            subtitle: 'Your Representatives in ${z.city}, ${z.state} (${z.county} County)',
+            subtitle:
+                'Your Representatives in ${z.city}, ${z.state} (${z.county} County)',
             stateId: z.state,
             cityName: z.city,
             countyName: z.county,
@@ -444,17 +532,20 @@ class SearchHandler {
     }
 
     results.addAll(exactMatches.take(6));
-    final remaining = 8 - results.where((r) => r.type == SearchResultType.city).length;
+    final remaining =
+        8 - results.where((r) => r.type == SearchResultType.city).length;
     if (remaining > 0) {
       results.addAll(prefixMatches.take(remaining));
     }
 
     // 7. SEARCH COUNTIES
     if (provider.counties != null) {
-      final matchingCounties = provider.counties!.where((c) {
-        return c.name.toLowerCase().startsWith(lowerQuery) ||
-            c.name.toLowerCase().contains(lowerQuery);
-      }).take(6);
+      final matchingCounties = provider.counties!
+          .where((c) {
+            return c.name.toLowerCase().startsWith(lowerQuery) ||
+                c.name.toLowerCase().contains(lowerQuery);
+          })
+          .take(6);
 
       for (var county in matchingCounties) {
         results.add(

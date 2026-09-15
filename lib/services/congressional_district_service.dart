@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../utils/fips_mapping.dart';
+import 'congressional_district_transport_io.dart'
+    if (dart.library.html) 'congressional_district_transport_web.dart'
+    as census_transport;
 
 enum CongressionalDistrictLookupStatus { matched, noMatch, ambiguous }
 
@@ -100,7 +103,7 @@ class CongressionalDistrictService {
       },
     );
 
-    final response = await _client.get(uri);
+    final response = await census_transport.fetchCensusResponse(uri, _client);
     if (response.statusCode != 200) {
       throw CongressionalDistrictServiceException(
         'Census Geocoder returned HTTP ${response.statusCode}.',

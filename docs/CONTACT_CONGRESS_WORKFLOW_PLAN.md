@@ -24,10 +24,14 @@ offered later as clearly separate official-directory links.
 
 ## Shipped workflow skeleton
 
-1. **Find district:** collect structured street, city, state/territory, and ZIP.
+1. **Find district:** collect street and ZIP first, fill city/state from the
+   bundled ZIP dataset when recognized, preserve browser saved-address autofill,
+   and let the user correct every field.
 2. **Match safely:** use the official Census current benchmark/vintage through the
-   district-resolver boundary. Require one address, one state, and one current
-   district; ambiguous and missing matches stop without guessing.
+   district-resolver boundary. Native clients use JSON and the browser prototype
+   uses Census's documented callback/JSONP response mode. Require one address,
+   one state, and one current district; ambiguous and missing matches stop without
+   guessing.
 3. **Crosswalk roster:** join state + district number to one current House roster
    record and join state to its senators.
 4. **Confirm delegation:** show the matched district and every recipient before
@@ -46,7 +50,9 @@ offered later as clearly separate official-directory links.
 ### 1. Authoritative recipient accuracy
 
 - Put the Census request behind a same-origin backend endpoint for Flutter web so
-  addresses do not rely on browser CORS behavior.
+  privacy controls, request limits, and operational telemetry are consistent. The
+  current prototype uses Census's documented JSONP mode because its JSON response
+  does not permit browser CORS.
 - Return only normalized match, state, current district, and match status.
 - Refresh the House/Senate roster on a monitored schedule using authoritative
   Bioguide/Clerk/Senate sources; record source time and congressional session.
@@ -107,6 +113,14 @@ offered later as clearly separate official-directory links.
 - Duplicate delivery is impossible under retry/double-tap fault tests.
 - Keyboard, screen reader, dynamic type, mobile web, and low-bandwidth paths pass.
 
+## Verification snapshot
+
+On 2026-09-15, the four-step Flutter web flow was exercised in the browser using
+the public California State Capitol address. ZIP `95814` filled Sacramento and
+California locally; the Census lookup returned CA-7; the roster produced Alex
+Padilla, Adam B. Schiff, and Doris Matsui; and the flow reached the explicitly
+non-sending official-site handoff. No congressional form was opened or submitted.
+
 ## Official sources
 
 - [House Find Your Representative](https://www.house.gov/representatives/find-your-representative)
@@ -115,4 +129,3 @@ offered later as clearly separate official-directory links.
 - [Senate SCWC overview](https://www.senate.gov/senators/scwc.htm)
 - [Senate SCWC Terms](https://soapbox.senate.gov/registration/terms-of-service/)
 - [House Clerk Member FAQ](https://clerk.house.gov/Help/ViewMemberFAQs)
-

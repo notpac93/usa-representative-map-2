@@ -5,6 +5,7 @@ import '../data/data_provider.dart';
 import '../data/models.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
+import '../utils/search_handler.dart';
 import 'contact_congress_screen.dart';
 
 /// Address-first entry point for contacting a constituent's federal delegation.
@@ -53,13 +54,22 @@ class _ContactCongressStartScreenState
   final _zipController = TextEditingController();
 
   String? _stateCode;
+  String? _localityNotice;
+  String? _lastZipLookup;
   bool _lookingUp = false;
   String? _error;
   CongressionalDistrictMatch? _match;
   List<ContactCongressRecipient> _recipients = const [];
 
   @override
+  void initState() {
+    super.initState();
+    _zipController.addListener(_autofillLocalityFromZip);
+  }
+
+  @override
   void dispose() {
+    _zipController.removeListener(_autofillLocalityFromZip);
     _streetController.dispose();
     _cityController.dispose();
     _zipController.dispose();
@@ -133,135 +143,168 @@ class _ContactCongressStartScreenState
   }
 
   Widget _buildAddressForm(List<StateRecord> states) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextFormField(
-            key: const Key('district-street-field'),
-            controller: _streetController,
-            textCapitalization: TextCapitalization.words,
-            autofillHints: const [AutofillHints.streetAddressLine1],
-            decoration: _fieldDecoration(
-              'Street address',
-              hint: '123 Main Street',
+    return AutofillGroup(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextFormField(
+              key: const Key('district-street-field'),
+              controller: _streetController,
+              textCapitalization: TextCapitalization.words,
+              autofillHints: const [AutofillHints.streetAddressLine1],
+              decoration: _fieldDecoration(
+                'Street address',
+                hint: '123 Main Street',
+              ),
+              validator: (value) =>
+                  _required(value, 'Enter your street address'),
             ),
-            validator: (value) => _required(value, 'Enter your street address'),
-          ),
-          const SizedBox(height: 14),
-          TextFormField(
-            key: const Key('district-city-field'),
-            controller: _cityController,
-            textCapitalization: TextCapitalization.words,
-            autofillHints: const [AutofillHints.addressCity],
-            decoration: _fieldDecoration('City'),
-            validator: (value) => _required(value, 'Enter your city'),
-          ),
-          const SizedBox(height: 14),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final stateField = DropdownButtonFormField<String>(
-                key: const Key('district-state-field'),
-                initialValue: _stateCode,
-                isExpanded: true,
-                decoration: _fieldDecoration('State or territory'),
-                items: states
-                    .map(
-                      (state) => DropdownMenuItem(
-                        value: state.id,
-                        child: Text(state.name),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged: (value) => setState(() => _stateCode = value),
-                validator: (value) =>
-                    value == null ? 'Choose your state' : null,
-              );
-              final zipField = TextFormField(
-                key: const Key('district-zip-field'),
-                controller: _zipController,
-                keyboardType: TextInputType.number,
-                autofillHints: const [AutofillHints.postalCode],
-                decoration: _fieldDecoration('ZIP code'),
-                validator: (value) {
-                  if (!RegExp(
-                    r'^\d{5}(?:-\d{4})?$',
-                  ).hasMatch((value ?? '').trim())) {
-                    return 'Enter a 5-digit ZIP';
-                  }
-                  return null;
-                },
-              );
-              if (constraints.maxWidth < 560) {
-                return Column(
-                  children: [stateField, const SizedBox(height: 14), zipField],
-                );
-              }
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 3, child: stateField),
-                  const SizedBox(width: 14),
-                  Expanded(flex: 2, child: zipField),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 14),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFBFDBFE)),
+            const SizedBox(height: 7),
+            const Text(
+              'Enter your street and ZIP first. We’ll fill the city and state when the ZIP is recognized.',
+              style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
             ),
-            child: const Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.lock_outline, color: _blue, size: 21),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Why we ask: District lines can split a city or ZIP code. We use your address only to find the correct offices and prepare the information those offices require. We do not sell it.',
-                    style: TextStyle(color: Color(0xFF1E3A8A), height: 1.4),
+            const SizedBox(height: 14),
+            TextFormField(
+              key: const Key('district-zip-field'),
+              controller: _zipController,
+              keyboardType: TextInputType.number,
+              autofillHints: const [AutofillHints.postalCode],
+              decoration: _fieldDecoration('ZIP code'),
+              validator: (value) {
+                if (!RegExp(
+                  r'^\d{5}(?:-\d{4})?$',
+                ).hasMatch((value ?? '').trim())) {
+                  return 'Enter a 5-digit ZIP';
+                }
+                return null;
+              },
+            ),
+            if (_localityNotice != null) ...[
+              const SizedBox(height: 8),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  _localityNotice!,
+                  key: const Key('zip-autofill-notice'),
+                  style: const TextStyle(
+                    color: Color(0xFF047857),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
                   ),
                 ),
-              ],
+              ),
+            ],
+            const SizedBox(height: 14),
+            TextFormField(
+              key: const Key('district-city-field'),
+              controller: _cityController,
+              textCapitalization: TextCapitalization.words,
+              autofillHints: const [AutofillHints.addressCity],
+              decoration: _fieldDecoration('City'),
+              validator: (value) => _required(value, 'Enter your city'),
             ),
-          ),
-          if (_error != null) ...[
-            const SizedBox(height: 12),
-            Semantics(
-              liveRegion: true,
-              child: Text(
-                _error!,
-                key: const Key('district-lookup-error'),
-                style: const TextStyle(color: Color(0xFFB91C1C), height: 1.35),
+            const SizedBox(height: 14),
+            DropdownButtonFormField<String>(
+              key: const Key('district-state-field'),
+              initialValue: _stateCode,
+              isExpanded: true,
+              decoration: _fieldDecoration('State or territory'),
+              items: states
+                  .map(
+                    (state) => DropdownMenuItem(
+                      value: state.id,
+                      child: Text(state.name),
+                    ),
+                  )
+                  .toList(growable: false),
+              onChanged: (value) => setState(() {
+                _stateCode = value;
+                _localityNotice = null;
+              }),
+              validator: (value) => value == null ? 'Choose your state' : null,
+            ),
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF6FF),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFBFDBFE)),
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.lock_outline, color: _blue, size: 21),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Why we ask: District lines can split a city or ZIP code. We use your address only to find the correct offices and prepare the information those offices require. We do not sell it.',
+                      style: TextStyle(color: Color(0xFF1E3A8A), height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (_error != null) ...[
+              const SizedBox(height: 12),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  _error!,
+                  key: const Key('district-lookup-error'),
+                  style: const TextStyle(
+                    color: Color(0xFFB91C1C),
+                    height: 1.35,
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 18),
+            FilledButton.icon(
+              key: const Key('find-delegation-button'),
+              onPressed: _lookingUp ? null : _findDelegation,
+              icon: _lookingUp
+                  ? const SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.location_searching),
+              label: Text(
+                _lookingUp ? 'Matching your district…' : 'Find my members',
+              ),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(52),
+                backgroundColor: _blue,
               ),
             ),
           ],
-          const SizedBox(height: 18),
-          FilledButton.icon(
-            key: const Key('find-delegation-button'),
-            onPressed: _lookingUp ? null : _findDelegation,
-            icon: _lookingUp
-                ? const SizedBox.square(
-                    dimension: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.location_searching),
-            label: Text(
-              _lookingUp ? 'Matching your district…' : 'Find my members',
-            ),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(52),
-              backgroundColor: _blue,
-            ),
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  Future<void> _autofillLocalityFromZip() async {
+    final zip = _zipController.text.trim();
+    final zip5 = RegExp(r'^\d{5}').firstMatch(zip)?.group(0);
+    if (zip5 == null || zip5 == _lastZipLookup) return;
+    _lastZipLookup = zip5;
+    final record = await SearchHandler().findZip(zip5);
+    if (!mounted || record == null || !_zipController.text.startsWith(zip5)) {
+      return;
+    }
+    final filledCity = _cityController.text.trim().isEmpty;
+    final filledState = _stateCode == null;
+    if (filledCity) _cityController.text = record.city;
+    setState(() {
+      if (filledState) _stateCode = record.state;
+      if (filledCity || filledState) {
+        _localityNotice =
+            '${record.city}, ${record.state} filled from ZIP $zip5.';
+      }
+    });
   }
 
   Widget _buildDelegationResult(List<StateRecord> states) {

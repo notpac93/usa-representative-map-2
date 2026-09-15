@@ -65,6 +65,35 @@ void main() {
     expect(find.text('Choose your state'), findsOneWidget);
   });
 
+  testWidgets('fills city and state from a recognized ZIP code', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      states: states,
+      senators: senators,
+      representatives: representatives,
+      lookup: (_) async => const CongressionalDistrictLookupResult.noMatch(),
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('district-zip-field')),
+      '36602',
+    );
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
+    await tester.pumpAndSettle();
+
+    final cityField = tester.widget<TextFormField>(
+      find.byKey(const Key('district-city-field')),
+    );
+    expect(cityField.controller?.text, 'Mobile');
+    expect(find.text('Alabama'), findsOneWidget);
+    expect(find.text('Mobile, AL filled from ZIP 36602.'), findsOneWidget);
+    expect(find.byKey(const Key('zip-autofill-notice')), findsOneWidget);
+  });
+
   testWidgets(
     'matches one district and shows two senators plus one House member',
     (tester) async {
