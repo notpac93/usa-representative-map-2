@@ -9,30 +9,79 @@ import 'package:usa_map_app/widgets/judicial_section_card.dart';
 
 void main() {
   group('LandingScreen 3-Branch Federal Dashboard Tests', () {
-    testWidgets('Mobile view (< 950px) renders clean centered search without side sections',
-        (tester) async {
-      tester.view.physicalSize = const Size(500, 900);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'Mobile view (< 950px) renders clean centered search without side sections',
+      (tester) async {
+        tester.view.physicalSize = const Size(500, 900);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => MapDataProvider(),
+            child: const MaterialApp(home: LandingScreen()),
           ),
-        ),
-      );
-      await tester.pump();
+        );
+        await tester.pump();
 
-      expect(find.text('Find Your Representatives'), findsOneWidget);
-      expect(find.byType(CongressScrollSection), findsNothing);
-      expect(find.byType(ExecutiveSectionCard), findsNothing);
-      expect(find.byType(JudicialSectionCard), findsNothing);
-    });
+        expect(find.text('Find Your Representatives'), findsOneWidget);
+        expect(
+          find.byKey(const Key('landing-contact-congress-button')),
+          findsOneWidget,
+        );
+        expect(find.byType(CongressScrollSection), findsNothing);
+        expect(find.byType(ExecutiveSectionCard), findsNothing);
+        expect(find.byType(JudicialSectionCard), findsNothing);
+      },
+    );
 
-    testWidgets('Desktop / iPad view (>= 950px) renders firm Congress, Executive, and Judicial sections',
-        (tester) async {
+    testWidgets(
+      'Desktop / iPad view (>= 950px) renders firm Congress, Executive, and Judicial sections',
+      (tester) async {
+        tester.view.physicalSize = const Size(1200, 800);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => MapDataProvider(),
+            child: const MaterialApp(home: LandingScreen()),
+          ),
+        );
+        await tester.pump();
+
+        // Core search exists
+        expect(find.text('Find Your Representatives'), findsOneWidget);
+        expect(
+          find.byKey(const Key('landing-contact-congress-button')),
+          findsOneWidget,
+        );
+
+        // Firm sections exist
+        expect(find.byType(CongressScrollSection), findsOneWidget);
+        expect(find.byType(ExecutiveSectionCard), findsOneWidget);
+        expect(find.byType(JudicialSectionCard), findsOneWidget);
+
+        // Executive content
+        expect(find.text('Executive Branch'), findsWidgets);
+        expect(find.text('Donald J. Trump'), findsOneWidget);
+        expect(find.text('JD Vance'), findsOneWidget);
+
+        // Judicial content
+        expect(find.text('Judicial Branch'), findsWidgets);
+        expect(find.text('Roberts'), findsOneWidget);
+        expect(find.text('Thomas'), findsOneWidget);
+
+        // Congress content
+        expect(find.text('Congress'), findsOneWidget);
+        expect(find.textContaining('Leadership'), findsOneWidget);
+        expect(find.text('Mike Johnson'), findsWidgets);
+      },
+    );
+
+    testWidgets('Congress scroll section edge buttons maneuver scroll offset', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1200, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -40,49 +89,7 @@ void main() {
       await tester.pumpWidget(
         ChangeNotifierProvider(
           create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
-        ),
-      );
-      await tester.pump();
-
-      // Core search exists
-      expect(find.text('Find Your Representatives'), findsOneWidget);
-
-      // Firm sections exist
-      expect(find.byType(CongressScrollSection), findsOneWidget);
-      expect(find.byType(ExecutiveSectionCard), findsOneWidget);
-      expect(find.byType(JudicialSectionCard), findsOneWidget);
-
-      // Executive content
-      expect(find.text('Executive Branch'), findsWidgets);
-      expect(find.text('Donald J. Trump'), findsOneWidget);
-      expect(find.text('JD Vance'), findsOneWidget);
-
-      // Judicial content
-      expect(find.text('Judicial Branch'), findsWidgets);
-      expect(find.text('Roberts'), findsOneWidget);
-      expect(find.text('Thomas'), findsOneWidget);
-
-      // Congress content
-      expect(find.text('Congress'), findsOneWidget);
-      expect(find.textContaining('Leadership'), findsOneWidget);
-      expect(find.text('Mike Johnson'), findsWidgets);
-    });
-
-    testWidgets('Congress scroll section edge buttons maneuver scroll offset',
-        (tester) async {
-      tester.view.physicalSize = const Size(1200, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
+          child: const MaterialApp(home: LandingScreen()),
         ),
       );
       await tester.pump(const Duration(milliseconds: 100));
@@ -102,30 +109,31 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
     });
 
-    testWidgets('iPad landscape view (1024x768) renders edge-docked sections cleanly without overflow',
-        (tester) async {
-      tester.view.physicalSize = const Size(1024, 768);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'iPad landscape view (1024x768) renders edge-docked sections cleanly without overflow',
+      (tester) async {
+        tester.view.physicalSize = const Size(1024, 768);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => MapDataProvider(),
+            child: const MaterialApp(home: LandingScreen()),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 100));
+        );
+        await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.byType(CongressScrollSection), findsOneWidget);
-      expect(find.byType(ExecutiveSectionCard), findsOneWidget);
-      expect(find.byType(JudicialSectionCard), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        expect(find.byType(CongressScrollSection), findsOneWidget);
+        expect(find.byType(ExecutiveSectionCard), findsOneWidget);
+        expect(find.byType(JudicialSectionCard), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
-    testWidgets('Tapping Donald J. Trump opens PresidentDetailScreen',
-        (tester) async {
+    testWidgets('Tapping Donald J. Trump opens PresidentDetailScreen', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1200, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -133,9 +141,7 @@ void main() {
       await tester.pumpWidget(
         ChangeNotifierProvider(
           create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
+          child: const MaterialApp(home: LandingScreen()),
         ),
       );
       await tester.pump(const Duration(milliseconds: 100));
@@ -147,61 +153,67 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.textContaining('President of the United States'), findsWidgets);
-    });
-
-    testWidgets('Tapping JD Vance opens LawmakerDetailScreen for Vice President',
-        (tester) async {
-      tester.view.physicalSize = const Size(1200, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
-        ),
+      expect(
+        find.textContaining('President of the United States'),
+        findsWidgets,
       );
-      await tester.pump(const Duration(milliseconds: 100));
-
-      final vanceCard = find.text('JD Vance');
-      expect(vanceCard, findsOneWidget);
-
-      await tester.tap(vanceCard);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(find.text('President of the United States Senate'), findsOneWidget);
-      expect(find.textContaining('Article I, Section 3'), findsWidgets);
     });
 
-    testWidgets('Tapping a Supreme Court Justice opens their LawmakerDetailScreen',
-        (tester) async {
-      tester.view.physicalSize = const Size(1200, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'Tapping JD Vance opens LawmakerDetailScreen for Vice President',
+      (tester) async {
+        tester.view.physicalSize = const Size(1200, 800);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => MapDataProvider(),
+            child: const MaterialApp(home: LandingScreen()),
           ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 100));
+        );
+        await tester.pump(const Duration(milliseconds: 100));
 
-      final robertsCard = find.text('Roberts');
-      expect(robertsCard, findsOneWidget);
+        final vanceCard = find.text('JD Vance');
+        expect(vanceCard, findsOneWidget);
 
-      await tester.tap(robertsCard);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+        await tester.tap(vanceCard);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.text('John G. Roberts Jr.'), findsWidgets);
-      expect(find.textContaining('Chief Justice'), findsWidgets);
-    });
+        expect(
+          find.text('President of the United States Senate'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('Article I, Section 3'), findsWidgets);
+      },
+    );
+
+    testWidgets(
+      'Tapping a Supreme Court Justice opens their LawmakerDetailScreen',
+      (tester) async {
+        tester.view.physicalSize = const Size(1200, 800);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => MapDataProvider(),
+            child: const MaterialApp(home: LandingScreen()),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+
+        final robertsCard = find.text('Roberts');
+        expect(robertsCard, findsOneWidget);
+
+        await tester.tap(robertsCard);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        expect(find.text('John G. Roberts Jr.'), findsWidgets);
+        expect(find.textContaining('Chief Justice'), findsWidgets);
+      },
+    );
   });
 }

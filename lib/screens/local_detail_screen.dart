@@ -6,7 +6,10 @@ import '../utils/search_handler.dart';
 import '../data/models.dart';
 import '../data/bill_models.dart';
 import '../data/civic_data_provider.dart';
+import '../services/congressional_delivery_service.dart';
 import 'bill_detail_screen.dart';
+import 'contact_congress_screen.dart';
+import 'contact_congress_start_screen.dart';
 import 'lawmaker_detail_screen.dart';
 import 'voter_rules_screen.dart';
 
@@ -108,7 +111,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
       houseMembers = provider.houseMembers![searchResult.stateId!] ?? [];
     }
 
-    final isAddress = searchResult.type == SearchResultType.address || searchResult.streetAddress != null;
+    final isAddress =
+        searchResult.type == SearchResultType.address ||
+        searchResult.streetAddress != null;
     final isZip = searchResult.type == SearchResultType.zipCode;
 
     // Load Election, Candidate, and Proposition records
@@ -126,7 +131,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
     // Filter candidates based on selected sub-filter
     final filteredCandidates = allCandidates.where((c) {
-      if (_candidateFilter == 'Federal') return c.level.toLowerCase() == 'federal';
+      if (_candidateFilter == 'Federal') {
+        return c.level.toLowerCase() == 'federal';
+      }
       if (_candidateFilter == 'State') return c.level.toLowerCase() == 'state';
       if (_candidateFilter == 'Local') return c.level.toLowerCase() == 'local';
       return true;
@@ -151,13 +158,32 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
           const SizedBox(height: 10),
 
+          // Prominent assisted contact flow. A House member is included only
+          // when the state has a single, unambiguous at-large district.
+          if (senators.isNotEmpty)
+            _buildContactCongressCard(
+              senators: senators,
+              houseMember: houseMembers.length == 1 ? houseMembers.first : null,
+              houseCandidates: houseMembers.length > 1
+                  ? houseMembers
+                  : const [],
+              stateName: stateRecord?.name ?? stateId,
+              initialAddress: isAddress ? searchResult.title : null,
+            ),
+
+          if (senators.isNotEmpty) const SizedBox(height: 16),
+
           // 2. UPCOMING ELECTION & VOTER COUNTDOWN BANNER (HIGH PRIORITY)
           _buildElectionHubBanner(electionInfo, stateRecord?.name ?? stateId),
 
           const SizedBox(height: 16),
 
           // 3. PRIORITIZED SECTION TABS
-          _buildSectionNavigationTabs(filteredCandidates.length, propositions.length, bills.length),
+          _buildSectionNavigationTabs(
+            filteredCandidates.length,
+            propositions.length,
+            bills.length,
+          ),
 
           const SizedBox(height: 16),
 
@@ -184,13 +210,21 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     );
   }
 
-  Widget _buildJurisdictionBanner(bool isAddress, bool isZip, SearchResult searchResult) {
+  Widget _buildJurisdictionBanner(
+    bool isAddress,
+    bool isZip,
+    SearchResult searchResult,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           Icon(
-            isAddress ? Icons.home : isZip ? Icons.mark_as_unread : Icons.location_on,
+            isAddress
+                ? Icons.home
+                : isZip
+                ? Icons.mark_as_unread
+                : Icons.location_on,
             color: const Color(0xFF1E293B),
             size: 20,
           ),
@@ -207,6 +241,98 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContactCongressCard({
+    required List<Senator> senators,
+    required Representative? houseMember,
+    required List<Representative> houseCandidates,
+    required String stateName,
+    required String? initialAddress,
+  }) {
+    final recipients = <ContactCongressRecipient>[
+      for (final senator in senators)
+        if ((senator.contactUrl ?? senator.website)?.isNotEmpty ?? false)
+          ContactCongressRecipient(
+            name: senator.name,
+            role: 'U.S. Senator',
+            officialUrl: senator.contactUrl ?? senator.website!,
+            bioguideId: senator.bioguideId,
+            chamber: CongressionalChamber.senate,
+          ),
+      if (houseMember != null &&
+          (houseMember.contactUrl ?? houseMember.website)?.isNotEmpty == true)
+        ContactCongressRecipient(
+          name: houseMember.name,
+          role: 'U.S. Representative',
+          officialUrl: houseMember.contactUrl ?? houseMember.website!,
+          bioguideId: houseMember.bioguideId,
+          chamber: CongressionalChamber.house,
+        ),
+    ];
+
+    if (recipients.isEmpty) return const SizedBox.shrink();
+
+    return Card(
+      key: const Key('contact-congress-entry-card'),
+      elevation: 0,
+      color: const Color(0xFF1E3A8A),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.forum_outlined, color: Colors.white, size: 22),
+                SizedBox(width: 9),
+                Text(
+                  'Contact Congress',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Confirm your full home address to find your two senators and your district-specific House representative.',
+              style: const TextStyle(color: Color(0xFFDBEAFE), height: 1.4),
+            ),
+            const SizedBox(height: 14),
+            FilledButton.icon(
+              key: const Key('contact-congress-start-button'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ContactCongressStartScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit_outlined),
+              label: const Text('Find my members'),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF1E3A8A),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'You’ll review everything before opening each official website to submit it.',
+              style: TextStyle(color: Color(0xFFBFDBFE), fontSize: 12),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -261,14 +387,20 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             children: [
               Expanded(
                 child: TextButton.icon(
-                  onPressed: () => _launchExternalUrl(election.officialPortalUrl),
+                  onPressed: () =>
+                      _launchExternalUrl(election.officialPortalUrl),
                   icon: const Icon(Icons.open_in_new, size: 14),
-                  label: const Text('Register', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'Register',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF1E3A8A),
                     backgroundColor: const Color(0xFFF1F5F9),
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -287,12 +419,17 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                     );
                   },
                   icon: const Icon(Icons.badge, size: 14),
-                  label: const Text('ID Guide', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'ID Guide',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF1E3A8A),
                     backgroundColor: const Color(0xFFF1F5F9),
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -329,7 +466,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     );
   }
 
-  Widget _buildSectionNavigationTabs(int candidatesCount, int propositionsCount, int billsCount) {
+  Widget _buildSectionNavigationTabs(
+    int candidatesCount,
+    int propositionsCount,
+    int billsCount,
+  ) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
@@ -371,7 +512,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             Icon(
               icon,
               size: 16,
-              color: isSelected ? const Color(0xFF0F172A) : Colors.blueGrey.shade400,
+              color: isSelected
+                  ? const Color(0xFF0F172A)
+                  : Colors.blueGrey.shade400,
             ),
             const SizedBox(width: 6),
             Text(
@@ -379,7 +522,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? const Color(0xFF0F172A) : Colors.blueGrey.shade500,
+                color: isSelected
+                    ? const Color(0xFF0F172A)
+                    : Colors.blueGrey.shade500,
               ),
             ),
           ],
@@ -412,7 +557,10 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                 ),
                 Text(
                   'Who you are voting for in this jurisdiction',
-                  style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade600),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.blueGrey.shade600,
+                  ),
                 ),
               ],
             ),
@@ -427,7 +575,15 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               return Padding(
                 padding: const EdgeInsets.only(right: 6.0),
                 child: FilterChip(
-                  label: Text(filter, style: TextStyle(fontSize: 11, fontWeight: isChosen ? FontWeight.bold : FontWeight.normal)),
+                  label: Text(
+                    filter,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: isChosen
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
                   selected: isChosen,
                   selectedColor: const Color(0xFF1E3A8A).withOpacity(0.15),
                   checkmarkColor: const Color(0xFF1E3A8A),
@@ -466,17 +622,25 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                 return Wrap(
                   spacing: 16,
                   runSpacing: 16,
-                  children: candidates.map((cand) => SizedBox(
-                    width: (constraints.maxWidth - 16) / 2,
-                    child: CandidateCardWidget(candidate: cand),
-                  )).toList(),
+                  children: candidates
+                      .map(
+                        (cand) => SizedBox(
+                          width: (constraints.maxWidth - 16) / 2,
+                          child: CandidateCardWidget(candidate: cand),
+                        ),
+                      )
+                      .toList(),
                 );
               }
               return Column(
-                children: candidates.map((cand) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: CandidateCardWidget(candidate: cand),
-                )).toList(),
+                children: candidates
+                    .map(
+                      (cand) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: CandidateCardWidget(candidate: cand),
+                      ),
+                    )
+                    .toList(),
               );
             },
           ),
@@ -529,8 +693,6 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     );
   }
 
-
-
   Widget _buildPropositionCard(PropositionRecord prop) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -550,7 +712,10 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF1E3A8A),
                     borderRadius: BorderRadius.circular(6),
@@ -565,7 +730,10 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(6),
@@ -581,7 +749,10 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFECFDF5),
                     borderRadius: BorderRadius.circular(6),
@@ -619,7 +790,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.thumb_up, size: 15, color: Color(0xFF047857)),
+                  const Icon(
+                    Icons.thumb_up,
+                    size: 15,
+                    color: Color(0xFF047857),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -637,7 +812,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                         const SizedBox(height: 2),
                         Text(
                           prop.yesVoteMeaning,
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF064E3B), height: 1.3),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF064E3B),
+                            height: 1.3,
+                          ),
                         ),
                       ],
                     ),
@@ -658,7 +837,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.thumb_down, size: 15, color: Color(0xFFBE123C)),
+                  const Icon(
+                    Icons.thumb_down,
+                    size: 15,
+                    color: Color(0xFFBE123C),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -676,7 +859,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                         const SizedBox(height: 2),
                         Text(
                           prop.noVoteMeaning,
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF881337), height: 1.3),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF881337),
+                            height: 1.3,
+                          ),
                         ),
                       ],
                     ),
@@ -690,7 +877,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.account_balance_wallet, size: 15, color: Color(0xFF475569)),
+                const Icon(
+                  Icons.account_balance_wallet,
+                  size: 15,
+                  color: Color(0xFF475569),
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -709,12 +900,18 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               if (prop.proponents != null)
                 Text(
                   'Supporters: ${prop.proponents}',
-                  style: TextStyle(fontSize: 11, color: Colors.blueGrey.shade700),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.blueGrey.shade700,
+                  ),
                 ),
               if (prop.opponents != null)
                 Text(
                   'Opponents: ${prop.opponents}',
-                  style: TextStyle(fontSize: 11, color: Colors.blueGrey.shade700),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.blueGrey.shade700,
+                  ),
                 ),
             ],
           ],
@@ -763,51 +960,76 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
           )
         else
           Column(
-            children: bills.map((b) => Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              elevation: 1,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: ListTile(
-                title: Text(
-                  b.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: const Color(0xFFBFDBFE)),
-                      ),
-                      child: Text(
-                        'Status: ${b.status}',
-                        style: const TextStyle(fontSize: 11, color: Color(0xFF1E40AF), fontWeight: FontWeight.w600),
-                      ),
+            children: bills
+                .map(
+                  (b) => Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    if (b.sponsorIds.isNotEmpty) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        'Sponsor: ${b.sponsorIds.join(", ")}',
-                        style: TextStyle(fontSize: 11, color: Colors.blueGrey.shade600),
+                    child: ListTile(
+                      title: Text(
+                        b.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
-                    ],
-                  ],
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 15, color: Colors.blueGrey),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BillDetailScreen(bill: b),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFF6FF),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: const Color(0xFFBFDBFE),
+                              ),
+                            ),
+                            child: Text(
+                              'Status: ${b.status}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Color(0xFF1E40AF),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          if (b.sponsorIds.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              'Sponsor: ${b.sponsorIds.join(", ")}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.blueGrey.shade600,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                        color: Colors.blueGrey,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BillDetailScreen(bill: b),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            )).toList(),
+                  ),
+                )
+                .toList(),
           ),
       ],
     );
@@ -830,7 +1052,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
       children: [
         Row(
           children: [
-            const Icon(Icons.account_balance, size: 18, color: Color(0xFF1E3A8A)),
+            const Icon(
+              Icons.account_balance,
+              size: 18,
+              color: Color(0xFF1E3A8A),
+            ),
             const SizedBox(width: 6),
             Text(
               'Your Current Elected Officials',
@@ -849,13 +1075,24 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
         // Local Mayor
         if (localMayors.isNotEmpty) ...[
-          const Text('Local Executive', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF334155))),
+          const Text(
+            'Local Executive',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Color(0xFF334155),
+            ),
+          ),
           const SizedBox(height: 4),
           for (var mayor in localMayors)
             _buildOfficialCard(
               title: mayor.name,
               subtitle: 'Mayor of ${mayor.city}',
-              reelectionTag: civicProvider.getIncumbentReelectionTimeline('Mayor', stateId, name: mayor.name),
+              reelectionTag: civicProvider.getIncumbentReelectionTimeline(
+                'Mayor',
+                stateId,
+                name: mayor.name,
+              ),
               icon: Icons.person,
               photoPath: null,
               onTap: () {
@@ -876,12 +1113,24 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
         // State Governor
         if (governor != null) ...[
-          const Text('State Executive', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF334155))),
+          const Text(
+            'State Executive',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Color(0xFF334155),
+            ),
+          ),
           const SizedBox(height: 4),
           _buildOfficialCard(
             title: governor.name,
-            subtitle: 'Governor of $stateId (${governor.party ?? "State Executive"})',
-            reelectionTag: civicProvider.getIncumbentReelectionTimeline('Governor', stateId, name: governor.name),
+            subtitle:
+                'Governor of $stateId (${governor.party ?? "State Executive"})',
+            reelectionTag: civicProvider.getIncumbentReelectionTimeline(
+              'Governor',
+              stateId,
+              name: governor.name,
+            ),
             icon: Icons.person,
             photoPath: governor.photoLocalPath,
             onTap: () {
@@ -902,13 +1151,25 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
         // U.S. Senators
         if (senators.isNotEmpty) ...[
-          const Text('U.S. Senators (Federal)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF334155))),
+          const Text(
+            'U.S. Senators (Federal)',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Color(0xFF334155),
+            ),
+          ),
           const SizedBox(height: 4),
           for (var senator in senators)
             _buildOfficialCard(
               title: senator.name,
-              subtitle: 'U.S. Senator (${senator.party ?? "Senator"}) • $stateId',
-              reelectionTag: civicProvider.getIncumbentReelectionTimeline('Senator', stateId, name: senator.name),
+              subtitle:
+                  'U.S. Senator (${senator.party ?? "Senator"}) • $stateId',
+              reelectionTag: civicProvider.getIncumbentReelectionTimeline(
+                'Senator',
+                stateId,
+                name: senator.name,
+              ),
               icon: Icons.person,
               photoPath: senator.photoLocalPath,
               onTap: () {
@@ -929,10 +1190,19 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
         // State Representatives (House)
         if (houseMembers.isNotEmpty) ...[
-          const Text('U.S. House of Representatives', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF334155))),
+          const Text(
+            'U.S. House of Representatives',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Color(0xFF334155),
+            ),
+          ),
           const SizedBox(height: 4),
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: Column(
@@ -951,12 +1221,22 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                           children: [
                             Text(
                               '$stateId Congressional Delegation (${houseMembers.length} Districts)',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              civicProvider.getIncumbentReelectionTimeline('Representative', stateId),
-                              style: const TextStyle(fontSize: 11, color: Color(0xFF047857), fontWeight: FontWeight.bold),
+                              civicProvider.getIncumbentReelectionTimeline(
+                                'Representative',
+                                stateId,
+                              ),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Color(0xFF047857),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -966,7 +1246,10 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                   const SizedBox(height: 8),
                   Text(
                     'Cities and counties may span multiple congressional districts. Select your specific district on the map or explore candidates on the "On Your Ballot" tab.',
-                    style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade700),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blueGrey.shade700,
+                    ),
                   ),
                 ],
               ),
@@ -977,19 +1260,32 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
         // County Demographics
         if (demographics != null) ...[
-          const Text('County Voter Profile', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF334155))),
+          const Text(
+            'County Voter Profile',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: Color(0xFF334155),
+            ),
+          ),
           const SizedBox(height: 4),
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(14.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (demographics.population != null)
-                    Text('Total Population: ${demographics.population}', style: const TextStyle(fontSize: 12)),
+                    Text(
+                      'Total Population: ${demographics.population}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
                   const SizedBox(height: 4),
-                  if (demographics.republican != null && demographics.democrat != null)
+                  if (demographics.republican != null &&
+                      demographics.democrat != null)
                     Row(
                       children: [
                         Expanded(
@@ -1002,8 +1298,21 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Democratic', style: TextStyle(fontSize: 10, color: Color(0xFF1D4ED8), fontWeight: FontWeight.bold)),
-                                Text('${(demographics.democrat! * 100).toStringAsFixed(1)}%', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                const Text(
+                                  'Democratic',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF1D4ED8),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${(demographics.democrat! * 100).toStringAsFixed(1)}%',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -1019,8 +1328,21 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Republican', style: TextStyle(fontSize: 10, color: Color(0xFFDC2626), fontWeight: FontWeight.bold)),
-                                Text('${(demographics.republican! * 100).toStringAsFixed(1)}%', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                const Text(
+                                  'Republican',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFFDC2626),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${(demographics.republican! * 100).toStringAsFixed(1)}%',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -1029,7 +1351,13 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                     ),
                   if (demographics.description != null) ...[
                     const SizedBox(height: 6),
-                    Text(demographics.description!, style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade700)),
+                    Text(
+                      demographics.description!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.blueGrey.shade700,
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -1054,10 +1382,17 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: const Color(0xFFE2E8F0),
-          backgroundImage: photoPath != null ? AssetImage('assets/img/$photoPath') : null,
-          child: photoPath == null ? Icon(icon, color: const Color(0xFF1E3A8A)) : null,
+          backgroundImage: photoPath != null
+              ? AssetImage('assets/img/$photoPath')
+              : null,
+          child: photoPath == null
+              ? Icon(icon, color: const Color(0xFF1E3A8A))
+              : null,
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1072,7 +1407,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               ),
               child: Text(
                 reelectionTag,
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF0F766E)),
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF0F766E),
+                ),
               ),
             ),
           ],
@@ -1110,7 +1449,8 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         _buildGuideCard(
           icon: Icons.badge,
           title: 'Voter ID Requirements',
-          body: 'Check valid forms of photo identification (State Driver License, Passport, Military ID) or non-photo documents accepted at your polling place in $stateName.',
+          body:
+              'Check valid forms of photo identification (State Driver License, Passport, Military ID) or non-photo documents accepted at your polling place in $stateName.',
           actionText: 'View State Voter ID Rules',
           onAction: () {
             Navigator.push(
@@ -1129,7 +1469,8 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         _buildGuideCard(
           icon: Icons.calendar_month,
           title: 'Voter Registration Deadline',
-          body: '${election.voterRegistrationDeadline}. Ensure your address and party registration are up to date with your county registrar before the deadline.',
+          body:
+              '${election.voterRegistrationDeadline}. Ensure your address and party registration are up to date with your county registrar before the deadline.',
           actionText: 'Check Registration on Vote.gov',
           onAction: () => _launchExternalUrl(election.officialPortalUrl),
         ),
@@ -1138,7 +1479,8 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         _buildGuideCard(
           icon: Icons.forward_to_inbox,
           title: 'Vote By Mail & Absentee Voting',
-          body: 'Early voting begins ${election.earlyVotingStart}. You can track the status of your mail-in ballot from dispatch to tabulation.',
+          body:
+              'Early voting begins ${election.earlyVotingStart}. You can track the status of your mail-in ballot from dispatch to tabulation.',
           actionText: 'Track Your Mail Ballot',
           onAction: () => _launchExternalUrl(election.ballotTrackerUrl),
         ),
@@ -1147,7 +1489,8 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         _buildGuideCard(
           icon: Icons.location_pin,
           title: 'Find Your Polling Location',
-          body: 'Polls are open from ${election.pollsOpenHours} on Election Day (${election.nextElectionDate}). Find your assigned precinct voting place.',
+          body:
+              'Polls are open from ${election.pollsOpenHours} on Election Day (${election.nextElectionDate}). Find your assigned precinct voting place.',
           actionText: 'Official State Election Site',
           onAction: () => _launchExternalUrl(election.officialPortalUrl),
         ),
@@ -1180,7 +1523,10 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
@@ -1188,7 +1534,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             const SizedBox(height: 6),
             Text(
               body,
-              style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade800, height: 1.4),
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.blueGrey.shade800,
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 8),
             Align(
@@ -1196,10 +1546,19 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               child: TextButton.icon(
                 onPressed: onAction,
                 icon: const Icon(Icons.arrow_forward, size: 14),
-                label: Text(actionText, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                label: Text(
+                  actionText,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 style: TextButton.styleFrom(
                   foregroundColor: const Color(0xFF1E3A8A),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                 ),
               ),
             ),
@@ -1213,7 +1572,8 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 class CandidateCardWidget extends StatefulWidget {
   final CandidateRecord candidate;
 
-  const CandidateCardWidget({Key? key, required this.candidate}) : super(key: key);
+  const CandidateCardWidget({Key? key, required this.candidate})
+    : super(key: key);
 
   @override
   State<CandidateCardWidget> createState() => _CandidateCardWidgetState();
@@ -1237,10 +1597,12 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
     final partyColor = isDem
         ? const Color(0xFF1D4ED8)
         : isRep
-            ? const Color(0xFFDC2626)
-            : const Color(0xFF475569);
+        ? const Color(0xFFDC2626)
+        : const Color(0xFF475569);
 
-    final statusColor = candidate.isIncumbent ? const Color(0xFF047857) : const Color(0xFF7C3AED);
+    final statusColor = candidate.isIncumbent
+        ? const Color(0xFF047857)
+        : const Color(0xFF7C3AED);
 
     return Container(
       decoration: BoxDecoration(
@@ -1266,7 +1628,11 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                 radius: 28,
                 backgroundColor: partyColor.withOpacity(0.08),
                 child: Text(
-                  candidate.name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
+                  candidate.name
+                      .split(' ')
+                      .map((e) => e.isNotEmpty ? e[0] : '')
+                      .take(2)
+                      .join(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: partyColor,
@@ -1293,7 +1659,10 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                         ),
                         if (candidate.isIncumbent)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: statusColor.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(20),
@@ -1322,7 +1691,10 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: partyColor.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(20),
@@ -1350,13 +1722,23 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                 candidate.bio,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF334155), height: 1.5),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF334155),
+                  height: 1.5,
+                ),
               ),
               secondChild: Text(
                 candidate.bio,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF334155), height: 1.5),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF334155),
+                  height: 1.5,
+                ),
               ),
-              crossFadeState: _isBioExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              crossFadeState: _isBioExpanded
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
               duration: const Duration(milliseconds: 200),
             ),
             GestureDetector(
@@ -1369,7 +1751,11 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
                   _isBioExpanded ? 'Show less' : 'Read more',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8)),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1D4ED8),
+                  ),
                 ),
               ),
             ),
@@ -1381,7 +1767,10 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
               runSpacing: 8,
               children: candidate.platform.map((point) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(8),
@@ -1390,12 +1779,22 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.check, size: 12, color: Color(0xFF475569)),
+                      const Icon(
+                        Icons.check,
+                        size: 12,
+                        color: Color(0xFF475569),
+                      ),
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
-                          point.length > 35 ? '${point.substring(0, 32)}...' : point,
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+                          point.length > 35
+                              ? '${point.substring(0, 32)}...'
+                              : point,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF334155),
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -1417,7 +1816,14 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                   minimumSize: const Size(50, 30),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: const Text('Website ↗', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8))),
+                child: const Text(
+                  'Website ↗',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1D4ED8),
+                  ),
+                ),
               ),
             ),
           ],

@@ -12,6 +12,7 @@ import '../data/civic_data_provider.dart';
 import '../widgets/executive_section_card.dart';
 import '../widgets/congress_scroll_section.dart';
 import '../widgets/judicial_section_card.dart';
+import 'contact_congress_start_screen.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -39,22 +40,16 @@ class _LandingScreenState extends State<LandingScreen> {
   void _handleSelection(SearchResult result) {
     if (result.type == SearchResultType.president) {
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (ctx) => const PresidentDetailScreen(),
-        ),
+        MaterialPageRoute(builder: (ctx) => const PresidentDetailScreen()),
       );
     } else if (result.type == SearchResultType.congress) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (ctx) => const CongressScreen(),
-        ),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (ctx) => const CongressScreen()));
     } else if (result.type == SearchResultType.supremeCourt) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (ctx) => const SupremeCourtScreen(),
-        ),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (ctx) => const SupremeCourtScreen()));
     } else if (result.type == SearchResultType.state) {
       if (result.stateId != null) {
         Navigator.of(context).push(
@@ -72,7 +67,11 @@ class _LandingScreenState extends State<LandingScreen> {
     }
   }
 
-  Widget _buildSearchCenter(MapDataProvider provider, {bool isWidescreen = false, double maxWidth = 560}) {
+  Widget _buildSearchCenter(
+    MapDataProvider provider, {
+    bool isWidescreen = false,
+    double maxWidth = 560,
+  }) {
     final searchBoxMaxWidth = isWidescreen ? maxWidth : 640.0;
 
     return Column(
@@ -147,69 +146,76 @@ class _LandingScreenState extends State<LandingScreen> {
             },
             fieldViewBuilder:
                 (context, controller, focusNode, onEditingComplete) {
-              return TextField(
-                controller: controller,
-                focusNode: focusNode,
-                onEditingComplete: () {
-                  if (controller.text.trim().toLowerCase() == 'map') {
-                    _navigateToMap();
-                  }
-                  onEditingComplete();
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    onEditingComplete: () {
+                      if (controller.text.trim().toLowerCase() == 'map') {
+                        _navigateToMap();
+                      }
+                      onEditingComplete();
+                    },
+                    style: TextStyle(fontSize: isWidescreen ? 15.5 : 14),
+                    decoration: InputDecoration(
+                      hintText:
+                          'Enter your home address, ZIP code, city, or state...',
+                      hintStyle: TextStyle(
+                        fontSize: isWidescreen ? 14.5 : 13.5,
+                        color: Colors.blueGrey.shade400,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Color(0xFF1E3A8A),
+                        size: 22,
+                      ),
+                      suffixIcon: controller.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, size: 20),
+                              onPressed: () {
+                                controller.clear();
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: Colors.blueGrey.shade200),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: Colors.blueGrey.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF1E3A8A),
+                          width: 2,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: isWidescreen ? 16 : 12,
+                      ),
+                    ),
+                    onSubmitted: (value) async {
+                      final query = value.trim();
+                      if (query.isEmpty) return;
+                      if (query.toLowerCase() == 'map') {
+                        _navigateToMap();
+                        return;
+                      }
+                      final results = await SearchHandler().search(
+                        query,
+                        provider,
+                      );
+                      if (results.isNotEmpty) {
+                        controller.text = results.first.title;
+                        _handleSelection(results.first);
+                      }
+                    },
+                  );
                 },
-                style: TextStyle(fontSize: isWidescreen ? 15.5 : 14),
-                decoration: InputDecoration(
-                  hintText: 'Enter your home address, ZIP code, city, or state...',
-                  hintStyle: TextStyle(
-                    fontSize: isWidescreen ? 14.5 : 13.5,
-                    color: Colors.blueGrey.shade400,
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Color(0xFF1E3A8A),
-                    size: 22,
-                  ),
-                  suffixIcon: controller.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 20),
-                          onPressed: () {
-                            controller.clear();
-                          },
-                        )
-                      : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.blueGrey.shade200),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.blueGrey.shade200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFF1E3A8A), width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: isWidescreen ? 16 : 12,
-                  ),
-                ),
-                onSubmitted: (value) async {
-                  final query = value.trim();
-                  if (query.isEmpty) return;
-                  if (query.toLowerCase() == 'map') {
-                    _navigateToMap();
-                    return;
-                  }
-                  final results = await SearchHandler().search(query, provider);
-                  if (results.isNotEmpty) {
-                    controller.text = results.first.title;
-                    _handleSelection(results.first);
-                  }
-                },
-              );
-            },
             optionsViewBuilder: (context, onSelected, options) {
               return Align(
                 alignment: Alignment.topLeft,
@@ -227,49 +233,60 @@ class _LandingScreenState extends State<LandingScreen> {
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       itemCount: options.length,
-                      separatorBuilder: (_, __) => Divider(height: 1, color: Colors.blueGrey.shade100),
+                      separatorBuilder: (_, _) =>
+                          Divider(height: 1, color: Colors.blueGrey.shade100),
                       itemBuilder: (BuildContext context, int index) {
                         final option = options.elementAt(index);
                         return ListTile(
                           title: Text(
                             option.title,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.5,
+                            ),
                           ),
                           subtitle: Text(
                             option.subtitle,
-                            style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12.5),
+                            style: TextStyle(
+                              color: Colors.blueGrey.shade700,
+                              fontSize: 12.5,
+                            ),
                           ),
                           leading: Icon(
                             option.type == SearchResultType.address
                                 ? Icons.home
                                 : option.type == SearchResultType.president
-                                    ? Icons.account_balance
-                                    : option.type == SearchResultType.congress
-                                        ? Icons.domain
-                                        : option.type == SearchResultType.supremeCourt
-                                            ? Icons.balance
-                                            : option.type == SearchResultType.state
-                                                ? Icons.map
-                                                : option.type == SearchResultType.city
-                                                    ? Icons.location_city
-                                                    : option.type == SearchResultType.county
-                                                        ? Icons.landscape
-                                                        : Icons.mark_as_unread,
+                                ? Icons.account_balance
+                                : option.type == SearchResultType.congress
+                                ? Icons.domain
+                                : option.type == SearchResultType.supremeCourt
+                                ? Icons.balance
+                                : option.type == SearchResultType.state
+                                ? Icons.map
+                                : option.type == SearchResultType.city
+                                ? Icons.location_city
+                                : option.type == SearchResultType.county
+                                ? Icons.landscape
+                                : Icons.mark_as_unread,
                             color: option.type == SearchResultType.address
                                 ? const Color(0xFF0284C7)
                                 : option.type == SearchResultType.president
-                                    ? const Color(0xFF1E3A8A)
-                                    : option.type == SearchResultType.congress
-                                        ? const Color(0xFF0F766E)
-                                        : option.type == SearchResultType.supremeCourt
-                                            ? const Color(0xFF3B0764)
-                                            : option.type == SearchResultType.state
-                                                ? const Color(0xFF4F46E5)
-                                                : option.type == SearchResultType.city
-                                                    ? const Color(0xFF0D9488)
-                                                    : const Color(0xFF2563EB),
+                                ? const Color(0xFF1E3A8A)
+                                : option.type == SearchResultType.congress
+                                ? const Color(0xFF0F766E)
+                                : option.type == SearchResultType.supremeCourt
+                                ? const Color(0xFF3B0764)
+                                : option.type == SearchResultType.state
+                                ? const Color(0xFF4F46E5)
+                                : option.type == SearchResultType.city
+                                ? const Color(0xFF0D9488)
+                                : const Color(0xFF2563EB),
                           ),
-                          trailing: const Icon(Icons.arrow_forward, size: 16, color: Colors.blueGrey),
+                          trailing: const Icon(
+                            Icons.arrow_forward,
+                            size: 16,
+                            color: Colors.blueGrey,
+                          ),
                           onTap: () {
                             onSelected(option);
                           },
@@ -296,11 +313,17 @@ class _LandingScreenState extends State<LandingScreen> {
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFF1E3A8A),
                 side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: isWidescreen ? 13 : 12.5,
+                ),
               ),
             ),
             if (!isWidescreen) ...[
@@ -312,38 +335,56 @@ class _LandingScreenState extends State<LandingScreen> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.account_balance, size: 17, color: Color(0xFF1E3A8A)),
+                icon: const Icon(
+                  Icons.account_balance,
+                  size: 17,
+                  color: Color(0xFF1E3A8A),
+                ),
                 label: const Text('Executive Branch'),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFF1E3A8A),
                   side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.5,
+                  ),
                 ),
               ),
               OutlinedButton.icon(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (ctx) => const CongressScreen(),
-                    ),
+                    MaterialPageRoute(builder: (ctx) => const CongressScreen()),
                   );
                 },
-                icon: const Icon(Icons.groups, size: 17, color: Color(0xFF1E3A8A)),
+                icon: const Icon(
+                  Icons.groups,
+                  size: 17,
+                  color: Color(0xFF1E3A8A),
+                ),
                 label: const Text('Legislative Branch'),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFF1E3A8A),
                   side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.5,
+                  ),
                 ),
               ),
               OutlinedButton.icon(
@@ -354,21 +395,65 @@ class _LandingScreenState extends State<LandingScreen> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.balance, size: 17, color: Color(0xFF1E3A8A)),
+                icon: const Icon(
+                  Icons.balance,
+                  size: 17,
+                  color: Color(0xFF1E3A8A),
+                ),
                 label: const Text('Judicial Branch'),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFF1E3A8A),
                   side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.5,
+                  ),
                 ),
               ),
             ],
           ],
+        ),
+        const SizedBox(height: 12),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
+          child: FilledButton.icon(
+            key: const Key('landing-contact-congress-button'),
+            onPressed: provider.isLoading
+                ? null
+                : () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const ContactCongressStartScreen(),
+                    ),
+                  ),
+            icon: const Icon(Icons.forum_outlined),
+            label: const Text('Contact Congress'),
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(48),
+              backgroundColor: const Color(0xFF1E3A8A),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 7),
+        const Text(
+          'Write once, then send through each official congressional website.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
         ),
       ],
     );
@@ -395,7 +480,10 @@ class _LandingScreenState extends State<LandingScreen> {
             return Center(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 32.0,
+                  ),
                   child: _buildSearchCenter(provider, isWidescreen: false),
                 ),
               ),
@@ -417,8 +505,11 @@ class _LandingScreenState extends State<LandingScreen> {
           final rightWidth = constraints.maxWidth < 1180
               ? 420.0
               : (constraints.maxWidth < 1480 ? 490.0 : 560.0);
-          final centerMaxWidth = (constraints.maxWidth - leftWidth - rightWidth - 32)
-              .clamp(360.0, 720.0);
+          final centerMaxWidth =
+              (constraints.maxWidth - leftWidth - rightWidth - 32).clamp(
+                360.0,
+                720.0,
+              );
 
           return SizedBox(
             width: constraints.maxWidth,
@@ -432,7 +523,10 @@ class _LandingScreenState extends State<LandingScreen> {
                   bottom: congressHeight,
                   child: Center(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 16.0,
+                      ),
                       child: _buildSearchCenter(
                         provider,
                         isWidescreen: true,

@@ -292,6 +292,8 @@ class Senator {
   final String? phone;
   final String? address;
   final String? website;
+  final String? contactUrl;
+  final String? bioguideId;
 
   Senator({
     required this.name,
@@ -301,6 +303,8 @@ class Senator {
     this.phone,
     this.address,
     this.website,
+    this.contactUrl,
+    this.bioguideId,
   });
 
   factory Senator.fromJson(Map<String, dynamic> json) {
@@ -312,6 +316,8 @@ class Senator {
       phone: json['phone'],
       address: json['officeAddress'],
       website: json['website'],
+      contactUrl: json['contactUrl'],
+      bioguideId: json['bioguideId'],
     );
   }
 }
@@ -326,6 +332,9 @@ class Representative {
   final String? phone;
   final String? office;
   final String? website;
+  final String? contactUrl;
+  final String? bioguideId;
+  final int? districtNumber;
 
   Representative({
     required this.name,
@@ -336,6 +345,9 @@ class Representative {
     this.phone,
     this.office,
     this.website,
+    this.contactUrl,
+    this.bioguideId,
+    this.districtNumber,
   });
 
   factory Representative.fromJson(Map<String, dynamic> json) {
@@ -348,7 +360,16 @@ class Representative {
       phone: json['phone'],
       office: json['office'],
       website: json['website'],
+      contactUrl: json['contactUrl'],
+      bioguideId: json['bioguideId'],
+      districtNumber: _parseDistrictNumber(json['districtNumber']),
     );
+  }
+
+  static int? _parseDistrictNumber(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '');
   }
 }
 

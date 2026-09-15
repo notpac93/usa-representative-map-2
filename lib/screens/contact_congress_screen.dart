@@ -1,0 +1,1056 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../data/models.dart';
+import '../services/congressional_delivery_service.dart';
+import '../services/congressional_district_service.dart';
+
+class ContactCongressRecipient {
+  final String name;
+  final String role;
+  final String officialUrl;
+  final String? bioguideId;
+  final CongressionalChamber chamber;
+
+  const ContactCongressRecipient({
+    required this.name,
+    required this.role,
+    required this.officialUrl,
+    required this.chamber,
+    this.bioguideId,
+  });
+
+  bool get hasVerifiedOfficialUrl {
+    final uri = Uri.tryParse(officialUrl);
+    return uri != null &&
+        uri.scheme == 'https' &&
+        (uri.host == 'house.gov' ||
+            uri.host.endsWith('.house.gov') ||
+            uri.host == 'senate.gov' ||
+            uri.host.endsWith('.senate.gov'));
+  }
+}
+
+typedef ContactUrlLauncher = Future<bool> Function(Uri uri);
+typedef ContactDistrictLookup =
+    Future<CongressionalDistrictLookupResult> Function(
+      CongressionalDistrictAddress address,
+    );
+
+/// An assisted handoff to official congressional contact forms.
+///
+/// This screen intentionally does not claim to send a message. It helps a
+/// constituent prepare it once, then opens each recipient's official website.
+class ContactCongressScreen extends StatefulWidget {
+  final String stateName;
+  final List<ContactCongressRecipient> recipients;
+  final String? initialAddress;
+  final ContactUrlLauncher? urlLauncher;
+  final List<Representative> houseCandidates;
+  final ContactDistrictLookup? districtLookup;
+  final CongressionalDeliveryGateway deliveryGateway;
+
+  const ContactCongressScreen({
+    super.key,
+    required this.stateName,
+    required this.recipients,
+    this.initialAddress,
+    this.urlLauncher,
+    this.houseCandidates = const [],
+    this.districtLookup,
+    this.deliveryGateway = const PlaceholderCongressionalDeliveryGateway(),
+  });
+
+  @override
+  State<ContactCongressScreen> createState() => _ContactCongressScreenState();
+}
+
+class _ContactCongressScreenState extends State<ContactCongressScreen> {
+  static const _navy = Color(0xFF0F172A);
+  static const _blue = Color(0xFF1D4ED8);
+  static const _topics = <String>[
+    'Choose a topic',
+    'Budget and economy',
+    'Education',
+    'Environment and energy',
+    'Health care',
+    'Immigration',
+    'Veterans',
+    'Other',
+  ];
+
+  final _composeKey = GlobalKey<FormState>();
+  final _detailsKey = GlobalKey<FormState>();
+  final _subjectController = TextEditingController();
+  final _messageController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  late final TextEditingController _addressController;
+
+  int _step = 0;
+  String _topic = _topics.first;
+  bool _attested = false;
+  bool _resolvingDistrict = false;
+  bool _submittingDirect = false;
+  String? _districtNotice;
+  ContactCongressRecipient? _resolvedHouseRecipient;
+  CongressionalDeliveryResult? _deliveryResult;
+  late final IdempotentCongressionalDeliveryService _deliveryService;
+  late final String _idempotencyKey;
+  final Set<String> _selectedRecipientKeys = {};
+
+  List<ContactCongressRecipient> get _recipients => [
+    ...widget.recipients,
+    if (_resolvedHouseRecipient != null) _resolvedHouseRecipient!,
+  ];
+
+  List<ContactCongressRecipient> get _selectedRecipients => _recipients
+      .where(
+        (recipient) =>
+            _selectedRecipientKeys.contains(_recipientKey(recipient)),
+      )
+      .toList(growable: false);
+
+  bool get _addressAlreadyMatched =>
+      widget.initialAddress != null && widget.houseCandidates.isEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _addressController = TextEditingController(text: widget.initialAddress);
+    _deliveryService = IdempotentCongressionalDeliveryService(
+      widget.deliveryGateway,
+    );
+    _idempotencyKey =
+        'contact-congress-${DateTime.now().microsecondsSinceEpoch}';
+    _selectedRecipientKeys.addAll(widget.recipients.map(_recipientKey));
+  }
+
+  @override
+  void dispose() {
+    _subjectController.dispose();
+    _messageController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        title: const Text('Contact Congress'),
+        backgroundColor: _navy,
+        foregroundColor: Colors.white,
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _ProgressHeader(currentStep: _step),
+            Expanded(
+              child: IndexedStack(
+                index: _step,
+                children: [
+                  _buildComposeStep(),
+                  _buildDetailsStep(),
+                  _buildReviewStep(),
+                ],
+              ),
+            ),
+            if (_step < 2) _buildBottomNavigation(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComposeStep() {
+    return Form(
+      key: _composeKey,
+      child: ListView(
+        key: const Key('contact-compose-step'),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 96),
+        children: [
+          Text(
+            'Write once. Contact each office.',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: _navy,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'We’ll keep your message ready while you visit each official congressional website.',
+            style: TextStyle(color: Color(0xFF475569), height: 1.4),
+          ),
+          const SizedBox(height: 18),
+          _RecipientsCard(
+            recipients: _recipients,
+            selectedRecipientKeys: _selectedRecipientKeys,
+            recipientKey: _recipientKey,
+            onChanged: (recipient, selected) {
+              setState(() {
+                final key = _recipientKey(recipient);
+                if (selected) {
+                  _selectedRecipientKeys.add(key);
+                } else {
+                  _selectedRecipientKeys.remove(key);
+                }
+              });
+            },
+          ),
+          if (_selectedRecipients.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                'Select at least one office to continue.',
+                style: TextStyle(color: Color(0xFFB91C1C), fontSize: 12),
+              ),
+            ),
+          if (widget.houseCandidates.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            const Text(
+              'Your House representative will be added only after your exact district is matched.',
+              style: TextStyle(color: Color(0xFF475569), fontSize: 13),
+            ),
+          ],
+          const SizedBox(height: 20),
+          DropdownButtonFormField<String>(
+            initialValue: _topic,
+            isExpanded: true,
+            decoration: _fieldDecoration('Topic'),
+            items: _topics
+                .map(
+                  (topic) => DropdownMenuItem(value: topic, child: Text(topic)),
+                )
+                .toList(),
+            onChanged: (value) =>
+                setState(() => _topic = value ?? _topics.first),
+            validator: (value) =>
+                value == _topics.first ? 'Choose a topic' : null,
+          ),
+          const SizedBox(height: 14),
+          TextFormField(
+            key: const Key('contact-subject-field'),
+            controller: _subjectController,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: _fieldDecoration('Subject'),
+            maxLength: 100,
+            validator: _required,
+          ),
+          const SizedBox(height: 6),
+          TextFormField(
+            key: const Key('contact-message-field'),
+            controller: _messageController,
+            textCapitalization: TextCapitalization.sentences,
+            keyboardType: TextInputType.multiline,
+            minLines: 7,
+            maxLines: 12,
+            maxLength: 4000,
+            decoration: _fieldDecoration(
+              'Your message',
+              hint:
+                  'Share what you want Congress to know and the action you want taken.',
+            ),
+            validator: (value) {
+              if ((value ?? '').trim().isEmpty) return 'Write your message';
+              if (value!.trim().length < 20) return 'Add a little more detail';
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailsStep() {
+    return Form(
+      key: _detailsKey,
+      child: ListView(
+        key: const Key('contact-details-step'),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 96),
+        children: [
+          Text(
+            'Where replies go',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: _navy,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _addressAlreadyMatched
+                ? 'Your address is already matched to these offices. Add your name and email so they can accept and reply to your message.'
+                : 'Congressional offices ask for these details to confirm that you are a constituent and to reply.',
+            style: const TextStyle(color: Color(0xFF475569), height: 1.4),
+          ),
+          const SizedBox(height: 18),
+          TextFormField(
+            controller: _nameController,
+            textCapitalization: TextCapitalization.words,
+            autofillHints: const [AutofillHints.name],
+            decoration: _fieldDecoration('Full name'),
+            validator: _required,
+          ),
+          const SizedBox(height: 14),
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            autofillHints: const [AutofillHints.email],
+            decoration: _fieldDecoration('Email address'),
+            validator: (value) {
+              final email = (value ?? '').trim();
+              if (email.isEmpty) return 'Enter your email address';
+              if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+                return 'Enter a valid email address';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 14),
+          TextFormField(
+            key: const Key('contact-address-field'),
+            controller: _addressController,
+            readOnly: _addressAlreadyMatched,
+            textCapitalization: TextCapitalization.words,
+            autofillHints: const [AutofillHints.fullStreetAddress],
+            decoration: _fieldDecoration(
+              'Home address',
+              hint: 'Street, city, state, and ZIP',
+            ),
+            validator: (value) {
+              final address = (value ?? '').trim();
+              if (address.isEmpty) return 'Enter your home address';
+              if (!RegExp(r'\d').hasMatch(address) || address.length < 8) {
+                return 'Enter a complete home address';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+          if (_addressAlreadyMatched) ...[
+            const Row(
+              children: [
+                Icon(Icons.check_circle, color: Color(0xFF047857), size: 18),
+                SizedBox(width: 7),
+                Text(
+                  'Matched to your federal delegation',
+                  style: TextStyle(
+                    color: Color(0xFF047857),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFBFDBFE)),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.lock_outline, color: _blue, size: 21),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Why we ask: Congressional offices use your home address to determine whether you are a constituent. To find your House district, we send the address to the official U.S. Census Geocoder. This app does not store it.',
+                    style: TextStyle(color: Color(0xFF1E3A8A), height: 1.4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          CheckboxListTile(
+            key: const Key('contact-attestation'),
+            value: _attested,
+            onChanged: (value) => setState(() => _attested = value ?? false),
+            contentPadding: EdgeInsets.zero,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text('I live at this address in ${widget.stateName}.'),
+            subtitle: const Text('I authorize the message shown here.'),
+          ),
+          if (!_attested)
+            const Padding(
+              padding: EdgeInsets.only(left: 12),
+              child: Text(
+                'Required before review',
+                style: TextStyle(color: Color(0xFFB91C1C), fontSize: 12),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewStep() {
+    return ListView(
+      key: const Key('contact-review-step'),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+      children: [
+        Text(
+          'Ready for the official sites',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: _navy,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'This app has not sent your message. Copy it, open each official website, fill in the form, and press that site’s submit button.',
+          style: TextStyle(color: Color(0xFF475569), height: 1.4),
+        ),
+        const SizedBox(height: 18),
+        if (_districtNotice != null) ...[
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7ED),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFFED7AA)),
+            ),
+            child: Text(
+              _districtNotice!,
+              style: const TextStyle(color: Color(0xFF9A3412), height: 1.35),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        _ReviewCard(
+          topic: _topic,
+          subject: _subjectController.text.trim(),
+          message: _messageController.text.trim(),
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          address: _addressController.text.trim(),
+          onCopySubject: () =>
+              _copy(_subjectController.text.trim(), 'Subject copied'),
+          onCopyMessage: () =>
+              _copy(_messageController.text.trim(), 'Message copied'),
+        ),
+        const SizedBox(height: 18),
+        _buildDirectDeliveryCard(),
+        const SizedBox(height: 18),
+        const Text(
+          'Submit to each office',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+            color: _navy,
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'You will leave the app. Your message remains copied for easy pasting.',
+          style: TextStyle(color: Color(0xFF64748B)),
+        ),
+        const SizedBox(height: 12),
+        for (final recipient in _selectedRecipients) ...[
+          Card(
+            margin: const EdgeInsets.only(bottom: 10),
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: Color(0xFFE2E8F0)),
+            ),
+            child: ListTile(
+              key: Key('contact-office-${recipient.name}'),
+              minVerticalPadding: 12,
+              title: Text(
+                recipient.name,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text('${recipient.role} • Official website'),
+              trailing: const Icon(Icons.open_in_new, color: _blue),
+              onTap: () => _openOfficialSite(recipient),
+            ),
+          ),
+        ],
+        const SizedBox(height: 6),
+        OutlinedButton.icon(
+          onPressed: () => setState(() => _step = 0),
+          icon: const Icon(Icons.edit_outlined),
+          label: const Text('Edit message'),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(48),
+            foregroundColor: _navy,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomNavigation() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+      ),
+      child: Row(
+        children: [
+          if (_step > 0) ...[
+            TextButton(
+              onPressed: () => setState(() => _step--),
+              child: const Text('Back'),
+            ),
+            const SizedBox(width: 8),
+          ],
+          Expanded(
+            child: FilledButton(
+              key: const Key('contact-continue-button'),
+              onPressed: _resolvingDistrict ? null : _continue,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(50),
+                backgroundColor: _blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: _resolvingDistrict
+                  ? const SizedBox.square(
+                      dimension: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(_step == 0 ? 'Continue' : 'Review message'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _continue() async {
+    if (_step == 0) {
+      if ((_composeKey.currentState?.validate() ?? false) &&
+          _selectedRecipients.isNotEmpty) {
+        setState(() => _step = 1);
+      }
+      return;
+    }
+    if ((_detailsKey.currentState?.validate() ?? false) && _attested) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      await _resolveHouseRecipient();
+      if (!mounted) return;
+      setState(() => _step = 2);
+    }
+  }
+
+  Future<void> _resolveHouseRecipient() async {
+    if (widget.houseCandidates.isEmpty || _resolvedHouseRecipient != null) {
+      return;
+    }
+
+    final address = _parseAddress(_addressController.text);
+    if (address == null) {
+      setState(() {
+        _districtNotice =
+            'We could not check your House district. Your senators are still available below.';
+      });
+      return;
+    }
+
+    setState(() => _resolvingDistrict = true);
+    try {
+      final result = widget.districtLookup != null
+          ? await widget.districtLookup!(address)
+          : await CongressionalDistrictService().lookup(address);
+      if (!mounted) return;
+      if (result.status != CongressionalDistrictLookupStatus.matched ||
+          result.match?.stateAbbreviation != address.state) {
+        setState(() {
+          _districtNotice =
+              result.status == CongressionalDistrictLookupStatus.ambiguous
+              ? 'The address matched more than one House district, so we did not guess. Your senators are still available below.'
+              : 'We could not match this address to a House district. Your senators are still available below.';
+        });
+        return;
+      }
+
+      final matches = widget.houseCandidates
+          .where(
+            (member) => member.districtNumber == result.match!.districtNumber,
+          )
+          .toList();
+      if (matches.length != 1) {
+        setState(() {
+          _districtNotice =
+              'We could not safely identify one House representative, so we did not guess. Your senators are still available below.';
+        });
+        return;
+      }
+
+      final member = matches.single;
+      final url = member.contactUrl ?? member.website;
+      if (url == null || url.isEmpty) {
+        setState(() {
+          _districtNotice =
+              'Your House district was matched, but its official contact link is unavailable. Your senators are still available below.';
+        });
+        return;
+      }
+      setState(() {
+        _resolvedHouseRecipient = ContactCongressRecipient(
+          name: member.name,
+          role: 'U.S. Representative',
+          officialUrl: url,
+          bioguideId: member.bioguideId,
+          chamber: CongressionalChamber.house,
+        );
+        _selectedRecipientKeys.add(_recipientKey(_resolvedHouseRecipient!));
+        _districtNotice =
+            '${member.name} was added after matching your House district.';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _districtNotice =
+            'District matching is temporarily unavailable. Your senators are still available below.';
+      });
+    } finally {
+      if (mounted) setState(() => _resolvingDistrict = false);
+    }
+  }
+
+  String _recipientKey(ContactCongressRecipient recipient) =>
+      recipient.bioguideId ?? '${recipient.chamber.name}:${recipient.name}';
+
+  Widget _buildDirectDeliveryCard() {
+    if (!_deliveryService.canAttemptDirectDelivery) {
+      return Container(
+        key: const Key('direct-delivery-unavailable'),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFCBD5E1)),
+        ),
+        child: const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.info_outline, color: Color(0xFF475569)),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Direct delivery through the app is not available yet. Nothing has been sent. Use each official website below.',
+                style: TextStyle(color: Color(0xFF334155), height: 1.4),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Card(
+      key: const Key('direct-delivery-card'),
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Color(0xFFBFDBFE)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Send through the app',
+              style: TextStyle(fontWeight: FontWeight.w800, color: _navy),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'We will report each office separately. “Accepted” means accepted by the chamber for routing, not read by staff.',
+              style: TextStyle(color: Color(0xFF475569), height: 1.35),
+            ),
+            const SizedBox(height: 12),
+            if (_deliveryResult == null)
+              FilledButton(
+                key: const Key('direct-delivery-submit'),
+                onPressed: _submittingDirect ? null : _submitDirect,
+                child: _submittingDirect
+                    ? const SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(
+                        'Send to ${_selectedRecipients.length} ${_selectedRecipients.length == 1 ? 'office' : 'offices'}',
+                      ),
+              )
+            else ...[
+              if (_deliveryResult!.wasDuplicate)
+                const Text(
+                  'This request was already submitted. Showing the original results.',
+                  key: Key('direct-delivery-duplicate'),
+                  style: TextStyle(color: Color(0xFF475569)),
+                ),
+              for (final office in _deliveryResult!.offices)
+                _DeliveryResultRow(result: office),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _submitDirect() async {
+    setState(() => _submittingDirect = true);
+    final request = CongressionalDeliveryRequest(
+      idempotencyKey: _idempotencyKey,
+      constituent: CongressionalConstituent(
+        fullName: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        address: _addressController.text.trim(),
+        state: widget.stateName,
+      ),
+      topic: _topic,
+      subject: _subjectController.text.trim(),
+      message: _messageController.text.trim(),
+      recipients: [
+        for (final recipient in _selectedRecipients)
+          CongressionalDeliveryRecipient(
+            name: recipient.name,
+            chamber: recipient.chamber,
+            officialUrl: recipient.officialUrl,
+            bioguideId: recipient.bioguideId,
+          ),
+      ],
+      authorizedAt: DateTime.now().toUtc(),
+    );
+    try {
+      final result = await _deliveryService.submit(request);
+      if (!mounted) return;
+      setState(() => _deliveryResult = result);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _deliveryResult = CongressionalDeliveryResult(
+          idempotencyKey: _idempotencyKey,
+          offices: [
+            for (final recipient in request.recipients)
+              CongressionalOfficeDeliveryResult(
+                recipient: recipient,
+                status: CongressionalDeliveryStatus.failed,
+                message:
+                    'Delivery could not be confirmed. Use the official website.',
+              ),
+          ],
+        );
+      });
+    } finally {
+      if (mounted) setState(() => _submittingDirect = false);
+    }
+  }
+
+  CongressionalDistrictAddress? _parseAddress(String value) {
+    final match = RegExp(
+      r'^\s*(.+?),\s*([^,]+),\s*([A-Za-z]{2})\s+(\d{5})(?:-\d{4})?\s*$',
+    ).firstMatch(value);
+    if (match == null) return null;
+    return CongressionalDistrictAddress(
+      street: match.group(1)!,
+      city: match.group(2)!,
+      state: match.group(3)!.toUpperCase(),
+      zip: match.group(4)!,
+    );
+  }
+
+  Future<void> _copy(String value, String confirmation) async {
+    await Clipboard.setData(ClipboardData(text: value));
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(confirmation)));
+  }
+
+  Future<void> _openOfficialSite(ContactCongressRecipient recipient) async {
+    await Clipboard.setData(
+      ClipboardData(text: _messageController.text.trim()),
+    );
+    final uri = Uri.tryParse(recipient.officialUrl);
+    if (!recipient.hasVerifiedOfficialUrl || uri == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('This official website link could not be verified.'),
+        ),
+      );
+      return;
+    }
+
+    final opened = widget.urlLauncher != null
+        ? await widget.urlLauncher!(uri)
+        : await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the official website.')),
+      );
+    }
+  }
+
+  String? _required(String? value) =>
+      (value ?? '').trim().isEmpty ? 'This field is required' : null;
+
+  InputDecoration _fieldDecoration(String label, {String? hint}) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+      ),
+    );
+  }
+}
+
+class _ProgressHeader extends StatelessWidget {
+  final int currentStep;
+
+  const _ProgressHeader({required this.currentStep});
+
+  @override
+  Widget build(BuildContext context) {
+    const labels = ['Write', 'Your details', 'Official sites'];
+    final overallStep = currentStep + 2;
+    return Semantics(
+      label: 'Step $overallStep of 4: ${labels[currentStep]}',
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 14),
+        child: Column(
+          children: [
+            Row(
+              children: List.generate(4, (index) {
+                return Expanded(
+                  child: Container(
+                    height: 4,
+                    margin: EdgeInsets.only(right: index == 3 ? 0 : 6),
+                    decoration: BoxDecoration(
+                      color: index <= currentStep + 1
+                          ? const Color(0xFF1D4ED8)
+                          : const Color(0xFFE2E8F0),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${labels[currentStep]} • $overallStep of 4',
+                style: const TextStyle(
+                  color: Color(0xFF475569),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RecipientsCard extends StatelessWidget {
+  final List<ContactCongressRecipient> recipients;
+  final Set<String> selectedRecipientKeys;
+  final String Function(ContactCongressRecipient recipient) recipientKey;
+  final void Function(ContactCongressRecipient recipient, bool selected)
+  onChanged;
+
+  const _RecipientsCard({
+    required this.recipients,
+    required this.selectedRecipientKeys,
+    required this.recipientKey,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${selectedRecipientKeys.length} ${selectedRecipientKeys.length == 1 ? 'office' : 'offices'} selected',
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF0F172A),
+            ),
+          ),
+          const SizedBox(height: 10),
+          for (final recipient in recipients)
+            CheckboxListTile(
+              key: Key('contact-recipient-${recipientKey(recipient)}'),
+              value: selectedRecipientKeys.contains(recipientKey(recipient)),
+              onChanged: (value) => onChanged(recipient, value ?? false),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              controlAffinity: ListTileControlAffinity.leading,
+              title: Text('${recipient.name} • ${recipient.role}'),
+              activeColor: const Color(0xFF047857),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DeliveryResultRow extends StatelessWidget {
+  const _DeliveryResultRow({required this.result});
+
+  final CongressionalOfficeDeliveryResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    final accepted =
+        result.status == CongressionalDeliveryStatus.acceptedForRouting;
+    final delivered = result.status == CongressionalDeliveryStatus.delivered;
+    final color = accepted || delivered
+        ? const Color(0xFF047857)
+        : const Color(0xFF9A3412);
+    final label = switch (result.status) {
+      CongressionalDeliveryStatus.acceptedForRouting => 'Accepted for routing',
+      CongressionalDeliveryStatus.delivered => 'Delivered',
+      CongressionalDeliveryStatus.needsUserAction => 'Action needed',
+      CongressionalDeliveryStatus.unavailable => 'Unavailable',
+      CongressionalDeliveryStatus.rejected => 'Not accepted',
+      CongressionalDeliveryStatus.failed => 'Could not confirm',
+    };
+
+    return Semantics(
+      label: '${result.recipient.name}: $label. ${result.message}',
+      child: Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              accepted || delivered
+                  ? Icons.check_circle_outline
+                  : Icons.error_outline,
+              color: color,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${result.recipient.name} • $label',
+                    style: TextStyle(fontWeight: FontWeight.w700, color: color),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    result.message,
+                    style: const TextStyle(
+                      color: Color(0xFF475569),
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReviewCard extends StatelessWidget {
+  final String topic;
+  final String subject;
+  final String message;
+  final String name;
+  final String email;
+  final String address;
+  final VoidCallback onCopySubject;
+  final VoidCallback onCopyMessage;
+
+  const _ReviewCard({
+    required this.topic,
+    required this.subject,
+    required this.message,
+    required this.name,
+    required this.email,
+    required this.address,
+    required this.onCopySubject,
+    required this.onCopyMessage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: Color(0xFFE2E8F0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              topic,
+              style: const TextStyle(color: Color(0xFF64748B), fontSize: 12),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    subject,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Copy subject',
+                  onPressed: onCopySubject,
+                  icon: const Icon(Icons.copy_outlined),
+                ),
+              ],
+            ),
+            const Divider(),
+            Text(message, style: const TextStyle(height: 1.45)),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: onCopyMessage,
+              icon: const Icon(Icons.copy),
+              label: const Text('Copy message'),
+            ),
+            const Divider(height: 28),
+            Text(name, style: const TextStyle(fontWeight: FontWeight.w700)),
+            Text(email),
+            Text(address),
+          ],
+        ),
+      ),
+    );
+  }
+}
