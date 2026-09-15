@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/president_detail_screen.dart';
+import '../screens/lawmaker_detail_screen.dart';
+import '../data/models.dart';
 import '../data/jd_vance_image.dart';
 
 class ExecutiveSectionCard extends StatefulWidget {
@@ -28,6 +30,29 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
     );
   }
 
+  void _openVicePresidentScreen() {
+    final vance = VicePresident(
+      name: 'JD Vance',
+      party: 'Republican',
+      terms: ['2025–Present'],
+      phone: '(202) 456-1111',
+      address: 'The White House, 1600 Pennsylvania Avenue NW, Washington, DC 20500',
+      website: 'https://www.whitehouse.gov/administration/vice-president-vance/',
+      photoLocalPath: 'presidents/jd_vance.jpg',
+      bio: 'James David Vance is the 50th Vice President of the United States. In accordance with Article I, Section 3 of the United States Constitution, the Vice President presides over the Senate and casts tie-breaking votes. Prior to assuming the vice presidency in 2025, he represented the state of Ohio in the United States Senate from 2023 to 2025, served as a combat correspondent in the U.S. Marine Corps, and earned his law degree from Yale Law School.',
+    );
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => LawmakerDetailScreen(
+          lawmaker: vance,
+          role: 'Vice President of the United States',
+          stateId: 'national',
+        ),
+      ),
+    );
+  }
+
   Widget _buildLeaderPortrait({
     required String name,
     required String title,
@@ -37,13 +62,14 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
     required bool isHovered,
     required ValueChanged<bool> onHoverChanged,
     required double avatarSize,
+    required VoidCallback onTap,
   }) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => onHoverChanged(true),
       onExit: (_) => onHoverChanged(false),
       child: GestureDetector(
-        onTap: _openExecutiveScreen,
+        onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -163,65 +189,53 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
     return Container(
       width: widget.width,
       height: widget.height,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: isDocked
-            ? const BorderRadius.only(
-                bottomRight: Radius.circular(20),
-              )
-            : BorderRadius.circular(18),
-        border: isDocked
-            ? const Border(
-                right: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
-                bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
-              )
-            : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 14,
-            offset: isDocked ? const Offset(2, 3) : const Offset(0, 4),
-          ),
-        ],
       ),
       padding: EdgeInsets.fromLTRB(isDocked ? 20 : 16, 20, 18, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Clean Header (Title + View Details)
+          // Clean Header (Title link + View Details)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.account_balance,
-                        size: 19,
-                        color: Color(0xFF1E3A8A),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Flexible(
-                      child: Text(
-                        'Executive Branch',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E3A8A),
-                          letterSpacing: 0.2,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: _openExecutiveScreen,
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1E3A8A).withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.account_balance,
+                            size: 19,
+                            color: Color(0xFF1E3A8A),
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                        const SizedBox(width: 8),
+                        const Flexible(
+                          child: Text(
+                            'Executive Branch',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1E3A8A),
+                              letterSpacing: 0.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -253,20 +267,19 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: Color(0xFFE2E8F0)),
-          const SizedBox(height: 18),
+          const SizedBox(height: 12),
 
-          // Scrollable/Flexible Quadrant Content
+          // Always visible non-scrolling content dynamically sized for available height
           Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: () {
-                final double avatarSize = (widget.width != null && widget.width! >= 420)
-                    ? 140.0
-                    : ((widget.width != null && widget.width! >= 360) ? 128.0 : 115.0);
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final double availableHeight = constraints.maxHeight;
+                final double avatarSize = ((availableHeight - 48) / 2 - 16)
+                    .clamp(60.0, 110.0);
+                final double spacing = (availableHeight < 320 ? 8.0 : 14.0);
 
                 return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     // President
                     _buildLeaderPortrait(
@@ -278,8 +291,9 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                       isHovered: _isHoveredCard1,
                       onHoverChanged: (val) => setState(() => _isHoveredCard1 = val),
                       avatarSize: avatarSize,
+                      onTap: _openExecutiveScreen,
                     ),
-                    const SizedBox(height: 18),
+                    SizedBox(height: spacing),
 
                     // Vice President
                     _buildLeaderPortrait(
@@ -291,10 +305,11 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                       isHovered: _isHoveredCard2,
                       onHoverChanged: (val) => setState(() => _isHoveredCard2 = val),
                       avatarSize: avatarSize,
+                      onTap: _openVicePresidentScreen,
                     ),
                   ],
                 );
-              }(),
+              },
             ),
           ),
         ],

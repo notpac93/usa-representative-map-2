@@ -123,5 +123,85 @@ void main() {
       expect(find.byType(JudicialSectionCard), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('Tapping Donald J. Trump opens PresidentDetailScreen',
+        (tester) async {
+      tester.view.physicalSize = const Size(1200, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => MapDataProvider(),
+          child: const MaterialApp(
+            home: LandingScreen(),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final trumpCard = find.text('Donald J. Trump');
+      expect(trumpCard, findsOneWidget);
+
+      await tester.tap(trumpCard);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.textContaining('President of the United States'), findsWidgets);
+    });
+
+    testWidgets('Tapping JD Vance opens LawmakerDetailScreen for Vice President',
+        (tester) async {
+      tester.view.physicalSize = const Size(1200, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => MapDataProvider(),
+          child: const MaterialApp(
+            home: LandingScreen(),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final vanceCard = find.text('JD Vance');
+      expect(vanceCard, findsOneWidget);
+
+      await tester.tap(vanceCard);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('President of the United States Senate'), findsOneWidget);
+      expect(find.textContaining('Article I, Section 3'), findsWidgets);
+    });
+
+    testWidgets('Tapping a Supreme Court Justice opens their LawmakerDetailScreen',
+        (tester) async {
+      tester.view.physicalSize = const Size(1200, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => MapDataProvider(),
+          child: const MaterialApp(
+            home: LandingScreen(),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final robertsCard = find.text('Roberts');
+      expect(robertsCard, findsOneWidget);
+
+      await tester.tap(robertsCard);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('John G. Roberts Jr.'), findsWidgets);
+      expect(find.textContaining('Chief Justice'), findsWidgets);
+    });
   });
 }

@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../data/congress_leadership.dart';
+import '../data/data_provider.dart';
+import '../data/models.dart';
 import '../screens/congress_screen.dart';
+import '../screens/lawmaker_detail_screen.dart';
 
 class CongressScrollSection extends StatefulWidget {
   final double? height;
@@ -94,6 +98,61 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
     );
   }
 
+  void _openLeaderScreen(CongressLeader leader) {
+    final provider = Provider.of<MapDataProvider>(context, listen: false);
+    final isSenate = leader.chamber == 'Senate';
+    final stateCode = leader.state.split('-').first.toUpperCase();
+    dynamic lawmaker;
+
+    if (isSenate) {
+      if (provider.senators != null && provider.senators!.containsKey(stateCode)) {
+        final stateSens = provider.senators![stateCode]!;
+        for (var s in stateSens) {
+          final sNorm = s.name.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+          final lNorm = leader.name.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+          if (sNorm.contains(lNorm) || lNorm.contains(sNorm)) {
+            lawmaker = s;
+            break;
+          }
+        }
+      }
+      lawmaker ??= Senator(
+        name: leader.name,
+        party: leader.party,
+        photoLocalPath: leader.assetPath.replaceFirst('assets/img/', ''),
+      );
+    } else {
+      if (provider.houseMembers != null && provider.houseMembers!.containsKey(stateCode)) {
+        final stateReps = provider.houseMembers![stateCode]!;
+        for (var r in stateReps) {
+          final rNorm = r.name.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+          final lNorm = leader.name.toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+          if (rNorm.contains(lNorm) || lNorm.contains(rNorm)) {
+            lawmaker = r;
+            break;
+          }
+        }
+      }
+      final distStr = leader.state.contains('-') ? leader.state.split('-').last : null;
+      lawmaker ??= Representative(
+        name: leader.name,
+        party: leader.party,
+        district: distStr != null ? '${distStr}th' : null,
+        photoLocalPath: leader.assetPath.replaceFirst('assets/img/', ''),
+      );
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => LawmakerDetailScreen(
+          lawmaker: lawmaker,
+          role: leader.title,
+          stateId: stateCode,
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
@@ -103,8 +162,6 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   @override
   Widget build(BuildContext context) {
-    final isDocked = widget.isDocked;
-
     return MouseRegion(
       onExit: (_) {
         setState(() {
@@ -115,25 +172,8 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
       child: Container(
         width: widget.width ?? double.infinity,
         height: widget.height ?? 205,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: isDocked
-              ? BorderRadius.zero
-              : BorderRadius.circular(16),
-          border: isDocked
-              ? const Border(
-                  top: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
-                )
-              : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 14,
-              offset: isDocked
-                  ? const Offset(0, -3)
-                  : const Offset(0, 4),
-            ),
-          ],
         ),
         child: Row(
           children: [
@@ -145,32 +185,38 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.groups,
-                          size: 20,
-                          color: Color(0xFF1E3A8A),
-                        ),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => _openCongressScreen(0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E3A8A).withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.groups,
+                              size: 20,
+                              color: Color(0xFF1E3A8A),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Congress',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1E3A8A),
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Congress',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E3A8A),
-                          letterSpacing: 0.2,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 5),
                   const Text(
@@ -215,7 +261,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                 ],
               ),
             ),
-            const VerticalDivider(width: 1, color: Color(0xFFE2E8F0)),
+            const SizedBox(width: 8),
 
             // Backward maneuver button (<)
             Tooltip(
@@ -268,9 +314,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
                       },
                       child: GestureDetector(
                         onTap: () {
-                          _openCongressScreen(
-                            leader.chamber == 'Senate' ? 0 : 1,
-                          );
+                          _openLeaderScreen(leader);
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 180),

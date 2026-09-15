@@ -211,6 +211,31 @@ class President {
   }
 }
 
+/// A Vice President record.
+class VicePresident {
+  final String name;
+  final String? party;
+  final String? photoUrl;
+  final String? photoLocalPath;
+  final List<String> terms;
+  final String? phone;
+  final String? address;
+  final String? website;
+  final String? bio;
+
+  VicePresident({
+    required this.name,
+    this.party,
+    this.photoUrl,
+    this.photoLocalPath,
+    this.terms = const [],
+    this.phone,
+    this.address,
+    this.website,
+    this.bio,
+  });
+}
+
 /// A Governor record.
 class Governor {
   final String name;

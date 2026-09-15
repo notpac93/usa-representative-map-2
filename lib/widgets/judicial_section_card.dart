@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../screens/supreme_court_screen.dart';
+import '../screens/lawmaker_detail_screen.dart';
+import '../data/data_provider.dart';
+import '../data/models.dart';
 
 class JusticeItem {
   final String shortName;
@@ -100,6 +104,41 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
     );
   }
 
+  void _openJusticeScreen(JusticeItem item) {
+    final provider = Provider.of<MapDataProvider>(context, listen: false);
+    Judge? matchedJudge;
+
+    if (provider.supremeCourt != null) {
+      for (var judge in provider.supremeCourt!) {
+        final jName = judge.name.toLowerCase();
+        final iName = item.fullName.toLowerCase();
+        final sName = item.shortName.toLowerCase();
+        if (jName == iName || jName.contains(sName) || iName.contains(jName)) {
+          matchedJudge = judge;
+          break;
+        }
+      }
+    }
+
+    final judgeToOpen = matchedJudge ??
+        Judge(
+          name: item.fullName,
+          title: item.isChief ? 'Chief Justice of the United States' : 'Associate Justice',
+          court: 'Supreme Court of the United States',
+          photoLocalPath: item.assetPath.replaceFirst('assets/img/', ''),
+        );
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => LawmakerDetailScreen(
+          lawmaker: judgeToOpen,
+          role: judgeToOpen.title,
+          stateId: 'national',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDocked = widget.isDocked;
@@ -107,65 +146,53 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
     return Container(
       width: widget.width,
       height: widget.height,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: isDocked
-            ? const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-              )
-            : BorderRadius.circular(18),
-        border: isDocked
-            ? const Border(
-                left: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
-                bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
-              )
-            : Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 14,
-            offset: isDocked ? const Offset(-2, 3) : const Offset(0, 4),
-          ),
-        ],
       ),
       padding: EdgeInsets.fromLTRB(18, 20, isDocked ? 20 : 16, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Clean Header (Title + Supreme Court link)
+          // Clean Header (Title link + Supreme Court link)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1E3A8A).withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.balance,
-                        size: 19,
-                        color: Color(0xFF1E3A8A),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Flexible(
-                      child: Text(
-                        'Judicial Branch',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E3A8A),
-                          letterSpacing: 0.2,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: _openSupremeCourtScreen,
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1E3A8A).withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.balance,
+                            size: 19,
+                            color: Color(0xFF1E3A8A),
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                        const SizedBox(width: 8),
+                        const Flexible(
+                          child: Text(
+                            'Judicial Branch',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1E3A8A),
+                              letterSpacing: 0.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -197,28 +224,28 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: Color(0xFFE2E8F0)),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
-          // Scrollable/Flexible Quadrant Content: 3x3 Grid of 9 Justices
+          // 3x3 Grid of 9 Justices dynamically calculated to fit 100% visible without scrolling
           Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: () {
-                final double cardWidth = widget.width ?? 480.0;
-                final double avatarSize = cardWidth >= 520
-                    ? 96.0
-                    : (cardWidth >= 450 ? 88.0 : (cardWidth >= 380 ? 80.0 : 72.0));
-                final double childAspect = cardWidth >= 500 ? 0.85 : 0.80;
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final double availableHeight = constraints.maxHeight;
+                final double availableWidth = constraints.maxWidth;
+
+                final double itemHeight = (availableHeight - 16) / 3;
+                final double itemWidth = (availableWidth - 16) / 3;
+
+                final double avatarSize = (itemHeight - 34).clamp(42.0, 76.0);
+                final double childAspect = (itemWidth / itemHeight).clamp(0.65, 1.25);
 
                 return GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
                     childAspectRatio: childAspect,
                   ),
                   itemCount: _justices.length,
@@ -236,17 +263,17 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                           if (_hoveredIndex == index) _hoveredIndex = -1;
                         }),
                         child: GestureDetector(
-                          onTap: _openSupremeCourtScreen,
+                          onTap: () => _openJusticeScreen(justice),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 150),
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                             decoration: BoxDecoration(
                               color: isHovered
                                   ? const Color(0xFFF1F5F9).withOpacity(0.9)
                                   : (justice.isChief
                                       ? const Color(0xFFFFFBEB).withOpacity(0.5)
                                       : Colors.transparent),
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(14),
                             ),
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
@@ -264,15 +291,15 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                                         color: justice.isChief
                                             ? const Color(0xFFD97706)
                                             : const Color(0xFF94A3B8).withOpacity(0.75),
-                                        width: justice.isChief ? 3.2 : 2.2,
+                                        width: justice.isChief ? 3.0 : 2.0,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
                                           color: justice.isChief
                                               ? const Color(0xFFD97706).withOpacity(0.25)
                                               : Colors.black.withOpacity(0.08),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 3),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
                                         ),
                                       ],
                                     ),
@@ -296,11 +323,11 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 7),
+                                  const SizedBox(height: 5),
                                   Text(
                                     justice.shortName,
                                     style: TextStyle(
-                                      fontSize: 14.5,
+                                      fontSize: 13.5,
                                       fontWeight: justice.isChief
                                           ? FontWeight.w800
                                           : FontWeight.w700,
@@ -311,11 +338,11 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                   ),
-                                  const SizedBox(height: 2),
+                                  const SizedBox(height: 1),
                                   Text(
                                     justice.isChief ? 'Chief Justice' : 'Associate',
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 10.5,
                                       fontWeight: FontWeight.w600,
                                       color: justice.isChief
                                           ? const Color(0xFFB45309)
@@ -334,7 +361,7 @@ class _JudicialSectionCardState extends State<JudicialSectionCard> {
                     );
                   },
                 );
-              }(),
+              },
             ),
           ),
         ],

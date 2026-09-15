@@ -296,76 +296,78 @@ class _LandingScreenState extends State<LandingScreen> {
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFF1E3A8A),
                 side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
             ),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => const PresidentDetailScreen(),
+            if (!isWidescreen) ...[
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => const PresidentDetailScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.account_balance, size: 17, color: Color(0xFF1E3A8A)),
+                label: const Text('Executive Branch'),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF1E3A8A),
+                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              },
-              icon: const Icon(Icons.account_balance, size: 17, color: Color(0xFF1E3A8A)),
-              label: const Text('Executive Branch'),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF1E3A8A),
-                side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
                 ),
-                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
-            ),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => const CongressScreen(),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => const CongressScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.groups, size: 17, color: Color(0xFF1E3A8A)),
+                label: const Text('Legislative Branch'),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF1E3A8A),
+                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              },
-              icon: const Icon(Icons.groups, size: 17, color: Color(0xFF1E3A8A)),
-              label: const Text('Legislative Branch'),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF1E3A8A),
-                side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
                 ),
-                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
-            ),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => const SupremeCourtScreen(),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => const SupremeCourtScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.balance, size: 17, color: Color(0xFF1E3A8A)),
+                label: const Text('Judicial Branch'),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF1E3A8A),
+                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              },
-              icon: const Icon(Icons.balance, size: 17, color: Color(0xFF1E3A8A)),
-              label: const Text('Judicial Branch'),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF1E3A8A),
-                side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
                 ),
-                textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: isWidescreen ? 13 : 12.5),
               ),
-            ),
+            ],
           ],
         ),
       ],

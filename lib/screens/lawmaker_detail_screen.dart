@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../data/civic_data_provider.dart';
 import '../data/bill_models.dart';
+import '../data/jd_vance_image.dart';
 
 class LawmakerDetailScreen extends StatefulWidget {
   final dynamic lawmaker; // Governor, Senator, or Representative
@@ -112,6 +113,21 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
         extraInfo.add(
           "Appointed by: ${j.appointedBy} (${j.party ?? 'Unknown'})",
         );
+      }
+    } else if (widget.lawmaker is VicePresident) {
+      final vp = widget.lawmaker as VicePresident;
+      name = vp.name;
+      party = vp.party;
+      subTitle = "President of the United States Senate";
+      photoLocalPath = vp.photoLocalPath;
+      phone = vp.phone;
+      address = vp.address;
+      website = vp.website;
+      if (vp.terms.isNotEmpty) {
+        extraInfo.add("Term: ${vp.terms.join(', ')}");
+      }
+      if (vp.bio != null && vp.bio!.isNotEmpty) {
+        extraInfo.add(vp.bio!);
       }
     }
 
@@ -487,12 +503,23 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
                     )
                   : null,
             ),
-            child:
-                (photoLocalPath == null &&
-                    !((lawmaker is Mayor && lawmaker.photoUrl != null) ||
-                        (lawmaker is Judge && lawmaker.photoUrl != null)))
-                ? Icon(Icons.person, size: 50, color: Colors.grey.shade400)
-                : null,
+            child: ClipOval(
+              child: (lawmaker is VicePresident)
+                  ? Image.memory(
+                      jdVanceBytes,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => (photoLocalPath != null)
+                          ? Image.asset('assets/img/$photoLocalPath', fit: BoxFit.cover)
+                          : Icon(Icons.person, size: 50, color: Colors.grey.shade400),
+                    )
+                  : ((photoLocalPath == null &&
+                          !((lawmaker is Mayor && lawmaker.photoUrl != null) ||
+                              (lawmaker is Judge && lawmaker.photoUrl != null)))
+                      ? Icon(Icons.person, size: 50, color: Colors.grey.shade400)
+                      : null),
+            ),
           ),
           const SizedBox(width: 24),
           // Text Details
@@ -681,6 +708,14 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
         return "Representatives serve a specific congressional district within the state. They respond to local constituents' needs, introduce bills, and vote on legislation in the House of Representatives. They initiate revenue bills and have the power to impeach federal officials.";
       case 'mayor':
         return "The Mayor serves as the head of the city government. They oversee the administration of city services (like police, fire, housing, and transportation), enforce city ordinances, and prepare the municipal budget. They often work with a city council to shape local policy and development.";
+      case 'vice president':
+      case 'vice president of the united states':
+        return "The Vice President serves as the second-highest executive officer of the United States. Under the U.S. Constitution, the Vice President presides over the Senate as President of the Senate, casts tie-breaking votes, and is first in the presidential line of succession. The Vice President also advises the President and carries out major diplomatic and policy missions.";
+      case 'chief justice':
+      case 'associate justice':
+      case 'chief justice of the united states':
+      case 'judge':
+        return "Justices of the Supreme Court of the United States interpret the Constitution and federal law. As the highest appellate court in the nation, the Court decides cases of constitutional significance, resolves conflicting decisions between federal circuit courts, and preserves the rule of law across the United States.";
       default:
         return "Serve the public interest.";
     }
@@ -691,6 +726,26 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
 
     final provider = Provider.of<MapDataProvider>(context, listen: false);
     if (provider.isLoading) return const SizedBox.shrink();
+
+    // If national jurisdiction (Justices, VP, President)
+    if (widget.stateId.toLowerCase() == 'national') {
+      final nationalPath = Path();
+      if (provider.atlas != null) {
+        for (var s in provider.atlas!.states) {
+          try {
+            nationalPath.addPath(parseSvgPathData(s.path), Offset.zero);
+          } catch (_) {}
+        }
+      }
+      final bounds = nationalPath.getBounds();
+      return _buildMapContainer(
+        context,
+        nationalPath,
+        nationalPath,
+        bounds,
+        250,
+      );
+    }
 
     // Normalized FIPS lookup
     final fips =

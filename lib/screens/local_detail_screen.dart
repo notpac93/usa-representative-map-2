@@ -186,72 +186,24 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
   Widget _buildJurisdictionBanner(bool isAddress, bool isZip, SearchResult searchResult) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1E3A8A), Color(0xFF1E40AF)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isAddress ? Icons.home : isZip ? Icons.mark_as_unread : Icons.location_on,
-              color: Colors.white,
-              size: 26,
-            ),
+          Icon(
+            isAddress ? Icons.home : isZip ? Icons.mark_as_unread : Icons.location_on,
+            color: const Color(0xFF1E293B),
+            size: 20,
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 8),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isAddress
-                      ? 'YOUR HOME ADDRESS'
-                      : isZip
-                          ? 'YOUR HOME ZIP CODE'
-                          : 'YOUR LOCAL JURISDICTION',
-                  style: const TextStyle(
-                    color: Color(0xFFFDE047),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                    letterSpacing: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  searchResult.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Your Elected Local, State & Federal Officials',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.85),
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+            child: Text(
+              searchResult.title,
+              style: const TextStyle(
+                color: Color(0xFF1E293B),
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -260,77 +212,31 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
   }
 
   Widget _buildElectionHubBanner(ElectionRecord election, String stateName) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.3), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFDC2626).withOpacity(0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFDC2626),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.how_to_vote, size: 14, color: Colors.white),
-                    SizedBox(width: 5),
-                    Text(
-                      'UPCOMING ELECTION',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  election.nextElectionDate,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Color(0xFF0F172A),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            election.electionType,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF1E293B),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Key races on your ballot: ${election.keyOfficesUp}',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.blueGrey.shade700,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.event, size: 14, color: Color(0xFF1D4ED8)),
+                const SizedBox(width: 6),
+                Text(
+                  '${election.nextElectionDate} • ${election.electionType}',
+                  style: const TextStyle(
+                    color: Color(0xFF1D4ED8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
@@ -340,42 +246,35 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             children: [
               _buildTimelineChip(
                 Icons.event_available,
-                'Registration Deadline: ${election.voterRegistrationDeadline.split('(').first.trim()}',
-                const Color(0xFF047857),
+                'Reg. Deadline: ${election.voterRegistrationDeadline.split('(').first.trim()}',
+                const Color(0xFF0F172A),
               ),
               _buildTimelineChip(
                 Icons.markunread_mailbox,
                 'Early Voting: ${election.earlyVotingStart.split('(').first.trim()}',
-                const Color(0xFF1D4ED8),
-              ),
-              _buildTimelineChip(
-                Icons.access_time,
-                'Polls: ${election.pollsOpenHours}',
-                const Color(0xFF6B21A8),
+                const Color(0xFF0F172A),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          const Divider(height: 1),
-          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: TextButton.icon(
                   onPressed: () => _launchExternalUrl(election.officialPortalUrl),
-                  icon: const Icon(Icons.open_in_new, size: 15),
-                  label: const Text('Register / Check Status', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                  style: OutlinedButton.styleFrom(
+                  icon: const Icon(Icons.open_in_new, size: 14),
+                  label: const Text('Register', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF1E3A8A),
-                    side: const BorderSide(color: Color(0xFF1E3A8A)),
-                    padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
+                    backgroundColor: const Color(0xFFF1F5F9),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: ElevatedButton.icon(
+                child: TextButton.icon(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -387,11 +286,12 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.badge, size: 15, color: Colors.white),
-                  label: const Text('Voter ID Guide', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E3A8A),
-                    padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
+                  icon: const Icon(Icons.badge, size: 14),
+                  label: const Text('ID Guide', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFF1E3A8A),
+                    backgroundColor: const Color(0xFFF1F5F9),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
@@ -431,100 +331,58 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
   Widget _buildSectionNavigationTabs(int candidatesCount, int propositionsCount, int billsCount) {
     return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(10),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
       ),
-      child: Row(
-        children: [
-          _buildTabButton(
-            0,
-            'On Your Ballot',
-            '($candidatesCount cand. • $propositionsCount prop.)',
-            Icons.ballot,
-          ),
-          _buildTabButton(
-            1,
-            'Bills & Laws',
-            '($billsCount)',
-            Icons.gavel,
-          ),
-          _buildTabButton(
-            2,
-            'Current Reps',
-            '',
-            Icons.account_balance,
-          ),
-          _buildTabButton(
-            3,
-            'Voter Guide',
-            '',
-            Icons.how_to_reg,
-          ),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _buildTabButton(0, 'On Your Ballot', Icons.ballot),
+            _buildTabButton(1, 'Bills & Laws', Icons.gavel),
+            _buildTabButton(2, 'Current Reps', Icons.account_balance),
+            _buildTabButton(3, 'Voter Guide', Icons.how_to_reg),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTabButton(int index, String title, String countText, IconData icon) {
+  Widget _buildTabButton(int index, String title, IconData icon) {
     final isSelected = _selectedTab == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _selectedTab = index;
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : [],
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedTab = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? const Color(0xFF0F172A) : Colors.transparent,
+              width: 2,
+            ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 17,
-                color: isSelected ? const Color(0xFF1E3A8A) : Colors.blueGrey.shade600,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isSelected ? const Color(0xFF0F172A) : Colors.blueGrey.shade400,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                color: isSelected ? const Color(0xFF0F172A) : Colors.blueGrey.shade500,
               ),
-              const SizedBox(height: 2),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                  color: isSelected ? const Color(0xFF1E3A8A) : Colors.blueGrey.shade700,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (countText.isNotEmpty)
-                Text(
-                  countText,
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: isSelected ? const Color(0xFF2563EB) : Colors.blueGrey.shade500,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -602,7 +460,26 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             ),
           )
         else
-          ...candidates.map((cand) => _buildCandidateCard(cand)),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth > 600) {
+                return Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: candidates.map((cand) => SizedBox(
+                    width: (constraints.maxWidth - 16) / 2,
+                    child: CandidateCardWidget(candidate: cand),
+                  )).toList(),
+                );
+              }
+              return Column(
+                children: candidates.map((cand) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: CandidateCardWidget(candidate: cand),
+                )).toList(),
+              );
+            },
+          ),
 
         const SizedBox(height: 24),
 
@@ -652,180 +529,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     );
   }
 
-  Widget _buildCandidateCard(CandidateRecord candidate) {
-    final isDem = candidate.party.toLowerCase().contains('dem');
-    final isRep = candidate.party.toLowerCase().contains('rep');
-    final partyColor = isDem
-        ? const Color(0xFF1D4ED8)
-        : isRep
-            ? const Color(0xFFDC2626)
-            : const Color(0xFF475569);
 
-    final statusColor = candidate.isIncumbent ? const Color(0xFF047857) : const Color(0xFF7C3AED);
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.blueGrey.shade100),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: partyColor.withOpacity(0.12),
-                  child: Text(
-                    candidate.name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: partyColor,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              candidate.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Color(0xFF0F172A),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: statusColor.withOpacity(0.3)),
-                            ),
-                            child: Text(
-                              candidate.status,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: statusColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Candidate for ${candidate.office} • ${candidate.level}',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF334155),
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: partyColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              candidate.party,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: partyColor,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'Election: ${candidate.electionDate}',
-                            style: TextStyle(fontSize: 11, color: Colors.blueGrey.shade600),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            if (candidate.bio.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Text(
-                candidate.bio,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.blueGrey.shade800,
-                  height: 1.4,
-                ),
-              ),
-            ],
-            if (candidate.platform.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              const Text(
-                'Key Platform Priorities:',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
-                ),
-              ),
-              const SizedBox(height: 4),
-              for (var point in candidate.platform)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.check_circle, size: 13, color: Color(0xFF059669)),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          point,
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF334155)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-            if (candidate.website != null) ...[
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  onPressed: () => _launchExternalUrl(candidate.website!),
-                  icon: const Icon(Icons.language, size: 14),
-                  label: const Text('Campaign Website', style: TextStyle(fontSize: 12)),
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF1E3A8A),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildPropositionCard(PropositionRecord prop) {
     return Card(
@@ -1501,6 +1205,223 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CandidateCardWidget extends StatefulWidget {
+  final CandidateRecord candidate;
+
+  const CandidateCardWidget({Key? key, required this.candidate}) : super(key: key);
+
+  @override
+  State<CandidateCardWidget> createState() => _CandidateCardWidgetState();
+}
+
+class _CandidateCardWidgetState extends State<CandidateCardWidget> {
+  bool _isBioExpanded = false;
+
+  void _launchExternalUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final candidate = widget.candidate;
+    final isDem = candidate.party.toLowerCase().contains('dem');
+    final isRep = candidate.party.toLowerCase().contains('rep');
+    final partyColor = isDem
+        ? const Color(0xFF1D4ED8)
+        : isRep
+            ? const Color(0xFFDC2626)
+            : const Color(0xFF475569);
+
+    final statusColor = candidate.isIncumbent ? const Color(0xFF047857) : const Color(0xFF7C3AED);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 28,
+                backgroundColor: partyColor.withOpacity(0.08),
+                child: Text(
+                  candidate.name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: partyColor,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            candidate.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 18,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                        ),
+                        if (candidate.isIncumbent)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'Incumbent',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: statusColor,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${candidate.office} • ${candidate.level}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF475569),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: partyColor.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            candidate.party,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: partyColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (candidate.bio.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            AnimatedCrossFade(
+              firstChild: Text(
+                candidate.bio,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 13, color: Color(0xFF334155), height: 1.5),
+              ),
+              secondChild: Text(
+                candidate.bio,
+                style: const TextStyle(fontSize: 13, color: Color(0xFF334155), height: 1.5),
+              ),
+              crossFadeState: _isBioExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 200),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isBioExpanded = !_isBioExpanded;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  _isBioExpanded ? 'Show less' : 'Read more',
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8)),
+                ),
+              ),
+            ),
+          ],
+          if (candidate.platform.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: candidate.platform.map((point) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.check, size: 12, color: Color(0xFF475569)),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          point.length > 35 ? '${point.substring(0, 32)}...' : point,
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+          if (candidate.website != null) ...[
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => _launchExternalUrl(candidate.website!),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(50, 30),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('Website ↗', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8))),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
