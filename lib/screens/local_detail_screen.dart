@@ -260,6 +260,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             role: 'U.S. Senator',
             officialUrl: senator.contactUrl ?? senator.website!,
             bioguideId: senator.bioguideId,
+            photoAsset: senator.photoLocalPath == null
+                ? null
+                : 'assets/img/${senator.photoLocalPath}',
             chamber: CongressionalChamber.senate,
           ),
       if (houseMember != null &&
@@ -269,6 +272,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
           role: 'U.S. Representative',
           officialUrl: houseMember.contactUrl ?? houseMember.website!,
           bioguideId: houseMember.bioguideId,
+          photoAsset: houseMember.photoLocalPath == null
+              ? null
+              : 'assets/img/${houseMember.photoLocalPath}',
           chamber: CongressionalChamber.house,
         ),
     ];

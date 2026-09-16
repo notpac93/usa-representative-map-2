@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../data/data_provider.dart';
 import '../data/models.dart';
 import '../design/civic_icons.dart';
+import '../design/civic_palette.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
 import '../utils/search_handler.dart';
@@ -37,8 +38,8 @@ class ContactCongressStartScreen extends StatefulWidget {
 
 class _ContactCongressStartScreenState
     extends State<ContactCongressStartScreen> {
-  static const _navy = Color(0xFF0F172A);
-  static const _blue = Color(0xFF1D4ED8);
+  static const _navy = CivicPalette.navy;
+  static const _blue = CivicPalette.actionBlue;
   static const _territories = <String, ({String name, String fips})>{
     'AS': (name: 'American Samoa', fips: '60'),
     'GU': (name: 'Guam', fips: '66'),
@@ -94,7 +95,7 @@ class _ContactCongressStartScreenState
     ]..sort((a, b) => a.name.compareTo(b.name));
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: CivicPalette.canvas,
       appBar: AppBar(
         title: const Text('Contact Congress'),
         backgroundColor: _navy,
@@ -103,36 +104,63 @@ class _ContactCongressStartScreenState
       body: SafeArea(
         child: Column(
           children: [
-            const _ContactProgressHeader(),
+            _ContactProgressHeader(matched: _match != null),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-                children: [
-                  Text(
-                    _match == null
-                        ? 'Find your federal delegation'
-                        : 'Your federal delegation',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: _navy,
-                      fontWeight: FontWeight.w800,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 40),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_match == null)
+                          const _DistrictMapIllustration()
+                        else
+                          _DelegationPortraitStack(recipients: _recipients),
+                        const SizedBox(height: 24),
+                        Text(
+                          _match == null
+                              ? 'LET’S FIND YOUR DISTRICT'
+                              : 'YOUR FEDERAL DELEGATION',
+                          style: const TextStyle(
+                            color: CivicPalette.teal,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          _match == null
+                              ? 'Where do you live?'
+                              : 'These are your members',
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
+                                color: _navy,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.7,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _match == null
+                              ? 'For state residents, your full home address identifies your two U.S. senators and one district-specific House representative. Territories have a House Delegate or Resident Commissioner but no U.S. senators.'
+                              : 'We matched your address to one congressional district. Review the offices before writing.',
+                          style: const TextStyle(
+                            color: CivicPalette.mutedInk,
+                            height: 1.45,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        if (_match == null)
+                          _buildAddressForm(states)
+                        else
+                          _buildDelegationResult(states),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 7),
-                  Text(
-                    _match == null
-                        ? 'For state residents, your full home address identifies your two U.S. senators and one district-specific House representative. Territories have a House Delegate or Resident Commissioner but no U.S. senators.'
-                        : 'We matched your address to one congressional district. Review the offices before writing.',
-                    style: const TextStyle(
-                      color: Color(0xFF475569),
-                      height: 1.45,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  if (_match == null)
-                    _buildAddressForm(states)
-                  else
-                    _buildDelegationResult(states),
-                ],
+                ),
               ),
             ),
           ],
@@ -148,38 +176,44 @@ class _ContactCongressStartScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
-              key: const Key('district-street-field'),
-              controller: _streetController,
-              textCapitalization: TextCapitalization.words,
-              autofillHints: const [AutofillHints.streetAddressLine1],
-              decoration: _fieldDecoration(
-                'Street address',
-                hint: '123 Main Street',
+            _ResponsiveFieldPair(
+              firstFlex: 3,
+              first: TextFormField(
+                key: const Key('district-street-field'),
+                controller: _streetController,
+                textCapitalization: TextCapitalization.words,
+                autofillHints: const [AutofillHints.streetAddressLine1],
+                decoration: _fieldDecoration(
+                  'Street address',
+                  hint: '123 Main Street',
+                  icon: CivicIcons.homeAddress,
+                ),
+                validator: (value) =>
+                    _required(value, 'Enter your street address'),
               ),
-              validator: (value) =>
-                  _required(value, 'Enter your street address'),
+              second: TextFormField(
+                key: const Key('district-zip-field'),
+                controller: _zipController,
+                keyboardType: TextInputType.number,
+                autofillHints: const [AutofillHints.postalCode],
+                decoration: _fieldDecoration(
+                  'ZIP code',
+                  icon: CivicIcons.address,
+                ),
+                validator: (value) {
+                  if (!RegExp(
+                    r'^\d{5}(?:-\d{4})?$',
+                  ).hasMatch((value ?? '').trim())) {
+                    return 'Enter a 5-digit ZIP';
+                  }
+                  return null;
+                },
+              ),
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 8),
             const Text(
-              'Enter your street and ZIP first. We’ll fill the city and state when the ZIP is recognized.',
-              style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
-            ),
-            const SizedBox(height: 14),
-            TextFormField(
-              key: const Key('district-zip-field'),
-              controller: _zipController,
-              keyboardType: TextInputType.number,
-              autofillHints: const [AutofillHints.postalCode],
-              decoration: _fieldDecoration('ZIP code'),
-              validator: (value) {
-                if (!RegExp(
-                  r'^\d{5}(?:-\d{4})?$',
-                ).hasMatch((value ?? '').trim())) {
-                  return 'Enter a 5-digit ZIP';
-                }
-                return null;
-              },
+              'Start with your street and ZIP. We’ll fill in the city and state when we recognize the ZIP.',
+              style: TextStyle(color: CivicPalette.subtleInk, fontSize: 12),
             ),
             if (_localityNotice != null) ...[
               const SizedBox(height: 8),
@@ -196,42 +230,46 @@ class _ContactCongressStartScreenState
                 ),
               ),
             ],
-            const SizedBox(height: 14),
-            TextFormField(
-              key: const Key('district-city-field'),
-              controller: _cityController,
-              textCapitalization: TextCapitalization.words,
-              autofillHints: const [AutofillHints.addressCity],
-              decoration: _fieldDecoration('City'),
-              validator: (value) => _required(value, 'Enter your city'),
+            const SizedBox(height: 16),
+            _ResponsiveFieldPair(
+              first: TextFormField(
+                key: const Key('district-city-field'),
+                controller: _cityController,
+                textCapitalization: TextCapitalization.words,
+                autofillHints: const [AutofillHints.addressCity],
+                decoration: _fieldDecoration('City', icon: CivicIcons.city),
+                validator: (value) => _required(value, 'Enter your city'),
+              ),
+              second: DropdownButtonFormField<String>(
+                key: const Key('district-state-field'),
+                initialValue: _stateCode,
+                isExpanded: true,
+                decoration: _fieldDecoration(
+                  'State or territory',
+                  icon: CivicIcons.state,
+                ),
+                items: states
+                    .map(
+                      (state) => DropdownMenuItem(
+                        value: state.id,
+                        child: Text(state.name),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: (value) => setState(() {
+                  _stateCode = value;
+                  _localityNotice = null;
+                }),
+                validator: (value) =>
+                    value == null ? 'Choose your state' : null,
+              ),
             ),
-            const SizedBox(height: 14),
-            DropdownButtonFormField<String>(
-              key: const Key('district-state-field'),
-              initialValue: _stateCode,
-              isExpanded: true,
-              decoration: _fieldDecoration('State or territory'),
-              items: states
-                  .map(
-                    (state) => DropdownMenuItem(
-                      value: state.id,
-                      child: Text(state.name),
-                    ),
-                  )
-                  .toList(growable: false),
-              onChanged: (value) => setState(() {
-                _stateCode = value;
-                _localityNotice = null;
-              }),
-              validator: (value) => value == null ? 'Choose your state' : null,
-            ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 18),
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFBFDBFE)),
+                color: CivicPalette.blueTint,
+                borderRadius: BorderRadius.circular(18),
               ),
               child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +279,7 @@ class _ContactCongressStartScreenState
                   Expanded(
                     child: Text(
                       'Why we ask: District lines can split a city or ZIP code. We use your address only to find the correct offices and prepare the information those offices require. We do not sell it.',
-                      style: TextStyle(color: Color(0xFF1E3A8A), height: 1.4),
+                      style: TextStyle(color: CivicPalette.blue, height: 1.4),
                     ),
                   ),
                 ],
@@ -262,21 +300,26 @@ class _ContactCongressStartScreenState
               ),
             ],
             const SizedBox(height: 18),
-            FilledButton.icon(
-              key: const Key('find-delegation-button'),
-              onPressed: _lookingUp ? null : _findDelegation,
-              icon: _lookingUp
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(CivicIcons.matched),
-              label: Text(
-                _lookingUp ? 'Matching your district…' : 'Find my members',
-              ),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(52),
-                backgroundColor: _blue,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilledButton.icon(
+                key: const Key('find-delegation-button'),
+                onPressed: _lookingUp ? null : _findDelegation,
+                icon: _lookingUp
+                    ? const SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(CivicIcons.matched),
+                label: Text(
+                  _lookingUp ? 'Matching your district…' : 'Find my members',
+                ),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 54),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  backgroundColor: CivicPalette.actionBlue,
+                  shape: const StadiumBorder(),
+                ),
               ),
             ),
           ],
@@ -318,9 +361,8 @@ class _ContactCongressStartScreenState
           key: const Key('district-match-success'),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFFECFDF5),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFA7F3D0)),
+            color: CivicPalette.greenTint,
+            borderRadius: BorderRadius.circular(18),
           ),
           child: Row(
             children: [
@@ -345,22 +387,16 @@ class _ContactCongressStartScreenState
         const SizedBox(height: 14),
         for (final recipient in _recipients)
           Card(
-            margin: const EdgeInsets.only(bottom: 10),
+            margin: const EdgeInsets.only(bottom: 12),
             elevation: 0,
+            color: CivicPalette.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(20),
+              side: const BorderSide(color: CivicPalette.border),
             ),
             child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: const Color(0xFFDBEAFE),
-                foregroundColor: _blue,
-                child: Icon(
-                  recipient.chamber == CongressionalChamber.house
-                      ? CivicIcons.house
-                      : CivicIcons.senate,
-                ),
-              ),
+              minVerticalPadding: 14,
+              leading: _RecipientAvatar(recipient: recipient, size: 46),
               title: Text(
                 recipient.name,
                 style: const TextStyle(fontWeight: FontWeight.w800),
@@ -373,16 +409,21 @@ class _ContactCongressStartScreenState
             ),
           ),
         const SizedBox(height: 8),
-        FilledButton.icon(
-          key: const Key('continue-to-compose-button'),
-          onPressed: () => _continueToCompose(stateName),
-          icon: const Icon(CivicIcons.write),
-          label: Text(
-            'Write to ${_recipients.length} ${_recipients.length == 1 ? 'office' : 'offices'}',
-          ),
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(52),
-            backgroundColor: _blue,
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FilledButton.icon(
+            key: const Key('continue-to-compose-button'),
+            onPressed: () => _continueToCompose(stateName),
+            icon: const Icon(CivicIcons.write),
+            label: Text(
+              'Write to ${_recipients.length} ${_recipients.length == 1 ? 'office' : 'offices'}',
+            ),
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(0, 54),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              backgroundColor: CivicPalette.teal,
+              shape: const StadiumBorder(),
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -465,6 +506,9 @@ class _ContactCongressStartScreenState
               role: 'U.S. Senator for ${_stateCode!}',
               officialUrl: senator.contactUrl ?? senator.website!,
               bioguideId: senator.bioguideId,
+              photoAsset: senator.photoLocalPath == null
+                  ? null
+                  : 'assets/img/${senator.photoLocalPath}',
               chamber: CongressionalChamber.senate,
             ),
         ContactCongressRecipient(
@@ -477,6 +521,9 @@ class _ContactCongressStartScreenState
               matchingHouse.single.website ??
               '',
           bioguideId: matchingHouse.single.bioguideId,
+          photoAsset: matchingHouse.single.photoLocalPath == null
+              ? null
+              : 'assets/img/${matchingHouse.single.photoLocalPath}',
           chamber: CongressionalChamber.house,
         ),
       ];
@@ -534,76 +581,358 @@ class _ContactCongressStartScreenState
   String? _required(String? value, String message) =>
       (value ?? '').trim().isEmpty ? message : null;
 
-  InputDecoration _fieldDecoration(String label, {String? hint}) {
+  InputDecoration _fieldDecoration(
+    String label, {
+    String? hint,
+    IconData? icon,
+  }) {
     return InputDecoration(
       labelText: label,
       hintText: hint,
+      prefixIcon: icon == null ? null : Icon(icon, color: CivicPalette.blue),
       filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      fillColor: CivicPalette.surface,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(18)),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+        borderRadius: BorderRadius.circular(18),
+        borderSide: const BorderSide(color: CivicPalette.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(18),
+        borderSide: const BorderSide(color: CivicPalette.actionBlue, width: 2),
       ),
     );
   }
 }
 
-class _ContactProgressHeader extends StatelessWidget {
-  const _ContactProgressHeader();
+class _ResponsiveFieldPair extends StatelessWidget {
+  const _ResponsiveFieldPair({
+    required this.first,
+    required this.second,
+    this.firstFlex = 1,
+  });
+
+  final Widget first;
+  final Widget second;
+  final int firstFlex;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 520) {
+          return Column(children: [first, const SizedBox(height: 14), second]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: firstFlex, child: first),
+            const SizedBox(width: 14),
+            Expanded(child: second),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DistrictMapIllustration extends StatelessWidget {
+  const _DistrictMapIllustration();
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Step 1 of 4: Find your district',
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 14),
-        child: const Column(
-          children: [
-            Row(
-              children: [
-                Expanded(child: _ProgressBar(active: true)),
-                SizedBox(width: 6),
-                Expanded(child: _ProgressBar()),
-                SizedBox(width: 6),
-                Expanded(child: _ProgressBar()),
-                SizedBox(width: 6),
-                Expanded(child: _ProgressBar()),
-              ],
-            ),
-            SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Find your district • 1 of 4',
-                style: TextStyle(
-                  color: Color(0xFF475569),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+      image: true,
+      label: 'A neighborhood map marking a home address',
+      child: SizedBox(
+        height: 184,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Stack(
+            children: [
+              const Positioned.fill(
+                child: ColoredBox(color: CivicPalette.blueTint),
+              ),
+              Positioned(
+                left: -34,
+                right: -34,
+                top: 38,
+                child: Transform.rotate(
+                  angle: 0.14,
+                  child: const SizedBox(
+                    height: 18,
+                    child: ColoredBox(color: CivicPalette.surface),
+                  ),
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                left: -34,
+                right: -34,
+                bottom: 36,
+                child: Transform.rotate(
+                  angle: -0.11,
+                  child: const SizedBox(
+                    height: 18,
+                    child: ColoredBox(color: CivicPalette.surface),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 92,
+                top: 18,
+                child: _MapBlock(
+                  color: CivicPalette.purpleLine,
+                  width: 84,
+                  height: 42,
+                ),
+              ),
+              Positioned(
+                right: 40,
+                top: 78,
+                child: _MapBlock(
+                  color: CivicPalette.tealLine,
+                  width: 92,
+                  height: 50,
+                ),
+              ),
+              Positioned(
+                left: 38,
+                bottom: 18,
+                child: _MapBlock(
+                  color: CivicPalette.blueLine,
+                  width: 112,
+                  height: 42,
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: 58,
+                  height: 58,
+                  decoration: const BoxDecoration(
+                    color: CivicPalette.actionBlue,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x331E3A8A),
+                        blurRadius: 18,
+                        offset: Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    CivicIcons.homeAddress,
+                    color: Colors.white,
+                    size: 28,
+                    fill: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _ProgressBar extends StatelessWidget {
-  const _ProgressBar({this.active = false});
+class _MapBlock extends StatelessWidget {
+  const _MapBlock({
+    required this.color,
+    required this.width,
+    required this.height,
+  });
 
-  final bool active;
+  final Color color;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 4,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        color: active ? const Color(0xFF1D4ED8) : const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(4),
+        color: color,
+        borderRadius: BorderRadius.circular(16),
       ),
+    );
+  }
+}
+
+class _DelegationPortraitStack extends StatelessWidget {
+  const _DelegationPortraitStack({required this.recipients});
+
+  final List<ContactCongressRecipient> recipients;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      image: true,
+      label: 'Your matched congressional delegation',
+      child: SizedBox(
+        height: 92,
+        child: Center(
+          child: SizedBox(
+            width: 62 + ((recipients.length - 1).clamp(0, 4) * 42),
+            child: Stack(
+              children: [
+                for (var index = 0; index < recipients.length; index++)
+                  Positioned(
+                    left: index * 42,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: CivicPalette.canvas,
+                          width: 4,
+                        ),
+                      ),
+                      child: _RecipientAvatar(
+                        recipient: recipients[index],
+                        size: 68,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RecipientAvatar extends StatelessWidget {
+  const _RecipientAvatar({required this.recipient, required this.size});
+
+  final ContactCongressRecipient recipient;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final photo = recipient.photoAsset;
+    final initials = recipient.name
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .take(2)
+        .map((part) => part[0])
+        .join()
+        .toUpperCase();
+    return CircleAvatar(
+      radius: size / 2,
+      backgroundColor: recipient.chamber == CongressionalChamber.house
+          ? CivicPalette.tealLine
+          : CivicPalette.blueLine,
+      foregroundImage: photo == null || photo.isEmpty
+          ? null
+          : AssetImage(photo),
+      child: photo == null || photo.isEmpty
+          ? Text(
+              initials,
+              style: const TextStyle(
+                color: CivicPalette.navy,
+                fontWeight: FontWeight.w800,
+              ),
+            )
+          : null,
+    );
+  }
+}
+
+class _ContactProgressHeader extends StatelessWidget {
+  const _ContactProgressHeader({required this.matched});
+
+  final bool matched;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: matched
+          ? 'District matched. Next: write your message.'
+          : 'Step 1 of 4: Find your district',
+      child: Container(
+        color: CivicPalette.surface,
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: const BoxDecoration(
+                    color: CivicPalette.blueTint,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    matched ? CivicIcons.success : CivicIcons.address,
+                    color: matched
+                        ? CivicPalette.green
+                        : CivicPalette.actionBlue,
+                    size: 21,
+                    fill: matched ? 1 : 0,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        matched ? 'District matched' : 'Find your district',
+                        style: const TextStyle(
+                          color: CivicPalette.navy,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const Text(
+                        'Step 1 of 4',
+                        style: TextStyle(
+                          color: CivicPalette.subtleInk,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const _ProgressDots(current: 1),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProgressDots extends StatelessWidget {
+  const _ProgressDots({required this.current});
+
+  final int current;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var index = 1; index <= 4; index++) ...[
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: index == current ? 20 : 7,
+            height: 7,
+            decoration: BoxDecoration(
+              color: index <= current
+                  ? CivicPalette.actionBlue
+                  : CivicPalette.border,
+              borderRadius: BorderRadius.circular(99),
+            ),
+          ),
+          if (index != 4) const SizedBox(width: 5),
+        ],
+      ],
     );
   }
 }

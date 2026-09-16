@@ -55,7 +55,7 @@ void main() {
       lookup: (_) async => const CongressionalDistrictLookupResult.noMatch(),
     );
 
-    expect(find.text('Find your federal delegation'), findsOneWidget);
+    expect(find.text('Where do you live?'), findsOneWidget);
     expect(find.textContaining('two U.S. senators'), findsOneWidget);
     expect(find.text('Write once. Contact each office.'), findsNothing);
 
@@ -199,6 +199,7 @@ void main() {
       find.byKey(const Key('district-city-field')),
       'San Juan',
     );
+    await tester.ensureVisible(find.byKey(const Key('district-state-field')));
     await tester.tap(find.byKey(const Key('district-state-field')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Puerto Rico').last);
@@ -253,6 +254,7 @@ Future<void> _enterAddress(WidgetTester tester) async {
     find.byKey(const Key('district-city-field')),
     'Mobile',
   );
+  await tester.ensureVisible(find.byKey(const Key('district-state-field')));
   await tester.tap(find.byKey(const Key('district-state-field')));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Alabama').last);
@@ -261,8 +263,7 @@ Future<void> _enterAddress(WidgetTester tester) async {
 
 Future<void> _tapFindMembers(WidgetTester tester) async {
   final button = find.byKey(const Key('find-delegation-button'));
-  await tester.drag(find.byType(ListView).first, const Offset(0, -500));
-  await tester.pumpAndSettle();
+  await tester.ensureVisible(button);
   await tester.tap(button);
   await tester.pumpAndSettle();
 }
