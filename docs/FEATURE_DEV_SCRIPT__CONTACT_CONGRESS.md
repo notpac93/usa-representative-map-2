@@ -18,15 +18,15 @@ Source of truth: [Feature assessment](CONTACT_CONGRESS_FEATURE_ASSESSMENT.md), [
 | ID | State | Owner | Task | Evidence |
 | --- | --- | --- | --- | --- |
 | C-01 | Active | Product/Partnerships | Confirm House CWC and Senate SCWC eligibility, contracts, fields, verification, volume, sandbox, and status semantics | `docs/CWC_SCWC_REQUIREMENTS_OUTREACH.md` |
-| C-02 | Active | Civic data | Replace 116th-district runtime data and benchmark the exact-address resolver | 11 tests + live browser CA-7 response; production proxy/benchmark pending |
-| C-03 | Done | Product design | Build address-first, exact-district, delegation, compose, verification, recoverable back navigation, one-submit preview, and per-office result flow | Start + compose screens; focused tests |
+| C-02 | Active | Civic data | Replace 116th-district runtime data and benchmark the exact-address resolver | Current Census benchmark/vintage + expiring address proof tested; production proxy/benchmark pending |
+| C-03 | Done | Product design | Build address-first, exact-district, delegation, compose, email code, attestation, trust summary, recoverable back navigation, one-submit preview, and per-office result flow | Screens + browser walkthrough + focused tests |
 | C-04 | Done | Architecture | Define the client delivery contract, placeholder gateway, per-office results, and session idempotency | `docs/CONTACT_CONGRESS_DELIVERY_CONTRACT.md` |
 | C-05 | Done | Security | Threat model and define adaptive challenge, email confirmation, layered limits, moderation, cooldowns, circuit breakers, and kill switch | `docs/CONTACT_CONGRESS_ABUSE_AND_VERIFICATION_PLAN.md` |
 | C-06 | Active | Privacy/Legal | Approve the pass-through field inventory, processor contracts, TTL ledger, deletion, purpose copy, and incident access | `docs/CONTACT_CONGRESS_PRIVACY_MINIMAL_PROTOCOL.md`; review pending |
 | C-07 | Done | Flutter | Add contact/Bioguide fields and expose one consistent assisted-contact entry from landing/local screens | Models + landing/local entries |
 | C-08 | Active | QA/Research | Validate recipient accuracy, territories/vacancies, accessibility, recovery, trust comprehension, and funnel | 32 focused tests + browser one-submit preview pass; full benchmark pending |
 | C-09 | Blocked | Backend | Implement and pilot direct House/Senate delivery adapters | Blocked by C-01 approval/sandbox |
-| C-10 | Todo | Backend/Security | Add no-log address proxy, email verification, short-lived capability, persistent idempotency, rate limits, pass-through delivery, and minimal status ledger | Protocol defined; backend absent |
+| C-10 | Active | Backend/Security | Add no-log address proxy, email verification, server challenge validation, five-minute capability, persistent idempotency, rate limits, pass-through delivery, and minimal status ledger | Flutter contract + truthful preview implemented; backend absent |
 
 ## Blockers
 
@@ -44,4 +44,4 @@ Source of truth: [Feature assessment](CONTACT_CONGRESS_FEATURE_ASSESSMENT.md), [
 
 ## Next Action
 
-`C-01`: Send the Phase 0 requirements questionnaire to House CWC and Senate SCWC and obtain the current application/sandbox requirements in writing.
+`C-10`: Implement the no-log HTTPS verification endpoints and TTL ledger behind the new Flutter verification gateway, with external email and bot calls disabled until credentials are configured.

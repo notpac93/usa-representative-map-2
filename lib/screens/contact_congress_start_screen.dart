@@ -5,6 +5,7 @@ import '../data/data_provider.dart';
 import '../data/models.dart';
 import '../design/civic_icons.dart';
 import '../design/civic_palette.dart';
+import '../services/contact_congress_verification_service.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
 import '../utils/search_handler.dart';
@@ -22,6 +23,7 @@ class ContactCongressStartScreen extends StatefulWidget {
     this.senatorsByState,
     this.houseMembersByState,
     this.districtLookup,
+    this.verificationGateway,
     this.deliveryGateway = const PlaceholderCongressionalDeliveryGateway(),
   });
 
@@ -29,6 +31,7 @@ class ContactCongressStartScreen extends StatefulWidget {
   final Map<String, List<Senator>>? senatorsByState;
   final Map<String, List<Representative>>? houseMembersByState;
   final ContactDistrictLookup? districtLookup;
+  final ContactCongressVerificationGateway? verificationGateway;
   final CongressionalDeliveryGateway deliveryGateway;
 
   @override
@@ -59,11 +62,16 @@ class _ContactCongressStartScreenState
   bool _lookingUp = false;
   String? _error;
   CongressionalDistrictMatch? _match;
+  CongressionalAddressProof? _addressProof;
   List<ContactCongressRecipient> _recipients = const [];
+  late final ContactCongressVerificationGateway _verificationGateway;
 
   @override
   void initState() {
     super.initState();
+    _verificationGateway =
+        widget.verificationGateway ??
+        PreviewContactCongressVerificationGateway();
     _zipController.addListener(_autofillLocalityFromZip);
   }
 
@@ -535,8 +543,15 @@ class _ContactCongressStartScreenState
         return;
       }
 
+      final addressProof = await _verificationGateway.issueAddressProof(
+        address: address,
+        match: result.match!,
+      );
+      if (!mounted) return;
+
       setState(() {
         _match = result.match;
+        _addressProof = addressProof;
         _recipients = recipients;
       });
     } catch (_) {
@@ -553,6 +568,7 @@ class _ContactCongressStartScreenState
   void _changeAddress() {
     setState(() {
       _match = null;
+      _addressProof = null;
       _recipients = const [];
       _error = null;
     });
@@ -565,6 +581,8 @@ class _ContactCongressStartScreenState
           stateName: stateName,
           recipients: _recipients,
           initialAddress: _match!.matchedAddress,
+          addressProof: _addressProof,
+          verificationGateway: _verificationGateway,
           deliveryGateway: widget.deliveryGateway,
         ),
       ),

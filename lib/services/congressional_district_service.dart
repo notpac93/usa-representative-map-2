@@ -31,6 +31,8 @@ class CongressionalDistrictMatch {
     required this.districtNumber,
     required this.districtCode,
     required this.congressionalSession,
+    this.benchmark = 'Public_AR_Current',
+    this.vintage = 'Current_Current',
   });
 
   final String matchedAddress;
@@ -41,6 +43,8 @@ class CongressionalDistrictMatch {
   /// The Census district code, including special delegate codes such as `98`.
   final String districtCode;
   final String? congressionalSession;
+  final String benchmark;
+  final String vintage;
 
   bool get isAtLarge => districtNumber == 0;
 }
@@ -201,6 +205,13 @@ class CongressionalDistrictService {
     }
 
     final candidate = candidates.single;
+    final input = result['input'];
+    final benchmark = input is Map<String, dynamic>
+        ? _nestedName(input['benchmark'], 'benchmarkName')
+        : null;
+    final vintage = input is Map<String, dynamic>
+        ? _nestedName(input['vintage'], 'vintageName')
+        : null;
     return CongressionalDistrictLookupResult.matched(
       CongressionalDistrictMatch(
         matchedAddress: matchedAddress,
@@ -209,6 +220,8 @@ class CongressionalDistrictService {
         districtNumber: candidate.districtNumber,
         districtCode: candidate.districtCode,
         congressionalSession: candidate.congressionalSession,
+        benchmark: benchmark ?? 'Public_AR_Current',
+        vintage: vintage ?? 'Current_Current',
       ),
     );
   }
@@ -221,6 +234,11 @@ class CongressionalDistrictService {
   static String? _nonEmptyString(dynamic value) {
     final text = value?.toString().trim();
     return text == null || text.isEmpty ? null : text;
+  }
+
+  static String? _nestedName(dynamic value, String key) {
+    if (value is! Map<String, dynamic>) return null;
+    return _nonEmptyString(value[key]);
   }
 
   static String? _stateFips(Map<String, dynamic> state) {

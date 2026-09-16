@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../data/models.dart';
 import '../design/civic_icons.dart';
 import '../design/civic_palette.dart';
+import '../services/contact_congress_verification_service.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
 
@@ -48,8 +49,10 @@ class ContactCongressScreen extends StatefulWidget {
   final String stateName;
   final List<ContactCongressRecipient> recipients;
   final String? initialAddress;
+  final CongressionalAddressProof? addressProof;
   final List<Representative> houseCandidates;
   final ContactDistrictLookup? districtLookup;
+  final ContactCongressVerificationGateway? verificationGateway;
   final CongressionalDeliveryGateway deliveryGateway;
 
   const ContactCongressScreen({
@@ -57,8 +60,10 @@ class ContactCongressScreen extends StatefulWidget {
     required this.stateName,
     required this.recipients,
     this.initialAddress,
+    this.addressProof,
     this.houseCandidates = const [],
     this.districtLookup,
+    this.verificationGateway,
     this.deliveryGateway = const PlaceholderCongressionalDeliveryGateway(),
   });
 
@@ -91,13 +96,16 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
   int _step = 0;
   String _topic = _topics.first;
   bool _attested = false;
+  DateTime? _attestedAt;
   bool _resolvingDistrict = false;
   bool _submittingDirect = false;
   String? _districtNotice;
   ContactCongressRecipient? _resolvedHouseRecipient;
   CongressionalDeliveryResult? _deliveryResult;
   late final IdempotentCongressionalDeliveryService _deliveryService;
-  late final String _idempotencyKey;
+  late final ContactCongressVerificationGateway _verificationGateway;
+  late CongressionalAddressProof _addressProof;
+  EmailVerificationProof? _emailProof;
   final Set<String> _selectedRecipientKeys = {};
 
   List<ContactCongressRecipient> get _recipients => [
@@ -122,9 +130,14 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
     _deliveryService = IdempotentCongressionalDeliveryService(
       widget.deliveryGateway,
     );
-    _idempotencyKey =
-        'contact-congress-${DateTime.now().microsecondsSinceEpoch}';
+    _verificationGateway =
+        widget.verificationGateway ??
+        PreviewContactCongressVerificationGateway();
+    _addressProof =
+        widget.addressProof ??
+        CongressionalAddressProof.preview(address: widget.initialAddress ?? '');
     _selectedRecipientKeys.addAll(widget.recipients.map(_recipientKey));
+    _emailController.addListener(_invalidateChangedEmailProof);
   }
 
   @override
@@ -132,9 +145,16 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
     _subjectController.dispose();
     _messageController.dispose();
     _nameController.dispose();
+    _emailController.removeListener(_invalidateChangedEmailProof);
     _emailController.dispose();
     _addressController.dispose();
     super.dispose();
+  }
+
+  void _invalidateChangedEmailProof() {
+    final proof = _emailProof;
+    if (proof == null || proof.matches(_emailController.text)) return;
+    setState(() => _emailProof = null);
   }
 
   @override
@@ -327,6 +347,12 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
               return null;
             },
           ),
+          const SizedBox(height: 9),
+          _EmailVerificationStatus(
+            verified: _emailProof?.matches(_emailController.text) ?? false,
+            preview:
+                _emailProof?.mode == ContactCongressVerificationMode.preview,
+          ),
           const SizedBox(height: 14),
           TextFormField(
             key: const Key('contact-address-field'),
@@ -389,7 +415,12 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
           CheckboxListTile(
             key: const Key('contact-attestation'),
             value: _attested,
-            onChanged: (value) => setState(() => _attested = value ?? false),
+            onChanged: (value) {
+              setState(() {
+                _attested = value ?? false;
+                _attestedAt = _attested ? DateTime.now().toUtc() : null;
+              });
+            },
             contentPadding: EdgeInsets.zero,
             controlAffinity: ListTileControlAffinity.leading,
             title: Text('I live at this address in ${widget.stateName}.'),
@@ -436,6 +467,12 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
           ),
           const SizedBox(height: 12),
         ],
+        _VerificationSummary(
+          addressProof: _addressProof,
+          emailProof: _emailProof,
+          attested: _attested,
+        ),
+        const SizedBox(height: 14),
         _ReviewCard(
           topic: _topic,
           subject: _subjectController.text.trim(),
@@ -532,10 +569,45 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
     }
     if ((_detailsKey.currentState?.validate() ?? false) && _attested) {
       FocusManager.instance.primaryFocus?.unfocus();
+      final emailVerified = await _ensureEmailVerified();
+      if (!emailVerified || !mounted) return;
       await _resolveHouseRecipient();
       if (!mounted) return;
       setState(() => _step = 2);
     }
+  }
+
+  Future<bool> _ensureEmailVerified() async {
+    final email = _emailController.text.trim();
+    final existing = _emailProof;
+    if (existing != null && existing.matches(email)) return true;
+
+    try {
+      final challenge = await _verificationGateway.startEmailVerification(
+        email,
+      );
+      if (!mounted) return false;
+      final proof = await showDialog<EmailVerificationProof>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => _EmailVerificationDialog(
+          gateway: _verificationGateway,
+          challenge: challenge,
+        ),
+      );
+      if (proof == null || !mounted) return false;
+      setState(() => _emailProof = proof);
+      return true;
+    } on ContactCongressVerificationException catch (error) {
+      if (mounted) _showVerificationError(error.message);
+      return false;
+    }
+  }
+
+  void _showVerificationError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
   }
 
   Future<void> _resolveHouseRecipient() async {
@@ -693,7 +765,9 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
                       )
                     : Icon(isPreview ? CivicIcons.review : CivicIcons.send),
                 label: Text(
-                  isPreview
+                  _submittingDirect
+                      ? 'Checking…'
+                      : isPreview
                       ? 'Preview submission'
                       : 'Submit message to ${_selectedRecipients.length} ${_selectedRecipients.length == 1 ? 'office' : 'offices'}',
                 ),
@@ -723,18 +797,18 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
 
   Future<void> _submitDirect() async {
     setState(() => _submittingDirect = true);
-    final request = CongressionalDeliveryRequest(
-      idempotencyKey: _idempotencyKey,
-      constituent: CongressionalConstituent(
-        fullName: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        address: _addressController.text.trim(),
-        state: widget.stateName,
-      ),
-      topic: _topic,
-      subject: _subjectController.text.trim(),
-      message: _messageController.text.trim(),
-      recipients: [
+    CongressionalDeliveryRequest? request;
+    try {
+      final emailProof = _emailProof;
+      if (emailProof == null ||
+          !emailProof.matches(_emailController.text) ||
+          _addressProof.isExpired ||
+          _attestedAt == null) {
+        throw const ContactCongressVerificationException(
+          'A verification expired. Return to your details and verify again.',
+        );
+      }
+      final recipients = [
         for (final recipient in _selectedRecipients)
           CongressionalDeliveryRecipient(
             name: recipient.name,
@@ -742,20 +816,61 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
             officialUrl: recipient.officialUrl,
             bioguideId: recipient.bioguideId,
           ),
-      ],
-      authorizedAt: DateTime.now().toUtc(),
-    );
-    try {
+      ];
+      final humanProof = await _verificationGateway.verifyHumanChallenge(
+        action: 'contact_congress_send',
+      );
+      final authorization = await _verificationGateway.authorizeSend(
+        CongressionalSendAuthorizationRequest(
+          addressProof: _addressProof,
+          emailProof: emailProof,
+          humanProof: humanProof,
+          email: _emailController.text.trim(),
+          address: _addressController.text.trim(),
+          recipients: recipients,
+          topic: _topic,
+          subject: _subjectController.text.trim(),
+          message: _messageController.text.trim(),
+          attestationVersion: 'contact-congress-v1',
+          attestedAt: _attestedAt!,
+        ),
+      );
+      request = CongressionalDeliveryRequest(
+        idempotencyKey: authorization.idempotencyKey,
+        constituent: CongressionalConstituent(
+          fullName: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          address: _addressController.text.trim(),
+          state: widget.stateName,
+        ),
+        topic: _topic,
+        subject: _subjectController.text.trim(),
+        message: _messageController.text.trim(),
+        recipients: recipients,
+        authorizedAt: authorization.issuedAt,
+        sendAuthorizationToken: authorization.token,
+        sendAuthorizationExpiresAt: authorization.expiresAt,
+      );
       final result = await _deliveryService.submit(request);
       if (!mounted) return;
       setState(() => _deliveryResult = result);
+    } on ContactCongressVerificationException catch (error) {
+      if (!mounted) return;
+      _showVerificationError(error.message);
     } catch (_) {
       if (!mounted) return;
+      if (request == null) {
+        _showVerificationError(
+          'Verification could not be completed. Nothing was sent.',
+        );
+        return;
+      }
+      final failedRequest = request;
       setState(() {
         _deliveryResult = CongressionalDeliveryResult(
-          idempotencyKey: _idempotencyKey,
+          idempotencyKey: failedRequest.idempotencyKey,
           offices: [
-            for (final recipient in request.recipients)
+            for (final recipient in failedRequest.recipients)
               CongressionalOfficeDeliveryResult(
                 recipient: recipient,
                 status: CongressionalDeliveryStatus.failed,
@@ -815,6 +930,259 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
         borderSide: const BorderSide(color: CivicPalette.actionBlue, width: 2),
       ),
     );
+  }
+}
+
+class _EmailVerificationStatus extends StatelessWidget {
+  const _EmailVerificationStatus({
+    required this.verified,
+    required this.preview,
+  });
+
+  final bool verified;
+  final bool preview;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      key: const Key('email-verification-status'),
+      children: [
+        Icon(
+          verified ? CivicIcons.success : CivicIcons.privacy,
+          size: 17,
+          color: verified ? CivicPalette.green : CivicPalette.actionBlue,
+        ),
+        const SizedBox(width: 7),
+        Expanded(
+          child: Text(
+            verified
+                ? preview
+                      ? 'Email confirmed for this development preview.'
+                      : 'Email confirmed.'
+                : 'You’ll confirm this email before review. The draft will stay here.',
+            style: TextStyle(
+              color: verified ? CivicPalette.green : CivicPalette.subtleInk,
+              fontSize: 12,
+              fontWeight: verified ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VerificationSummary extends StatelessWidget {
+  const _VerificationSummary({
+    required this.addressProof,
+    required this.emailProof,
+    required this.attested,
+  });
+
+  final CongressionalAddressProof addressProof;
+  final EmailVerificationProof? emailProof;
+  final bool attested;
+
+  @override
+  Widget build(BuildContext context) {
+    final preview =
+        addressProof.mode == ContactCongressVerificationMode.preview;
+    return Container(
+      key: const Key('verification-summary'),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: CivicPalette.blueTint,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Ready checks',
+            style: TextStyle(
+              color: CivicPalette.navy,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _VerificationSummaryRow(
+            text:
+                'Address matched to district ${addressProof.stateAbbreviation}-${addressProof.districtCode}',
+          ),
+          _VerificationSummaryRow(
+            text: emailProof == null
+                ? 'Email confirmation missing'
+                : preview
+                ? 'Email confirmed in development preview'
+                : 'Email confirmed',
+            success: emailProof != null,
+          ),
+          _VerificationSummaryRow(
+            text: attested
+                ? 'Residency and message authorization confirmed'
+                : 'Attestation missing',
+            success: attested,
+          ),
+          const SizedBox(height: 5),
+          Text(
+            preview
+                ? 'The human check and five-minute send authorization will also run in development preview when you continue.'
+                : 'A quiet human check and five-minute send authorization run only when you press Send.',
+            style: const TextStyle(
+              color: CivicPalette.subtleInk,
+              fontSize: 12,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerificationSummaryRow extends StatelessWidget {
+  const _VerificationSummaryRow({required this.text, this.success = true});
+
+  final String text;
+  final bool success;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 7),
+      child: Row(
+        children: [
+          Icon(
+            success ? CivicIcons.success : CivicIcons.warning,
+            color: success ? CivicPalette.green : const Color(0xFF9A3412),
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Text(text)),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmailVerificationDialog extends StatefulWidget {
+  const _EmailVerificationDialog({
+    required this.gateway,
+    required this.challenge,
+  });
+
+  final ContactCongressVerificationGateway gateway;
+  final EmailVerificationChallenge challenge;
+
+  @override
+  State<_EmailVerificationDialog> createState() =>
+      _EmailVerificationDialogState();
+}
+
+class _EmailVerificationDialogState extends State<_EmailVerificationDialog> {
+  final _codeController = TextEditingController();
+  bool _checking = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _codeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final previewCode = widget.challenge.previewCode;
+    return AlertDialog(
+      title: const Text('Confirm your email'),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              widget.challenge.mode == ContactCongressVerificationMode.preview
+                  ? 'Development preview: no email was sent. Enter the preview code below to test the complete flow.'
+                  : 'Enter the six-digit code sent to ${widget.challenge.maskedEmail}. Your draft is safe while you verify.',
+              style: const TextStyle(height: 1.4),
+            ),
+            if (previewCode != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                key: const Key('preview-email-code'),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: CivicPalette.purpleTint,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  'Preview code: $previewCode',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: CivicPalette.purple,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
+            TextField(
+              key: const Key('email-verification-code-field'),
+              controller: _codeController,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              autofillHints: const [AutofillHints.oneTimeCode],
+              maxLength: 6,
+              decoration: InputDecoration(
+                labelText: 'Six-digit code',
+                errorText: _error,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              onSubmitted: (_) => _confirm(),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _checking ? null : () => Navigator.of(context).pop(),
+          child: const Text('Back'),
+        ),
+        FilledButton(
+          key: const Key('confirm-email-code-button'),
+          onPressed: _checking ? null : _confirm,
+          child: Text(_checking ? 'Checking…' : 'Confirm email'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirm() async {
+    if (_codeController.text.trim().length != 6) {
+      setState(() => _error = 'Enter all six digits');
+      return;
+    }
+    setState(() {
+      _checking = true;
+      _error = null;
+    });
+    try {
+      final proof = await widget.gateway.confirmEmailVerification(
+        challenge: widget.challenge,
+        code: _codeController.text,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pop(proof);
+    } on ContactCongressVerificationException catch (error) {
+      if (!mounted) return;
+      setState(() => _error = error.message);
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
   }
 }
 

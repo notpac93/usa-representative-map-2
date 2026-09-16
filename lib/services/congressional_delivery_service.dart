@@ -64,6 +64,8 @@ class CongressionalDeliveryRequest {
     required this.message,
     required this.recipients,
     required this.authorizedAt,
+    this.sendAuthorizationToken,
+    this.sendAuthorizationExpiresAt,
   });
 
   final String idempotencyKey;
@@ -73,6 +75,11 @@ class CongressionalDeliveryRequest {
   final String message;
   final List<CongressionalDeliveryRecipient> recipients;
   final DateTime authorizedAt;
+
+  /// Opaque, short-lived capability minted by the application backend after
+  /// address, email, attestation, and bot checks succeed.
+  final String? sendAuthorizationToken;
+  final DateTime? sendAuthorizationExpiresAt;
 }
 
 class CongressionalOfficeDeliveryResult {

@@ -48,6 +48,23 @@ The Flutter implementation can replace the placeholder only with a gateway
 that calls this application-owned backend over HTTPS. It must not choose an
 adapter or hold chamber configuration locally.
 
+## Verification gateway contract
+
+`lib/services/contact_congress_verification_service.dart` now defines the
+client-side proof sequence used before the delivery gateway:
+
+1. an exact Census match receives a benchmarked, expiring address proof;
+2. a first-send email challenge receives a short-lived email proof;
+3. the constituent attestation is timestamped and versioned;
+4. final send receives a single-use human-challenge proof; and
+5. the backend binds those proofs, recipients, address, subject, and message to
+   a five-minute opaque send authorization and idempotency key.
+
+`PreviewContactCongressVerificationGateway` exercises this sequence locally and
+labels it as a development preview. It does not send email, call a bot provider,
+or produce a production authorization. A production HTTPS implementation must
+replace it before direct delivery is enabled.
+
 ## Status mapping rule
 
 Do not map an HTTP success to `delivered`. Use `acceptedForRouting` only when

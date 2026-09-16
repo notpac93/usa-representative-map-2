@@ -69,6 +69,7 @@ void main() {
     await tester.tap(find.byKey(const Key('contact-attestation')));
     await tester.tap(find.byKey(const Key('contact-continue-button')));
     await tester.pumpAndSettle();
+    await _confirmPreviewEmail(tester);
 
     expect(find.text('Review and submit'), findsOneWidget);
     expect(
@@ -181,6 +182,7 @@ void main() {
     await tester.tap(find.byKey(const Key('contact-attestation')));
     await tester.tap(find.byKey(const Key('contact-continue-button')));
     await tester.pumpAndSettle();
+    await _confirmPreviewEmail(tester);
 
     expect(
       find.textContaining('Exact Representative was added'),
@@ -323,6 +325,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('contact-continue-button')));
     await tester.pumpAndSettle();
+    await _confirmPreviewEmail(tester);
     expect(find.text('Review and submit'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Back'));
@@ -376,6 +379,18 @@ Future<void> _pumpAtReview(
   );
   await tester.tap(find.byKey(const Key('contact-attestation')));
   await tester.tap(find.byKey(const Key('contact-continue-button')));
+  await tester.pumpAndSettle();
+  await _confirmPreviewEmail(tester);
+}
+
+Future<void> _confirmPreviewEmail(WidgetTester tester) async {
+  expect(find.text('Confirm your email'), findsOneWidget);
+  expect(find.byKey(const Key('preview-email-code')), findsOneWidget);
+  await tester.enterText(
+    find.byKey(const Key('email-verification-code-field')),
+    '246810',
+  );
+  await tester.tap(find.byKey(const Key('confirm-email-code-button')));
   await tester.pumpAndSettle();
 }
 

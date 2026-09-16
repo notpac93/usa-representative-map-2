@@ -52,6 +52,8 @@ void main() {
       expect(result.match?.districtNumber, 35);
       expect(result.match?.districtCode, '35');
       expect(result.match?.congressionalSession, '119');
+      expect(result.match?.benchmark, 'Public_AR_Current');
+      expect(result.match?.vintage, 'Current_Current');
       expect(result.match?.isAtLarge, isFalse);
     });
 
