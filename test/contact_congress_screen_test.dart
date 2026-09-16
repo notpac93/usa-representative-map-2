@@ -253,6 +253,84 @@ void main() {
 
     expect(find.text('1 office selected'), findsOneWidget);
   });
+
+  testWidgets('back moves one step at a time and preserves the full draft', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(900, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: ContactCongressScreen(
+          stateName: 'California',
+          recipients: recipients,
+          initialAddress: '123 Main St, Los Angeles, CA 90012',
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Choose a topic'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Education').last);
+    await tester.enterText(
+      find.byKey(const Key('contact-subject-field')),
+      'Keep this subject',
+    );
+    await tester.enterText(
+      find.byKey(const Key('contact-message-field')),
+      'Please keep this complete message when I move between every step.',
+    );
+    await tester.tap(find.byKey(const Key('contact-continue-button')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Full name'),
+      'Taylor Citizen',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Email address'),
+      'taylor@example.com',
+    );
+    await tester.tap(find.byKey(const Key('contact-attestation')));
+
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Write once. Contact each office.'), findsOneWidget);
+    expect(find.text('Education'), findsOneWidget);
+    expect(find.text('Keep this subject'), findsOneWidget);
+    expect(
+      find.text(
+        'Please keep this complete message when I move between every step.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const Key('contact-continue-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('Taylor Citizen'), findsOneWidget);
+    expect(find.text('taylor@example.com'), findsOneWidget);
+    expect(
+      tester
+          .widget<CheckboxListTile>(
+            find.byKey(const Key('contact-attestation')),
+          )
+          .value,
+      isTrue,
+    );
+
+    await tester.tap(find.byKey(const Key('contact-continue-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('Review and submit'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.text('Where replies go'), findsOneWidget);
+    expect(find.text('Taylor Citizen'), findsOneWidget);
+    expect(find.text('taylor@example.com'), findsOneWidget);
+  });
 }
 
 Future<void> _pumpAtReview(

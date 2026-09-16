@@ -139,32 +139,52 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CivicPalette.canvas,
-      appBar: AppBar(
-        title: const Text('Contact Congress'),
-        backgroundColor: _navy,
-        foregroundColor: Colors.white,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _ProgressHeader(currentStep: _step),
-            Expanded(
-              child: IndexedStack(
-                index: _step,
-                children: [
-                  _buildComposeStep(),
-                  _buildDetailsStep(),
-                  _buildReviewStep(),
-                ],
+    return PopScope<void>(
+      canPop: _step == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _step > 0) _goToPreviousStep();
+      },
+      child: Scaffold(
+        backgroundColor: CivicPalette.canvas,
+        appBar: AppBar(
+          leading: BackButton(onPressed: _goBack),
+          title: const Text('Contact Congress'),
+          backgroundColor: _navy,
+          foregroundColor: Colors.white,
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              _ProgressHeader(currentStep: _step),
+              Expanded(
+                child: IndexedStack(
+                  index: _step,
+                  children: [
+                    _buildComposeStep(),
+                    _buildDetailsStep(),
+                    _buildReviewStep(),
+                  ],
+                ),
               ),
-            ),
-            if (_step < 2) _buildBottomNavigation(),
-          ],
+              if (_step < 2) _buildBottomNavigation(),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _goBack() {
+    if (_step > 0) {
+      _goToPreviousStep();
+      return;
+    }
+    Navigator.of(context).maybePop();
+  }
+
+  void _goToPreviousStep() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _step--);
   }
 
   Widget _buildComposeStep() {
@@ -459,7 +479,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
             children: [
               if (_step > 0) ...[
                 TextButton.icon(
-                  onPressed: () => setState(() => _step--),
+                  onPressed: _goToPreviousStep,
                   icon: const Icon(CivicIcons.back),
                   label: const Text('Back'),
                 ),
