@@ -69,8 +69,9 @@ offered later as clearly separate official-directory links.
 - Confirm email ownership before a first direct send; keep the drafted message.
 - Bind the matched address, chosen recipients, message hash, consent, and challenge
   to a short-lived server send intent.
-- Keep raw address/message data out of analytics and logs; encrypt the delivery
-  queue and purge raw payloads after the documented retry window.
+- Keep raw address/message data out of analytics and logs; default to
+  synchronous pass-through and preserve failed drafts on device. Add an
+  encrypted retry queue only when contractually required or explicitly chosen.
 - Offer opt-in on-device profile saving only after a successful completion.
 
 ### 3. Abuse resistance

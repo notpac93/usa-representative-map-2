@@ -69,11 +69,14 @@ Every cooldown needs a visible reason category, expiry time, and support/appeal 
 
 ## Privacy and Retention
 
-- Keep raw name, address, email, and message only in the encrypted delivery queue; purge within 24 hours of terminal success or after a maximum 72-hour retry window.
+- Default to synchronous pass-through delivery with raw name, address, email, and message held only in device and request memory. Preserve a failed draft on the device instead of silently creating a backend retry queue.
+- Add an encrypted raw-payload queue only if a chamber contract requires it or the user explicitly chooses delayed retry after a clear retention disclosure.
 - Rate-limit addresses with a rotating keyed HMAC retained for no more than 30 days.
 - Use a random, signed installation token—not a durable hardware fingerprint—and rotate it at least every 30 days.
 - Keep coarse abuse events and delivery status without raw content for the documented operations period.
 - Never put message text, subject, address, email, precise location, or challenge tokens in analytics, traces, crash reports, or session replay.
+
+The complete field, token, processor, and deletion design is in [the privacy-minimal protocol](CONTACT_CONGRESS_PRIVACY_MINIMAL_PROTOCOL.md).
 
 ## Current Implementation Boundary
 

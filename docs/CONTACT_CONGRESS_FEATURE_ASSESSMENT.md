@@ -133,13 +133,13 @@ Proposed default, subject to legal and vendor-contract review:
 
 | Data | Purpose | Storage proposal |
 | --- | --- | --- |
-| Full name, address, email, message | Required delivery payload | Encrypted queue only; purge within 24 hours of terminal success or after a maximum 72-hour retry window |
+| Full name, address, email, message | Required delivery payload | Device and request memory only in default pass-through mode; no backend persistence |
 | Normalized address fingerprint | Rate limiting and duplicate defense | Keyed HMAC, rotating key; retain 30 days |
-| Delivery event | Receipt and operations | Opaque message ID, target, timestamps, status code; no raw message or address; retain 90 days |
+| Delivery event | Short retry/status recovery | Opaque message ID, target, timestamps, status code; no raw message or address; retain 72 hours |
 | Product analytics | Funnel improvement | Coarse district/state and step events only; never raw address, email, message, or subject |
 | Saved profile | Faster repeat use | On device only, opt-in, with a visible delete action |
 
-Redact request bodies and URL query strings from logs, traces, crash reports, session replay, and analytics. Encrypt traffic and queues. Restrict production access by role. Publish a concise privacy notice and a deletion/contact path before accepting real messages.
+Redact request bodies and URL query strings from logs, traces, crash reports, session replay, and analytics. Encrypt traffic and any contractually required opt-in retry queue. Restrict production access by role. Publish a concise privacy notice and a deletion/contact path before accepting real messages. See the [privacy-minimal protocol](CONTACT_CONGRESS_PRIVACY_MINIMAL_PROTOCOL.md).
 
 ## Technical Shape
 

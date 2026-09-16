@@ -62,10 +62,14 @@ office separately for retry or follow-up.
 - confirmed constituent email and explicit authorization evidence;
 - server-side bot/risk checks and rate limits;
 - a persistent unique constraint on the idempotency key;
-- per-office retry policy, receipts, audit events, and circuit breakers;
+- pass-through delivery by default, on-device retry, content-minimized receipts,
+  audit events, and circuit breakers;
 - configurable chamber/office suspension and a global kill switch;
 - documented encryption, retention, deletion, and incident response;
 - sandbox acceptance followed by production approval for each chamber.
+
+The backend storage boundary and short-lived proof design are defined in the
+[privacy-minimal protocol](CONTACT_CONGRESS_PRIVACY_MINIMAL_PROTOCOL.md).
 
 The in-memory Flutter idempotency wrapper prevents repeat taps during one app
 session. It is a UX safeguard, not the authoritative deduplication control.
