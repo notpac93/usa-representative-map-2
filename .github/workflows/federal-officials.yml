@@ -1,0 +1,72 @@
+name: Government data check
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Check and report, or save verified data to the archive (neither releases the app)
+        type: choice
+        options: [check, save]
+        default: check
+        required: true
+      approve_version:
+        description: Exact data version from a reviewed report (only needed for flagged changes)
+        type: string
+        required: false
+permissions:
+  contents: write
+concurrency:
+  group: federal-officials-publisher
+  cancel-in-progress: false
+jobs:
+  check-and-save:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test collection and publication safeguards
+        run: python -m unittest discover -s scripts/tests -p 'test_federal*.py'
+      - name: Restore latest published data and recovery history
+        run: |
+          if git ls-remote --exit-code --heads origin codex/federal-snapshots; then
+            git fetch origin codex/federal-snapshots
+            git show FETCH_HEAD:assets/data/federal_officials.json > /tmp/previous-federal.json
+            cp /tmp/previous-federal.json assets/data/federal_officials.json
+            if git cat-file -e FETCH_HEAD:data/federal 2>/dev/null; then
+              git archive FETCH_HEAD data/federal | tar -x
+            fi
+          else
+            remote_status=$?
+            if [ "$remote_status" -ne 2 ]; then exit "$remote_status"; fi
+          fi
+      - name: Download government records, compare, and optionally save
+        id: data
+        env:
+          CHECK_MODE: ${{ inputs.mode }}
+          APPROVE_VERSION: ${{ inputs.approve_version }}
+        run: |
+          args=(--check)
+          if [ "$CHECK_MODE" = 'save' ]; then args=(--publish); fi
+          if [ -n "$APPROVE_VERSION" ]; then args+=(--approve "$APPROVE_VERSION"); fi
+          python scripts/federal_data_pipeline.py "${args[@]}"
+      - name: Retain change report, candidate, and government evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: federal-data-check-${{ github.run_id }}
+          path: tmp/federal-checks/
+          if-no-files-found: ignore
+          retention-days: 90
+      - name: Show check report
+        if: always()
+        run: |
+          for report in tmp/federal-checks/*/report.md; do
+            if [ -f "$report" ]; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
+          done
+      - name: Save verified data and recovery history to the archive
+        if: success() && inputs.mode == 'save'
+        run: bash scripts/publish_federal_snapshot.sh

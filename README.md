@@ -1,5 +1,17 @@
 ## USA Representative Map
 
+### Federal government data checks
+
+The Flutter app's federal officials have an on-demand government download, validation, comparison, and guarded publication pipeline:
+
+```sh
+python3 scripts/federal_data_pipeline.py --check
+python3 scripts/federal_data_pipeline.py --publish
+```
+
+Checks leave published data unchanged and produce a readable report. Publication preserves the previous version and government evidence first; missing officials, lost contacts, and other substantial changes require review. The GitHub workflow is manual, with **check** as its default and **save** for the data archive. Neither releases an app update. See [the GitHub operator guide](docs/GOVERNMENT_DATA_CHECK.md). See [the federal data runbook](docs/FEDERAL_OFFICIALS.md) for supported coverage, review, recovery, and deployment.
+
+
 Interactive, offline-first React + TypeScript app that lets users explore US states via an SVG map or list and view high‑level civic representation info per state.
 
 ### Features
