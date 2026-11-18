@@ -1,3 +1,10 @@
+import 'federal_officials_screen.dart';
+import '../services/federal_officials_service.dart';
+import 'leader_quick_profile_screen.dart';
+import 'civic_profile_screen.dart';
+import 'state_detail_screen.dart';
+import '../utils/search_handler.dart';
+import 'entity_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +25,11 @@ class LawmakerDetailScreen extends StatefulWidget {
   final dynamic lawmaker; // Governor, Senator, or Representative
   final String role;
   final String stateId;
+  final bool showDetails;
 
   const LawmakerDetailScreen({
     super.key,
+    this.showDetails = false,
     required this.lawmaker,
     required this.role,
     required this.stateId, // Need for map context
@@ -54,7 +63,6 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     String name = '';
     String? party;
@@ -74,6 +82,7 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
       photoLocalPath = g.photoLocalPath;
       phone = g.phone;
       address = g.address;
+      website = g.website;
       if (g.terms.isNotEmpty) {
         extraInfo.add("Terms:\n${g.terms.join('\n')}");
       }
@@ -131,11 +140,93 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
       }
     }
 
+    if (!widget.showDetails) {
+      final snapshot = FederalOfficialsService.instance.snapshot;
+      String? officeId;
+      final lawmaker = widget.lawmaker;
+      final bio = lawmaker is Senator ? lawmaker.bioguideId : lawmaker is Representative ? lawmaker.bioguideId : null;
+      if (snapshot != null && bio != null) {
+        for (final term in snapshot.terms.values) {
+          if (term.personId == bio) { officeId = term.officeId; break; }
+        }
+      }
+      if (snapshot != null && lawmaker is VicePresident) officeId = 'us:vicePresident';
+      if (snapshot != null && lawmaker is Judge && lawmaker.court == 'Supreme Court of the United States') {
+        for (final person in snapshot.people.values) {
+          if (person.name == lawmaker.name) {
+            for (final term in snapshot.terms.values) {
+              if (term.personId == person.id) officeId = term.officeId;
+            }
+          }
+        }
+      }
+      if (officeId != null) {
+        return FederalOfficialProfileScreen(officeId: officeId, recordsPersonId: bio, onRecords: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => LawmakerDetailScreen(lawmaker: widget.lawmaker, role: widget.role, stateId: widget.stateId, showDetails: true))));
+      }
+
+      return LeaderQuickProfileScreen(
+        name: name,
+        role: roleDisplay,
+        jurisdiction:
+            subTitle ??
+            SearchHandler.stateCodeToName[widget.stateId] ??
+            widget.stateId,
+        party: party,
+        phone: phone,
+        address: address,
+        website: website,
+        photoPath: photoLocalPath,
+        recordedTerm: widget.lawmaker is Governor
+            ? (widget.lawmaker as Governor).terms.lastOrNull
+            : null,
+        onDetails: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => widget.lawmaker is Governor
+                ? CivicProfileScreen(
+                    stateId: widget.stateId,
+                    stateName:
+                        SearchHandler.stateCodeToName[widget.stateId] ??
+                        widget.stateId,
+                    governor: widget.lawmaker as Governor,
+                    governorProfile: true,
+                    onState: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            StateDetailScreen(stateId: widget.stateId),
+                      ),
+                    ),
+                  )
+                : LawmakerDetailScreen(
+                    lawmaker: widget.lawmaker,
+                    role: widget.role,
+                    stateId: widget.stateId,
+                    showDetails: true,
+                  ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(name),
         elevation: 0,
         actions: [
+          EntityDetailsButton(
+            name: name,
+            category: roleDisplay,
+            stateId: widget.stateId,
+            isLeader: true,
+            website: website,
+            facts: {
+              if (party != null) 'Party': party,
+              if (subTitle != null) 'Jurisdiction / office': subTitle,
+              if (phone != null) 'Office phone': phone,
+              if (address != null) 'Office address': address,
+              if (extraInfo.isNotEmpty)
+                'Additional record': extraInfo.join('\n'),
+            },
+          ),
           IconButton(
             key: const Key('share_voter_card_button'),
             icon: const Icon(Icons.share),
@@ -511,14 +602,27 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
                       height: 100,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => (photoLocalPath != null)
-                          ? Image.asset('assets/img/$photoLocalPath', fit: BoxFit.cover)
-                          : Icon(Icons.person, size: 50, color: Colors.grey.shade400),
+                          ? Image.asset(
+                              'assets/img/$photoLocalPath',
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.grey.shade400,
+                            ),
                     )
                   : ((photoLocalPath == null &&
-                          !((lawmaker is Mayor && lawmaker.photoUrl != null) ||
-                              (lawmaker is Judge && lawmaker.photoUrl != null)))
-                      ? Icon(Icons.person, size: 50, color: Colors.grey.shade400)
-                      : null),
+                            !((lawmaker is Mayor &&
+                                    lawmaker.photoUrl != null) ||
+                                (lawmaker is Judge &&
+                                    lawmaker.photoUrl != null)))
+                        ? Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Colors.grey.shade400,
+                          )
+                        : null),
             ),
           ),
           const SizedBox(width: 24),

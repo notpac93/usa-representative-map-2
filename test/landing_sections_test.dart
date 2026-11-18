@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:usa_map_app/data/federal_officials.dart';
+import 'package:usa_map_app/services/federal_officials_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -8,9 +12,21 @@ import 'package:usa_map_app/widgets/executive_section_card.dart';
 import 'package:usa_map_app/widgets/judicial_section_card.dart';
 
 void main() {
+  setUp(() {
+    final registry = jsonDecode(
+      File('assets/data/federal_sources.json').readAsStringSync(),
+    );
+    final sources = (registry['sources'] as List)
+        .map((x) => FederalSource.fromJson(x))
+        .toList();
+    FederalOfficialsService.instance.snapshot = FederalSnapshot.decode(
+      File('assets/data/federal_officials.json').readAsStringSync(),
+      sources,
+    );
+  });
   group('LandingScreen 3-Branch Federal Dashboard Tests', () {
     testWidgets(
-      'Mobile view (< 950px) renders clean centered search without side sections',
+      'Mobile home exposes verified federal records without side sections',
       (tester) async {
         tester.view.physicalSize = const Size(500, 900);
         tester.view.devicePixelRatio = 1.0;
@@ -24,11 +40,12 @@ void main() {
         );
         await tester.pump();
 
-        expect(find.text('Find Your Representatives'), findsOneWidget);
+        expect(find.text('Your Representatives'), findsOneWidget);
         expect(
-          find.byKey(const Key('landing-contact-congress-button')),
+          find.byKey(const Key('federal_officials_directory_mobile')),
           findsOneWidget,
         );
+        expect(find.text('Find My Reps'), findsOneWidget);
         expect(find.byType(CongressScrollSection), findsNothing);
         expect(find.byType(ExecutiveSectionCard), findsNothing);
         expect(find.byType(JudicialSectionCard), findsNothing);
@@ -160,7 +177,7 @@ void main() {
     });
 
     testWidgets(
-      'Tapping JD Vance opens LawmakerDetailScreen for Vice President',
+      'Tapping the vice president opens the verified serving profile',
       (tester) async {
         tester.view.physicalSize = const Size(1200, 800);
         tester.view.devicePixelRatio = 1.0;
@@ -182,10 +199,14 @@ void main() {
         await tester.pump(const Duration(milliseconds: 500));
 
         expect(
-          find.text('President of the United States Senate'),
+          find.text('Vice President of the United States · United States'),
           findsOneWidget,
         );
-        expect(find.textContaining('Article I, Section 3'), findsWidgets);
+        expect(find.text('Serving now'), findsOneWidget);
+        expect(
+          find.text('Official sources and service history'),
+          findsOneWidget,
+        );
       },
     );
 

@@ -11,13 +11,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Federal Branches Direct Links UI Tests', () {
-    testWidgets('LandingScreen displays buttons for all federal branches', (tester) async {
+    testWidgets('LandingScreen displays buttons for all federal branches', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ChangeNotifierProvider(
           create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
+          child: const MaterialApp(home: LandingScreen()),
         ),
       );
 
@@ -26,19 +26,56 @@ void main() {
       }
 
       // Check all 4 buttons on landing screen
-      expect(find.text('Explore National Map'), findsOneWidget);
+      expect(find.text('US States'), findsOneWidget);
+      await tester.ensureVisible(find.text('Federal Branches'));
+      await tester.tap(find.text('Federal Branches'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
       expect(find.text('Executive Branch'), findsOneWidget);
       expect(find.text('Legislative Branch'), findsOneWidget);
       expect(find.text('Judicial Branch'), findsOneWidget);
     });
 
-    testWidgets('Tapping Supreme Court button navigates to SupremeCourtScreen', (tester) async {
+    testWidgets(
+      'Tapping Supreme Court button navigates to SupremeCourtScreen',
+      (tester) async {
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => MapDataProvider(),
+            child: const MaterialApp(home: LandingScreen()),
+          ),
+        );
+
+        for (int i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+
+        await tester.ensureVisible(find.text('Federal Branches'));
+        await tester.tap(find.text('Federal Branches'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+
+        final scotusButton = find.text('Judicial Branch');
+        expect(scotusButton, findsOneWidget);
+
+        await tester.tap(scotusButton);
+        for (int i = 0; i < 10; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+
+        expect(find.byType(SupremeCourtScreen), findsOneWidget);
+        expect(find.text('Supreme Court of the United States'), findsWidgets);
+        expect(find.text('ARTICLE III • THE JUDICIAL BRANCH'), findsOneWidget);
+      },
+    );
+
+    testWidgets('Tapping Congress button navigates to CongressScreen', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ChangeNotifierProvider(
           create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
+          child: const MaterialApp(home: LandingScreen()),
         ),
       );
 
@@ -46,32 +83,10 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
       }
 
-      final scotusButton = find.text('Judicial Branch');
-      expect(scotusButton, findsOneWidget);
-
-      await tester.tap(scotusButton);
-      for (int i = 0; i < 10; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
-
-      expect(find.byType(SupremeCourtScreen), findsOneWidget);
-      expect(find.text('Supreme Court of the United States'), findsWidgets);
-      expect(find.text('ARTICLE III • THE JUDICIAL BRANCH'), findsOneWidget);
-    });
-
-    testWidgets('Tapping Congress button navigates to CongressScreen', (tester) async {
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(
-            home: LandingScreen(),
-          ),
-        ),
-      );
-
-      for (int i = 0; i < 5; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
+      await tester.ensureVisible(find.text('Federal Branches'));
+      await tester.tap(find.text('Federal Branches'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
 
       final congressButton = find.text('Legislative Branch');
       expect(congressButton, findsOneWidget);
@@ -83,7 +98,10 @@ void main() {
 
       expect(find.byType(CongressScreen), findsOneWidget);
       expect(find.text('The United States Congress'), findsWidgets);
-      expect(find.text('U.S. Senate & House of Representatives'), findsOneWidget);
+      expect(
+        find.text('U.S. Senate & House of Representatives'),
+        findsOneWidget,
+      );
     });
   });
 }

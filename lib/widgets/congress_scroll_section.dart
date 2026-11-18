@@ -1,3 +1,4 @@
+import '../services/federal_officials_service.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,17 +31,13 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
   int _hoveredIndex = -1;
 
   // Repeat leaders list to allow extended seamless scrolling
-  late final List<CongressLeader> _leaders;
+  List<CongressLeader> get _leaders => [...CongressLeadershipData.leaders, ...CongressLeadershipData.leaders, ...CongressLeadershipData.leaders];
+  void _onFederalRefresh() { if (mounted) setState(() {}); }
 
   @override
   void initState() {
     super.initState();
-    // 3 repetitions for continuous looping feel
-    _leaders = [
-      ...CongressLeadershipData.leaders,
-      ...CongressLeadershipData.leaders,
-      ...CongressLeadershipData.leaders,
-    ];
+    FederalOfficialsService.instance.addListener(_onFederalRefresh);
     _startAutoScroll();
   }
 
@@ -155,6 +152,7 @@ class _CongressScrollSectionState extends State<CongressScrollSection> {
 
   @override
   void dispose() {
+    FederalOfficialsService.instance.removeListener(_onFederalRefresh);
     _autoScrollTimer?.cancel();
     _scrollController.dispose();
     super.dispose();

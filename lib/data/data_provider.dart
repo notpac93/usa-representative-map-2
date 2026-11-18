@@ -1,3 +1,4 @@
+import '../services/federal_officials_service.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,6 +51,43 @@ class MapDataProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  bool _federalListenerAttached = false;
+
+  void _applyFederalSnapshot() {
+    final snapshot = FederalOfficialsService.instance.snapshot;
+    if (snapshot == null) return;
+    final nextSenators = <String, List<Senator>>{};
+    final nextHouse = <String, List<Representative>>{};
+    final nextCourt = <Judge>[];
+    for (final office in snapshot.offices.values) {
+      final term = snapshot.view(office.id, DateTime.now()).current;
+      if (term == null) continue;
+      final person = snapshot.people[term.personId]!;
+      if (office.kind == 'senate') {
+        (nextSenators[office.state] ??= []).add(Senator(name: person.name, party: person.party,
+          bioguideId: person.bioguideId, photoLocalPath: person.photoLocalPath,
+          phone: term.contact['phone'], address: term.contact['address'], website: term.contact['website'], contactUrl: term.contact['contactUrl']));
+      } else if (office.kind == 'house') {
+        (nextHouse[office.state] ??= []).add(Representative(name: person.name, party: person.party,
+          bioguideId: person.bioguideId, photoLocalPath: person.photoLocalPath,
+          districtNumber: office.district, district: office.district == 0 ? 'At Large' : '${office.district}',
+          phone: term.contact['phone'], office: term.contact['address'], website: term.contact['website'], contactUrl: term.contact['contactUrl']));
+      } else if (office.kind == 'justice') {
+        nextCourt.add(Judge(name: person.name, title: office.title, court: 'Supreme Court of the United States', photoLocalPath: person.photoLocalPath));
+      }
+    }
+    senators = nextSenators;
+    houseMembers = nextHouse;
+    supremeCourt = nextCourt;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    if (_federalListenerAttached) FederalOfficialsService.instance.removeListener(_applyFederalSnapshot);
+    super.dispose();
   }
 
   Future<void> _loadLeaders() async {
@@ -131,6 +169,13 @@ class MapDataProvider extends ChangeNotifier {
       supremeCourt = scList.map((e) => Judge.fromJson(e)).toList();
     } catch (e) {
       debugPrint("Supreme Court load error: $e");
+    }
+
+    await FederalOfficialsService.instance.load();
+    _applyFederalSnapshot();
+    if (!_federalListenerAttached) {
+      FederalOfficialsService.instance.addListener(_applyFederalSnapshot);
+      _federalListenerAttached = true;
     }
 
     // Load Circuit Judges

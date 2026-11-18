@@ -1,3 +1,4 @@
+import 'entity_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -207,6 +208,16 @@ class _SectionDetailScreenState extends State<SectionDetailScreen> {
       appBar: AppBar(
         leading: const BackButton(),
         actions: [
+          EntityDetailsButton(
+            name: widget.selectedFeature.displayName,
+            category: 'Map area',
+            stateId: widget.stateId,
+            facts: {
+              if (widget.selectedFeature.demographics?.population != null)
+                'Population · bundled record, date unspecified':
+                    widget.selectedFeature.demographics!.population!,
+            },
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Image.asset('assets/img/logo.png', width: 32, height: 32),

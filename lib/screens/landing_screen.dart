@@ -1,4 +1,6 @@
+import 'federal_officials_screen.dart';
 import 'package:flutter/material.dart';
+import '../map/national_map_painter.dart';
 import 'package:provider/provider.dart';
 import '../data/data_provider.dart';
 import '../utils/search_handler.dart';
@@ -56,7 +58,10 @@ class _LandingScreenState extends State<LandingScreen> {
       if (result.stateId != null) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (ctx) => StateDetailScreen(stateId: result.stateId!),
+            builder: (ctx) => StateDetailScreen(
+              stateId: result.stateId!,
+              showLeadership: true,
+            ),
           ),
         );
       }
@@ -95,6 +100,12 @@ class _LandingScreenState extends State<LandingScreen> {
             letterSpacing: -0.3,
           ),
           textAlign: TextAlign.center,
+        ),
+        TextButton.icon(
+          key: const Key('federal_officials_directory'),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialsScreen())),
+          icon: const Icon(Icons.verified_outlined, size: 16),
+          label: const Text('Federal officials · official records'),
         ),
         const SizedBox(height: 8),
         Container(
@@ -469,6 +480,259 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
+  void _showFinder(MapDataProvider provider) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: const Text('Find My Reps')),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: _buildSearchCenter(provider),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showFederalBranches() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: const Text('Federal Branches')),
+          body: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              for (final item in [
+                (
+                  'Executive Branch',
+                  Icons.account_balance,
+                  const PresidentDetailScreen(),
+                ),
+                ('Legislative Branch', Icons.groups, const CongressScreen()),
+                ('Judicial Branch', Icons.gavel, const SupremeCourtScreen()),
+              ])
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(18),
+                    leading: Icon(item.$2, color: const Color(0xFF102E50)),
+                    title: Text(item.$1),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.of(
+                      context,
+                    ).push(MaterialPageRoute(builder: (_) => item.$3)),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileHome(MapDataProvider provider) {
+    const navy = Color(0xFF102E50);
+    const pink = Color(0xFFE9A6B6);
+    Widget card({
+      required String label,
+      required IconData icon,
+      required Widget artwork,
+      required VoidCallback onTap,
+      bool wide = false,
+    }) {
+      return Semantics(
+        button: true,
+        label: label,
+        child: Material(
+          color: const Color(0xFF304B69),
+          borderRadius: BorderRadius.circular(26),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                artwork,
+                Positioned(
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 18,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xF21A2D43),
+                      borderRadius: BorderRadius.circular(wide ? 40 : 20),
+                      border: Border.all(
+                        color: wide ? pink : Colors.white24,
+                        width: wide ? 2 : 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(icon, color: wide ? pink : Colors.white, size: 25),
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: wide ? 22 : 18,
+                              height: 1.1,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        if (wide)
+                          const Icon(
+                            Icons.arrow_forward,
+                            color: pink,
+                            size: 19,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      color: const Color(0xFF0D1B2D),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: const BoxDecoration(
+                color: navy,
+                border: Border(bottom: BorderSide(color: pink, width: 4)),
+              ),
+              child: Row(
+                children: [
+                  Image.asset('assets/img/logo.png', width: 44, height: 44),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Your Representatives',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 19,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, bounds) => SingleChildScrollView(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: (bounds.maxHeight * .49).clamp(220.0, 310.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: card(
+                                label: 'US States',
+                                icon: Icons.map_outlined,
+                                onTap: _navigateToMap,
+                                artwork: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    16,
+                                    12,
+                                    16,
+                                    78,
+                                  ),
+                                  child:
+                                      provider.atlas != null &&
+                                          provider.pathCache != null
+                                      ? CustomPaint(
+                                          painter: NationalMapPainter(
+                                            atlas: provider.atlas!,
+                                            pathCache: provider.pathCache!,
+                                          ),
+                                        )
+                                      : const Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: card(
+                                label: 'Federal Branches',
+                                icon: Icons.account_balance_outlined,
+                                onTap: _showFederalBranches,
+                                artwork: ColorFiltered(
+                                  colorFilter: const ColorFilter.mode(
+                                    Color(0xFFB6CEE8),
+                                    BlendMode.color,
+                                  ),
+                                  child: Image.asset(
+                                    'assets/img/capitol.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextButton.icon(
+                        key: const Key('federal_officials_directory_mobile'),
+                        style: TextButton.styleFrom(foregroundColor: Colors.white),
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialsScreen())),
+                        icon: const Icon(Icons.verified_outlined, size: 16),
+                        label: const Text('Federal officials · official records'),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: (bounds.maxHeight * .47).clamp(235.0, 310.0),
+                        child: card(
+                          label: 'Find My Reps',
+                          icon: Icons.badge_outlined,
+                          wide: true,
+                          onTap: () => _showFinder(provider),
+                          artwork: Row(
+                            children: [
+                              for (final photo in [
+                                'senators/ak-lisa-murkowski.jpg',
+                                'senators/nj-cory-a-booker.jpg',
+                                'representatives/CA-doris-matsui.jpg',
+                              ])
+                                Expanded(
+                                  child: Image.asset(
+                                    'assets/img/$photo',
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<MapDataProvider>();
@@ -487,17 +751,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
           if (!isWidescreen) {
             // Mobile and compact tablet view (centered clean search)
-            return Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 32.0,
-                  ),
-                  child: _buildSearchCenter(provider, isWidescreen: false),
-                ),
-              ),
-            );
+            return _buildMobileHome(provider);
           }
 
           // 4 Major Quadrants Layout (Desktop & iPad):

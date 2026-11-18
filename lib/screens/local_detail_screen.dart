@@ -1,3 +1,4 @@
+import 'entity_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -142,6 +143,24 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
+        actions: [
+          EntityDetailsButton(
+            name: searchResult.title,
+            category: searchResult.type == SearchResultType.city
+                ? 'City'
+                : searchResult.type == SearchResultType.county
+                ? 'County'
+                : 'Local jurisdiction',
+            stateId: searchResult.stateId,
+            facts: {
+              if (searchResult.cityName != null) 'City': searchResult.cityName!,
+              if (searchResult.countyName != null)
+                'County': searchResult.countyName!,
+              if (localMayors.isNotEmpty)
+                'Mayor in directory': localMayors.first.name,
+            },
+          ),
+        ],
         title: Text(
           searchResult.title,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
@@ -360,12 +379,14 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
               children: [
                 const Icon(Icons.event, size: 14, color: Color(0xFF1D4ED8)),
                 const SizedBox(width: 6),
-                Text(
-                  '${election.nextElectionDate} • ${election.electionType}',
-                  style: const TextStyle(
-                    color: Color(0xFF1D4ED8),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                Flexible(
+                  child: Text(
+                    '${election.nextElectionDate} • ${election.electionType}',
+                    style: const TextStyle(
+                      color: Color(0xFF1D4ED8),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

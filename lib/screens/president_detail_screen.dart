@@ -1,3 +1,6 @@
+import 'federal_officials_screen.dart';
+import '../services/federal_officials_service.dart';
+import 'entity_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screenshot/screenshot.dart';
@@ -11,8 +14,9 @@ import 'order_pdf_viewer_screen.dart';
 
 class PresidentDetailScreen extends StatefulWidget {
   final President? initialPresident;
+  final bool showRecords;
 
-  const PresidentDetailScreen({super.key, this.initialPresident});
+  const PresidentDetailScreen({super.key, this.initialPresident, this.showRecords = false});
 
   @override
   State<PresidentDetailScreen> createState() => _PresidentDetailScreenState();
@@ -170,6 +174,9 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
 
     final isDesktop = MediaQuery.of(context).size.width > 900;
 
+    if (!widget.showRecords && widget.initialPresident == null && FederalOfficialsService.instance.snapshot != null) {
+      return FederalOfficialProfileScreen(officeId: 'us:president', onRecords: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PresidentDetailScreen(showRecords: true))));
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
       appBar: AppBar(
@@ -178,6 +185,18 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [
+          EntityDetailsButton(
+            name: president.name,
+            category: 'President',
+            isLeader: true,
+            website: president.website,
+            facts: {
+              'Office': president.ordinal,
+              'Party': president.party,
+              'Recorded terms': president.terms.join(', '),
+              if (president.phone != null) 'Office phone': president.phone!,
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.share),
             tooltip: 'Share Card',

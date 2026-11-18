@@ -13,11 +13,12 @@ void main() {
   testWidgets('Landing screen smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const UsaMapApp());
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Verify that the landing screen renders title and buttons
-    expect(find.text('Find Your Representatives'), findsOneWidget);
-    expect(find.text('Executive Branch'), findsOneWidget);
-    expect(find.text('Explore National Map'), findsOneWidget);
+    expect(find.text('Your Representatives'), findsOneWidget);
+    expect(find.text('Federal Branches'), findsOneWidget);
+    expect(find.text('US States'), findsOneWidget);
+    expect(find.text('Find My Reps'), findsOneWidget);
   });
 }

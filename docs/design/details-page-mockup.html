@@ -1,0 +1,121 @@
+<div id="civic-reference-mock">
+ <div class="preview-controls"><label for="crm-profile">Preview</label><select id="crm-profile"><option value="state">State page</option><option value="governor">Governor page</option><option value="city">City page</option></select><span>Revised design concept</span></div>
+ <div class="phone">
+  <header><div class="brand"><i data-lucide="landmark" aria-hidden="true"></i><span>USA Representative Map</span></div><span class="record">Civic profile</span></header>
+  <div class="profile"><div><div class="eyebrow" id="crm-kind">STATE / CA</div><h2 id="crm-name">California</h2></div><div class="profile-symbol"><i data-lucide="map-pin" aria-hidden="true"></i></div></div>
+  <nav aria-label="Profile sections"><button data-tab="Overview" aria-pressed="true">Overview</button><button data-tab="Population" aria-pressed="false">Population</button><button data-tab="Economy" aria-pressed="false">Economy</button><button data-tab="Government" aria-pressed="false">Government</button><button data-tab="Sources" aria-pressed="false">Sources</button></nav>
+  <main id="crm-content" aria-live="polite"></main>
+  <footer><i data-lucide="info" aria-hidden="true"></i><span>Population: Census Vintage 2024 · Historical snapshot</span></footer>
+ </div>
+</div>
+<style>
+#civic-reference-mock{--paper:light-dark(#fff,#18212c);--canvas:light-dark(#fafafa,#111923);--ink:light-dark(#15191e,#f1f4f8);--muted:light-dark(#747981,#aab7c7);--border:light-dark(#eceef1,#354252);--soft:light-dark(#f5f6f7,#23303f);--red:light-dark(#df3e59,#ff8599);--green:light-dark(#48ac80,#73d5ac);--yellow:light-dark(#f3cb38,#e9c338);font:13px/1.45 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);max-width:660px;margin:0 auto}
+#civic-reference-mock *{box-sizing:border-box}
+#civic-reference-mock .preview-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 85px 14px 0}
+#civic-reference-mock .preview-controls select{font:inherit;padding:6px 10px;color:var(--ink);background:var(--paper);border:1px solid var(--border);border-radius:8px}
+#civic-reference-mock .preview-controls>span{color:var(--muted);font-size:11px}
+#civic-reference-mock .phone{background:var(--paper);border:1px solid var(--border);border-radius:25px;overflow:hidden}
+#civic-reference-mock header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 20px 10px}
+#civic-reference-mock .brand{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:650}
+#civic-reference-mock .brand svg{width:17px;height:17px}
+#civic-reference-mock .record{font-size:11px;color:var(--muted)}
+#civic-reference-mock .profile{padding:8px 20px 16px;display:flex;justify-content:space-between;align-items:center}
+#civic-reference-mock .eyebrow{color:var(--muted);letter-spacing:1.1px;font-size:10px}
+#civic-reference-mock h2{font-size:25px;line-height:1.25;margin:5px 0 0;font-weight:700}
+#civic-reference-mock .profile-symbol{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:13px;background:var(--soft)}
+#civic-reference-mock .profile-symbol svg{width:21px;height:21px}
+#civic-reference-mock nav{display:flex;gap:22px;padding:0 20px;border-bottom:1px solid var(--border);overflow:auto;scrollbar-width:none}
+#civic-reference-mock button{font:inherit;cursor:pointer}
+#civic-reference-mock nav button{flex-shrink:0;background:transparent;border:0;padding:9px 0 12px;color:var(--muted);position:relative;font-size:12px}
+#civic-reference-mock nav button[aria-pressed=true]{color:var(--ink);font-weight:650}
+#civic-reference-mock nav button[aria-pressed=true]:after{content:'';position:absolute;bottom:4px;left:calc(50% - 8px);width:16px;height:3px;background:var(--yellow);border-radius:3px}
+#civic-reference-mock main{padding:18px 20px 8px}
+#civic-reference-mock h3{font-size:14px;margin:0;font-weight:700}
+#civic-reference-mock p{margin:0}
+#civic-reference-mock .heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px}
+#civic-reference-mock .subtle{font-size:10px;color:var(--muted)}
+#civic-reference-mock .facts{margin-bottom:16px}
+#civic-reference-mock .quick{width:100%;padding:8px 0;display:flex;gap:10px;justify-content:space-between;align-items:center;text-align:left;background:transparent;border:0;font-size:12px;color:var(--ink)}
+#civic-reference-mock .quick .right{display:flex;align-items:center;gap:9px;text-align:right;color:var(--muted);font-size:11px}
+#civic-reference-mock .tag{background:light-dark(#fff9df,#39321d);color:light-dark(#9c8326,#e8cd76);padding:3px 6px;border-radius:3px;font-size:10px}
+#civic-reference-mock .delta-card{padding:14px;border:1px solid var(--border);border-radius:12px;margin:12px 0 20px}
+#civic-reference-mock .delta-card .question{font-size:12px;margin-bottom:10px}
+#civic-reference-mock .change-labels{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;gap:12px}
+#civic-reference-mock .red{color:var(--red)}
+#civic-reference-mock .green{color:var(--green)}
+#civic-reference-mock .angled-actions{display:flex;gap:5px;margin-bottom:8px}
+#civic-reference-mock .angled-actions button{border:0;padding:9px 12px;background:var(--red);color:light-dark(#fff,#111923);flex:1;font-size:11px;border-radius:4px;clip-path:polygon(3% 0,100% 0,97% 100%,0 100%)}
+#civic-reference-mock .angled-actions button:last-child{background:var(--green)}
+#civic-reference-mock .period-note{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;gap:8px}
+#civic-reference-mock .overall{margin-bottom:12px}
+#civic-reference-mock .stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#civic-reference-mock .stat{border:1px solid var(--border);border-radius:11px;padding:11px 10px;min-width:0}
+#civic-reference-mock .stat .label{font-size:10px;color:var(--muted);display:block;margin-bottom:4px}
+#civic-reference-mock .stat strong{font-size:17px;display:block;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#civic-reference-mock .stat .change{font-size:10px;display:block;margin-top:4px}
+#civic-reference-mock .list-panel{border:1px solid var(--border);border-radius:12px;padding:0 12px;margin-bottom:16px}
+#civic-reference-mock .list-header{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px;color:var(--muted);font-size:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+#civic-reference-mock .trend-row{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px;align-items:center;padding:14px 0}
+#civic-reference-mock .trend-row .entity{display:flex;align-items:center;gap:7px;font-weight:650;font-size:12px}
+#civic-reference-mock .dot{width:7px;height:7px;border-radius:50%;background:var(--ink);flex-shrink:0}
+#civic-reference-mock .numeric{text-align:right;font-variant-numeric:tabular-nums}
+#civic-reference-mock .numeric strong{font-size:13px;font-weight:700;display:block}
+#civic-reference-mock .numeric small{font-size:10px;display:block;margin-top:3px}
+#civic-reference-mock .spark{width:100%;height:31px;display:block;overflow:visible}
+#civic-reference-mock .emptyline{height:1px;background:var(--border);width:75%;margin:auto}
+#civic-reference-mock .notice{font-size:11px;color:var(--muted);background:var(--soft);border-radius:7px;padding:9px 11px;margin-bottom:14px}
+#civic-reference-mock .section-label{font-size:11px;color:var(--muted);margin:15px 0 6px}
+#civic-reference-mock .periods{display:flex;gap:6px;margin:12px 0}
+#civic-reference-mock .periods button{padding:5px 10px;color:var(--muted);background:var(--soft);border:0;border-radius:6px;font-size:11px}
+#civic-reference-mock .periods button[aria-pressed=true]{color:var(--ink);background:light-dark(#fff5ca,#3a321b)}
+#civic-reference-mock .bar-row{display:grid;grid-template-columns:36px 1fr 80px;gap:10px;align-items:center;margin:15px 0;font-size:11px;font-variant-numeric:tabular-nums}
+#civic-reference-mock .bar-track{height:6px;background:var(--soft);border-radius:4px}
+#civic-reference-mock .bar-track span{display:block;height:6px;background:var(--green);border-radius:4px}
+#civic-reference-mock a{color:var(--ink);text-decoration:none}
+#civic-reference-mock footer{display:flex;gap:7px;align-items:center;padding:10px 20px 16px;font-size:10px;color:var(--muted)}
+#civic-reference-mock footer svg{width:13px;height:13px;flex-shrink:0}
+@media(max-width:420px){#civic-reference-mock .preview-controls{padding-right:0}#civic-reference-mock main{padding:15px 12px 5px}#civic-reference-mock nav{gap:19px;padding:0 12px}#civic-reference-mock .stat{padding:9px 7px}#civic-reference-mock .stat strong{font-size:15px}#civic-reference-mock header{padding:17px 13px 10px}#civic-reference-mock .profile{padding:8px 13px 15px}#civic-reference-mock .record{display:none}}
+</style>
+<script>
+(()=>{
+const root=document.getElementById('civic-reference-mock');
+const points=[39521958,39142565,39142414,39198693,39431263];
+let s={profile:'state',tab:'Overview',period:5};
+const saved=window.openai?.widgetState?.modelContent;
+if(saved&&['state','city','governor'].includes(saved.profile))s={...s,profile:saved.profile};
+const quick=(label,value,tab,tag=false)=>`<button class="quick" data-go="${tab}"><span>${label}</span><span class="right"><span class="${tag?'tag':''}">${value}</span><span>›</span></span></button>`;
+const heading=(name,meta)=>`<div class="heading"><h3>${name}</h3><span class="subtle">${meta}</span></div>`;
+const stat=(label,value,change,cls='')=>`<div class="stat"><span class="label">${label}</span><strong>${value}</strong><span class="change ${cls}">${change}</span></div>`;
+function spark(values,up){const lo=Math.min(...values),hi=Math.max(...values);const path=values.map((v,i)=>`${i/(values.length-1)*100},${27-(v-lo)/(hi-lo||1)*22}`).join(' ');return `<svg class="spark" viewBox="-2 0 104 32" role="img" aria-label="Population trend, 2020 to 2024"><polyline points="${path}" fill="none" stroke="var(--${up?'green':'red'})" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
+function render(){
+ const leader=s.profile==='governor',city=s.profile==='city';
+ root.querySelector('#crm-profile').value=s.profile;
+ root.querySelector('#crm-kind').textContent=leader?'GOVERNOR / CA':city?'CITY / CA':'STATE / CA';
+ root.querySelector('#crm-name').textContent=leader?'Governor profile':city?'Sacramento':'California';
+ root.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===s.tab)));
+ const context=(leader||city)?`<div class="notice">California data · ${leader?'State context, not a rating of the governor.':'Statewide figures, not city population.'}</div>`:'';
+ let html='';
+ if(s.tab==='Overview'){
+ html=`<div class="facts">${heading(leader?'Office highlights':'Quick look','Explore ›')}${leader?quick('Office & jurisdiction','Governor · CA','Government')+quick('Recorded term history','Office record','Government',true)+quick('Office contacts','Phone & website','Government'):quick('Population history','2020–2024','Population',true)+quick('State economy','GDP & income','Economy')+quick(city?'Local leadership':'Government & leaders',city?'Mayor':'Governor & delegation','Government')}${quick('Sources & coverage','Official records','Sources')}</div>`+context+
+ `<section class="delta-card"><div class="question">How has California’s population changed?</div><div class="change-labels"><span class="red">2020–2024 <strong>−0.23%</strong></span><span class="green">2023–2024 <strong>+0.59%</strong></span></div><div class="angled-actions"><button data-go="Population">Long-term change ↘</button><button data-go="Population">Latest annual change ↗</button></div><div class="period-note"><span>−90,695 residents since 2020</span><span>Census estimates</span></div></section>`+
+ `<section class="overall">${heading('State overall','July 1 estimates')}<div class="stat-grid">${stat('Population · 2024','39.43M','−0.23% since 2020','red')}${stat('Annual change','+232.6K','+0.59% vs. 2023','green')}${stat('State GDP','—','Data not connected')}</div></section>`+
+ `<section class="list-panel"><div class="list-header"><span>Indicator</span><span>Trend · 2020–2024</span><span class="numeric">Latest / change</span></div><div class="trend-row"><div class="entity"><span class="dot"></span>Population</div>${spark(points,false)}<div class="numeric"><strong>39.43M</strong><small class="red">−0.23% · 4 years</small></div></div><div class="trend-row"><div class="entity"><span class="dot"></span>State GDP</div><div class="emptyline"></div><div class="numeric"><strong>—</strong><small class="subtle">Not connected</small></div></div><div class="trend-row"><div class="entity"><span class="dot"></span>Income</div><div class="emptyline"></div><div class="numeric"><strong>—</strong><small class="subtle">Not connected</small></div></div></section>`;
+ }else if(s.tab==='Population'){
+ const start=s.period===3?2:0;
+ html=context+heading('Population','California · residents')+`<div class="stat-grid">${stat('Population · 2024','39.43M','Census estimate')}${stat('Annual change','+0.59%','2023–2024','green')}${stat('Four-year change','−0.23%','2020–2024','red')}</div><div class="periods">${[3,5].map(n=>`<button data-period="${n}" aria-pressed="${s.period===n}">${n} years</button>`).join('')}</div><div class="list-panel">${points.slice(start).map((p,i)=>`<div class="bar-row"><span>${2020+start+i}</span><div class="bar-track"><span style="width:${p/42000000*100}%"></span></div><span class="numeric">${p.toLocaleString('en-US')}</span></div>`).join('')}</div><p class="subtle">July 1 resident estimates · Bars start at zero · Vintage 2024</p>`;
+ }else if(s.tab==='Economy'){
+ html=context+heading('Economy','State-level indicators')+`<div class="stat-grid">${stat('Recorded GDP','—','BEA · planned')}${stat('Real GDP growth','—','BEA · planned')}${stat('Household income','—','Census · planned')}</div><div class="section-label">Economic records</div><div class="list-panel">${quick('GDP over time','Not connected','Sources')}${quick('Inflation-adjusted growth','Not connected','Sources')}${quick('Income & employment','Not connected','Sources')}</div><div class="notice">Economic figures will show their source, reporting year, and units. No example numbers are used here.</div>`;
+ }else if(s.tab==='Government'){
+ html=heading(leader?'Office record':city?'City government':'Government & leadership','Profile fields')+`<div class="list-panel">${leader?quick('Office','Governor','Government')+quick('Jurisdiction','California','Government')+quick('Party & recorded terms','From office record','Government')+quick('Office contacts','Phone, address, website','Government'):quick(city?'Mayor':'Governor','Linked profile','Government')+quick(city?'County & state':'U.S. senators','Jurisdiction records','Government')+quick('U.S. representatives','Linked profiles','Government')}</div><div class="notice">This concept shows the fields and layout. Officeholder names and contact details come from the app’s records.</div>`;
+ }else{
+ html=heading('Sources & coverage','Transparency')+`<div class="list-panel">${quick('Population series','2020–2024 · available','Population',true)}${quick('GDP, income & employment','Not connected','Economy')}${quick('Profile records','Verification dates vary','Government')}</div><div class="section-label">Official sources</div><div class="list-panel"><a class="quick" href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noopener"><span>Census · Population estimates</span><span>↗</span></a><a class="quick" href="https://www.bea.gov/data/gdp/gdp-state" target="_blank" rel="noopener"><span>BEA · State GDP</span><span>↗</span></a><a class="quick" href="https://www.bls.gov/lau/" target="_blank" rel="noopener"><span>BLS · Employment</span><span>↗</span></a></div><div class="notice">Historical population snapshot; not live data. Confirm officeholder and contact information with the official office.</div>`;
+ }
+ root.querySelector('#crm-content').innerHTML=html;
+}
+const save=()=>window.openai?.setWidgetState?.({modelContent:s,privateContent:null})?.catch(()=>{});
+root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.tab)s.tab=b.dataset.tab;if(b.dataset.go)s.tab=b.dataset.go;if(b.dataset.period)s.period=Number(b.dataset.period);render();save()});
+root.querySelector('#crm-profile').addEventListener('change',e=>{s.profile=e.target.value;render();save()});
+window.addEventListener('openai:set_globals',e=>{const v=e.detail?.globals?.widgetState?.modelContent;if(v&&['state','city','governor'].includes(v.profile)){s={...s,...v};render()}});
+render();
+})();
+</script>

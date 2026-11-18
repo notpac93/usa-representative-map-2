@@ -466,27 +466,39 @@ class SearchHandler {
       );
     }
 
-    // 5. SEARCH STATES (e.g. 'California', 'CA', 'Texas', 'TX')
-    if (provider.atlas != null) {
-      final stateMatches = provider.atlas!.states
-          .where((s) {
-            return s.name.toLowerCase().startsWith(lowerQuery) ||
-                s.id.toLowerCase() == lowerQuery;
-          })
-          .take(4);
-
-      for (var s in stateMatches) {
-        results.add(
-          SearchResult(
-            type: SearchResultType.state,
-            title: '${s.name} (${s.id})',
-            subtitle:
-                'Your Statewide Representatives (Governor & 2 U.S. Senators)',
-            stateId: s.id,
+    // State identities do not depend on atlas display names or map loading.
+    // Exact state names/codes lead; same-named cities remain selectable below.
+    final stateQuery = lowerQuery
+        .replaceFirst(RegExp(r'^state (of )?'), '')
+        .trim();
+    final stateMatches = stateCodeToName.entries
+        .where(
+          (entry) =>
+              entry.value.toLowerCase().startsWith(stateQuery) ||
+              entry.key.toLowerCase() == stateQuery,
+        )
+        .toList();
+    stateMatches.sort((a, b) {
+      bool exact(MapEntry<String, String> entry) =>
+          entry.value.toLowerCase() == stateQuery ||
+          entry.key.toLowerCase() == stateQuery;
+      if (exact(a) != exact(b)) return exact(a) ? -1 : 1;
+      return a.value.compareTo(b.value);
+    });
+    results.insertAll(
+      0,
+      stateMatches
+          .take(4)
+          .map(
+            (entry) => SearchResult(
+              type: SearchResultType.state,
+              title: '${entry.value} · State',
+              subtitle:
+                  'State leadership, government rules & representation · ${entry.key}',
+              stateId: entry.key,
+            ),
           ),
-        );
-      }
-    }
+    );
 
     // 6. SEARCH CITIES (e.g., 'Austin', 'Springfield', 'Seattle')
     final seenCityStates = <String>{};

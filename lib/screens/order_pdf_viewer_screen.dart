@@ -291,7 +291,7 @@ class _OrderPdfViewerScreenState extends State<OrderPdfViewerScreen> {
                           pw.SizedBox(height: 2),
                           pw.Text(
                             'Signed: $signDate',
-                            style: const pw.TextStyle(
+                            style: pw.TextStyle(
                               fontSize: 9.5,
                               fontStyle: pw.FontStyle.italic,
                             ),

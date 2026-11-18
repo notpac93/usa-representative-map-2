@@ -22,6 +22,7 @@ class CongressScreen extends StatefulWidget {
 class _CongressScreenState extends State<CongressScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  MapDataProvider? _subscribedProvider;
   final TextEditingController _searchController = TextEditingController();
 
   Map<String, List<Senator>> _senatorsByState = {};
@@ -36,6 +37,8 @@ class _CongressScreenState extends State<CongressScreen>
   @override
   void initState() {
     super.initState();
+    _subscribedProvider = context.read<MapDataProvider>();
+    _subscribedProvider!.addListener(_onFederalData);
     _tabController = TabController(
       length: 4,
       vsync: this,
@@ -112,8 +115,15 @@ class _CongressScreenState extends State<CongressScreen>
     });
   }
 
+  void _onFederalData() {
+    if (!mounted) return;
+    final provider = context.read<MapDataProvider>();
+    setState(() { _senatorsByState = provider.senators ?? {}; _repsByState = provider.houseMembers ?? {}; });
+  }
+
   @override
   void dispose() {
+    _subscribedProvider?.removeListener(_onFederalData);
     _tabController.dispose();
     _searchController.dispose();
     super.dispose();

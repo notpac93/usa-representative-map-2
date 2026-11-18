@@ -15,6 +15,7 @@ class SupremeCourtScreen extends StatefulWidget {
 }
 
 class _SupremeCourtScreenState extends State<SupremeCourtScreen> {
+  MapDataProvider? _subscribedProvider;
   final TextEditingController _searchController = TextEditingController();
   List<Judge> _justices = [];
   bool _isLoading = true;
@@ -24,6 +25,8 @@ class _SupremeCourtScreenState extends State<SupremeCourtScreen> {
   @override
   void initState() {
     super.initState();
+    _subscribedProvider = context.read<MapDataProvider>();
+    _subscribedProvider!.addListener(_onFederalData);
     _loadJustices();
   }
 
@@ -55,8 +58,15 @@ class _SupremeCourtScreenState extends State<SupremeCourtScreen> {
     }
   }
 
+  void _onFederalData() {
+    if (!mounted) return;
+    final provider = context.read<MapDataProvider>();
+    setState(() { _justices = provider.supremeCourt ?? []; });
+  }
+
   @override
   void dispose() {
+    _subscribedProvider?.removeListener(_onFederalData);
     _searchController.dispose();
     super.dispose();
   }

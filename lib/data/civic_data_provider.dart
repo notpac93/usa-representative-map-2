@@ -1,3 +1,4 @@
+import '../services/federal_officials_service.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'bill_models.dart';
@@ -220,6 +221,18 @@ class CivicDataProvider {
   }
 
   President? getCurrentPresident() {
+    final snapshot = FederalOfficialsService.instance.snapshot;
+    if (snapshot != null && snapshot.offices.containsKey('us:president')) {
+      final term = snapshot.view('us:president', DateTime.now()).current;
+      if (term == null) return null;
+      final person = snapshot.people[term.personId]!;
+      final matches = _presidents.where((p)=>p.name == person.name);
+      final recorded = matches.isEmpty ? null : matches.first;
+      return President(id: person.id, name: person.name, ordinal: recorded?.ordinal ?? 'President of the United States',
+        party: person.party ?? recorded?.party ?? '', current: true, terms: recorded?.terms ?? [],
+        phone:term.contact['phone'],address:term.contact['address'],website:term.contact['website'],photoLocalPath:person.photoLocalPath);
+    }
+
     for (final p in _presidents) {
       if (p.current) return p;
     }

@@ -1,3 +1,5 @@
+import '../services/federal_officials_service.dart';
+
 class CongressLeader {
   final String name;
   final String title;
@@ -19,7 +21,48 @@ class CongressLeader {
 }
 
 class CongressLeadershipData {
-  static const List<CongressLeader> leaders = [
+  static List<CongressLeader> get leaders {
+    final snapshot = FederalOfficialsService.instance.snapshot;
+    if (snapshot == null) return const [];
+    final result = <CongressLeader>[];
+    for (final office in snapshot.offices.values) {
+      if (!['houseLeadership', 'senateLeadership'].contains(office.kind))
+        continue;
+      final term = snapshot.view(office.id, DateTime.now()).current;
+      if (term == null) continue;
+      final person = snapshot.people[term.personId]!;
+      final seat = snapshot.terms.values
+          .where(
+            (t) =>
+                t.personId == person.id &&
+                [
+                  'house',
+                  'senate',
+                ].contains(snapshot.offices[t.officeId]!.kind),
+          )
+          .firstOrNull;
+      final jurisdiction = seat == null
+          ? null
+          : snapshot.offices[seat.officeId];
+      result.add(
+        CongressLeader(
+          name: person.name,
+          title: office.title,
+          chamber: office.kind == 'houseLeadership' ? 'House' : 'Senate',
+          party: person.party ?? '',
+          state: jurisdiction?.state ?? 'US',
+          assetPath: person.photoLocalPath == null
+              ? ''
+              : 'assets/img/${person.photoLocalPath}',
+          bioguideId: person.bioguideId,
+        ),
+      );
+    }
+    return result;
+  }
+
+  // Retained historical seed; live leadership always uses the verified snapshot.
+  static const List<CongressLeader> historicalSeed = [
     CongressLeader(
       name: 'Mike Johnson',
       title: 'Speaker of the House',

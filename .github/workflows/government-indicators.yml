@@ -1,0 +1,45 @@
+name: Refresh government indicators
+on:
+  schedule:
+    - cron: '20 14 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: government-indicator-refresh
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate refresh safeguards
+        run: python -m unittest discover -s scripts/tests -p 'test_govern*.py'
+      - name: Fetch verified government releases
+        run: python scripts/refresh_government_indicators.py
+      - name: Refresh durable governor history
+        run: python scripts/refresh_governor_history.py
+      - name: Preserve reviewed national governor history
+        run: python scripts/import_governor_history.py
+      - name: Propose updated data
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if git diff --quiet -- assets/data/government_indicators.json assets/data/governor_history.json; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin codex/government-data-refresh; then
+            git fetch origin codex/government-data-refresh:refs/remotes/origin/codex/government-data-refresh
+          fi
+          git checkout -B codex/government-data-refresh
+          git add assets/data/government_indicators.json assets/data/governor_history.json
+          git commit -m 'Refresh government indicators and governor history'
+          git push --force-with-lease origin codex/government-data-refresh
+          if [ "$(gh pr list --head codex/government-data-refresh --json number --jq length)" = '0' ]; then
+            gh pr create --title 'Refresh government indicators and governor history' --body 'Updates Census ACS, BEA GDP, BLS unemployment, and State Library governor history. Historical people and service periods are retained; source corrections keep revision snapshots. The refresh validates all 50 states and DC, reporting periods, numeric values, and approved government HTTPS sources before replacing the dataset. Merge and rebuild the app to distribute these records.'
+          fi

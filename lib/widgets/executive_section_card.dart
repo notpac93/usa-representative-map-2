@@ -1,7 +1,8 @@
+import '../screens/federal_officials_screen.dart';
+import '../services/federal_officials_service.dart';
+import '../data/federal_officials.dart';
 import 'package:flutter/material.dart';
 import '../screens/president_detail_screen.dart';
-import '../screens/lawmaker_detail_screen.dart';
-import '../data/models.dart';
 import '../data/jd_vance_image.dart';
 
 class ExecutiveSectionCard extends StatefulWidget {
@@ -31,27 +32,21 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
   }
 
   void _openVicePresidentScreen() {
-    final vance = VicePresident(
-      name: 'JD Vance',
-      party: 'Republican',
-      terms: ['2025–Present'],
-      phone: '(202) 456-1111',
-      address: 'The White House, 1600 Pennsylvania Avenue NW, Washington, DC 20500',
-      website: 'https://www.whitehouse.gov/administration/vice-president-vance/',
-      photoLocalPath: 'presidents/jd_vance.jpg',
-      bio: 'James David Vance is the 50th Vice President of the United States. In accordance with Article I, Section 3 of the United States Constitution, the Vice President presides over the Senate and casts tie-breaking votes. Prior to assuming the vice presidency in 2025, he represented the state of Ohio in the United States Senate from 2023 to 2025, served as a combat correspondent in the U.S. Marine Corps, and earned his law degree from Yale Law School.',
-    );
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => LawmakerDetailScreen(
-          lawmaker: vance,
-          role: 'Vice President of the United States',
-          stateId: 'national',
-        ),
-      ),
-    );
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialProfileScreen(officeId: 'us:vicePresident')));
   }
+
+  FederalPerson? _person(String officeId) {
+    final snapshot = FederalOfficialsService.instance.snapshot;
+    if (snapshot == null || !snapshot.offices.containsKey(officeId)) return null;
+    final t = snapshot.view(officeId,DateTime.now()).current;
+    return t == null ? null : snapshot.people[t.personId];
+  }
+
+  @override
+  void initState() { super.initState(); FederalOfficialsService.instance.addListener(_refresh); }
+  void _refresh() { if (mounted) setState(() {}); }
+  @override
+  void dispose() { FederalOfficialsService.instance.removeListener(_refresh); super.dispose(); }
 
   Widget _buildLeaderPortrait({
     required String name,
@@ -283,10 +278,10 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
                   children: [
                     // President
                     _buildLeaderPortrait(
-                      name: 'Donald J. Trump',
-                      title: '47th President of the United States',
-                      assetPath: 'assets/img/presidents/donald_trump.jpg',
-                      party: 'Republican',
+                      name: _person('us:president')?.name ?? 'Service awaiting verification',
+                      title: 'President of the United States',
+                      assetPath: _person('us:president')?.photoLocalPath == null ? '' : 'assets/img/${_person('us:president')!.photoLocalPath}',
+                      party: '',
                       isVance: false,
                       isHovered: _isHoveredCard1,
                       onHoverChanged: (val) => setState(() => _isHoveredCard1 = val),
@@ -297,11 +292,11 @@ class _ExecutiveSectionCardState extends State<ExecutiveSectionCard> {
 
                     // Vice President
                     _buildLeaderPortrait(
-                      name: 'JD Vance',
+                      name: _person('us:vicePresident')?.name ?? 'Service awaiting verification',
                       title: 'Vice President of the United States',
-                      assetPath: 'assets/img/presidents/jd_vance.jpg',
-                      party: 'Republican',
-                      isVance: true,
+                      assetPath: _person('us:vicePresident')?.photoLocalPath == null ? '' : 'assets/img/${_person('us:vicePresident')!.photoLocalPath}',
+                      party: '',
+                      isVance: false,
                       isHovered: _isHoveredCard2,
                       onHoverChanged: (val) => setState(() => _isHoveredCard2 = val),
                       avatarSize: avatarSize,

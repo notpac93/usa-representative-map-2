@@ -245,6 +245,10 @@ class Governor {
   final List<String> terms;
   final String? phone;
   final String? address;
+  final String? website;
+  final String? sourceUrl;
+  final String? retrievedAt;
+  final List<String> biography;
 
   Governor({
     required this.name,
@@ -254,6 +258,10 @@ class Governor {
     this.terms = const [],
     this.phone,
     this.address,
+    this.website,
+    this.sourceUrl,
+    this.retrievedAt,
+    this.biography = const [],
   });
 
   factory Governor.fromJson(Map<String, dynamic> json) {
@@ -279,6 +287,15 @@ class Governor {
       terms: (gov['terms'] as List?)?.map((e) => e.toString()).toList() ?? [],
       phone: phone,
       address: address,
+      website: (gov['links'] as List?)
+          ?.cast<Map<String, dynamic>>()
+          .where((link) => link['label'] == "Governor's Website")
+          .map((link) => link['url'] as String?)
+          .firstOrNull,
+      sourceUrl: json['sourceUrl'] as String?,
+      retrievedAt: json['scrapedAt'] as String?,
+      biography:
+          (gov['about'] as List?)?.map((p) => p.toString()).toList() ?? [],
     );
   }
 }

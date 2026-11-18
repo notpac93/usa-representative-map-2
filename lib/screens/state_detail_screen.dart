@@ -1,3 +1,5 @@
+import 'civic_profile_screen.dart';
+import '../utils/search_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +23,15 @@ import '../data/bill_models.dart';
 
 class StateDetailScreen extends StatefulWidget {
   final String stateId;
+  final bool showMap;
+  final bool showLeadership;
 
-  const StateDetailScreen({super.key, required this.stateId});
+  const StateDetailScreen({
+    super.key,
+    required this.stateId,
+    this.showMap = false,
+    this.showLeadership = false,
+  });
 
   @override
   State<StateDetailScreen> createState() => _StateDetailScreenState();
@@ -48,13 +57,14 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
   void initState() {
     super.initState();
     _transformController.addListener(_onZoomChanged);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MapDataProvider>().loadPlacesForState(widget.stateId).then((
-        _,
-      ) {
-        if (mounted) setState(() {});
+    if (widget.showMap)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<MapDataProvider>().loadPlacesForState(widget.stateId).then(
+          (_) {
+            if (mounted) setState(() {});
+          },
+        );
       });
-    });
   }
 
   @override
@@ -368,6 +378,59 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
     final houseList = (provider.houseMembers?[widget.stateId] as List?) ?? [];
     final mayorList = provider.mayors?[widget.stateId] ?? [];
 
+    if (!widget.showMap) {
+      return CivicProfileScreen(
+        stateId: widget.stateId,
+        stateName:
+            SearchHandler.stateCodeToName[widget.stateId] ?? stateRecord.name,
+        governor: governorData,
+        initialTab: widget.showLeadership ? 'Government' : 'Overview',
+        onExploreMap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) =>
+                StateDetailScreen(stateId: widget.stateId, showMap: true),
+          ),
+        ),
+        onVotingRules: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => VoterRulesScreen(
+              stateName:
+                  SearchHandler.stateCodeToName[widget.stateId] ??
+                  stateRecord.name,
+              stateId: widget.stateId,
+            ),
+          ),
+        ),
+        governmentEntries: [
+          const ListTile(
+            title: Text(
+              'State executive',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          if (governorData != null)
+            _buildLeaderTile(context, governorData, widget.stateId),
+          const ListTile(
+            title: Text(
+              'Federal delegation',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          for (final senator in senatorsList)
+            _buildLeaderTile(context, senator, widget.stateId),
+          for (final representative in houseList)
+            _buildLeaderTile(context, representative, widget.stateId),
+          ExpansionTile(
+            title: Text('Local mayors (${mayorList.length} records)'),
+            children: [
+              for (final mayor in mayorList)
+                _buildLeaderTile(context, mayor, widget.stateId),
+            ],
+          ),
+        ],
+      );
+    }
+
     // 2. Filter Logic for Selected Section
     List<dynamic> specificSectionLeaders = [];
     if (_selectedFeatures.isNotEmpty) {
@@ -419,6 +482,20 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
         leading: const BackButton(), // 1. Back Button on Left
         title: Text(stateRecord.name),
         actions: [
+          TextButton.icon(
+            key: const Key('state_leadership_details_button'),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => StateDetailScreen(
+                  stateId: widget.stateId,
+                  showMap: false,
+                  showLeadership: true,
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.insights_outlined, size: 18),
+            label: const Text('Leadership & details'),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Image.asset('assets/img/logo.png', width: 32, height: 32),
