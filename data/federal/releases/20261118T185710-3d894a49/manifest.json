@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "runId": "20261118T185710-3d894a49",
+  "checkedAt": "2026-11-18T18:57:12.223414Z",
+  "baselineSha256": "9bf483910fcc77efed861e514fe07264a43788527ef2cedbfd46c8afe59db78e",
+  "candidateSha256": "24f9d3a40ff3ab3b1894880e32e7f71c2d858bc82f819a982bbd1a2354f60221",
+  "dataVersion": "b281c0f9da8ee6dfdbb6b6171b86b3f40918fe16100c304a69b2463743d67058",
+  "configurations": {
+    "scripts/data/federal_sources.json": "f3030dcb5b777a62afb7ee95f641154d1e12cdb49bdece30f6d418c890ac77c0",
+    "assets/data/federal_sources.json": "f3030dcb5b777a62afb7ee95f641154d1e12cdb49bdece30f6d418c890ac77c0",
+    "scripts/data/federal_transition_plans.json": "196e494d0f2cb29f80f1f2f71b4568647372f0e771a5039819cebacf2d8d85f0",
+    "scripts/data/federal_reviewed_offices.json": "fb9b82f571f496bec2f384956e0568fc2e0b84b0aac25667c1f22d6e5d1552ac",
+    "assets/data/senators.json": "d83693ef37a32f3d54762f1a3a39b7cd876f7c5552b665bbd529a47468b34e6e",
+    "assets/data/houseMembers.json": "4b12ff223d376b6cc57f9aa4d2744d1d932275b16f84e97276eaac44cfa171db",
+    "scripts/refresh_federal_officials.py": "900424aff7b59fc2aecc55e3a34463f86e3dc68fe04986e88d4d0dd9eac60c8c",
+    "scripts/federal_data_pipeline.py": "c92be8c848a8341cdab9f256d8dcc56d76b0aa1aeee058a14d24e64419017e54",
+    "scripts/publish_federal_snapshot.sh": "c1c63cca5e650b9697a9116aeee842c104fd1c7976e50f177d7cce5c4f55db8d"
+  },
+  "downloads": [
+    {
+      "sourceId": "constitution",
+      "url": "https://www.archives.gov/founding-docs/amendments-11-27",
+      "status": "passed",
+      "sha256": "e0013bd05d7b3c64ec61de0f234bdff15651d05cdb3ccdfb46ba7b51e3db1439",
+      "bytes": 57662,
+      "retrievedAt": "2026-11-18T18:57:11.147358Z",
+      "previousSha256": "e0013bd05d7b3c64ec61de0f234bdff15651d05cdb3ccdfb46ba7b51e3db1439",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "house-clerk",
+      "url": "https://clerk.house.gov/xml/lists/MemberData.xml",
+      "status": "passed",
+      "sha256": "84458803178118dd612e41ff119daf2976e59d9f96780d8c794eba52d717711d",
+      "bytes": 557204,
+      "retrievedAt": "2026-11-18T18:57:11.427345Z",
+      "previousSha256": "84458803178118dd612e41ff119daf2976e59d9f96780d8c794eba52d717711d",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "senate-roster",
+      "url": "https://www.senate.gov/general/contact_information/senators_cfm.xml",
+      "status": "passed",
+      "sha256": "fb91218c16df6ea2105f85107086e41e0a92dbb48681c4d1f54cb9a12541d792",
+      "bytes": 52652,
+      "retrievedAt": "2026-11-18T18:57:11.718704Z",
+      "previousSha256": "fb91218c16df6ea2105f85107086e41e0a92dbb48681c4d1f54cb9a12541d792",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "senate-term-I",
+      "url": "https://www.senate.gov/senators/Class_I.htm",
+      "status": "passed",
+      "sha256": "7b24c74499d96004a365c6482b741eb5b42f550488ca578d0666723c53e800c5",
+      "bytes": 19805,
+      "retrievedAt": "2026-11-18T18:57:11.746202Z",
+      "previousSha256": "7b24c74499d96004a365c6482b741eb5b42f550488ca578d0666723c53e800c5",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "senate-term-II",
+      "url": "https://www.senate.gov/senators/Class_II.htm",
+      "status": "passed",
+      "sha256": "cd9645df04c32922c9c78bfd0798b09d1595aa895f9cc2d865f6ebaee6c4e48a",
+      "bytes": 19652,
+      "retrievedAt": "2026-11-18T18:57:11.791055Z",
+      "previousSha256": "cd9645df04c32922c9c78bfd0798b09d1595aa895f9cc2d865f6ebaee6c4e48a",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "senate-term-III",
+      "url": "https://www.senate.gov/senators/Class_III.htm",
+      "status": "passed",
+      "sha256": "141f5e82cdfeefd9e790f0675ec92dceeef4ea9ae1c890c2d55a877a298fb230",
+      "bytes": 19636,
+      "retrievedAt": "2026-11-18T18:57:11.820612Z",
+      "previousSha256": "141f5e82cdfeefd9e790f0675ec92dceeef4ea9ae1c890c2d55a877a298fb230",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "white-house",
+      "url": "https://www.whitehouse.gov/administration/",
+      "status": "passed",
+      "sha256": "9f24b516cfd847bcc867a150a42f9231664301b12eecc1b25bdd10ff18f43ba0",
+      "bytes": 250708,
+      "retrievedAt": "2026-11-18T18:57:11.895307Z",
+      "previousSha256": "9f24b516cfd847bcc867a150a42f9231664301b12eecc1b25bdd10ff18f43ba0",
+      "contentChanged": false
+    },
+    {
+      "sourceId": "supreme-court",
+      "url": "https://www.supremecourt.gov/about/biographies.aspx",
+      "status": "passed",
+      "sha256": "a25722c5ecad313b5b5ab068fd452c0cff5e95f36c6294394b5a168fcda1649a",
+      "bytes": 62741,
+      "retrievedAt": "2026-11-18T18:57:12.080059Z",
+      "previousSha256": "7f9aca3234d339cbd1413d2c77ef5958c271b20b91874ebaea987ff1d530bba3",
+      "contentChanged": true
+    },
+    {
+      "sourceId": "house-leadership",
+      "url": "https://www.house.gov/leadership",
+      "status": "passed",
+      "sha256": "28b6d0d9d5c3e12e1842adc2c06042a35f1e00bf7d4fcc976adee34ce08a630c",
+      "bytes": 31864,
+      "retrievedAt": "2026-11-18T18:57:12.147130Z",
+      "previousSha256": "2d0efdffc5bcc6c4700b8925b5552b3bee8ed698e68bb65274eda91eb03c28c9",
+      "contentChanged": true
+    },
+    {
+      "sourceId": "senate-leadership",
+      "url": "https://www.senate.gov/senators/leadership.htm",
+      "status": "passed",
+      "sha256": "7530c75334b2f693e03d614ad3ca28118c4defebd057838e2d19b19149bc49d5",
+      "bytes": 42066,
+      "retrievedAt": "2026-11-18T18:57:12.207600Z",
+      "previousSha256": "7530c75334b2f693e03d614ad3ca28118c4defebd057838e2d19b19149bc49d5",
+      "contentChanged": false
+    }
+  ]
+}
