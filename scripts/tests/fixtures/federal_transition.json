@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "publishedAt": "2026-11-18T17:00:00Z",
+  "offices": [
+    {
+      "id": "us:house:CA01",
+      "kind": "house",
+      "branch": "legislative",
+      "title": "U.S. Representative",
+      "state": "CA",
+      "district": 1
+    }
+  ],
+  "people": [
+    {
+      "id": "current",
+      "name": "Current Official",
+      "photoLocalPath": "representatives/fixture.jpg"
+    },
+    {
+      "id": "next",
+      "name": "Incoming Official"
+    }
+  ],
+  "terms": [
+    {
+      "id": "serving",
+      "officeId": "us:house:CA01",
+      "personId": "current",
+      "status": "current",
+      "scheduledEnd": "2027-01-03T17:00:00Z",
+      "evidenceIds": [
+        "current-proof",
+        "end-proof"
+      ],
+      "contact": {
+        "phone": "202-555-0100"
+      }
+    },
+    {
+      "id": "incoming",
+      "officeId": "us:house:CA01",
+      "personId": "next",
+      "status": "incoming",
+      "certifiedAt": "2026-11-10T17:00:00Z",
+      "scheduledStart": "2027-01-03T17:00:00Z",
+      "evidenceIds": [
+        "cert-proof",
+        "start-proof"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "current-proof",
+      "personId": "current",
+      "officeId": "us:house:CA01",
+      "claim": "current",
+      "sourceId": "house-clerk",
+      "url": "https://clerk.house.gov/xml/lists/MemberData.xml",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "retrievedAt": "2026-11-18T17:00:00Z"
+    },
+    {
+      "id": "end-proof",
+      "personId": "current",
+      "officeId": "us:house:CA01",
+      "claim": "scheduledEnd",
+      "sourceId": "constitution",
+      "url": "https://www.archives.gov/founding-docs/amendments-11-27",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "retrievedAt": "2026-11-18T17:00:00Z"
+    },
+    {
+      "id": "cert-proof",
+      "personId": "next",
+      "officeId": "us:house:CA01",
+      "claim": "certification",
+      "sourceId": "test-election",
+      "url": "https://elections.example.gov/certified",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "retrievedAt": "2026-11-18T17:00:00Z"
+    },
+    {
+      "id": "start-proof",
+      "personId": "next",
+      "officeId": "us:house:CA01",
+      "claim": "scheduledStart",
+      "sourceId": "constitution",
+      "url": "https://www.archives.gov/founding-docs/amendments-11-27",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "retrievedAt": "2026-11-18T17:00:00Z"
+    }
+  ]
+}

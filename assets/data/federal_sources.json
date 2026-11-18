@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "house-clerk",
+      "name": "Office of the Clerk, U.S. House",
+      "url": "https://clerk.house.gov/xml/lists/MemberData.xml",
+      "hosts": [
+        "clerk.house.gov"
+      ],
+      "officeKinds": [
+        "house"
+      ],
+      "claims": [
+        "current",
+        "assumedOffice",
+        "contact",
+        "portrait"
+      ]
+    },
+    {
+      "id": "senate-roster",
+      "name": "United States Senate",
+      "url": "https://www.senate.gov/general/contact_information/senators_cfm.xml",
+      "hosts": [
+        "www.senate.gov",
+        "senate.gov"
+      ],
+      "officeKinds": [
+        "senate"
+      ],
+      "claims": [
+        "current",
+        "assumedOffice",
+        "contact"
+      ]
+    },
+    {
+      "id": "white-house",
+      "name": "The White House",
+      "url": "https://www.whitehouse.gov/administration/",
+      "hosts": [
+        "www.whitehouse.gov",
+        "whitehouse.gov"
+      ],
+      "officeKinds": [
+        "president",
+        "vicePresident",
+        "executive"
+      ],
+      "claims": [
+        "current",
+        "assumedOffice",
+        "contact",
+        "portrait"
+      ]
+    },
+    {
+      "id": "supreme-court",
+      "name": "Supreme Court of the United States",
+      "url": "https://www.supremecourt.gov/about/biographies.aspx",
+      "hosts": [
+        "www.supremecourt.gov"
+      ],
+      "officeKinds": [
+        "justice"
+      ],
+      "claims": [
+        "current",
+        "assumedOffice",
+        "portrait"
+      ]
+    },
+    {
+      "id": "congress-api",
+      "name": "Library of Congress member API",
+      "url": "https://api.congress.gov/v3/member",
+      "hosts": [
+        "api.congress.gov",
+        "www.congress.gov"
+      ],
+      "officeKinds": [
+        "house",
+        "senate"
+      ],
+      "claims": [
+        "current",
+        "contact",
+        "portrait"
+      ]
+    },
+    {
+      "id": "constitution",
+      "name": "National Archives \u2014 20th Amendment",
+      "url": "https://www.archives.gov/founding-docs/amendments-11-27",
+      "hosts": [
+        "www.archives.gov"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "president",
+        "vicePresident"
+      ],
+      "claims": [
+        "scheduledStart",
+        "scheduledEnd"
+      ]
+    },
+    {
+      "id": "federal-judges",
+      "name": "Federal Judicial Center",
+      "url": "https://www.fjc.gov/history/judges",
+      "hosts": [
+        "www.fjc.gov"
+      ],
+      "officeKinds": [
+        "justice",
+        "federalJudge"
+      ],
+      "claims": [
+        "current",
+        "appointment",
+        "assumedOffice"
+      ]
+    },
+    {
+      "id": "house-leadership",
+      "name": "U.S. House leadership",
+      "url": "https://www.house.gov/leadership",
+      "hosts": [
+        "www.house.gov"
+      ],
+      "officeKinds": [
+        "houseLeadership"
+      ],
+      "claims": [
+        "current",
+        "assumedOffice"
+      ]
+    },
+    {
+      "id": "senate-leadership",
+      "name": "U.S. Senate leadership",
+      "url": "https://www.senate.gov/senators/leadership.htm",
+      "hosts": [
+        "www.senate.gov"
+      ],
+      "officeKinds": [
+        "senateLeadership"
+      ],
+      "claims": [
+        "current",
+        "assumedOffice"
+      ]
+    },
+    {
+      "id": "senate-term-I",
+      "name": "U.S. Senate Class I term dates",
+      "url": "https://www.senate.gov/senators/Class_I.htm",
+      "hosts": [
+        "www.senate.gov"
+      ],
+      "officeKinds": [
+        "senate"
+      ],
+      "claims": [
+        "scheduledEnd"
+      ]
+    },
+    {
+      "id": "senate-term-II",
+      "name": "U.S. Senate Class II term dates",
+      "url": "https://www.senate.gov/senators/Class_II.htm",
+      "hosts": [
+        "www.senate.gov"
+      ],
+      "officeKinds": [
+        "senate"
+      ],
+      "claims": [
+        "scheduledEnd"
+      ]
+    },
+    {
+      "id": "senate-term-III",
+      "name": "U.S. Senate Class III term dates",
+      "url": "https://www.senate.gov/senators/Class_III.htm",
+      "hosts": [
+        "www.senate.gov"
+      ],
+      "officeKinds": [
+        "senate"
+      ],
+      "claims": [
+        "scheduledEnd"
+      ]
+    }
+  ]
+}

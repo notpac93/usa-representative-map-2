@@ -1,0 +1,384 @@
+[
+  {
+    "sourceId": "white-house",
+    "excerpt": "President Donald J. Trump",
+    "person": {
+      "id": "us:person:donald-trump",
+      "name": "Donald J. Trump",
+      "photoLocalPath": "presidents/donald_trump.jpg"
+    },
+    "office": {
+      "id": "us:president",
+      "kind": "president",
+      "branch": "executive",
+      "title": "President of the United States",
+      "state": "US"
+    },
+    "termId": "us:president:2025",
+    "term": {
+      "scheduledEnd": "2029-01-20T17:00:00Z"
+    }
+  },
+  {
+    "sourceId": "white-house",
+    "excerpt": "Vice President JD Vance",
+    "person": {
+      "id": "us:person:jd-vance",
+      "name": "JD Vance",
+      "photoLocalPath": null
+    },
+    "office": {
+      "id": "us:vicePresident",
+      "kind": "vicePresident",
+      "branch": "executive",
+      "title": "Vice President of the United States",
+      "state": "US"
+    },
+    "termId": "us:vicePresident:2025",
+    "term": {
+      "scheduledEnd": "2029-01-20T17:00:00Z"
+    }
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "John G. Roberts, Jr., Chief Justice of the United States",
+    "person": {
+      "id": "us:person:john-g-roberts-jr",
+      "name": "John G. Roberts Jr.",
+      "photoLocalPath": "supremecourt/john_g__roberts_jr_.jpg"
+    },
+    "office": {
+      "id": "us:justice:chief",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Chief Justice of the United States",
+      "state": "US"
+    },
+    "termId": "us:justice:chief:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Clarence Thomas, Associate Justice",
+    "person": {
+      "id": "us:person:clarence-thomas",
+      "name": "Clarence Thomas",
+      "photoLocalPath": "supremecourt/clarence_thomas.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-1",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-1:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Samuel A. Alito, Jr., Associate Justice",
+    "person": {
+      "id": "us:person:samuel-a-alito-jr",
+      "name": "Samuel A. Alito Jr.",
+      "photoLocalPath": "supremecourt/samuel_a__alito_jr_.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-2",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-2:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Sonia Sotomayor, Associate Justice",
+    "person": {
+      "id": "us:person:sonia-sotomayor",
+      "name": "Sonia Sotomayor",
+      "photoLocalPath": "supremecourt/sonia_sotomayor.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-3",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-3:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Elena Kagan, Associate Justice",
+    "person": {
+      "id": "us:person:elena-kagan",
+      "name": "Elena Kagan",
+      "photoLocalPath": "supremecourt/elena_kagan.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-4",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-4:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Neil M. Gorsuch, Associate Justice",
+    "person": {
+      "id": "us:person:neil-m-gorsuch",
+      "name": "Neil M. Gorsuch",
+      "photoLocalPath": "supremecourt/neil_m__gorsuch.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-5",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-5:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Brett M. Kavanaugh, Associate Justice",
+    "person": {
+      "id": "us:person:brett-m-kavanaugh",
+      "name": "Brett M. Kavanaugh",
+      "photoLocalPath": "supremecourt/brett_m__kavanaugh.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-6",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-6:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Amy Coney Barrett, Associate Justice",
+    "person": {
+      "id": "us:person:amy-coney-barrett",
+      "name": "Amy Coney Barrett",
+      "photoLocalPath": "supremecourt/amy_coney_barrett.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-7",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-7:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "supreme-court",
+    "excerpt": "Ketanji Brown Jackson, Associate Justice",
+    "person": {
+      "id": "us:person:ketanji-brown-jackson",
+      "name": "Ketanji Brown Jackson",
+      "photoLocalPath": "supremecourt/ketanji_brown_jackson.jpg"
+    },
+    "office": {
+      "id": "us:justice:associate-8",
+      "kind": "justice",
+      "branch": "judicial",
+      "title": "Associate Justice",
+      "state": "US"
+    },
+    "termId": "us:justice:associate-8:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "house-leadership",
+    "excerpt": "Speaker of the House Rep. Mike Johnson",
+    "person": {
+      "id": "J000299",
+      "name": "Mike Johnson",
+      "bioguideId": "J000299"
+    },
+    "office": {
+      "id": "us:leadership:speaker-of-the-house",
+      "kind": "houseLeadership",
+      "branch": "legislative",
+      "title": "Speaker of the House",
+      "state": "US"
+    },
+    "termId": "us:leadership:speaker-of-the-house:J000299:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "house-leadership",
+    "excerpt": "Majority Leader Rep. Steve Scalise",
+    "person": {
+      "id": "S001176",
+      "name": "Steve Scalise",
+      "bioguideId": "S001176"
+    },
+    "office": {
+      "id": "us:leadership:house-majority-leader",
+      "kind": "houseLeadership",
+      "branch": "legislative",
+      "title": "House Majority Leader",
+      "state": "US"
+    },
+    "termId": "us:leadership:house-majority-leader:S001176:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "house-leadership",
+    "excerpt": "Majority Whip Rep. Tom Emmer",
+    "person": {
+      "id": "E000294",
+      "name": "Tom Emmer",
+      "bioguideId": "E000294"
+    },
+    "office": {
+      "id": "us:leadership:house-majority-whip",
+      "kind": "houseLeadership",
+      "branch": "legislative",
+      "title": "House Majority Whip",
+      "state": "US"
+    },
+    "termId": "us:leadership:house-majority-whip:E000294:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "house-leadership",
+    "excerpt": "Democratic Leader Rep. Hakeem Jeffries",
+    "person": {
+      "id": "J000294",
+      "name": "Hakeem Jeffries",
+      "bioguideId": "J000294"
+    },
+    "office": {
+      "id": "us:leadership:house-democratic-leader",
+      "kind": "houseLeadership",
+      "branch": "legislative",
+      "title": "House Democratic Leader",
+      "state": "US"
+    },
+    "termId": "us:leadership:house-democratic-leader:J000294:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "house-leadership",
+    "excerpt": "Democratic Whip Rep. Katherine Clark",
+    "person": {
+      "id": "C001101",
+      "name": "Katherine Clark",
+      "bioguideId": "C001101"
+    },
+    "office": {
+      "id": "us:leadership:house-democratic-whip",
+      "kind": "houseLeadership",
+      "branch": "legislative",
+      "title": "House Democratic Whip",
+      "state": "US"
+    },
+    "termId": "us:leadership:house-democratic-whip:C001101:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "house-leadership",
+    "excerpt": "Democratic Caucus Chairman Rep. Pete Aguilar",
+    "person": {
+      "id": "A000371",
+      "name": "Pete Aguilar",
+      "bioguideId": "A000371"
+    },
+    "office": {
+      "id": "us:leadership:democratic-caucus-chair",
+      "kind": "houseLeadership",
+      "branch": "legislative",
+      "title": "Democratic Caucus Chair",
+      "state": "US"
+    },
+    "termId": "us:leadership:democratic-caucus-chair:A000371:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "senate-leadership",
+    "excerpt": "Senate Majority Leader Thune, John (R-SD)",
+    "person": {
+      "id": "T000250",
+      "name": "John Thune",
+      "bioguideId": "T000250"
+    },
+    "office": {
+      "id": "us:leadership:senate-majority-leader",
+      "kind": "senateLeadership",
+      "branch": "legislative",
+      "title": "Senate Majority Leader",
+      "state": "US"
+    },
+    "termId": "us:leadership:senate-majority-leader:T000250:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "senate-leadership",
+    "excerpt": "Majority Whip Barrasso, John (R-WY)",
+    "person": {
+      "id": "B001261",
+      "name": "John Barrasso",
+      "bioguideId": "B001261"
+    },
+    "office": {
+      "id": "us:leadership:senate-majority-whip",
+      "kind": "senateLeadership",
+      "branch": "legislative",
+      "title": "Senate Majority Whip",
+      "state": "US"
+    },
+    "termId": "us:leadership:senate-majority-whip:B001261:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "senate-leadership",
+    "excerpt": "Democratic Leader Chair of the Conference Schumer, Charles E. (D-NY)",
+    "person": {
+      "id": "S000148",
+      "name": "Chuck Schumer",
+      "bioguideId": "S000148"
+    },
+    "office": {
+      "id": "us:leadership:senate-democratic-leader",
+      "kind": "senateLeadership",
+      "branch": "legislative",
+      "title": "Senate Democratic Leader",
+      "state": "US"
+    },
+    "termId": "us:leadership:senate-democratic-leader:S000148:observed",
+    "term": {}
+  },
+  {
+    "sourceId": "senate-leadership",
+    "excerpt": "Democratic Whip Durbin, Richard J. (D-IL)",
+    "person": {
+      "id": "D000563",
+      "name": "Dick Durbin",
+      "bioguideId": "D000563"
+    },
+    "office": {
+      "id": "us:leadership:senate-democratic-whip",
+      "kind": "senateLeadership",
+      "branch": "legislative",
+      "title": "Senate Democratic Whip",
+      "state": "US"
+    },
+    "termId": "us:leadership:senate-democratic-whip:D000563:observed",
+    "term": {}
+  }
+]
