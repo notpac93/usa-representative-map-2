@@ -10,9 +10,9 @@ import 'package:usa_map_app/screens/local_detail_screen.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('Upcoming Elections & Ballot Prioritization Tests', () {
+  group('Recorded Elections & Ballot Lifecycle Tests', () {
     test(
-      'CivicDataProvider loads election records, candidates, and propositions',
+      'CivicDataProvider loads recorded dates without unverified ballot data',
       () async {
         final civicProvider = CivicDataProvider();
         await civicProvider.loadData();
@@ -20,43 +20,45 @@ void main() {
         // Election info for CA
         final caElection = civicProvider.getElectionForState('CA');
         expect(caElection.stateId, 'CA');
-        expect(caElection.nextElectionDate, contains('November 3, 2026'));
-        expect(caElection.voterRegistrationDeadline, isNotEmpty);
-        expect(caElection.earlyVotingStart, isNotEmpty);
+        expect(caElection.recordedElectionDate, isNotNull);
+        // Loading a past calendar does not manufacture another election cycle.
+        expect(
+          caElection.statusLabelOn(DateTime(2026, 11, 19)),
+          'Election held',
+        );
 
-        // Candidates for CA
+        // Unverified candidate and proposition examples are excluded from the
+        // active asset. Missing records cannot trigger synthetic fallbacks.
         final caCandidates = civicProvider.getCandidatesForJurisdiction('CA');
-        expect(caCandidates.isNotEmpty, isTrue);
-        expect(caCandidates.any((c) => c.name == 'Alex Padilla'), isTrue);
-        expect(caCandidates.any((c) => c.office.contains('Senator')), isTrue);
-        expect(caCandidates.first.platform, isNotEmpty);
+        expect(caCandidates, isEmpty);
 
         // Propositions for CA
         final caProps = civicProvider.getPropositionsForJurisdiction('CA');
-        expect(caProps.isNotEmpty, isTrue);
-        expect(caProps.any((p) => p.code == 'Proposition 1'), isTrue);
-        expect(caProps.first.yesVoteMeaning, isNotEmpty);
-        expect(caProps.first.noVoteMeaning, isNotEmpty);
-        expect(caProps.first.fiscalSummary, isNotEmpty);
+        expect(caProps, isEmpty);
+        for (final state in ['MS', 'WY', 'ZZ', 'US']) {
+          expect(civicProvider.getCandidatesForJurisdiction(state), isEmpty);
+          expect(civicProvider.getPropositionsForJurisdiction(state), isEmpty);
+        }
 
         // Re-election timeline checks
         final govTimeline = civicProvider.getIncumbentReelectionTimeline(
           'Governor',
           'CA',
         );
-        expect(govTimeline, contains('2026'));
+        expect(govTimeline, contains('Next election date not verified'));
+        expect(govTimeline, isNot(contains('Up for Re-Election')));
 
         final senTimeline = civicProvider.getIncumbentReelectionTimeline(
           'Senator',
           'CA',
         );
-        expect(senTimeline, contains('2026'));
+        expect(senTimeline, contains('Next election date not verified'));
 
         final houseTimeline = civicProvider.getIncumbentReelectionTimeline(
           'Representative',
           'CA',
         );
-        expect(houseTimeline, contains('2026'));
+        expect(houseTimeline, contains('Next election date not verified'));
       },
     );
 
@@ -68,20 +70,20 @@ void main() {
       final results = await handler.search('elections', provider);
       expect(results.isNotEmpty, isTrue);
       expect(
-        results.any((r) => r.title.contains('Upcoming 2026 Elections')),
+        results.any((r) => r.title == 'Elections & Ballot Records'),
         isTrue,
       );
 
       final ballotResults = await handler.search('ballot', provider);
       expect(ballotResults.isNotEmpty, isTrue);
       expect(
-        ballotResults.any((r) => r.title.contains('Upcoming 2026 Elections')),
+        ballotResults.any((r) => r.title == 'Elections & Ballot Records'),
         isTrue,
       );
     });
 
     testWidgets(
-      'LocalDetailScreen prioritizes Upcoming Election banner, Candidates, and Propositions',
+      'LocalDetailScreen separates recorded ballots and completed voting deadlines',
       (tester) async {
         tester.view.physicalSize = const Size(1200, 2400);
         tester.view.devicePixelRatio = 1;
@@ -120,27 +122,36 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }
 
-        // 1. Verify upcoming election banner is prominently displayed at top
+        // 1. The recorded election is historical, never a new upcoming election.
         final election = civicProvider.getElectionForState('CA');
         expect(
           find.text('${election.nextElectionDate} • ${election.electionType}'),
           findsOneWidget,
         );
-        expect(find.textContaining('Reg. Deadline:'), findsOneWidget);
+        expect(find.text('Election held'), findsOneWidget);
+        expect(find.text('Certification status not verified'), findsOneWidget);
+        expect(find.textContaining('Reg. Deadline:'), findsNothing);
+        expect(find.text('Upcoming election'), findsNothing);
 
         // 2. Verify Section tabs exist
-        expect(find.text('On Your Ballot'), findsOneWidget);
+        expect(find.text('Ballot Records'), findsOneWidget);
         expect(find.text('Bills & Laws'), findsOneWidget);
         expect(find.text('Current Reps'), findsOneWidget);
         expect(find.text('Voter Guide'), findsOneWidget);
 
-        // 3. Verify Default Tab is "On Your Ballot" and shows candidates & propositions
+        // 3. Unverified examples cannot appear as candidate or measure records.
         expect(find.text('Electoral Candidates'), findsOneWidget);
-        expect(find.text('Alex Padilla'), findsOneWidget);
+        expect(
+          find.text(
+            'Historical or unverified candidate records · not certified results',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Alex Padilla'), findsNothing);
         expect(find.text('Propositions & Ballot Measures'), findsOneWidget);
-        expect(find.text('Proposition 1'), findsOneWidget);
-        expect(find.text('WHAT A YES VOTE MEANS'), findsWidgets);
-        expect(find.text('WHAT A NO VOTE MEANS'), findsWidgets);
+        expect(find.text('Proposition 1'), findsNothing);
+        expect(find.text('WHAT A YES VOTE MEANS'), findsNothing);
+        expect(find.text('WHAT A NO VOTE MEANS'), findsNothing);
 
         // 4. Switch to "Current Reps" tab
         await tester.tap(find.text('Current Reps'));
@@ -150,7 +161,9 @@ void main() {
 
         expect(find.text('Your Current Elected Officials'), findsOneWidget);
         expect(
-          find.textContaining('4-Year Term • Up for Re-Election: Nov 3, 2026'),
+          find.textContaining(
+            'Next election date not verified for this office',
+          ),
           findsWidgets,
         );
 
@@ -160,12 +173,14 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }
 
+        expect(find.textContaining('Election information:'), findsOneWidget);
+        expect(find.text('Voter Registration Deadline'), findsNothing);
+        expect(find.text('Vote By Mail & Absentee Voting'), findsNothing);
+        expect(find.text('Find Your Polling Location'), findsNothing);
         expect(
-          find.textContaining('Voter Guide & Key Deadlines'),
+          find.textContaining('Past deadlines are not valid instructions'),
           findsOneWidget,
         );
-        expect(find.text('Voter ID Requirements'), findsOneWidget);
-        expect(find.text('View State Voter ID Rules'), findsOneWidget);
       },
     );
   });

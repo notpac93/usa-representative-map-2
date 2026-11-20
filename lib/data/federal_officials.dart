@@ -8,19 +8,49 @@ DateTime? _date(dynamic value) {
   return DateTime.parse(value).toUtc();
 }
 
+/// A calendar date has no time or UTC offset. DateTime is used only for
+/// Gregorian calendar arithmetic, never as this date's service-start instant.
+class _CivilDate implements Comparable<_CivilDate> {
+  final int year, month, day;
+  const _CivilDate(this.year, this.month, this.day);
+  factory _CivilDate.fromCalendar(DateTime value) =>
+      _CivilDate(value.year, value.month, value.day);
+
+  _CivilDate addDays(int days) =>
+      _CivilDate.fromCalendar(DateTime.utc(year, month, day + days));
+
+  @override
+  int compareTo(_CivilDate other) => (year * 10000 + month * 100 + day)
+      .compareTo(other.year * 10000 + other.month * 100 + other.day);
+}
+
+_CivilDate? _civilDate(String value) {
+  if (!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) return null;
+  final parsed = DateTime.tryParse('${value}T00:00:00Z');
+  if (parsed == null || parsed.toIso8601String().substring(0, 10) != value) {
+    return null;
+  }
+  return _CivilDate.fromCalendar(parsed);
+}
+
 class FederalSource {
   final String id, name, url;
-  final List<String> hosts, claims, officeKinds, states;
+  final List<String> hosts, claims, officeKinds, states, delegatedUrls;
   FederalSource.fromJson(Map<String, dynamic> j)
     : id = j['id'],
       name = j['name'],
       url = j['url'],
       states = List<String>.from(j['states'] ?? []),
+      delegatedUrls = List<String>.from(j['delegatedUrls'] ?? []),
       hosts = List<String>.from(j['hosts']),
       claims = List<String>.from(j['claims']),
       officeKinds = List<String>.from(j['officeKinds']);
   bool permits(String value) {
     final u = Uri.tryParse(value);
+    if (u != null &&
+        delegatedUrls.any((url) => Uri.parse(url).host == u.host) &&
+        !delegatedUrls.contains(value))
+      return false;
     return u != null &&
         u.scheme == 'https' &&
         hosts.contains(u.host) &&
@@ -79,7 +109,16 @@ class FederalTerm {
       scheduledEnd,
       actualStart,
       actualEnd,
-      certifiedAt;
+      certifiedAt,
+      recognizedAt;
+  final String? scheduledStartDate;
+  final String certificationStatus;
+  bool get certificationVerified =>
+      status == 'incoming' || certificationStatus == 'certified';
+
+  /// Only a verified instant can be used as a clock boundary. Day-only dates
+  /// remain in scheduledStartDate and are rendered and compared as civil dates.
+  DateTime? get displayStart => scheduledStart;
   final List<String> evidenceIds;
   final Map<String, String> contact;
   FederalTerm.fromJson(Map<String, dynamic> j)
@@ -92,6 +131,11 @@ class FederalTerm {
       actualStart = _date(j['actualStart']),
       actualEnd = _date(j['actualEnd']),
       certifiedAt = _date(j['certifiedAt']),
+      recognizedAt = _date(j['recognizedAt']),
+      scheduledStartDate = j['scheduledStartDate'],
+      certificationStatus =
+          j['certificationStatus'] ??
+          (j['status'] == 'incoming' ? 'certified' : 'notVerified'),
       evidenceIds = List<String>.from(j['evidenceIds']),
       contact = (j['contact'] as Map<String, dynamic>? ?? {}).map(
         (k, v) => MapEntry(k, v as String),
@@ -176,6 +220,7 @@ class FederalSnapshot {
           ![
             'current',
             'incoming',
+            'incomingRecognized',
             'ended',
             'disputed',
             'withdrawn',
@@ -203,16 +248,45 @@ class FederalSnapshot {
           !t.scheduledEnd!.isAfter(t.scheduledStart!)) {
         throw const FormatException('Invalid term interval');
       }
-      if (t.status == 'incoming' &&
-          !incomingSlots.add('${t.officeId}|${t.scheduledStart}')) {
+      if (['incoming', 'incomingRecognized'].contains(t.status) &&
+          !incomingSlots.add(t.officeId)) {
         throw const FormatException('Conflicting incoming occupants');
       }
       if (t.status == 'incoming' &&
           (t.certifiedAt == null ||
-              t.scheduledStart == null ||
+              (t.scheduledStart == null && t.scheduledStartDate == null) ||
               t.certifiedAt!.isAfter(snapshot.publishedAt) ||
               !claims.containsAll(['certification', 'scheduledStart']))) {
         throw const FormatException('Unverified incoming official');
+      }
+      if (t.scheduledStartDate != null &&
+          (_civilDate(t.scheduledStartDate!) == null ||
+              t.scheduledStart != null ||
+              !claims.contains('scheduledStart'))) {
+        throw const FormatException('Unverified civil start date');
+      }
+      if (t.status == 'incomingRecognized' &&
+          (t.recognizedAt == null ||
+              t.recognizedAt!.isAfter(snapshot.publishedAt) ||
+              !claims.any(['incomingRecognition', 'certification'].contains))) {
+        throw const FormatException('Unverified government recognition');
+      }
+      if (t.status == 'incomingRecognized' &&
+          t.displayStart != null &&
+          !claims.contains('scheduledStart')) {
+        throw const FormatException('Unverified incoming start');
+      }
+      if (t.status == 'incomingRecognized' &&
+          t.certifiedAt != null &&
+          !t.certificationVerified) {
+        throw const FormatException('Unverified certification time');
+      }
+      if (t.status == 'incomingRecognized' &&
+          t.certificationVerified &&
+          (t.certifiedAt == null ||
+              t.certifiedAt!.isAfter(snapshot.publishedAt) ||
+              !claims.contains('certification'))) {
+        throw const FormatException('Recognition cannot imply certification');
       }
       if (t.actualStart?.isAfter(snapshot.publishedAt) ?? false) {
         throw const FormatException('Future service start');
@@ -236,17 +310,39 @@ class FederalSnapshot {
         current = t;
       }
     }
-    final future = candidates.where((t) => t.status == 'incoming').toList()
-      ..sort((a, b) => a.scheduledStart!.compareTo(b.scheduledStart!));
+    // Decoding permits at most one incoming record per office.
+    final future = candidates.where(
+      (t) => ['incoming', 'incomingRecognized'].contains(t.status),
+    );
     FederalTerm? visible;
     var pending = false;
     for (final t in future) {
-      final start = t.scheduledStart!;
-      if (!now.isBefore(start)) pending = true;
-      final begin = start.subtract(const Duration(days: 90));
-      final showAt = t.certifiedAt!.isAfter(begin) ? t.certifiedAt! : begin;
-      if (!now.isBefore(showAt) &&
-          now.isBefore(start.add(const Duration(days: 7)))) {
+      final start = t.displayStart;
+      final verified = t.certifiedAt ?? t.recognizedAt!;
+      if (now.isBefore(verified)) continue;
+      var withinWindow = false;
+      if (start != null) {
+        pending = !now.isBefore(start);
+        withinWindow =
+            !now.isBefore(start.subtract(const Duration(days: 90))) &&
+            now.isBefore(start.add(const Duration(days: 7)));
+      } else if (t.scheduledStartDate != null) {
+        final day = _civilDate(t.scheduledStartDate!)!;
+        // Without an IANA conversion library, use the latest conservative
+        // reference date. This cannot open or close the card before the legal
+        // local date, even when the user's device is in another time zone.
+        final today = _CivilDate.fromCalendar(
+          now.subtract(const Duration(hours: 14)),
+        );
+        // An unspecified time on this day has not necessarily passed yet.
+        pending = today.compareTo(day) > 0;
+        withinWindow =
+            today.compareTo(day.addDays(-90)) >= 0 &&
+            today.compareTo(day.addDays(7)) < 0;
+      } else {
+        withinWindow = now.isBefore(verified.add(const Duration(days: 90)));
+      }
+      if (withinWindow) {
         visible = t;
         break;
       }

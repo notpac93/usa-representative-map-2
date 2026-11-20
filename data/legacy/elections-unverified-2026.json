@@ -1,0 +1,471 @@
+{
+  "elections": [
+    {
+      "stateId": "US",
+      "stateName": "United States",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 Midterm General Election",
+      "primaryDate": "Spring / Summer 2026 (State Dependent)",
+      "voterRegistrationDeadline": "October 19, 2026 (varies by state)",
+      "earlyVotingStart": "October 15, 2026",
+      "earlyVotingEnd": "November 2, 2026",
+      "pollsOpenHours": "7:00 AM – 8:00 PM Local Time",
+      "officialPortalUrl": "https://vote.gov",
+      "ballotTrackerUrl": "https://www.eac.gov/voters/voting-resources",
+      "keyOfficesUp": "All 435 U.S. House Seats, 33 U.S. Senate Seats (Class II), 36 State Governors"
+    },
+    {
+      "stateId": "CA",
+      "stateName": "California",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 California Statewide General Election",
+      "primaryDate": "June 2, 2026",
+      "voterRegistrationDeadline": "October 19, 2026 (Same-day registration at vote centers)",
+      "earlyVotingStart": "October 5, 2026 (All registered voters mailed a ballot)",
+      "earlyVotingEnd": "November 3, 2026",
+      "pollsOpenHours": "7:00 AM – 8:00 PM PT",
+      "officialPortalUrl": "https://www.sos.ca.gov/elections",
+      "ballotTrackerUrl": "https://california.ballottrax.net/voter/",
+      "keyOfficesUp": "Governor, Lt. Governor, U.S. Senate, 52 U.S. House Seats, State Assembly & Senate, Local Mayors & Ballot Propositions"
+    },
+    {
+      "stateId": "TX",
+      "stateName": "Texas",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 Texas Statewide General Election",
+      "primaryDate": "March 3, 2026",
+      "voterRegistrationDeadline": "October 5, 2026 (In-person or postmarked)",
+      "earlyVotingStart": "October 19, 2026",
+      "earlyVotingEnd": "October 30, 2026",
+      "pollsOpenHours": "7:00 AM – 7:00 PM CT",
+      "officialPortalUrl": "https://www.votetexas.gov",
+      "ballotTrackerUrl": "https://teamrv-mvp.sos.texas.gov/MVP/mvp.do",
+      "keyOfficesUp": "Governor, Lt. Governor, Attorney General, U.S. Senate (Class II), 38 U.S. House Seats, State Legislature, Mayoral seats"
+    },
+    {
+      "stateId": "NY",
+      "stateName": "New York",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 New York Gubernatorial & General Election",
+      "primaryDate": "June 23, 2026",
+      "voterRegistrationDeadline": "October 24, 2026",
+      "earlyVotingStart": "October 24, 2026",
+      "earlyVotingEnd": "November 1, 2026",
+      "pollsOpenHours": "6:00 AM – 9:00 PM ET",
+      "officialPortalUrl": "https://www.elections.ny.gov",
+      "ballotTrackerUrl": "https://voterlookup.elections.ny.gov",
+      "keyOfficesUp": "Governor, Attorney General, 26 U.S. House Seats, State Senate & Assembly, NYC Municipal offices"
+    },
+    {
+      "stateId": "FL",
+      "stateName": "Florida",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 Florida Statewide General Election",
+      "primaryDate": "August 18, 2026",
+      "voterRegistrationDeadline": "October 5, 2026",
+      "earlyVotingStart": "October 24, 2026",
+      "earlyVotingEnd": "November 1, 2026",
+      "pollsOpenHours": "7:00 AM – 7:00 PM Local Time",
+      "officialPortalUrl": "https://dos.fl.gov/elections",
+      "ballotTrackerUrl": "https://registration.elections.myflorida.com/CheckVoterStatus",
+      "keyOfficesUp": "Governor, Attorney General, 28 U.S. House Seats, State Cabinet, Constitutional Amendments"
+    },
+    {
+      "stateId": "PA",
+      "stateName": "Pennsylvania",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 Pennsylvania Gubernatorial & Midterm Election",
+      "primaryDate": "May 19, 2026",
+      "voterRegistrationDeadline": "October 19, 2026",
+      "earlyVotingStart": "Mail ballot processing begins October 2026",
+      "earlyVotingEnd": "November 3, 2026",
+      "pollsOpenHours": "7:00 AM – 8:00 PM ET",
+      "officialPortalUrl": "https://www.vote.pa.gov",
+      "ballotTrackerUrl": "https://www.pavoterservices.pa.gov/pages/ballottracking.aspx",
+      "keyOfficesUp": "Governor, Lt. Governor, 17 U.S. House Seats, General Assembly, Municipal judges"
+    },
+    {
+      "stateId": "IL",
+      "stateName": "Illinois",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 Illinois Gubernatorial & General Election",
+      "primaryDate": "March 17, 2026",
+      "voterRegistrationDeadline": "October 6, 2026 (Online deadline Oct 18; Grace period up to election day)",
+      "earlyVotingStart": "September 24, 2026",
+      "earlyVotingEnd": "November 2, 2026",
+      "pollsOpenHours": "6:00 AM – 7:00 PM CT",
+      "officialPortalUrl": "https://www.elections.il.gov",
+      "ballotTrackerUrl": "https://ova.elections.il.gov/RegistrationLookup.aspx",
+      "keyOfficesUp": "Governor, U.S. Senate (Class II), 17 U.S. House Seats, State Assembly"
+    },
+    {
+      "stateId": "GA",
+      "stateName": "Georgia",
+      "nextElectionDate": "November 3, 2026",
+      "electionType": "2026 Georgia Statewide & Midterm Election",
+      "primaryDate": "May 19, 2026",
+      "voterRegistrationDeadline": "October 5, 2026",
+      "earlyVotingStart": "October 12, 2026",
+      "earlyVotingEnd": "October 30, 2026",
+      "pollsOpenHours": "7:00 AM – 7:00 PM ET",
+      "officialPortalUrl": "https://sos.ga.gov/elections-division-georgia-secretary-states-office",
+      "ballotTrackerUrl": "https://mvp.sos.ga.gov",
+      "keyOfficesUp": "Governor, U.S. Senate (Class II), 14 U.S. House Seats, State Legislature"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "cand-ca-sen-1",
+      "name": "Alex Padilla",
+      "office": "U.S. Senator",
+      "level": "Federal",
+      "stateId": "CA",
+      "party": "Democratic",
+      "isIncumbent": true,
+      "status": "Incumbent",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Expanding affordable clean energy and water infrastructure",
+        "Protecting reproductive healthcare and voting rights",
+        "Lowering prescription drug costs and expanding Medicare benefits"
+      ],
+      "bio": "Serving as California's senior U.S. Senator since 2021. Previously served as California Secretary of State and Los Angeles City Council President.",
+      "website": "https://www.padilla.senate.gov"
+    },
+    {
+      "id": "cand-ca-sen-2",
+      "name": "Sarah Reynolds",
+      "office": "U.S. Senator",
+      "level": "Federal",
+      "stateId": "CA",
+      "party": "Republican",
+      "isIncumbent": false,
+      "status": "Challenger",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Cutting federal regulations on small businesses and agriculture",
+        "Strengthening southern border security and port enforcement",
+        "Promoting school choice and reducing federal educational mandates"
+      ],
+      "bio": "Central Valley business owner and former state assemblywoman advocating for lower taxes and water rights for agricultural communities.",
+      "website": "https://reynoldsforca.com"
+    },
+    {
+      "id": "cand-ca-gov-1",
+      "name": "Eleni Kounalakis",
+      "office": "Governor of California",
+      "level": "State",
+      "stateId": "CA",
+      "party": "Democratic",
+      "isIncumbent": false,
+      "status": "Candidate (Open Seat)",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Accelerating affordable housing construction and homelessness solutions",
+        "Expanding tuition-free community college and workforce apprenticeships",
+        "Investing in wildfire resilience and grid modernization"
+      ],
+      "bio": "Currently serving as California's 50th Lieutenant Governor and former U.S. Ambassador to Hungary.",
+      "website": "https://eleniforca.com"
+    },
+    {
+      "id": "cand-ca-gov-2",
+      "name": "Brian Dahle",
+      "office": "Governor of California",
+      "level": "State",
+      "stateId": "CA",
+      "party": "Republican",
+      "isIncumbent": false,
+      "status": "Candidate (Open Seat)",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Lowering the cost of living by reducing state gas taxes and utility surcharges",
+        "Auditing state spending on homelessness and public infrastructure programs",
+        "Restoring local control and streamlining CEQA environmental reviews"
+      ],
+      "bio": "Northern California farmer and state senator emphasizing fiscal responsibility and rural economic revitalization.",
+      "website": "https://briandahle.com"
+    },
+    {
+      "id": "cand-ca-house-33",
+      "name": "Ted Lieu",
+      "office": "U.S. Representative (CA-36)",
+      "level": "Federal",
+      "stateId": "CA",
+      "district": "36th",
+      "cityName": "Beverly Hills",
+      "party": "Democratic",
+      "isIncumbent": true,
+      "status": "Incumbent",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Artificial Intelligence consumer protection and safety guardrails",
+        "Veterans housing and mental health care expansion",
+        "Federal environmental protections for coastal communities"
+      ],
+      "bio": "Former military prosecutor and U.S. Air Force veteran representing California's 36th congressional district.",
+      "website": "https://lieu.house.gov"
+    },
+    {
+      "id": "cand-ca-house-33-chal",
+      "name": "Marcus Vance",
+      "office": "U.S. Representative (CA-36)",
+      "level": "Federal",
+      "stateId": "CA",
+      "district": "36th",
+      "cityName": "Beverly Hills",
+      "party": "Republican",
+      "isIncumbent": false,
+      "status": "Challenger",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Reducing federal income taxes and payroll contributions",
+        "Strengthening federal prosecution of interstate retail theft rings",
+        "Energy independence through all-of-the-above domestic production"
+      ],
+      "bio": "Technology executive and civic leader advocating for public safety and fiscal discipline.",
+      "website": "https://vanceforcongress.com"
+    },
+    {
+      "id": "cand-tx-sen-1",
+      "name": "John Cornyn",
+      "office": "U.S. Senator",
+      "level": "Federal",
+      "stateId": "TX",
+      "party": "Republican",
+      "isIncumbent": true,
+      "status": "Incumbent",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "National defense funding and military base modernization",
+        "Border infrastructure investments and law enforcement support",
+        "Protecting traditional energy production while investing in grid resiliency"
+      ],
+      "bio": "Serving as Texas's senior U.S. Senator since 2002. Former Texas Attorney General and Texas Supreme Court Justice.",
+      "website": "https://www.cornyn.senate.gov"
+    },
+    {
+      "id": "cand-tx-sen-2",
+      "name": "Veronica Escamilla",
+      "office": "U.S. Senator",
+      "level": "Federal",
+      "stateId": "TX",
+      "party": "Democratic",
+      "isIncumbent": false,
+      "status": "Challenger",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Expanding Medicaid coverage to cover 1.4 million uninsured Texans",
+        "Federal investments in public school teacher pay and modern classrooms",
+        "Comprehensive immigration reform combining border technology and legal pathways"
+      ],
+      "bio": "San Antonio civil rights attorney and former county commissioner focused on healthcare access and education.",
+      "website": "https://escamillaforstate.com"
+    },
+    {
+      "id": "cand-tx-gov-1",
+      "name": "Greg Abbott",
+      "office": "Governor of Texas",
+      "level": "State",
+      "stateId": "TX",
+      "party": "Republican",
+      "isIncumbent": true,
+      "status": "Incumbent",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Maintaining no state income tax and eliminating local school property taxes",
+        "Operation Lone Star border security enforcement and state defense guards",
+        "Expanding statewide school choice through universal education savings accounts"
+      ],
+      "bio": "48th Governor of Texas, in office since 2015. Formerly served 12 years as Texas Attorney General.",
+      "website": "https://gov.texas.gov"
+    },
+    {
+      "id": "cand-tx-gov-2",
+      "name": "Julian Castro",
+      "office": "Governor of Texas",
+      "level": "State",
+      "stateId": "TX",
+      "party": "Democratic",
+      "isIncumbent": false,
+      "status": "Challenger",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Connecting ERCOT to the national electrical grid to prevent blackouts",
+        "Raising Texas minimum wage to $15/hr with inflation indexation",
+        "Universal pre-K education and major investments in community hospitals"
+      ],
+      "bio": "Former U.S. Secretary of Housing and Urban Development and former Mayor of San Antonio.",
+      "website": "https://castrofortexas.com"
+    },
+    {
+      "id": "cand-tx-mayor-austin",
+      "name": "Kirk Watson",
+      "office": "Mayor of Austin",
+      "level": "Local",
+      "stateId": "TX",
+      "cityName": "Austin",
+      "party": "Democratic",
+      "isIncumbent": true,
+      "status": "Incumbent",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Expediting Project Connect light rail and transit corridor buildout",
+        "Expanding permanent supportive housing and shelter capacity",
+        "Water conservation and wildfire mitigation in the Wildland-Urban Interface"
+      ],
+      "bio": "Mayor of Austin. Former Texas State Senator and founding dean of the LBJ School of Public Affairs.",
+      "website": "https://austintexas.gov/department/mayor"
+    },
+    {
+      "id": "cand-ny-gov-1",
+      "name": "Kathy Hochul",
+      "office": "Governor of New York",
+      "level": "State",
+      "stateId": "NY",
+      "party": "Democratic",
+      "isIncumbent": true,
+      "status": "Incumbent",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Affordable housing expansion across upstate and NYC suburbs",
+        "Strengthening public transit infrastructure and MTA funding",
+        "Climate leadership and offshore wind energy job creation"
+      ],
+      "bio": "57th Governor of New York, first woman to lead the Empire State. Former Lieutenant Governor and Member of Congress.",
+      "website": "https://www.governor.ny.gov"
+    },
+    {
+      "id": "cand-fl-gov-1",
+      "name": "Byron Donalds",
+      "office": "Governor of Florida",
+      "level": "State",
+      "stateId": "FL",
+      "party": "Republican",
+      "isIncumbent": false,
+      "status": "Candidate (Open Seat)",
+      "electionDate": "Nov 3, 2026",
+      "platform": [
+        "Lowering home property insurance premiums through tort and market reforms",
+        "Protecting low-tax business climate and tourism economy",
+        "Protecting Everglades restoration and coast water quality"
+      ],
+      "bio": "U.S. Representative representing Florida's 19th district and former Florida State Representative.",
+      "website": "https://donaldsforflorida.com"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "prop-ca-1",
+      "code": "Proposition 1",
+      "title": "Clean Drinking Water & Climate Resilience Bond",
+      "stateId": "CA",
+      "category": "Environment & Infrastructure",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Authorizes $10 billion in general obligation bonds to fund water purification, flood protection, wildfire prevention, and reservoir modernization.",
+      "noVoteMeaning": "The state would not issue new bonds for water and climate resilience projects, and existing revenue would be relied upon.",
+      "fiscalSummary": "Estimated state cost of approximately $400 million annually over 30 years to repay bond principal and interest from the general fund.",
+      "proponents": "California Firefighters, League of California Cities, Conservation organizations",
+      "opponents": "Taxpayers Coalition (arguing against increased state debt and interest payments)",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-ca-2",
+      "code": "Proposition 2",
+      "title": "Public School Facility Repair & STEM Modernization Bond",
+      "stateId": "CA",
+      "category": "Education",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Authorizes $8.5 billion to renovate aging K-12 public schools, replace lead pipes, and build modern science and technology laboratories.",
+      "noVoteMeaning": "Local school districts would have to rely solely on local parcel taxes and existing budgets for facility repairs.",
+      "fiscalSummary": "Annual debt service of roughly $350 million paid over 30 years from the state General Fund.",
+      "proponents": "California Teachers Association, State PTA, School Board Association",
+      "opponents": "Fiscal Watchdog Alliance",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-ca-3",
+      "code": "Proposition 3",
+      "title": "Affordable Housing Construction & Tenant Protection Act",
+      "stateId": "CA",
+      "category": "Housing & Economy",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Allows local communities to streamline permits for multi-family affordable housing and establishes minimum tenant notification standards.",
+      "noVoteMeaning": "Maintains current local zoning discretion and existing statutory eviction procedures.",
+      "fiscalSummary": "Minor direct state cost, potential long-term increase in local property tax revenue from new housing developments.",
+      "proponents": "Habitat for Humanity, California Nurses Association, Housing advocacy groups",
+      "opponents": "California Apartment Association, Commercial real estate groups",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-tx-1",
+      "code": "Proposition 1",
+      "title": "Texas Electrical Grid Resiliency & Emergency Generation Fund",
+      "stateId": "TX",
+      "category": "Infrastructure & Energy",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Amends the Texas Constitution to allocate $5 billion from the state budget surplus into a low-interest loan fund for dispatchable thermal energy and grid winterization.",
+      "noVoteMeaning": "No dedicated constitutional reserve fund would be created; grid investments would remain market-driven.",
+      "fiscalSummary": "One-time transfer of $5 billion from surplus revenues. No new taxes required.",
+      "proponents": "Texas Chamber of Commerce, Manufacturing Association, Electric Reliability Council",
+      "opponents": "Consumer advocacy groups urging greater renewable energy access and lower residential rate impacts",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-tx-2",
+      "code": "Proposition 2",
+      "title": "Prohibition on Wealth Taxes and Statewide Property Levies",
+      "stateId": "TX",
+      "category": "Taxes & Finance",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Constitutional amendment prohibiting the state legislature from imposing any tax based on the net worth or wealth of an individual or business.",
+      "noVoteMeaning": "The Texas Legislature retains its current constitutional taxing authority without an explicit ban on net-worth taxes.",
+      "fiscalSummary": "No current fiscal impact since Texas does not impose a wealth tax.",
+      "proponents": "Texas Taxpayers and Research Association, Governor Abbott",
+      "opponents": "Texas Progressive Caucus, Public Policy Center",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-ny-1",
+      "code": "Proposal 1",
+      "title": "Clean Water, Clean Air and Green Jobs Implementation Amendment",
+      "stateId": "NY",
+      "category": "Environment",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Adds explicit constitutional protections guaranteeing every New Yorker clean water, clean air, and a healthful environment with legal standing to enforce.",
+      "noVoteMeaning": "Existing statutory environmental protections remain in place without explicit constitutional entitlement.",
+      "fiscalSummary": "Potential administrative and judicial costs depending on volume of enforcement petitions.",
+      "proponents": "Environmental Advocates NY, Sierra Club Atlantic Chapter",
+      "opponents": "Empire State Building Industry Association",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-fl-1",
+      "code": "Amendment 1",
+      "title": "Partisan School Board Elections Requirement",
+      "stateId": "FL",
+      "category": "Government & Elections",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Requires candidates for district school boards to run with political party affiliations on the ballot, ending nonpartisan school board elections.",
+      "noVoteMeaning": "School board candidates continue to appear on the ballot without party labels.",
+      "fiscalSummary": "No significant fiscal impact on state or local government.",
+      "proponents": "Florida Conservative Coalition",
+      "opponents": "League of Women Voters of Florida, Florida PTA",
+      "status": "Qualified for Ballot"
+    },
+    {
+      "id": "prop-us-gen",
+      "code": "Federal Civics Referendum",
+      "title": "Bipartisan Congressional Term Limits Advisory Measure",
+      "stateId": "US",
+      "category": "Governance",
+      "electionDate": "November 3, 2026 Ballot",
+      "yesVoteMeaning": "Advises state legislatures and Congress to propose a constitutional amendment limiting U.S. Senators to two 6-year terms and House Members to six 2-year terms.",
+      "noVoteMeaning": "Maintains current system without term limits on federal legislators.",
+      "fiscalSummary": "Non-binding national advisory referendum with no direct fiscal impact.",
+      "proponents": "U.S. Term Limits Advocacy Coalition",
+      "opponents": "Senior Congressional Leadership groups",
+      "status": "Advisory Measure"
+    }
+  ]
+}

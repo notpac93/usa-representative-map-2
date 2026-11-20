@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class BillRecord {
   final String id;
   final String title;
@@ -119,7 +121,8 @@ class ExecutiveOrderRecord {
     this.dispositionNotes,
   });
 
-  bool get isInEffect => status.toLowerCase() == 'in effect' || status.toLowerCase() == 'active';
+  bool get isInEffect =>
+      status.toLowerCase() == 'in effect' || status.toLowerCase() == 'active';
   bool get isRevoked => status.toLowerCase().contains('revoked');
   bool get isSuperseded => status.toLowerCase().contains('superseded');
   bool get isAmended => status.toLowerCase().contains('amended');
@@ -145,6 +148,8 @@ class ExecutiveOrderRecord {
   }
 }
 
+enum ElectionPhase { upcoming, electionDay, held, undated }
+
 class ElectionRecord {
   final String stateId;
   final String stateName;
@@ -158,6 +163,76 @@ class ElectionRecord {
   final String officialPortalUrl;
   final String ballotTrackerUrl;
   final String keyOfficesUp;
+  final String? electionDateIso;
+  final String certificationStatus;
+
+  /// Calendar dates only. A passed election date does not prove certification.
+  DateTime? get recordedElectionDate {
+    final iso = electionDateIso;
+    if (iso != null) {
+      final parts = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$').firstMatch(iso);
+      if (parts == null) return null;
+      final year = int.parse(parts[1]!);
+      final month = int.parse(parts[2]!);
+      final day = int.parse(parts[3]!);
+      final parsed = DateTime(year, month, day);
+      return parsed.year == year && parsed.month == month && parsed.day == day
+          ? parsed
+          : null;
+    }
+    for (final format in ['MMMM d, yyyy', 'MMM d, yyyy']) {
+      try {
+        return DateFormat(format, 'en_US').parseStrict(nextElectionDate);
+      } catch (_) {
+        /* Try another recorded format. */
+      }
+    }
+    return null;
+  }
+
+  ElectionPhase phaseOn(DateTime now) {
+    final date = recordedElectionDate;
+    if (date == null) return ElectionPhase.undated;
+    final today = DateTime(now.year, now.month, now.day);
+    if (date.isBefore(today)) return ElectionPhase.held;
+    if (date == today) return ElectionPhase.electionDay;
+    return ElectionPhase.upcoming;
+  }
+
+  String statusLabelOn(DateTime now) => switch (phaseOn(now)) {
+    ElectionPhase.upcoming => 'Upcoming election',
+    ElectionPhase.electionDay => 'Election day',
+    ElectionPhase.held => 'Election held',
+    ElectionPhase.undated => 'Election date not verified',
+  };
+
+  /// Prefer the nearest recorded future election; otherwise show the latest
+  /// recorded past election as history. Unknown calendars never inherit dates.
+  static ElectionRecord? selectForState(
+    Iterable<ElectionRecord> records,
+    String stateId,
+    DateTime now,
+  ) {
+    final matching = records
+        .where((e) => e.stateId.toUpperCase() == stateId.toUpperCase().trim())
+        .toList();
+    final dated = matching.where((e) => e.recordedElectionDate != null).toList()
+      ..sort(
+        (a, b) => a.recordedElectionDate!.compareTo(b.recordedElectionDate!),
+      );
+    final today = DateTime(now.year, now.month, now.day);
+    for (final record in dated) {
+      if (!record.recordedElectionDate!.isBefore(today)) return record;
+    }
+    if (dated.isNotEmpty) return dated.last;
+    return matching.isEmpty ? null : matching.first;
+  }
+
+  String get resultsStatusLabel => switch (certificationStatus) {
+    'certified' => 'Certified results recorded',
+    'unofficial' => 'Unofficial results · certification pending',
+    _ => 'Certification status not verified',
+  };
 
   ElectionRecord({
     required this.stateId,
@@ -172,22 +247,32 @@ class ElectionRecord {
     required this.officialPortalUrl,
     required this.ballotTrackerUrl,
     required this.keyOfficesUp,
+    this.electionDateIso,
+    this.certificationStatus = 'unknown',
   });
 
   factory ElectionRecord.fromJson(Map<String, dynamic> json) {
     return ElectionRecord(
       stateId: json['stateId'] as String? ?? 'US',
       stateName: json['stateName'] as String? ?? '',
-      nextElectionDate: json['nextElectionDate'] as String? ?? 'November 3, 2026',
-      electionType: json['electionType'] as String? ?? '2026 Midterm General Election',
-      primaryDate: json['primaryDate'] as String? ?? 'Spring 2026',
-      voterRegistrationDeadline: json['voterRegistrationDeadline'] as String? ?? 'October 19, 2026',
-      earlyVotingStart: json['earlyVotingStart'] as String? ?? 'October 15, 2026',
-      earlyVotingEnd: json['earlyVotingEnd'] as String? ?? 'November 2, 2026',
-      pollsOpenHours: json['pollsOpenHours'] as String? ?? '7:00 AM – 8:00 PM',
-      officialPortalUrl: json['officialPortalUrl'] as String? ?? 'https://vote.gov',
-      ballotTrackerUrl: json['ballotTrackerUrl'] as String? ?? 'https://vote.gov',
-      keyOfficesUp: json['keyOfficesUp'] as String? ?? 'Federal, State, and Local Offices',
+      nextElectionDate: json['nextElectionDate'] as String? ?? '',
+      electionType: json['electionType'] as String? ?? 'Election information',
+      primaryDate: json['primaryDate'] as String? ?? '',
+      voterRegistrationDeadline:
+          json['voterRegistrationDeadline'] as String? ?? '',
+      earlyVotingStart: json['earlyVotingStart'] as String? ?? '',
+      earlyVotingEnd: json['earlyVotingEnd'] as String? ?? '',
+      pollsOpenHours: json['pollsOpenHours'] as String? ?? '',
+      officialPortalUrl:
+          json['officialPortalUrl'] as String? ?? 'https://vote.gov',
+      ballotTrackerUrl:
+          json['ballotTrackerUrl'] as String? ?? 'https://vote.gov',
+      keyOfficesUp: json['keyOfficesUp'] as String? ?? '',
+      electionDateIso: json['electionDateIso'] as String?,
+      certificationStatus:
+          ['certified', 'unofficial'].contains(json['certificationStatus'])
+          ? json['certificationStatus'] as String
+          : 'unknown',
     );
   }
 }
@@ -240,10 +325,13 @@ class CandidateRecord {
       cityName: json['cityName'] as String?,
       party: json['party'] as String? ?? 'Independent',
       isIncumbent: json['isIncumbent'] as bool? ?? false,
-      status: json['status'] as String? ?? (json['isIncumbent'] == true ? 'Incumbent' : 'Challenger'),
+      status:
+          json['status'] as String? ??
+          (json['isIncumbent'] == true ? 'Incumbent' : 'Challenger'),
       photoUrl: json['photoUrl'] as String?,
       photoLocalPath: json['photoLocalPath'] as String?,
-      platform: (json['platform'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      platform:
+          (json['platform'] as List?)?.map((e) => e.toString()).toList() ?? [],
       bio: json['bio'] as String? ?? '',
       website: json['website'] as String?,
       electionDate: json['electionDate'] as String? ?? 'Nov 3, 2026',
@@ -290,7 +378,8 @@ class PropositionRecord {
       stateId: json['stateId'] as String? ?? 'US',
       cityName: json['cityName'] as String?,
       category: json['category'] as String? ?? 'General Civic',
-      electionDate: json['electionDate'] as String? ?? 'November 3, 2026 Ballot',
+      electionDate:
+          json['electionDate'] as String? ?? 'November 3, 2026 Ballot',
       yesVoteMeaning: json['yesVoteMeaning'] as String? ?? '',
       noVoteMeaning: json['noVoteMeaning'] as String? ?? '',
       fiscalSummary: json['fiscalSummary'] as String? ?? '',

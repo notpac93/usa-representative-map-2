@@ -278,9 +278,9 @@ class SearchHandler {
       results.add(
         SearchResult(
           type: SearchResultType.zipCode,
-          title: 'Upcoming 2026 Elections & Ballot Hub',
+          title: 'Elections & Ballot Records',
           subtitle:
-              'Electoral Candidates, Ballot Propositions, Key Deadlines & Officials',
+              'Recorded elections, candidates, ballot measures & official voting information',
           stateId: 'US',
         ),
       );

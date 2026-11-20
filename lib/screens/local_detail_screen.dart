@@ -1,3 +1,4 @@
+import '../widgets/election_status_banner.dart';
 import 'entity_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -202,13 +203,18 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             filteredCandidates.length,
             propositions.length,
             bills.length,
+            electionInfo,
           ),
 
           const SizedBox(height: 16),
 
           // 4. TAB CONTENT
           if (_selectedTab == 0) ...[
-            _buildBallotAndCandidatesSection(filteredCandidates, propositions),
+            _buildBallotAndCandidatesSection(
+              filteredCandidates,
+              propositions,
+              electionInfo,
+            ),
           ] else if (_selectedTab == 1) ...[
             _buildBillsAndLegislationSection(bills),
           ] else if (_selectedTab == 2) ...[
@@ -363,133 +369,11 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
   }
 
   Widget _buildElectionHubBanner(ElectionRecord election, String stateName) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.event, size: 14, color: Color(0xFF1D4ED8)),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    '${election.nextElectionDate} • ${election.electionType}',
-                    style: const TextStyle(
-                      color: Color(0xFF1D4ED8),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _buildTimelineChip(
-                Icons.event_available,
-                'Reg. Deadline: ${election.voterRegistrationDeadline.split('(').first.trim()}',
-                const Color(0xFF0F172A),
-              ),
-              _buildTimelineChip(
-                Icons.markunread_mailbox,
-                'Early Voting: ${election.earlyVotingStart.split('(').first.trim()}',
-                const Color(0xFF0F172A),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () =>
-                      _launchExternalUrl(election.officialPortalUrl),
-                  icon: const Icon(Icons.open_in_new, size: 14),
-                  label: const Text(
-                    'Register',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF1E3A8A),
-                    backgroundColor: const Color(0xFFF1F5F9),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VoterRulesScreen(
-                          stateName: stateName,
-                          stateId: election.stateId,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.badge, size: 14),
-                  label: const Text(
-                    'ID Guide',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF1E3A8A),
-                    backgroundColor: const Color(0xFFF1F5F9),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimelineChip(IconData icon, String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 13, color: color),
-          const SizedBox(width: 5),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
-      ),
+    return ElectionStatusBanner(
+      election: election,
+      now: DateTime.now(),
+      onOfficialInformation: () =>
+          _launchExternalUrl(election.officialPortalUrl),
     );
   }
 
@@ -497,6 +381,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     int candidatesCount,
     int propositionsCount,
     int billsCount,
+    ElectionRecord election,
   ) {
     return Container(
       decoration: const BoxDecoration(
@@ -506,7 +391,13 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            _buildTabButton(0, 'On Your Ballot', Icons.ballot),
+            _buildTabButton(
+              0,
+              election.phaseOn(DateTime.now()) == ElectionPhase.upcoming
+                  ? 'On Your Ballot'
+                  : 'Ballot Records',
+              Icons.ballot,
+            ),
             _buildTabButton(1, 'Bills & Laws', Icons.gavel),
             _buildTabButton(2, 'Current Reps', Icons.account_balance),
             _buildTabButton(3, 'Voter Guide', Icons.how_to_reg),
@@ -564,6 +455,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
   Widget _buildBallotAndCandidatesSection(
     List<CandidateRecord> candidates,
     List<PropositionRecord> propositions,
+    ElectionRecord election,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -572,24 +464,28 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Electoral Candidates',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF0F172A),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Electoral Candidates',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0F172A),
+                    ),
                   ),
-                ),
-                Text(
-                  'Who you are voting for in this jurisdiction',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.blueGrey.shade600,
+                  Text(
+                    election.phaseOn(DateTime.now()) == ElectionPhase.upcoming
+                        ? 'Recorded candidates for this jurisdiction'
+                        : 'Historical or unverified candidate records · not certified results',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blueGrey.shade600,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -709,7 +605,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
             ),
             child: const Center(
               child: Text(
-                'No ballot measures registered for this jurisdiction.',
+                'No verified ballot measure records are available for this jurisdiction.',
                 style: TextStyle(fontSize: 13, color: Colors.blueGrey),
               ),
             ),
@@ -1451,6 +1347,28 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 
   // --- TAB 4: VOTER GUIDE & DEADLINES ---
   Widget _buildVoterGuideSection(ElectionRecord election, String stateName) {
+    if (election.phaseOn(DateTime.now()) != ElectionPhase.upcoming) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Election information: $stateName',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 12),
+          ElectionStatusBanner(
+            election: election,
+            now: DateTime.now(),
+            onOfficialInformation: () =>
+                _launchExternalUrl(election.officialPortalUrl),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Use the official election office for current registration requirements and polling information. Past deadlines are not valid instructions for a future election.',
+          ),
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

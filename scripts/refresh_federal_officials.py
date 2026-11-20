@@ -31,6 +31,9 @@ def text_content(raw):
 
 def allowed_url(url, source):
     u = urlparse(url)
+    delegated=source.get('delegatedUrls',[])
+    if u.hostname in {urlparse(value).hostname for value in delegated} and url not in delegated:
+        return False
     return u.scheme == 'https' and u.hostname in source['hosts'] and not u.username and not u.password and u.port in (None, 443)
 
 def fetch(url, source):
@@ -44,8 +47,9 @@ def fetch(url, source):
     with urllib.request.build_opener(NoRedirect()).open(Request(url, headers={'User-Agent': 'USARepresentativeMap/1.0 civic-directory'}), timeout=30) as response:
         if not allowed_url(response.url, source):
             raise ValueError('Unapproved redirect')
-        raw = response.read(8_000_001)
-    if len(raw) > 8_000_000:
+        limit=min(int(source.get('maxBytes',8_000_000)),25_000_000)
+        raw = response.read(limit+1)
+    if len(raw) > limit:
         raise ValueError('Source exceeds size limit')
     return raw
 
@@ -126,7 +130,7 @@ def validate(snapshot, registry):
     for term in terms.values():
         if term['personId'] not in people or term['officeId'] not in offices:
             raise ValueError('Dangling term')
-        if term['status'] not in ('current', 'incoming', 'ended', 'disputed', 'withdrawn'):
+        if term['status'] not in ('current', 'incoming', 'incomingRecognized', 'ended', 'disputed', 'withdrawn'):
             raise ValueError('Unknown term status')
         for key in ('scheduledStart', 'scheduledEnd', 'actualStart', 'actualEnd', 'certifiedAt'):
             if term.get(key): instant(term[key])
@@ -136,6 +140,8 @@ def validate(snapshot, registry):
                 raise ValueError('Evidence identity mismatch')
         if term.get('actualStart') and instant(term['actualStart']) > now:
             raise ValueError('Future actual service start')
+        if term.get('actualStart') and term.get('scheduledStartDate'):
+            civil_start_is_due(term,instant(term['actualStart']))
         if term['status'] == 'current':
             if term['officeId'] in occupied:
                 raise ValueError('Two current occupants of one seat')
@@ -145,24 +151,68 @@ def validate(snapshot, registry):
         claims = {proofs[p]['claim'] for p in term['evidenceIds']}
         if term.get('scheduledEnd') and 'scheduledEnd' not in claims:
             raise ValueError('Term expiration lacks authoritative schedule')
+        if term['status'] in ('incoming','incomingRecognized'):
+            if term['officeId'] in incoming_slots: raise ValueError('Conflicting incoming occupants')
+            incoming_slots.add(term['officeId'])
+        if term['status'] == 'incomingRecognized':
+            if not term.get('recognizedAt') or instant(term['recognizedAt']) > now or not ({'incomingRecognition','certification'} & claims):
+                raise ValueError('Incoming recognition lacks government evidence')
+            if term.get('scheduledStart') and 'scheduledStart' not in claims:
+                raise ValueError('Recognized incoming start lacks authoritative rule')
+            if term.get('certifiedAt') and ('certification' not in claims or term.get('certificationStatus')!='certified' or instant(term['certifiedAt']) > now):
+                raise ValueError('Recognition must not imply certification')
         if term['status'] == 'incoming':
-            slot = (term['officeId'], term.get('scheduledStart'))
-            if slot in incoming_slots:
-                raise ValueError('Conflicting incoming occupants')
-            incoming_slots.add(slot)
             claims = {proofs[p]['claim'] for p in term['evidenceIds']}
-            if not {'certification', 'scheduledStart'} <= claims or not term.get('certifiedAt') or not term.get('scheduledStart') or instant(term['certifiedAt']) > now:
+            if not {'certification', 'scheduledStart'} <= claims or not term.get('certifiedAt') or not (term.get('scheduledStart') or term.get('scheduledStartDate')) or instant(term['certifiedAt']) > now:
                 raise ValueError('Incoming term requires certified result and verified schedule')
+        if term.get('scheduledStartDate'):
+            from datetime import date
+            from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+            if term.get('scheduledStart'):
+                raise ValueError('Term start cannot mix a civil date with an exact instant')
+            date.fromisoformat(term['scheduledStartDate'])
+            if 'scheduledStart' not in claims: raise ValueError('Civil start date lacks authoritative evidence')
+            if not isinstance(term.get('startTimeZone'), str) or not term['startTimeZone']:
+                raise ValueError('Civil term start requires an explicit official local time zone')
+            try: ZoneInfo(term['startTimeZone'])
+            except (ZoneInfoNotFoundError, ValueError) as error:
+                raise ValueError('Civil term start has an invalid local time zone') from error
         if term.get('scheduledStart') and term.get('scheduledEnd') and instant(term['scheduledEnd']) <= instant(term['scheduledStart']):
             raise ValueError('Invalid term interval')
     return snapshot
+
+def civil_start_is_due(term, now):
+    """Compare civil dates in the official local zone without inventing a time.
+
+    Reaching this day is only a prerequisite. It is never assumption-of-office
+    evidence, and cannot itself promote an incoming official.
+    """
+    if not term.get('scheduledStartDate'):
+        return True
+    from datetime import date
+    from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+    civil_start = date.fromisoformat(term['scheduledStartDate'])
+    zone_name = term.get('startTimeZone')
+    if not isinstance(zone_name, str) or not zone_name:
+        raise ValueError('Civil term start requires an explicit official local time zone')
+    try:
+        zone = ZoneInfo(zone_name)
+    except (ZoneInfoNotFoundError, ValueError) as error:
+        raise ValueError('Civil term start has an invalid local time zone') from error
+    if term.get('actualStart') and instant(term['actualStart']).astimezone(zone).date() < civil_start:
+        raise ValueError('Actual service start precedes the verified local civil start date; review required')
+    return now.astimezone(zone).date() >= civil_start
+
 
 def transition(snapshot):
     """Only freshly fetched assumption evidence permits automatic promotion."""
     now = instant(snapshot['publishedAt'])
     proofs = {p['id']: p for p in snapshot['evidence']}
     for term in snapshot['terms']:
-        if term['status'] != 'incoming' or instant(term['scheduledStart']) > now:
+        if term['status'] not in ('incoming','incomingRecognized'):
+            continue
+        civil_due = civil_start_is_due(term, now)
+        if not civil_due or (term.get('scheduledStart') and instant(term['scheduledStart']) > now):
             continue
         assumption = [proofs[p] for p in term['evidenceIds'] if proofs[p]['claim'] == 'assumedOffice' and now - instant(proofs[p]['retrievedAt']) <= timedelta(hours=24)]
         actual = term.get('actualStart')
@@ -179,6 +229,23 @@ def transition(snapshot):
             term['actualEnd'] = term['scheduledEnd']
     return snapshot
 
+def rebind_term_person(term, person_id, proofs):
+    """Clone source bindings when a roster resolves a stable person identity."""
+    if term['personId'] == person_id:
+        return
+    ids = []
+    for proof_id in term['evidenceIds']:
+        proof = dict(proofs[proof_id])
+        proof['personId'] = person_id
+        identity = '|'.join((proof['sourceId'], proof['officeId'], person_id,
+                             proof['claim'], proof['sha256'], proof['url']))
+        proof['id'] = hashlib.sha256(identity.encode()).hexdigest()[:24]
+        proofs[proof['id']] = proof
+        ids.append(proof['id'])
+    term['personId'] = person_id
+    term['evidenceIds'] = ids
+
+
 def atomic_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = None
@@ -193,7 +260,7 @@ def atomic_json(path, data):
     finally:
         if temp and os.path.exists(temp): os.unlink(temp)
 
-def refresh(previous, registry, plans, now, loader=fetch):
+def refresh(previous, registry, plans, now, loader=fetch, include_elections=False):
     result = copy.deepcopy(previous or {'schemaVersion': 1, 'people': [], 'offices': [], 'terms': [], 'evidence': []})
     result['publishedAt'] = iso(now)
     result['displayPolicy'] = {'incomingDays': 90, 'pendingGraceDays': 7}
@@ -218,6 +285,9 @@ def refresh(previous, registry, plans, now, loader=fetch):
     rule = 'The terms of the President and Vice President shall end at noon on the 20th day of January'
     if rule not in text_content(constitution_raw):
         raise ValueError('Constitutional term rule changed; review required')
+    congress_rule = 'and the terms of Senators and Representatives at noon on the 3d day of January, of the years in which such terms would have ended if this article had not been ratified; and the terms of their successors shall then begin.'
+    if congress_rule not in text_content(constitution_raw):
+        raise ValueError('Constitutional Congress term-start and successor rule changed; review required')
     for source_id, parser in [('house-clerk', parse_house), ('senate-roster', parse_senate)]:
         source = sources[source_id]
         raw = download(source)
@@ -256,18 +326,29 @@ def refresh(previous, registry, plans, now, loader=fetch):
                     if old_term['officeId'] == oid and old_term['status'] == 'current' and old_term.get('period') != r['period']:
                         old_term['status'] = 'ended'
                         old_term['endedObservedAt'] = iso(now)
-            existing = [t for t in terms.values() if t['officeId'] == oid and t['personId'] == pid and t['status'] in ('current', 'incoming')]
+            for candidate in terms.values():
+                if candidate['officeId']==oid and candidate['status'] in ('incoming','incomingRecognized'):
+                    normalize=lambda value: re.sub(r'[^a-z0-9]','',value.lower())
+                    if normalize(people[candidate['personId']]['name'])==normalize(r['name']):
+                        alias = people[candidate['personId']]
+                        people[pid] = {**alias, **people[pid], 'id': pid, 'bioguideId': pid}
+                        rebind_term_person(candidate, pid, proofs)
+            existing = [t for t in terms.values() if t['officeId'] == oid and t['personId'] == pid and t['status'] in ('current', 'incoming', 'incomingRecognized')]
             t = next((t for t in existing if t['status'] == 'current'), None)
             if t is None:
                 # An incoming term can only be adopted once its verified start arrives.
-                t = next((t for t in existing if t.get('scheduledStart') and instant(t['scheduledStart']) <= now), None)
+                t = next((t for t in existing if (not t.get('scheduledStart') or instant(t['scheduledStart']) <= now)), None)
             tid = t['id'] if t else (f'{oid}:{pid}:congress:{r["congress"]}' if r.get('congress') else f'{oid}:{pid}:class:{r["period"]}')
             t = terms.setdefault(tid, {'id': tid, 'officeId': oid, 'personId': pid, 'status': 'current', 'evidenceIds': []})
             proof = evidence(source, raw, now, oid, pid, 'current')
             proofs[proof['id']] = proof
-            t['evidenceIds'] = [proof['id']]
+            # Keep the term's certification and start-law history when its
+            # service is confirmed; replace only current-roster observations.
+            t['evidenceIds'] = [p for p in t['evidenceIds']
+                                if proofs[p]['claim'] not in ('current', 'scheduledEnd')]
+            t['evidenceIds'].append(proof['id'])
             if r.get('scheduledEnd'):
-                end_proof = evidence(constitution, constitution_raw, now, oid, pid, 'scheduledEnd', rule)
+                end_proof = evidence(constitution, constitution_raw, now, oid, pid, 'scheduledEnd', congress_rule)
                 proofs[end_proof['id']] = end_proof
                 t['evidenceIds'].append(end_proof['id'])
                 if r['kind'] == 'senate':
@@ -276,7 +357,7 @@ def refresh(previous, registry, plans, now, loader=fetch):
                     class_proof = evidence(class_source, class_raw, now, oid, pid, 'scheduledEnd', r['scheduledEnd'][:4])
                     proofs[class_proof['id']] = class_proof
                     t['evidenceIds'].append(class_proof['id'])
-            if t['status'] == 'incoming':
+            if t['status'] in ('incoming','incomingRecognized'):
                 t['status'] = 'current'
                 t['serviceConfirmedAt'] = iso(now)
             t['verifiedAt'] = iso(now)
@@ -344,6 +425,31 @@ def refresh(previous, registry, plans, now, loader=fetch):
         if any(p not in plan_proofs for p in t['evidenceIds']): raise ValueError('Plan lacks freshly checked evidence')
         terms[t['id']] = copy.deepcopy(t)
     result.update(people=list(people.values()), offices=list(offices.values()), terms=list(terms.values()), evidence=list(proofs.values()))
+    if include_elections:
+        try:
+            from .election_adapters.senate_elect import add_to_snapshot
+        except ImportError:
+            from election_adapters.senate_elect import add_to_snapshot
+        try:
+            from .election_adapters.house_elect import add_to_snapshot as add_house
+        except ImportError:
+            from election_adapters.house_elect import add_to_snapshot as add_house
+        coverage=[]
+        for source_id, adapter in [('senate-elect-2026', add_to_snapshot), ('house-elect-newdem-2026', add_house)]:
+            record={'sourceId':source_id,'checkedAt':iso(now)}
+            candidate=copy.deepcopy(result)
+            try:
+                entries=adapter(candidate, registry,
+                                lambda url,source: download({**source,'required':False},url),
+                                now, evidence, iso)
+                # Optional source errors cannot commit half an incoming list or
+                # discard the last successfully verified recognition records.
+                result=candidate
+                record.update(status='retrieved',recognizedRecords=len(entries))
+            except Exception as error:
+                record.update(status='unavailable',error=f'{type(error).__name__}: {error}')
+            coverage.append(record)
+        result['incomingSourceCoverage']=coverage
     validate(result, registry)
     transition(result)
     validate(result, registry)

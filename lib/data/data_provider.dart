@@ -1,4 +1,5 @@
 import '../services/federal_officials_service.dart';
+import 'federal_officials.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,26 +59,90 @@ class MapDataProvider extends ChangeNotifier {
   void _applyFederalSnapshot() {
     final snapshot = FederalOfficialsService.instance.snapshot;
     if (snapshot == null) return;
+    applyOfficialSnapshot(snapshot);
+  }
+
+  /// Project only verified serving records into the app's existing lists.
+  /// An incoming-only state record does not replace the serving governor.
+  void applyOfficialSnapshot(FederalSnapshot snapshot, {DateTime? asOf}) {
+    final now = asOf ?? DateTime.now();
+    final nextGovernors = Map<String, Governor>.from(governors ?? {});
     final nextSenators = <String, List<Senator>>{};
     final nextHouse = <String, List<Representative>>{};
     final nextCourt = <Judge>[];
     for (final office in snapshot.offices.values) {
-      final term = snapshot.view(office.id, DateTime.now()).current;
-      if (term == null) continue;
+      final term = snapshot.view(office.id, now).current;
+      if (term == null) {
+        if (office.kind == 'governor' &&
+            snapshot.terms.values.any(
+              (term) =>
+                  term.officeId == office.id &&
+                  ['current', 'ended'].contains(term.status),
+            )) {
+          // Service was tracked here. A gap after expiration must not restore
+          // the predecessor from the legacy asset as if still serving.
+          nextGovernors.remove(office.state);
+        }
+        continue;
+      }
       final person = snapshot.people[term.personId]!;
-      if (office.kind == 'senate') {
-        (nextSenators[office.state] ??= []).add(Senator(name: person.name, party: person.party,
-          bioguideId: person.bioguideId, photoLocalPath: person.photoLocalPath,
-          phone: term.contact['phone'], address: term.contact['address'], website: term.contact['website'], contactUrl: term.contact['contactUrl']));
+      if (office.kind == 'governor') {
+        final serviceEvidence = term.evidenceIds
+            .map((id) => snapshot.evidence[id]!)
+            .where(
+              (proof) => ['current', 'assumedOffice'].contains(proof.claim),
+            )
+            .first;
+        nextGovernors[office.state] = Governor(
+          name: person.name,
+          party: person.party,
+          photoLocalPath: person.photoLocalPath,
+          phone: term.contact['phone'],
+          address: term.contact['address'],
+          website: term.contact['website'],
+          sourceUrl: serviceEvidence.url,
+          retrievedAt: serviceEvidence.retrievedAt.toIso8601String(),
+        );
+      } else if (office.kind == 'senate') {
+        (nextSenators[office.state] ??= []).add(
+          Senator(
+            name: person.name,
+            party: person.party,
+            bioguideId: person.bioguideId,
+            photoLocalPath: person.photoLocalPath,
+            phone: term.contact['phone'],
+            address: term.contact['address'],
+            website: term.contact['website'],
+            contactUrl: term.contact['contactUrl'],
+          ),
+        );
       } else if (office.kind == 'house') {
-        (nextHouse[office.state] ??= []).add(Representative(name: person.name, party: person.party,
-          bioguideId: person.bioguideId, photoLocalPath: person.photoLocalPath,
-          districtNumber: office.district, district: office.district == 0 ? 'At Large' : '${office.district}',
-          phone: term.contact['phone'], office: term.contact['address'], website: term.contact['website'], contactUrl: term.contact['contactUrl']));
+        (nextHouse[office.state] ??= []).add(
+          Representative(
+            name: person.name,
+            party: person.party,
+            bioguideId: person.bioguideId,
+            photoLocalPath: person.photoLocalPath,
+            districtNumber: office.district,
+            district: office.district == 0 ? 'At Large' : '${office.district}',
+            phone: term.contact['phone'],
+            office: term.contact['address'],
+            website: term.contact['website'],
+            contactUrl: term.contact['contactUrl'],
+          ),
+        );
       } else if (office.kind == 'justice') {
-        nextCourt.add(Judge(name: person.name, title: office.title, court: 'Supreme Court of the United States', photoLocalPath: person.photoLocalPath));
+        nextCourt.add(
+          Judge(
+            name: person.name,
+            title: office.title,
+            court: 'Supreme Court of the United States',
+            photoLocalPath: person.photoLocalPath,
+          ),
+        );
       }
     }
+    governors = nextGovernors;
     senators = nextSenators;
     houseMembers = nextHouse;
     supremeCourt = nextCourt;
@@ -86,7 +151,8 @@ class MapDataProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    if (_federalListenerAttached) FederalOfficialsService.instance.removeListener(_applyFederalSnapshot);
+    if (_federalListenerAttached)
+      FederalOfficialsService.instance.removeListener(_applyFederalSnapshot);
     super.dispose();
   }
 

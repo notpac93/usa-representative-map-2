@@ -7,6 +7,17 @@ import '../services/federal_officials_service.dart';
 import 'leader_quick_profile_screen.dart';
 
 String _day(DateTime date) => DateFormat.yMMMd().format(date.toUtc());
+String _scheduledStartLabel(FederalTerm term) {
+  final civil = term.scheduledStartDate;
+  if (civil != null) {
+    // Format the original calendar fields without converting them to UTC.
+    final label = DateFormat.yMMMd().format(DateTime.parse(civil));
+    return 'Scheduled start: $label (local date; time not specified)';
+  }
+  return term.scheduledStart == null
+      ? 'Start date awaiting official confirmation'
+      : 'Scheduled start: ${_day(term.scheduledStart!)}';
+}
 
 /// Text only: a successor never competes with the serving official's portrait.
 class FederalTransitionNotice extends StatelessWidget {
@@ -45,7 +56,9 @@ class FederalTransitionNotice extends StatelessWidget {
                       ? 'Reelected · next term'
                       : view.awaitingVerification
                       ? 'Transition awaiting verification'
-                      : 'Incoming · certified',
+                      : t?.certificationVerified == true
+                      ? 'Incoming · certified'
+                      : 'Incoming · government recognized',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -61,8 +74,13 @@ class FederalTransitionNotice extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                  if (!t.certificationVerified)
+                    const Text(
+                      'Election certification not yet verified.',
+                      style: TextStyle(fontSize: 12),
+                    ),
                   Text(
-                    'Scheduled start: ${_day(t.scheduledStart!)}',
+                    _scheduledStartLabel(t),
                     style: const TextStyle(fontSize: 12),
                   ),
                 ],
@@ -219,18 +237,18 @@ class _FederalOfficialProfileScreenState
               ),
               const SizedBox(height: 12),
               const Text(
-                'Incoming cards appear only after certification, within 90 days of the scheduled start. They disappear at a verified handoff, or seven days after the scheduled start if confirmation is pending.',
+                'Incoming cards require official recognition or certified results. Certification and start-date verification are shown separately. Cards appear within 90 days of a verified start; recognition without a start date is shown for at most 90 days. They disappear at a verified handoff, or seven days after the scheduled start if confirmation is pending.',
               ),
               for (final t in snapshot.terms.values.where(
                 (t) => t.officeId == officeId,
               )) ...[
                 const Divider(),
                 Text(
-                  '${snapshot.people[t.personId]!.name} · ${t.status}',
+                  '${snapshot.people[t.personId]!.name} · ${t.status == 'incomingRecognized' ? 'government-recognized incoming' : t.status}',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                if (t.scheduledStart != null)
-                  Text('Scheduled start: ${_day(t.scheduledStart!)}'),
+                if (t.scheduledStart != null || t.scheduledStartDate != null)
+                  Text(_scheduledStartLabel(t)),
                 if (t.actualStart != null)
                   Text('Verified service start: ${_day(t.actualStart!)}'),
                 for (final id in t.evidenceIds)
@@ -273,7 +291,7 @@ class _FederalOfficialsScreenState extends State<FederalOfficialsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Federal officials')),
+    appBar: AppBar(title: const Text('Officials and transitions')),
     body: AnimatedBuilder(
       animation: FederalOfficialsService.instance,
       builder: (context, _) {

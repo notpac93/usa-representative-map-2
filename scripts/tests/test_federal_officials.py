@@ -107,7 +107,7 @@ class FederalTransitionsTest(unittest.TestCase):
                 klass=['I','II'][n%2]
                 senate+=f'<member><bioguide_id>B{n:06}</bioguide_id><state>{state}</state><class>Class {klass}</class><first_name>Fixture</first_name><last_name>Senate {n}</last_name></member>'
             senate+='</contact_information>'
-            values={'house-clerk':house,'senate-roster':senate,'constitution':'The terms of the President and Vice President shall end at noon on the 20th day of January'}
+            values={'house-clerk':house,'senate-roster':senate,'constitution':'The terms of the President and Vice President shall end at noon on the 20th day of January and the terms of Senators and Representatives at noon on the 3d day of January, of the years in which such terms would have ended if this article had not been ratified; and the terms of their successors shall then begin.'}
             for klass,year in [('I',2031),('II',class_two),('III',2029)]:
                 values['senate-term-'+klass]=f'Class {klass} - Senators Whose Terms of Service Expire in {year}'
             return lambda url,source:values[source['id']].encode()
