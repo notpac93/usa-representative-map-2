@@ -91,7 +91,7 @@
     },
     {
       "id": "constitution",
-      "name": "National Archives \u2014 20th Amendment",
+      "name": "National Archives — 20th Amendment",
       "url": "https://www.archives.gov/founding-docs/amendments-11-27",
       "hosts": [
         "www.archives.gov"
@@ -195,6 +195,1546 @@
       "claims": [
         "scheduledEnd"
       ]
+    },
+    {
+      "id": "senate-elect-2026",
+      "name": "U.S. Senate Employment Office · Senators-elect",
+      "url": "https://employment.senate.gov/2026-senators-elect-resume-collection/",
+      "hosts": [
+        "employment.senate.gov"
+      ],
+      "officeKinds": [
+        "senate"
+      ],
+      "claims": [
+        "incomingRecognition"
+      ],
+      "required": false
+    },
+    {
+      "id": "house-elect-newdem-2026",
+      "name": "U.S. House New Democrat Coalition · members-elect (partial list)",
+      "url": "https://newdemocratcoalition.house.gov/media-center/press-releases/new-dems-welcome-40-new-members-coalition-grows-to-record-142-members",
+      "hosts": [
+        "newdemocratcoalition.house.gov"
+      ],
+      "officeKinds": [
+        "house"
+      ],
+      "claims": [
+        "incomingRecognition"
+      ],
+      "required": false
+    },
+    {
+      "id": "ms-incoming-announcement",
+      "name": "U.S. Senator Wicker official incoming recognition",
+      "url": "https://www.wicker.senate.gov/2026/11/12/wicker-congratulates-senator-elect-colom-and-honors-senator-hyde-smith/",
+      "hosts": [
+        "www.wicker.senate.gov"
+      ],
+      "officeKinds": [
+        "senate"
+      ],
+      "states": [
+        "MS"
+      ],
+      "claims": [
+        "incomingRecognition"
+      ],
+      "required": false
+    },
+    {
+      "id": "state-election-AK",
+      "name": "Alaska election authority",
+      "url": "https://www.elections.alaska.gov/election-results/",
+      "hosts": [
+        "www.elections.alaska.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "AK"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-AL",
+      "name": "Alabama election authority",
+      "url": "https://www.sos.alabama.gov/alabama-votes/voter/election-information/2026",
+      "hosts": [
+        "www.sos.alabama.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "AL"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-AR",
+      "name": "Arkansas election authority",
+      "url": "https://www.sos.arkansas.gov/elections/research/election-results",
+      "hosts": [
+        "www.sos.arkansas.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "AR"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-AZ",
+      "name": "Arizona election authority",
+      "url": "https://azsos.gov/elections/election-information",
+      "hosts": [
+        "app.enhancedvoting.com",
+        "azsos.gov"
+      ],
+      "delegatedUrls": [
+        "https://app.enhancedvoting.com/cdn/results/Arizona/export-110326GeneralElection.json"
+      ],
+      "states": [
+        "AZ"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-CA",
+      "name": "California election authority",
+      "url": "https://electionresults.sos.ca.gov/Returns/status",
+      "hosts": [
+        "electionresults.sos.ca.gov",
+        "www.sos.ca.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "CA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-CO",
+      "name": "Colorado election authority",
+      "url": "https://www.sos.state.co.us/pubs/elections/resultsData.html",
+      "hosts": [
+        "www.sos.state.co.us"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "CO"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-CT",
+      "name": "Connecticut election authority",
+      "url": "https://portal.ct.gov/en/SOTS/Election-Services/Election-Results/Election-Results",
+      "hosts": [
+        "ctemspublic.pcctg.net",
+        "portal.ct.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "CT"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-DE",
+      "name": "Delaware election authority",
+      "url": "https://elections.delaware.gov/results/",
+      "hosts": [
+        "data.delaware.gov",
+        "delcode.delaware.gov",
+        "elections.delaware.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "DE"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-FL",
+      "name": "Florida election authority",
+      "url": "https://results.elections.myflorida.com/",
+      "hosts": [
+        "results.elections.myflorida.com",
+        "www.dos.myflorida.com"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "FL"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-GA",
+      "name": "Georgia election authority",
+      "url": "https://results.sos.ga.gov/results/public/Georgia",
+      "hosts": [
+        "results.sos.ga.gov",
+        "sos.ga.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "GA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-HI",
+      "name": "Hawaii election authority",
+      "url": "https://elections.hawaii.gov/election-results/",
+      "hosts": [
+        "elections.hawaii.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "HI"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-IA",
+      "name": "Iowa election authority",
+      "url": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "hosts": [
+        "sos.iowa.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "IA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-ID",
+      "name": "Idaho election authority",
+      "url": "https://voteidaho.gov/election-results/",
+      "hosts": [
+        "voteidaho.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "ID"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-IL",
+      "name": "Illinois election authority",
+      "url": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx",
+      "hosts": [
+        "www.elections.il.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "IL"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-IN",
+      "name": "Indiana election authority",
+      "url": "https://enr.indianavoters.in.gov/site/index.html",
+      "hosts": [
+        "enr.indianavoters.in.gov",
+        "indianavoters.in.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "IN"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-KS",
+      "name": "Kansas election authority",
+      "url": "https://sos.ks.gov/elections/election-results.html",
+      "hosts": [
+        "sos.ks.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "KS"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-KY",
+      "name": "Kentucky election authority",
+      "url": "https://elect.ky.gov/results/Pages/default.aspx",
+      "hosts": [
+        "elect.ky.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "KY"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-LA",
+      "name": "Louisiana election authority",
+      "url": "https://voterportal.sos.la.gov/graphical",
+      "hosts": [
+        "voterportal.sos.la.gov",
+        "www.sos.la.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "LA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MA",
+      "name": "Massachusetts election authority",
+      "url": "https://electionstats.state.ma.us/",
+      "hosts": [
+        "electionstats.state.ma.us",
+        "www.sec.state.ma.us"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MD",
+      "name": "Maryland election authority",
+      "url": "https://elections.maryland.gov/elections/2026/index.html",
+      "hosts": [
+        "elections.maryland.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MD"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-ME",
+      "name": "Maine election authority",
+      "url": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+      "hosts": [
+        "www.maine.gov",
+        "www1.maine.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "ME"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MI",
+      "name": "Michigan election authority",
+      "url": "https://www.michigan.gov/sos/elections/election-results-and-data",
+      "hosts": [
+        "www.michigan.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MI"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MN",
+      "name": "Minnesota election authority",
+      "url": "https://electionresults.sos.mn.gov/20261103",
+      "hosts": [
+        "electionresults.sos.mn.gov",
+        "www.house.mn.gov",
+        "www.sos.state.mn.us"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MN"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MO",
+      "name": "Missouri election authority",
+      "url": "https://www.sos.mo.gov/elections/s_default",
+      "hosts": [
+        "www.sos.mo.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MO"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MS",
+      "name": "Mississippi election authority",
+      "url": "https://www.sos.ms.gov/elections-voting/election-results",
+      "hosts": [
+        "www.sos.ms.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MS"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-MT",
+      "name": "Montana election authority",
+      "url": "https://electionresults.mt.gov/",
+      "hosts": [
+        "electionresults.mt.gov",
+        "sosmt.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "MT"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NC",
+      "name": "North Carolina election authority",
+      "url": "https://er.ncsbe.gov/",
+      "hosts": [
+        "er.ncsbe.gov",
+        "www.ncsbe.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NC"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-ND",
+      "name": "North Dakota election authority",
+      "url": "https://results.sos.nd.gov/",
+      "hosts": [
+        "results.sos.nd.gov",
+        "vip.sos.nd.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "ND"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NE",
+      "name": "Nebraska election authority",
+      "url": "https://electionresults.nebraska.gov/default.aspx",
+      "hosts": [
+        "electionresults.nebraska.gov",
+        "www.nebraska.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NE"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NH",
+      "name": "New Hampshire election authority",
+      "url": "https://www.sos.nh.gov/2026-general-election-results",
+      "hosts": [
+        "www.sos.nh.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NH"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NJ",
+      "name": "New Jersey election authority",
+      "url": "https://www.nj.gov/state/elections/election-results.shtml",
+      "hosts": [
+        "www.nj.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NJ"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NM",
+      "name": "New Mexico election authority",
+      "url": "https://electionresults.sos.nm.gov/",
+      "hosts": [
+        "electionresults.sos.nm.gov",
+        "www.sos.nm.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NM"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NV",
+      "name": "Nevada election authority",
+      "url": "https://results.nv.gov/",
+      "hosts": [
+        "nvsos.gov",
+        "results.nv.gov",
+        "silverstateelection.nv.gov",
+        "www.nvsos.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NV"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-NY",
+      "name": "New York election authority",
+      "url": "https://elections.ny.gov/election-results",
+      "hosts": [
+        "elections.ny.gov",
+        "www.elections.ny.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "NY"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-OH",
+      "name": "Ohio election authority",
+      "url": "https://liveresults.ohiosos.gov/",
+      "hosts": [
+        "liveresults.ohiosos.gov",
+        "www.ohiosos.gov",
+        "www.sos.state.oh.us"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "OH"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-OK",
+      "name": "Oklahoma election authority",
+      "url": "https://oklahoma.gov/elections/elections-results/election-results.html",
+      "hosts": [
+        "oklahoma.gov",
+        "results.okelections.us"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "OK"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-OR",
+      "name": "Oregon election authority",
+      "url": "https://results.oregonvotes.gov/",
+      "hosts": [
+        "results.oregonvotes.gov",
+        "sos.oregon.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "OR"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-PA",
+      "name": "Pennsylvania election authority",
+      "url": "https://www.electionreturns.pa.gov/",
+      "hosts": [
+        "www.dos.pa.gov",
+        "www.electionreturns.pa.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "PA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-RI",
+      "name": "Rhode Island election authority",
+      "url": "https://electionresults.ri.gov/",
+      "hosts": [
+        "electionresults.ri.gov",
+        "vote.sos.ri.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "RI"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-SC",
+      "name": "South Carolina election authority",
+      "url": "https://scvotes.gov/elections-statistics/election-results/",
+      "hosts": [
+        "scvotes.gov",
+        "www.enr-scvotes.org",
+        "www.scvotes.org"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "SC"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-SD",
+      "name": "South Dakota election authority",
+      "url": "https://electionresults.sd.gov/",
+      "hosts": [
+        "electionresults.sd.gov",
+        "sdsos.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "SD"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-TN",
+      "name": "Tennessee election authority",
+      "url": "https://sos.tn.gov/elections/results",
+      "hosts": [
+        "elections.tn.gov",
+        "sos.tn.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "TN"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-TX",
+      "name": "Texas election authority",
+      "url": "https://electionresults.sos.state.tx.us/results.html",
+      "hosts": [
+        "electionresults.sos.state.tx.us",
+        "www.sos.state.tx.us"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "TX"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-UT",
+      "name": "Utah election authority",
+      "url": "https://vote.utah.gov/election-results-data-historical-information/",
+      "hosts": [
+        "vote.utah.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "UT"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-VA",
+      "name": "Virginia election authority",
+      "url": "https://www.elections.virginia.gov/results/",
+      "hosts": [
+        "enr.elections.virginia.gov",
+        "www.elections.virginia.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "VA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-VT",
+      "name": "Vermont election authority",
+      "url": "https://electionresults.vermont.gov/",
+      "hosts": [
+        "electionresults.vermont.gov",
+        "sos.vermont.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "VT"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-WA",
+      "name": "Washington election authority",
+      "url": "https://results.votewa.gov/results/public/washington",
+      "hosts": [
+        "results.votewa.gov",
+        "www.sos.wa.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "WA"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-WI",
+      "name": "Wisconsin election authority",
+      "url": "https://elections.wi.gov/elections/election-results",
+      "hosts": [
+        "elections.wi.gov",
+        "myvote.wi.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "WI"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-WV",
+      "name": "West Virginia election authority",
+      "url": "https://sos.wv.gov/elections",
+      "hosts": [
+        "results.enr.clarityelections.com",
+        "sos.wv.gov"
+      ],
+      "delegatedUrls": [
+        "https://results.enr.clarityelections.com/WV/127496/web.345435/#/summary"
+      ],
+      "states": [
+        "WV"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
+    },
+    {
+      "id": "state-election-WY",
+      "name": "Wyoming election authority",
+      "url": "https://sos.wyo.gov/Elections/Docs/2026/2026GeneralResults.aspx",
+      "hosts": [
+        "sos.wyo.gov"
+      ],
+      "delegatedUrls": [],
+      "states": [
+        "WY"
+      ],
+      "officeKinds": [
+        "house",
+        "senate",
+        "governor",
+        "stateSenate",
+        "stateHouse",
+        "stateExecutive",
+        "stateJudge"
+      ],
+      "claims": [
+        "reportedResult",
+        "certification",
+        "incomingRecognition",
+        "scheduledStart"
+      ],
+      "required": false,
+      "maxBytes": 20000000
     }
   ]
 }

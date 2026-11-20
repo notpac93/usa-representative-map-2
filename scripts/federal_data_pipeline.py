@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""On-demand federal data checks and guarded, recoverable publication (stdlib only)."""
+"""On-demand government data checks and guarded, recoverable snapshot saving."""
 import argparse
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
@@ -11,6 +11,8 @@ from pathlib import Path
 import sys
 import time
 import tempfile
+import threading
+from concurrent.futures import Future
 from urllib.error import HTTPError, URLError
 import uuid
 
@@ -21,10 +23,13 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[1]
 UTC = timezone.utc
-AUDIT_FIELDS = {'publishedAt', 'verifiedAt', 'retrievedAt', 'endedObservedAt', 'serviceConfirmedAt', 'evidenceIds', 'dataVersion'}
+AUDIT_FIELDS = {'publishedAt', 'verifiedAt', 'retrievedAt', 'recognizedAt', 'certifiedAt', 'endedObservedAt', 'serviceConfirmedAt', 'evidenceIds', 'dataVersion', 'checkedAt', 'sourceDocuments'}
 CONFIG_PATHS = ('scripts/data/federal_sources.json', 'assets/data/federal_sources.json',
                 'scripts/data/federal_transition_plans.json', 'scripts/data/federal_reviewed_offices.json',
-                'assets/data/senators.json', 'assets/data/houseMembers.json')
+                'assets/data/senators.json', 'assets/data/houseMembers.json',
+                'scripts/data/state_election_sources.json','scripts/data/election_result_reviews.json','scripts/election_results.py',
+                'scripts/election_adapters/senate_elect.py','scripts/election_adapters/house_elect.py','scripts/election_adapters/mississippi.py',
+                'scripts/election_adapters/certified.py','scripts/election_adapters/delaware.py','scripts/election_adapters/reviewed.py')
 
 
 def digest(raw):
@@ -49,7 +54,7 @@ def clean(value):
 
 
 def business_data(snapshot):
-    return {k: clean(snapshot.get(k, [])) for k in ('people', 'offices', 'terms')}
+    return {k: clean(snapshot.get(k, [])) for k in ('people', 'offices', 'terms', 'electionResults')}
 
 
 def version(snapshot):
@@ -59,9 +64,9 @@ def version(snapshot):
 def differences(before, after):
     before = before or {}
     changes = []
-    for collection in ('people', 'offices', 'terms'):
+    for collection in ('people', 'offices', 'terms', 'electionResults'):
         old = {r['id']: clean(r) for r in before.get(collection, [])}
-        new = {r['id']: clean(r) for r in after[collection]}
+        new = {r['id']: clean(r) for r in after.get(collection, [])}
         for key in sorted(old.keys() | new.keys()):
             a, b = old.get(key), new.get(key)
             if a == b:
@@ -99,6 +104,8 @@ def review_reasons(before, after, changes):
             reasons.append(f'{change["collection"]}/{change["id"]}: historical record removed.')
     if len(changes) > 50:
         reasons.append(f'Large update affects {len(changes)} records; inspect the report before publication.')
+    if after.get('electionCoverage',{}).get('complete') is False:
+        reasons.append('All-state election coverage is incomplete. Review source, contest, certification, and start-date gaps in the report before saving. Approval saves only verified records; it does not certify missing results.')
     return reasons
 
 
@@ -108,6 +115,15 @@ def configurations(root):
     for path in ('scripts/refresh_federal_officials.py', 'scripts/federal_data_pipeline.py', 'scripts/publish_federal_snapshot.sh'):
         values[path] = file_hash(root / path)
     return values
+
+
+def verify_configuration_archive(folder, manifest):
+    """Preserve the actual reviewed bindings/rules, not only their fingerprints."""
+    if manifest.get('configurationArchive') != 'configuration':
+        raise ValueError('Candidate has no preserved collection rules; run a new check.')
+    for relative, checksum in manifest['configurations'].items():
+        if checksum is not None and file_hash(folder / 'configuration' / relative) != checksum:
+            raise ValueError('Preserved collection configuration failed integrity verification: ' + relative)
 
 
 def retry_fetch(url, source):
@@ -123,6 +139,13 @@ def retry_fetch(url, source):
         time.sleep(2 ** attempt)
 
 
+def is_security_challenge(raw):
+    if raw[:4] in (b'%PDF',b'PK\x03\x04'): return False
+    sample=raw[:12000].decode('utf-8',errors='ignore').lower()
+    return ('<title>just a moment' in sample or '<title>access denied' in sample or
+            (len(raw)<12000 and ('_incapsula_resource' in sample or 'request unsuccessful' in sample or 'verify you are human' in sample or 'verify you are not a robot' in sample)))
+
+
 def load_registry(root):
     registry = json.loads((root / CONFIG_PATHS[0]).read_text())
     if registry != json.loads((root / CONFIG_PATHS[1]).read_text()):
@@ -132,7 +155,7 @@ def load_registry(root):
 
 def write_reports(run, report):
     collector.atomic_json(run / 'report.json', report)
-    lines = [f'# Federal data check: {report["status"]}', '', f'Checked: {report["checkedAt"]}',
+    lines = [f'# Government data check: {report["status"]}', '', f'Checked: {report["checkedAt"]}',
              f'Run: {report["runId"]}', f'Meaningful record changes: {len(report.get("changes", []))}', '']
     if report.get('error'):
         lines += ['Error: ' + report['error'], 'The published snapshot was not replaced.', '']
@@ -141,9 +164,18 @@ def write_reports(run, report):
     lines += ['## Government downloads', '']
     for source in report.get('downloads', []):
         lines.append(f'- {source["sourceId"]}: {source["status"]} — {source["url"]}' + (' (source content changed)' if source.get('contentChanged') else ''))
+    if report.get('incomingSourceCoverage'):
+        lines += ['', '## Government incoming recognition sources', '']
+        for source in report['incomingSourceCoverage']:
+            lines.append(f'- {source["sourceId"]}: {source["status"]}' + ('; ' + source['error'] if source.get('error') else ''))
     lines += ['', '## Review required', ''] + ['- ' + reason for reason in report.get('reviewReasons', [])]
     if not report.get('reviewReasons'):
         lines.append('None.')
+    coverage=report.get('electionCoverage')
+    if coverage:
+        lines += ['', '## All-state election coverage', '',f"Registered states: {coverage['registeredStates']}; results directories retrieved: {coverage['resultsDirectoriesRetrieved']}.",'Directory coverage is not complete contest or certification coverage.']
+        for state in coverage['states']:
+            lines.append(f"- {state['stateId']}: directory={state['directoryStatus']}; contests={state['contestCoverage']}; certification={state['certificationStatus']}; verified incoming starts={state['verifiedStartDates']}" + ('; '+state['adapterError'] if state.get('adapterError') else ''))
     lines += ['', '## Data differences', '']
     for change in report.get('changes', []):
         lines.append(f'- {change["collection"]}/{change["id"]}: {change["action"]}' + (' (' + ', '.join(change['fields']) + ')' if change['fields'] else ''))
@@ -154,7 +186,14 @@ def write_reports(run, report):
             lines.append('  - ' + json.dumps(change['after'] or change['before'], ensure_ascii=False))
     if not report.get('changes'):
         lines.append('No meaningful official data changed. Source-page or verification-time changes alone are not data changes.')
-    (run / 'report.md').write_text('\n'.join(lines) + '\n')
+    rendered = '\n'.join(lines) + '\n'
+    (run / 'report.md').write_text(rendered)
+    if len(rendered.encode('utf-8')) > 900_000:
+        summary = lines[:lines.index('## Data differences')] + ['## Data differences', '',
+            f'{len(report.get("changes", []))} record changes. Download the check artifact for the complete report with old/new values.', '']
+        summary += [f'- {c["collection"]}/{c["id"]}: {c["action"]}' for c in report.get('changes', [])[:100]]
+        rendered = '\n'.join(summary) + '\n'
+    (run / 'summary.md').write_text(rendered)
 
 
 def check(snapshot_path, runs_dir, root=ROOT, loader=retry_fetch):
@@ -166,6 +205,13 @@ def check(snapshot_path, runs_dir, root=ROOT, loader=retry_fetch):
     baseline_hash = file_hash(snapshot_path)
     try:
         input_hashes = configurations(root)
+        for relative, checksum in input_hashes.items():
+            if checksum is None: continue
+            raw = (root / relative).read_bytes()
+            if digest(raw) != checksum: raise ValueError('Collection configuration changed before archival.')
+            target = run / 'configuration' / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
         registry = load_registry(root)
         previous = json.loads(snapshot_path.read_text()) if snapshot_path.exists() else None
         if previous:
@@ -174,25 +220,65 @@ def check(snapshot_path, runs_dir, root=ROOT, loader=retry_fetch):
         observed_hashes = {}
         for proof in sorted((previous or {}).get('evidence', []), key=lambda p: p['retrievedAt']):
             observed_hashes[proof['url']] = proof['sha256']
+        for observation in (previous or {}).get('sourceObservations', []):
+            observed_hashes[observation['url']] = observation['sha256']
         plans = json.loads((root / CONFIG_PATHS[2]).read_text())
+        download_lock=threading.Lock()
+        downloaded={}
         def archived_fetch(url, source):
-            record = {'sourceId': source['id'], 'url': url, 'status': 'failed'}
-            report['downloads'].append(record)
-            raw = loader(url, source)
-            checksum = digest(raw)
-            (run / 'sources' / (checksum + '.source.gz')).write_bytes(gzip.compress(raw, mtime=0))
-            record.update(status='passed', sha256=checksum, bytes=len(raw), retrievedAt=collector.iso(datetime.now(UTC)), previousSha256=observed_hashes.get(url), contentChanged=observed_hashes.get(url) != checksum)
-            return raw
-        candidate = collector.refresh(previous, registry, plans, started, archived_fetch)
+            with download_lock:
+                cached=downloaded.get(url)
+                if cached is not None:
+                    future,record=cached
+                    if source.get('required',True): record['required']=True
+                    owner=False
+                else:
+                    future=Future()
+                    record={'sourceId':source['id'],'url':url,'status':'failed','required':source.get('required',True)}
+                    downloaded[url]=(future,record)
+                    report['downloads'].append(record)
+                    owner=True
+            if not owner: return future.result()
+            try:
+                raw=loader(url,source)
+                checksum=digest(raw)
+                archive=run/'sources'/(checksum+'.source.gz')
+                with download_lock:
+                    archive.write_bytes(gzip.compress(raw,mtime=0))
+                    record.update(status='passed',sha256=checksum,bytes=len(raw),retrievedAt=collector.iso(datetime.now(UTC)),
+                                  previousSha256=observed_hashes.get(url),contentChanged=observed_hashes.get(url)!=checksum)
+                if is_security_challenge(raw):
+                    record['status']='accessBlocked'
+                    raise ValueError('Government source returned an access challenge, not election evidence; use an approved export or reviewed download.')
+                future.set_result(raw)
+                return raw
+            except Exception as error:
+                record['error']=f'{type(error).__name__}: {error}'
+                future.set_exception(error)
+                raise
+        candidate = collector.refresh(previous, registry, plans, started, archived_fetch, include_elections=True)
+        report['incomingSourceCoverage'] = candidate.get('incomingSourceCoverage', [])
+        try:
+            from . import election_results
+        except ImportError:
+            import election_results
+        coverage,state_reports=election_results.collect(candidate,registry,root,archived_fetch,started,collector.evidence)
+        collector.atomic_json(run/'state-reports.json',state_reports)
+        report['electionCoverage']=coverage
         if input_hashes != configurations(root) or baseline_hash != file_hash(snapshot_path):
             raise ValueError('Inputs or published data changed during the check; retry against a stable version.')
         candidate['publishedAt'] = collector.iso(datetime.now(UTC))
         downloads = {d['url']: d for d in report['downloads']}
         for proof in candidate['evidence']:
             observation = downloads.get(proof['url'])
-            if observation and proof['sha256'] == observation['sha256']:
+            if observation and observation.get('status')=='passed' and proof['sha256'] == observation['sha256']:
                 proof['retrievedAt'] = observation['retrievedAt']
         candidate['sources'] = registry['sources']
+        observations = {item['url']: item for item in (previous or {}).get('sourceObservations', [])}
+        for download in report['downloads']:
+            if download['status'] == 'passed':
+                observations[download['url']] = {key: download[key] for key in ('sourceId', 'url', 'sha256', 'retrievedAt')}
+        candidate['sourceObservations'] = sorted(observations.values(), key=lambda item: item['url'])
         candidate['dataVersion'] = version(candidate)
         collector.validate(candidate, registry)
         changes = differences(previous, candidate)
@@ -201,9 +287,10 @@ def check(snapshot_path, runs_dir, root=ROOT, loader=retry_fetch):
                       dataVersion=candidate['dataVersion'], changes=changes, reviewReasons=reasons,
                       currentOffices=len(current_by_office(candidate)), totalOffices=len(candidate['offices']))
         collector.atomic_json(run / 'candidate.json', candidate)
-        collector.atomic_json(run / 'manifest.json', {'schemaVersion': 1, 'runId': run_id, 'checkedAt': candidate['publishedAt'],
+        collector.atomic_json(run / 'manifest.json', {'schemaVersion': 2, 'runId': run_id, 'checkedAt': candidate['publishedAt'],
             'baselineSha256': baseline_hash, 'candidateSha256': file_hash(run / 'candidate.json'),
             'dataVersion': candidate['dataVersion'], 'configurations': input_hashes,
+            'configurationArchive': 'configuration',
             'downloads': report['downloads']})
     except Exception as error:
         report.update(status='failed', error=f'{type(error).__name__}: {error}')
@@ -235,6 +322,7 @@ def publish(run, snapshot_path, releases_dir, approval=None, root=ROOT, now=None
         raise ValueError('Candidate check is future-dated or more than 24 hours old; run a new government check.')
     if configurations(root) != manifest['configurations']:
         raise ValueError('Collection rules or configuration changed since this check; run it again.')
+    verify_configuration_archive(run, manifest)
     if file_hash(run / 'candidate.json') != manifest['candidateSha256']:
         raise ValueError('Staged candidate changed after validation.')
     candidate = json.loads((run / 'candidate.json').read_text())
@@ -244,7 +332,8 @@ def publish(run, snapshot_path, releases_dir, approval=None, root=ROOT, now=None
         raise ValueError('Candidate data version mismatch.')
     for download in manifest['downloads']:
         if download['status'] != 'passed':
-            raise ValueError('Government download failed.')
+            if download.get('required',True): raise ValueError('Government download failed.')
+            continue
         raw = gzip.decompress((run / 'sources' / (download['sha256'] + '.source.gz')).read_bytes())
         if digest(raw) != download['sha256']:
             raise ValueError('Saved government response failed integrity verification.')
@@ -264,13 +353,19 @@ def publish(run, snapshot_path, releases_dir, approval=None, root=ROOT, now=None
         if previous:
             (release / 'previous.json').write_bytes(snapshot_path.read_bytes())
         collector.atomic_json(release / 'manifest.json', manifest)
+        for relative, checksum in manifest['configurations'].items():
+            if checksum is None: continue
+            target = release / 'configuration' / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((run / 'configuration' / relative).read_bytes())
         collector.atomic_json(release / 'publication.json', {'publishedAt': collector.iso(now), 'dataVersion': manifest['dataVersion'],
             'approvedDataVersion': approval if reasons else None, 'reviewReasons': reasons})
-        for name in ('report.json', 'report.md'):
-            (release / name).write_bytes((run / name).read_bytes())
+        for name in ('report.json', 'report.md', 'state-reports.json'):
+            if (run/name).exists(): (release / name).write_bytes((run / name).read_bytes())
         evidence_store = releases_dir.parent / 'evidence'
         evidence_store.mkdir(parents=True, exist_ok=True)
         for download in manifest['downloads']:
+            if download['status'] != 'passed': continue
             name = download['sha256'] + '.source.gz'
             target = evidence_store / name
             if not target.exists():
@@ -327,7 +422,11 @@ def verify_published(snapshot_path, releases_dir, root=ROOT, expected_previous=N
             raise ValueError('Published release integrity check failed.')
         if configurations(root) != manifest['configurations']:
             raise ValueError('Publisher configuration changed; run a fresh check and publication.')
+        verify_configuration_archive(manifest_path.parent, manifest)
         for download in manifest['downloads']:
+            if download['status'] != 'passed':
+                if download.get('required',True): raise ValueError('Required government download failed')
+                continue
             archive = releases_dir.parent / 'evidence' / (download['sha256'] + '.source.gz')
             if digest(gzip.decompress(archive.read_bytes())) != download['sha256']:
                 raise ValueError('Published government evidence failed integrity verification.')

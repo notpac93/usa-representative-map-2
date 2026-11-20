@@ -16,13 +16,13 @@ Check mode does not change either the saved data archive or an installed app. So
 
 The report lists additions, removals, and changed fields with old/new values. A successful check may report zero meaningful changes; that confirms the collector ran without inventing a new data version.
 
-Missing officials, changed officeholders, lost contact fields, removed history, or a large update require review. That run stops with the data preserved; inspect the report rather than treating it as permission to save. A failed download, changed source layout, or invalid evidence also stops the run. Approval cannot override those validation failures.
+Missing officials, changed officeholders, lost contact fields, removed history, a large update, or incomplete election coverage require review. Check mode completes with a report and preserves the data. Required federal-source failures and invalid evidence block saving. Optional state-source failures remain explicit gaps; they cannot create new verified claims or erase previously saved facts. Approval cannot override validation failures.
 
 ## 3. Save verified data when ready
 
 Run the workflow again with mode **save**. Saving performs a fresh government check, preserves recovery history, and writes to the separate `codex/federal-snapshots` archive branch. If flagged changes were reviewed, supply the exact **data version** from the report as **approve_version**. If the meaningful data has changed since review, saving stops again.
 
-Only the validated federal dataset, reports, manifests, and government evidence are saved. The app source branch and installed apps are not updated by this action. The next check compares against the latest saved archive automatically.
+Only the validated officials dataset, state coverage reports, manifests, and government evidence are saved. The app source branch and installed apps are not updated by this action. The next check compares against the latest saved archive automatically. Certification and incoming recognition are separate facts; saving a partially covered dataset does not certify its missing contests.
 
 ## 4. Release to the app separately
 
@@ -32,6 +32,8 @@ Saving is not an app release. Keep the app's hosted snapshot setting unset while
 
 The initial baseline covers 560 occupied federal offices and roles: 439 House members/delegates, 100 senators, president, vice president, nine Supreme Court justices, and ten congressional leadership roles. Collection uses official House, Senate, White House, Supreme Court, and National Archives sources. Empty contact fields remain empty when the sources do not provide them.
 
-Portrait refresh, incoming election certification adapters, Cabinet collection, lower federal court collection, and state/local officials are separate work. Government results must be certified before an incoming official is labeled certified. The saved government documents make each verification auditable; a government website can still publish late or require a source-specific correction.
+The election intake registers all 50 state authorities and reports source, contest, certification, and start-date coverage separately. Dedicated imports currently cover Mississippi county returns, Wyoming certified results, and Delaware official results. Government Senate recognition and a partial House list supply additional incoming records without implying certification. Every state also has a pinned, reviewed import path; unconfigured contests remain gaps. See [the election intake runbook](ELECTION_INTAKE.md) for supported records, review requirements, and limitations.
+
+Portrait refresh, Cabinet collection, lower federal court collection, and local elections remain outside this collector. Incoming records do not inherit a predecessor's photo or contact details. The saved government documents make each verification auditable; a government website can still publish late or require a source-specific correction.
 
 Check artifacts are downloadable for 90 days. Saved releases, recovery copies, and compressed evidence are retained on the archive branch. Detailed local commands and recovery instructions are in [the federal data runbook](FEDERAL_OFFICIALS.md).

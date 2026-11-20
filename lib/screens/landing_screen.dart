@@ -128,7 +128,7 @@ class _LandingScreenState extends State<LandingScreen> {
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  'Prioritizing Upcoming 2026 Elections • Candidates, Ballot Measures & Reps',
+                  'Election Records • Official Voting Information & Representatives',
                   style: TextStyle(
                     color: const Color(0xFF1E40AF),
                     fontSize: isWidescreen ? 12.5 : 11,

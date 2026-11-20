@@ -13,6 +13,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import federal_data_pipeline as pipeline
+import election_results
 
 
 class FederalPipelineTest(unittest.TestCase):
@@ -38,12 +39,13 @@ class FederalPipelineTest(unittest.TestCase):
 
     def staged(self, candidate=None):
         candidate = copy.deepcopy(candidate or self.candidate)
-        def collect(previous, registry, plans, now, loader):
+        def collect(previous, registry, plans, now, loader, **kwargs):
             source = registry['sources'][0]
             loader(source['url'], source)
             return candidate
         with patch.object(pipeline, 'load_registry', return_value=self.registry), \
-             patch.object(pipeline.collector, 'refresh', side_effect=collect):
+             patch.object(pipeline.collector, 'refresh', side_effect=collect), \
+             patch.object(election_results, 'collect', return_value=({'registeredStates':50,'resultsDirectoriesRetrieved':50,'states':[]},{})):
             return pipeline.check(self.snapshot, self.runs, root=self.root, loader=lambda *args: self.source_bytes)
 
     def publish(self, run, approval=None):
@@ -58,6 +60,16 @@ class FederalPipelineTest(unittest.TestCase):
         self.assertEqual(self.snapshot.read_bytes(), before)
         self.assertTrue((run / 'candidate.json').exists())
         self.assertTrue((run / 'report.md').exists())
+
+    def test_export_hash_comparison_survives_save_without_becoming_an_official_claim(self):
+        run, first = self.staged()
+        self.assertTrue(first['downloads'][0]['contentChanged'])
+        self.publish(run)
+        self.candidate = json.loads(self.snapshot.read_text())
+        _, second = self.staged()
+        self.assertFalse(second['downloads'][0]['contentChanged'])
+        self.assertEqual(first['dataVersion'], second['dataVersion'])
+        self.assertEqual(second['changes'], [])
 
     def test_unchanged_data_has_stable_version_despite_metadata_and_order(self):
         b = copy.deepcopy(self.original)
@@ -108,6 +120,54 @@ class FederalPipelineTest(unittest.TestCase):
         self.assertEqual(self.snapshot.read_bytes(), before)
         self.assertFalse((run / 'manifest.json').exists())
 
+    def test_http_200_security_challenge_is_not_government_evidence(self):
+        self.source_bytes = b'<html><title>Just a moment...</title>Verify you are human</html>'
+        before = self.snapshot.read_bytes()
+        run, report = self.staged()
+        self.assertEqual(report['status'], 'failed')
+        self.assertEqual(report['downloads'][0]['status'], 'accessBlocked')
+        self.assertIn('access challenge', report['error'])
+        self.assertEqual(self.snapshot.read_bytes(), before)
+        self.assertFalse((run / 'manifest.json').exists())
+
+    def test_optional_source_failure_is_reported_without_replacing_known_facts(self):
+        candidate = copy.deepcopy(self.candidate)
+        candidate['electionCoverage'] = {'complete': False}
+        def collect(previous, registry, plans, now, loader, **kwargs):
+            loader(registry['sources'][0]['url'], registry['sources'][0])
+            try:
+                loader('https://example.gov/unavailable-results', {'id': 'optional-state', 'required': False})
+            except OSError:
+                pass
+            return candidate
+        def fetch(url, source):
+            if source['id'] == 'optional-state': raise OSError('State export temporarily unavailable')
+            return self.source_bytes
+        with patch.object(pipeline, 'load_registry', return_value=self.registry), \
+             patch.object(pipeline.collector, 'refresh', side_effect=collect), \
+             patch.object(election_results, 'collect', return_value=({'registeredStates': 50, 'resultsDirectoriesRetrieved': 49, 'states': []}, {})):
+            run, report = pipeline.check(self.snapshot, self.runs, root=self.root, loader=fetch)
+        self.assertEqual(report['status'], 'review_required')
+        self.assertEqual(report['changes'], [])
+        self.assertEqual(report['downloads'][-1]['status'], 'failed')
+        self.assertFalse(report['downloads'][-1]['required'])
+        self.publish(run, report['dataVersion'])
+        with patch.object(pipeline, 'load_registry', return_value=self.registry):
+            pipeline.verify_published(self.snapshot, self.releases, root=self.root)
+
+    def test_election_audit_refresh_does_not_create_new_data_version(self):
+        first = copy.deepcopy(self.original)
+        first['electionResults'] = [{'id': 'WY:2026:house:0', 'winner': {'name': 'Verified Example'}, 'sourceDocuments': [{'sha256': 'a' * 64}]}]
+        later = copy.deepcopy(first)
+        later['electionResults'][0]['sourceDocuments'] = [{'sha256': 'b' * 64}]
+        first['electionResults'][0]['governmentRecognizedIncoming'] = {'name': 'Verified Example', 'recognizedAt': '2026-11-19T18:00:00Z'}
+        later['electionResults'][0]['governmentRecognizedIncoming'] = {'name': 'Verified Example', 'recognizedAt': '2026-11-20T00:00:00Z'}
+        first['terms'].append({'id': 'fixture-incoming', 'personId': 'fixture', 'recognizedAt': '2026-11-19T18:00:00Z', 'certifiedAt': '2026-11-19T18:00:00Z'})
+        later['terms'].append({'id': 'fixture-incoming', 'personId': 'fixture', 'recognizedAt': '2026-11-20T00:00:00Z', 'certifiedAt': '2026-11-20T00:00:00Z'})
+        later['electionCoverage'] = {'checkedAt': '2026-11-20T00:00:00Z', 'complete': False}
+        self.assertEqual(pipeline.version(first), pipeline.version(later))
+        self.assertEqual(pipeline.differences(first, later), [])
+
     def test_tampered_candidate_and_source_evidence_are_blocked(self):
         run, _ = self.staged()
         before = self.snapshot.read_bytes()
@@ -126,10 +186,11 @@ class FederalPipelineTest(unittest.TestCase):
 
     def test_configuration_change_during_download_fails_closed(self):
         original = self.snapshot.read_bytes()
-        def collect(previous, registry, plans, now, loader):
+        def collect(previous, registry, plans, now, loader, **kwargs):
             (self.root / pipeline.CONFIG_PATHS[2]).write_text('changed during collection')
             return self.candidate
-        with patch.object(pipeline, 'load_registry', return_value=self.registry), patch.object(pipeline.collector, 'refresh', side_effect=collect):
+        with patch.object(pipeline, 'load_registry', return_value=self.registry), patch.object(pipeline.collector, 'refresh', side_effect=collect), \
+             patch.object(election_results, 'collect', return_value=({'registeredStates':50,'resultsDirectoriesRetrieved':50,'states':[]},{})):
             _, report = pipeline.check(self.snapshot, self.runs, root=self.root)
         self.assertEqual(report['status'], 'failed')
         self.assertIn('changed during the check', report['error'])
@@ -140,6 +201,21 @@ class FederalPipelineTest(unittest.TestCase):
         (self.root / 'scripts/data').mkdir(parents=True, exist_ok=True)
         (self.root / 'scripts/data/federal_sources.json').write_text('changed rules')
         with self.assertRaisesRegex(ValueError, 'configuration changed'): self.publish(run)
+
+    def test_reviewed_collection_rules_are_archived_and_tampering_blocks_save(self):
+        run, report = self.staged()
+        relative = 'scripts/data/election_result_reviews.json'
+        self.assertEqual((run / 'configuration' / relative).read_bytes(), (self.root / relative).read_bytes())
+        (run / 'configuration' / relative).write_text('{"packages": ["altered"]}')
+        before = self.snapshot.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'configuration failed integrity'): self.publish(run)
+        self.assertEqual(self.snapshot.read_bytes(), before)
+
+    def test_saved_release_retains_exact_review_package_and_collector_rules(self):
+        run, _ = self.staged()
+        release = self.publish(run)
+        for relative in pipeline.CONFIG_PATHS:
+            self.assertEqual((release / 'configuration' / relative).read_bytes(), (self.root / relative).read_bytes())
 
     def test_expired_and_future_candidates_are_blocked(self):
         run, _ = self.staged()
@@ -253,7 +329,13 @@ class FederalGitPublicationTest(unittest.TestCase):
                 release.mkdir(parents=True)
                 (release / 'snapshot.json').write_bytes(snapshot.read_bytes())
                 (release / 'previous.json').write_bytes(original)
-                pipeline.collector.atomic_json(release / 'manifest.json', {'candidateSha256': pipeline.file_hash(snapshot), 'baselineSha256': pipeline.digest(original), 'dataVersion': data['dataVersion'], 'downloads': [], 'configurations': pipeline.configurations(root)})
+                config = pipeline.configurations(root)
+                for relative, checksum in config.items():
+                    if checksum is None: continue
+                    target = release / 'configuration' / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes((root / relative).read_bytes())
+                pipeline.collector.atomic_json(release / 'manifest.json', {'candidateSha256': pipeline.file_hash(snapshot), 'baselineSha256': pipeline.digest(original), 'dataVersion': data['dataVersion'], 'downloads': [], 'configurations': config, 'configurationArchive': 'configuration'})
                 subprocess.run(['bash', str(root / 'scripts/publish_federal_snapshot.sh')], cwd=root, check=True, capture_output=True, text=True)
                 self.assertEqual(git('rev-parse', 'HEAD'), main_head)
                 self.assertEqual(git('branch', '--show-current'), 'main')

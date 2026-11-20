@@ -20,7 +20,7 @@ concurrency:
 jobs:
   check-and-save:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,8 +28,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Test collection and publication safeguards
-        run: python -m unittest discover -s scripts/tests -p 'test_federal*.py'
+      - name: Install government PDF text reader
+        run: sudo apt-get update -qq && sudo apt-get install -y poppler-utils
+      - name: Test government collection and publication safeguards
+        run: python -m unittest discover -s scripts/tests
       - name: Restore latest published data and recovery history
         run: |
           if git ls-remote --exit-code --heads origin codex/federal-snapshots; then
@@ -52,7 +54,15 @@ jobs:
           args=(--check)
           if [ "$CHECK_MODE" = 'save' ]; then args=(--publish); fi
           if [ -n "$APPROVE_VERSION" ]; then args+=(--approve "$APPROVE_VERSION"); fi
+          set +e
           python scripts/federal_data_pipeline.py "${args[@]}"
+          result=$?
+          set -e
+          if [ "$result" = '2' ] && [ "$CHECK_MODE" = 'check' ]; then
+            echo 'Government check completed; review the reported changes and coverage gaps before saving.'
+            exit 0
+          fi
+          exit "$result"
       - name: Retain change report, candidate, and government evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -64,7 +74,7 @@ jobs:
       - name: Show check report
         if: always()
         run: |
-          for report in tmp/federal-checks/*/report.md; do
+          for report in tmp/federal-checks/*/summary.md; do
             if [ -f "$report" ]; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
           done
       - name: Save verified data and recovery history to the archive

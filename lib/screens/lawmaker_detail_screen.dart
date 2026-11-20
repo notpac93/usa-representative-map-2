@@ -42,6 +42,24 @@ class LawmakerDetailScreen extends StatefulWidget {
 class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
   final ScreenshotController _screenshotController = ScreenshotController();
 
+  @override
+  void initState() {
+    super.initState();
+    FederalOfficialsService.instance.addListener(_officialRecordsChanged);
+  }
+
+  void _officialRecordsChanged() {
+    if (mounted && widget.lawmaker is Governor && !widget.showDetails) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    FederalOfficialsService.instance.removeListener(_officialRecordsChanged);
+    super.dispose();
+  }
+
   Future<void> _shareCard() async {
     try {
       final image = await _screenshotController.capture(
@@ -144,14 +162,37 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
       final snapshot = FederalOfficialsService.instance.snapshot;
       String? officeId;
       final lawmaker = widget.lawmaker;
-      final bio = lawmaker is Senator ? lawmaker.bioguideId : lawmaker is Representative ? lawmaker.bioguideId : null;
-      if (snapshot != null && bio != null) {
-        for (final term in snapshot.terms.values) {
-          if (term.personId == bio) { officeId = term.officeId; break; }
+      if (snapshot != null && lawmaker is Governor) {
+        final governorOffice = 'us:state:${widget.stateId}:governor';
+        final hasServiceHistory = snapshot.terms.values.any(
+          (term) =>
+              term.officeId == governorOffice &&
+              ['current', 'ended'].contains(term.status),
+        );
+        if (snapshot.offices.containsKey(governorOffice) && hasServiceHistory) {
+          // This widget may still carry the predecessor's legacy record.
+          // The verified profile reads current service and its sources live.
+          return FederalOfficialProfileScreen(officeId: governorOffice);
         }
       }
-      if (snapshot != null && lawmaker is VicePresident) officeId = 'us:vicePresident';
-      if (snapshot != null && lawmaker is Judge && lawmaker.court == 'Supreme Court of the United States') {
+      final bio = lawmaker is Senator
+          ? lawmaker.bioguideId
+          : lawmaker is Representative
+          ? lawmaker.bioguideId
+          : null;
+      if (snapshot != null && bio != null) {
+        for (final term in snapshot.terms.values) {
+          if (term.personId == bio) {
+            officeId = term.officeId;
+            break;
+          }
+        }
+      }
+      if (snapshot != null && lawmaker is VicePresident)
+        officeId = 'us:vicePresident';
+      if (snapshot != null &&
+          lawmaker is Judge &&
+          lawmaker.court == 'Supreme Court of the United States') {
         for (final person in snapshot.people.values) {
           if (person.name == lawmaker.name) {
             for (final term in snapshot.terms.values) {
@@ -161,12 +202,39 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
         }
       }
       if (officeId != null) {
-        return FederalOfficialProfileScreen(officeId: officeId, recordsPersonId: bio, onRecords: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => LawmakerDetailScreen(lawmaker: widget.lawmaker, role: widget.role, stateId: widget.stateId, showDetails: true))));
+        return FederalOfficialProfileScreen(
+          officeId: officeId,
+          recordsPersonId: bio,
+          onRecords: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => LawmakerDetailScreen(
+                lawmaker: widget.lawmaker,
+                role: widget.role,
+                stateId: widget.stateId,
+                showDetails: true,
+              ),
+            ),
+          ),
+        );
       }
 
       return LeaderQuickProfileScreen(
         name: name,
         role: roleDisplay,
+        statusPanel:
+            widget.lawmaker is Governor &&
+                snapshot != null &&
+                snapshot.offices.containsKey(
+                  'us:state:${widget.stateId}:governor',
+                )
+            ? FederalTransitionNotice(
+                snapshot: snapshot,
+                view: snapshot.view(
+                  'us:state:${widget.stateId}:governor',
+                  DateTime.now(),
+                ),
+              )
+            : null,
         jurisdiction:
             subTitle ??
             SearchHandler.stateCodeToName[widget.stateId] ??
