@@ -169,9 +169,14 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
               term.officeId == governorOffice &&
               ['current', 'ended'].contains(term.status),
         );
-        if (snapshot.offices.containsKey(governorOffice) && hasServiceHistory) {
+        if (snapshot.offices.containsKey(governorOffice) &&
+            (hasServiceHistory ||
+                snapshot
+                    .view(governorOffice, DateTime.now())
+                    .awaitingVerification)) {
           // This widget may still carry the predecessor's legacy record.
-          // The verified profile reads current service and its sources live.
+          // After a verified successor start passes, the verified profile also
+          // preserves a service gap instead of keeping that predecessor alive.
           return FederalOfficialProfileScreen(officeId: governorOffice);
         }
       }

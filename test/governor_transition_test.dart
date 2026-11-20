@@ -22,8 +22,13 @@ void main() {
     phone: '601-555-0100',
   );
 
-  FederalSnapshot release({bool serving = false, bool expired = false}) {
-    final start = now.subtract(const Duration(days: 1));
+  FederalSnapshot release({
+    bool serving = false,
+    bool expired = false,
+    DateTime? expectedStart,
+    String? civilStartDate,
+  }) {
+    final start = expectedStart ?? now.subtract(const Duration(days: 1));
     final source = FederalSource.fromJson({
       'id': 'fixture-governor',
       'name': 'Fixture government office',
@@ -76,7 +81,11 @@ void main() {
             'personId': 'fixture-successor',
             'status': serving ? 'current' : 'incoming',
             'certifiedAt': stamp(now.subtract(const Duration(days: 2))),
-            'scheduledStart': stamp(start),
+            if (civilStartDate == null) 'scheduledStart': stamp(start),
+            if (civilStartDate != null) ...{
+              'scheduledStartDate': civilStartDate,
+              'startTimeZone': 'America/Denver',
+            },
             if (serving) 'actualStart': stamp(start),
             if (expired)
               'scheduledEnd': stamp(now.subtract(const Duration(hours: 12))),
@@ -114,7 +123,10 @@ void main() {
 
   test('incoming-only governor preserves legacy serving record in lists', () {
     final provider = MapDataProvider()..governors = {'MS': legacy};
-    provider.applyOfficialSnapshot(release(), asOf: now);
+    provider.applyOfficialSnapshot(
+      release(expectedStart: now.add(const Duration(days: 1))),
+      asOf: now,
+    );
     expect(provider.governors!['MS'], same(legacy));
     expect(provider.governors!['MS']!.name, isNot(successorName));
     provider.dispose();
@@ -155,7 +167,9 @@ void main() {
   testWidgets(
     'open governor profile follows a verified handoff and hides old identity',
     (tester) async {
-      service.snapshot = release();
+      service.snapshot = release(
+        expectedStart: now.add(const Duration(days: 1)),
+      );
       await tester.pumpWidget(
         MaterialApp(
           home: LawmakerDetailScreen(
@@ -208,4 +222,89 @@ void main() {
     );
     await tester.pumpWidget(const SizedBox.shrink());
   });
+
+  test('past verified incoming start suppresses legacy serving governor', () {
+    final provider = MapDataProvider()..governors = {'MS': legacy};
+    final snapshot = release();
+    expect(snapshot.view('us:state:MS:governor', now).current, isNull);
+    provider.applyOfficialSnapshot(snapshot, asOf: now);
+    expect(provider.governors!.containsKey('MS'), isFalse);
+    provider.dispose();
+  });
+
+  test('expired incoming notice cannot restore legacy governor in lists', () {
+    final provider = MapDataProvider()..governors = {'MS': legacy};
+    final snapshot = release(
+      expectedStart: now.subtract(const Duration(days: 8)),
+    );
+    final view = snapshot.view('us:state:MS:governor', now);
+    expect(view.current, isNull);
+    expect(view.incoming, isNull);
+    expect(view.awaitingVerification, isTrue);
+    provider.applyOfficialSnapshot(snapshot, asOf: now);
+    expect(provider.governors!.containsKey('MS'), isFalse);
+    provider.dispose();
+  });
+
+  test(
+    'civil incoming start preserves legacy until the entire legal day passes',
+    () {
+      final day = DateTime.utc(now.year, now.month, now.day);
+      final snapshot = release(
+        civilStartDate: day.toIso8601String().substring(0, 10),
+      );
+      final provider = MapDataProvider()..governors = {'MS': legacy};
+      provider.applyOfficialSnapshot(
+        snapshot,
+        asOf: day.add(const Duration(days: 1, hours: 13, minutes: 59)),
+      );
+      expect(provider.governors!['MS'], same(legacy));
+      provider.applyOfficialSnapshot(
+        snapshot,
+        asOf: day.add(const Duration(days: 1, hours: 14)),
+      );
+      expect(provider.governors!.containsKey('MS'), isFalse);
+      expect(
+        snapshot
+            .view(
+              'us:state:MS:governor',
+              day.add(const Duration(days: 1, hours: 14)),
+            )
+            .current,
+        isNull,
+      );
+      provider.dispose();
+    },
+  );
+
+  testWidgets(
+    'expired incoming notice leaves a verification gap instead of a legacy profile',
+    (tester) async {
+      service.snapshot = release(
+        expectedStart: now.subtract(const Duration(days: 8)),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LawmakerDetailScreen(
+            lawmaker: legacy,
+            role: 'Governor',
+            stateId: 'MS',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(legacyName), findsNothing);
+      expect(find.text(successorName), findsNothing);
+      expect(
+        find.text('No current occupant verified in this snapshot.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Official confirmation of service is still pending.'),
+        findsOneWidget,
+      );
+      expect(find.text('601-555-0100'), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
 }

@@ -63,7 +63,8 @@ class MapDataProvider extends ChangeNotifier {
   }
 
   /// Project only verified serving records into the app's existing lists.
-  /// An incoming-only state record does not replace the serving governor.
+  /// An incoming-only record preserves the legacy governor until its verified
+  /// start has fully passed. Missing service confirmation then remains a gap.
   void applyOfficialSnapshot(FederalSnapshot snapshot, {DateTime? asOf}) {
     final now = asOf ?? DateTime.now();
     final nextGovernors = Map<String, Governor>.from(governors ?? {});
@@ -71,16 +72,18 @@ class MapDataProvider extends ChangeNotifier {
     final nextHouse = <String, List<Representative>>{};
     final nextCourt = <Judge>[];
     for (final office in snapshot.offices.values) {
-      final term = snapshot.view(office.id, now).current;
+      final view = snapshot.view(office.id, now);
+      final term = view.current;
       if (term == null) {
         if (office.kind == 'governor' &&
-            snapshot.terms.values.any(
-              (term) =>
-                  term.officeId == office.id &&
-                  ['current', 'ended'].contains(term.status),
-            )) {
-          // Service was tracked here. A gap after expiration must not restore
-          // the predecessor from the legacy asset as if still serving.
+            (view.awaitingVerification ||
+                snapshot.terms.values.any(
+                  (term) =>
+                      term.officeId == office.id &&
+                      ['current', 'ended'].contains(term.status),
+                ))) {
+          // Neither a passed incoming start nor expired tracked service can
+          // restore a predecessor from legacy data as if still serving.
           nextGovernors.remove(office.state);
         }
         continue;
