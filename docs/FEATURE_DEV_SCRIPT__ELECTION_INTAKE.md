@@ -18,15 +18,16 @@ Source of truth: docs/ELECTION_INTAKE.md
 | ID | State | Owner | Task | Evidence |
 | --- | --- | --- | --- | --- |
 | E-01 | Done | Codex | Register all 50 government authorities and export evidence | scripts/data/state_election_sources.json |
-| E-02 | Active | Codex | Mississippi, nationwide recognition, and reviewed state imports | scripts/election_results.py |
+| E-02 | Done | Codex | Mississippi, nationwide recognition, and reviewed state import paths; gaps explicit | scripts/election_results.py; docs/ELECTION_INTAKE.md |
 | E-03 | Done | Codex | Remove stale/guessed election dates from app flows | test/election_lifecycle_test.dart |
-| E-04 | Active | Codex | Validate incoming/civil-date/conflict handling and real intake | scripts/tests/test_election_integration.py |
-| E-05 | Todo | Codex | Document scope, save verified snapshot, and verify manual workflow | Pending |
+| E-04 | Done | Codex | Validate incoming/civil-date/conflict handling and real intake | 135 Python + 125 Flutter tests; live 516-change check; replay retained exact data version |
+| E-05 | Active | Codex | Document scope, save verified snapshot, and verify manual workflow | GitHub check 44667039065 passed; archive save pending |
 
 ## Blockers
 
 - Some state sources block automated access; approved exports or reviewed downloads are needed.
 - Several states have not published a verified statewide certification; do not invent it.
+- Complete normalized results are not implemented for every state. Three native adapters and a reviewed package path expose unconfigured contests as gaps.
 
 ## Decisions
 
@@ -35,4 +36,4 @@ Source of truth: docs/ELECTION_INTAKE.md
 
 ## Next Action
 
-`E-04`: Finish live intake and validate incoming records against the saved government evidence.
+`E-05`: Review the GitHub candidate, save that exact data version to the separate archive, and verify the saved history.
