@@ -20,8 +20,8 @@ Source of truth: docs/ELECTION_INTAKE.md
 | E-01 | Done | Codex | Register all 50 government authorities and export evidence | scripts/data/state_election_sources.json |
 | E-02 | Done | Codex | Mississippi, nationwide recognition, and reviewed state import paths; gaps explicit | scripts/election_results.py; docs/ELECTION_INTAKE.md |
 | E-03 | Done | Codex | Remove stale/guessed election dates from app flows | test/election_lifecycle_test.dart |
-| E-04 | Done | Codex | Validate incoming/civil-date/conflict handling and real intake | 135 Python + 125 Flutter tests; live 516-change check; replay retained exact data version |
-| E-05 | Active | Codex | Document scope, save verified snapshot, and verify manual workflow | GitHub check 44667039065 passed; archive save pending |
+| E-04 | Done | Codex | Validate incoming/civil-date/conflict handling and real intake | 135 Python + 129 Flutter tests; live 516-change check; replay retained exact data version |
+| E-05 | Done | Codex | Document scope, save verified snapshot, and verify manual workflow | Check 44667039065; save 44667351086; recheck 44667643100: zero record changes; archive d369540 |
 
 ## Blockers
 
@@ -36,4 +36,4 @@ Source of truth: docs/ELECTION_INTAKE.md
 
 ## Next Action
 
-`E-05`: Review the GitHub candidate, save that exact data version to the separate archive, and verify the saved history.
+Run the manual check when new government certifications are available. Review the explicit state/contest gaps before saving; select an app release separately.

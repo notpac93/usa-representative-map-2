@@ -37,3 +37,9 @@ The election intake registers all 50 state authorities and reports source, conte
 Portrait refresh, Cabinet collection, lower federal court collection, and local elections remain outside this collector. Incoming records do not inherit a predecessor's photo or contact details. The saved government documents make each verification auditable; a government website can still publish late or require a source-specific correction.
 
 Check artifacts are downloadable for 90 days. Saved releases, recovery copies, and compressed evidence are retained on the archive branch. Detailed local commands and recovery instructions are in [the federal data runbook](FEDERAL_OFFICIALS.md).
+
+## Deployment verification
+
+On November 19, 2026 (Pacific time), the [government check](https://github.com/notpac93/usa-representative-map-2/actions/runs/44667039065), [reviewed archive save](https://github.com/notpac93/usa-representative-map-2/actions/runs/44667351086), and [check against the saved archive](https://github.com/notpac93/usa-representative-map-2/actions/runs/44667643100) all succeeded. The saved version added 144 incoming records and retained 560 serving federal records. The follow-up check found zero meaningful record changes. It still reported incomplete election coverage, as intended.
+
+Archive commit `d369540f0598487155898d39f26417d8907aecdc` retains the reviewed snapshot, previous version, reports, 155 passed government responses, and the exact 18 collection-rule/configuration files. Their preserved hashes were independently verified. This validation did not replace the app's bundled officials snapshot or release an app update.
