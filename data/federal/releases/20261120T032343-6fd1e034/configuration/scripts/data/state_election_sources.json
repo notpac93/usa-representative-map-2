@@ -1,0 +1,1903 @@
+{
+  "schemaVersion": 1,
+  "electionCycle": 2026,
+  "discovery": {
+    "url": "https://www.usa.gov/state-election-office",
+    "retrievedAt": "2026-11-20T02:43:30.148160Z",
+    "sha256": "10be0bcca646b88eb4ec17769961c577780c0dbbddff40534f83b98d7b2fb863",
+    "sourceName": "USAGov \u00b7 State and local election offices"
+  },
+  "coverageMeaning": "All 50 authorities are registered. This is source discovery coverage, not a claim that all results, certifications, offices, or start dates are collected.",
+  "states": [
+    {
+      "stateId": "AK",
+      "name": "Alaska",
+      "authorityUrl": "https://www.elections.alaska.gov/",
+      "resultsUrl": "https://www.elections.alaska.gov/election-results/",
+      "allowedHosts": [
+        "www.elections.alaska.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "0a3d8f1bd3f761c146cff5e30cd52cec3baee8c316750cb34510d785cf334c73",
+        "title": "Election Results - Division of Elections"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://www.elections.alaska.gov/enr/26GENR/results/GA_ENR_Precinct_State_of_Alaska.csv",
+          "format": "csv",
+          "officialLinkSource": "https://www.elections.alaska.gov/election-results/",
+          "resultStatus": "unofficial",
+          "approvedHost": "www.elections.alaska.gov",
+          "electionDate": "2026-11-03",
+          "scope": "All contests, first-choice round only.",
+          "limitations": "Ranked-choice winners cannot be inferred from first-choice totals. Must use the final RCV tabulation and certification evidence."
+        },
+        {
+          "url": "https://www.elections.alaska.gov/enr/26GENR/results/CVR_Export.zip",
+          "format": "json_zip",
+          "officialLinkSource": "https://www.elections.alaska.gov/election-results/",
+          "resultStatus": "unofficial",
+          "approvedHost": "www.elections.alaska.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Cast vote records; excludes hand-counted ballots and individually resolved write-in names.",
+          "limitations": "Ballot records are not tabulation or certification."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.elections.alaska.gov/election-results/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "AL",
+      "name": "Alabama",
+      "authorityUrl": "https://www.sos.alabama.gov/alabama-votes",
+      "resultsUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-information/2026",
+      "allowedHosts": [
+        "www.sos.alabama.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "4350a4ad50b54fca114556583e5e83d3a858800ab9a93dfac08e4800d959400f",
+        "title": "2026 Election Information | Alabama Secretary of State"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-information/2026",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "AR",
+      "name": "Arkansas",
+      "authorityUrl": "https://www.sos.arkansas.gov/elections",
+      "resultsUrl": "https://www.sos.arkansas.gov/elections/research/election-results",
+      "allowedHosts": [
+        "www.sos.arkansas.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "569609afce853b4718fc9fce6c40efb8f816f930553e44242f92a4f89f9951a1",
+        "title": "Arkansas Secretary of State"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.sos.arkansas.gov/elections/research/election-results",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "AZ",
+      "name": "Arizona",
+      "authorityUrl": "https://azsos.gov/elections",
+      "resultsUrl": "https://azsos.gov/elections/election-information",
+      "allowedHosts": [
+        "azsos.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "8c48a64a8537fd45ab013ae94531432af8fcd92bc1b6caa2abc6c907922e3f04",
+        "title": "Election Information | Arizona Secretary of State"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://app.enhancedvoting.com/cdn/results/Arizona/export-110326GeneralElection.json",
+          "format": "json",
+          "officialLinkSource": "https://azsos.gov/press",
+          "resultStatus": "unofficial",
+          "approvedHost": "app.enhancedvoting.com"
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://azsos.gov/elections/election-information",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "CA",
+      "name": "California",
+      "authorityUrl": "https://www.sos.ca.gov/elections",
+      "resultsUrl": "https://electionresults.sos.ca.gov/Returns/status",
+      "allowedHosts": [
+        "electionresults.sos.ca.gov",
+        "www.sos.ca.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:59:36.639856Z",
+        "status": "access_blocked",
+        "httpStatus": 200,
+        "error": "The server returns an Incapsula security iframe (Request unsuccessful), not election results. HTTP200 does not establish usable government evidence."
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.sos.ca.gov/Returns/status",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      },
+      "accessRequirements": {
+        "manualEvidenceIntakeRequired": true,
+        "note": "The public results service returns a security challenge to automated retrieval. No challenge or CAPTCHA bypass was attempted."
+      }
+    },
+    {
+      "stateId": "CO",
+      "name": "Colorado",
+      "authorityUrl": "https://www.sos.state.co.us/pubs/elections/main.html",
+      "resultsUrl": "https://www.sos.state.co.us/pubs/elections/resultsData.html",
+      "allowedHosts": [
+        "www.sos.state.co.us"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "5e734c8e45e6f0766ec626f430b674d401cd69cea1094244389f2bd0b6c7b810",
+        "title": "Election Results & Data"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.sos.state.co.us/pubs/elections/resultsData.html",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "CT",
+      "name": "Connecticut",
+      "authorityUrl": "https://portal.ct.gov/sots/common-elements/v5-template---redesign/elections--voting--home-page",
+      "resultsUrl": "https://portal.ct.gov/en/SOTS/Election-Services/Election-Results/Election-Results",
+      "allowedHosts": [
+        "ctemspublic.pcctg.net",
+        "portal.ct.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "4c68885e49ea690b5b495fa24bd4888236f689b1f49658e14d531e668fd9342f",
+        "title": "Election Results"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://ctemspublic.pcctg.net/#/selectTown",
+          "format": "html_portal",
+          "officialLinkSource": "https://portal.ct.gov/en/SOTS/Election-Services/Election-Results/Election-Results",
+          "resultStatus": "unofficial",
+          "approvedHost": "ctemspublic.pcctg.net",
+          "scope": "Secretary of State linked election reporting portal.",
+          "limitations": "Requires election and town selection; a portal landing page is not contest-level certification."
+        }
+      ],
+      "previousResultsUrls": [
+        "https://portal.ct.gov/sots/election-services/election-results/election-results"
+      ],
+      "resultsDiscovery": {
+        "previousUrl": "https://portal.ct.gov/sots/election-services/election-results/election-results",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Current government election results endpoint retrieved successfully."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://portal.ct.gov/en/SOTS/Election-Services/Election-Results/Election-Results",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "DE",
+      "name": "Delaware",
+      "authorityUrl": "https://elections.delaware.gov/index.shtml",
+      "resultsUrl": "https://elections.delaware.gov/results/",
+      "allowedHosts": [
+        "data.delaware.gov",
+        "delcode.delaware.gov",
+        "elections.delaware.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "aa5f78b651649ba0b4478fce09e37a80f27a50848a10ed1b1877e2969b8d38a1",
+        "title": "Election Results - Department of Elections - State of Delaware"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://elections.delaware.gov/results/enr/Election_StatewideResults_ID_GE2026.json",
+          "format": "json",
+          "approvedHost": "elections.delaware.gov",
+          "officialLinkSource": "https://elections.delaware.gov/results/enr/GE2026.html",
+          "electionDate": "2026-11-03",
+          "resultStatus": "official_results_certification_unverified",
+          "limitations": "Candidate totals reconciled in the Delaware adapter; no independent certification or write-in reconciliation has been verified."
+        },
+        {
+          "url": "https://data.delaware.gov/resource/4hbv-7brf.json?$limit=1000&$where=electionname=%272026%20General%20Election%27",
+          "format": "json",
+          "approvedHost": "data.delaware.gov",
+          "officialLinkSource": "https://elections.delaware.gov/results/enr/GE2026.html",
+          "electionDate": "2026-11-03",
+          "resultStatus": "official_results_certification_unverified",
+          "limitations": "Candidate totals reconciled in the Delaware adapter; no independent certification or write-in reconciliation has been verified."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://elections.delaware.gov/results/",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "FL",
+      "name": "Florida",
+      "authorityUrl": "https://www.dos.myflorida.com/elections/",
+      "resultsUrl": "https://results.elections.myflorida.com/",
+      "allowedHosts": [
+        "results.elections.myflorida.com",
+        "www.dos.myflorida.com"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "d99f120d3eb0e5073701f78c16c20c4caa97685e5bdb44c4635543bb9d4e8eaa",
+        "title": "Florida Department of State - Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://results.elections.myflorida.com/",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "GA",
+      "name": "Georgia",
+      "authorityUrl": "https://sos.ga.gov/elections-division-georgia-secretary-states-office",
+      "resultsUrl": "https://results.sos.ga.gov/results/public/Georgia",
+      "allowedHosts": [
+        "results.sos.ga.gov",
+        "sos.ga.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "672176330c323f45cd27178a2fe78df89c33a5ed64dea9f1460eaa8e9c7dd4cd",
+        "title": "Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://results.sos.ga.gov/results/public/Georgia",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "HI",
+      "name": "Hawaii",
+      "authorityUrl": "https://elections.hawaii.gov/",
+      "resultsUrl": "https://elections.hawaii.gov/election-results/",
+      "allowedHosts": [
+        "elections.hawaii.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "9d4f1432fb8fb2e0112ad23a4003d4a88bfc69b0a8bcfc4e1dba4158545cd850",
+        "title": "Office of Elections | Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://elections.hawaii.gov/election-results/",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "IA",
+      "name": "Iowa",
+      "authorityUrl": "https://sos.iowa.gov/elections/voterinformation/index.html",
+      "resultsUrl": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "allowedHosts": [
+        "sos.iowa.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "64fd01ff41c882dd03237fedd6b8c8854740fa07299e471f4e1d719e652aada5",
+        "title": "Election Results & Statistics | Iowa Secretary of State - Paul D. Pate"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://sos.iowa.gov/iowans/election-results-statistics",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "ID",
+      "name": "Idaho",
+      "authorityUrl": "https://voteidaho.gov/",
+      "resultsUrl": "https://voteidaho.gov/election-results/",
+      "allowedHosts": [
+        "voteidaho.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "8849d8fb80060922f4928c92c75f803da0e60e1075e21f6e0d37329ad2ce712b",
+        "title": "Election Results | VoteIdaho.Gov"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://voteidaho.gov/election-results/",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "IL",
+      "name": "Illinois",
+      "authorityUrl": "https://www.elections.il.gov/",
+      "resultsUrl": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx",
+      "allowedHosts": [
+        "www.elections.il.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "c072e1445a9c3a0fe077fcaffaee4bf345abd9bfe81c68353db3672bd883724d",
+        "title": "Election Vote Totals Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "IN",
+      "name": "Indiana",
+      "authorityUrl": "https://indianavoters.in.gov/",
+      "resultsUrl": "https://enr.indianavoters.in.gov/site/index.html",
+      "allowedHosts": [
+        "enr.indianavoters.in.gov",
+        "indianavoters.in.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "5177123650495260a12df98cda517f4a8c16087e320010b1be393f76025a42f0",
+        "title": "Indiana Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://enr.indianavoters.in.gov/site/index.html",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "KS",
+      "name": "Kansas",
+      "authorityUrl": "https://sos.ks.gov/elections/elections.html",
+      "resultsUrl": "https://sos.ks.gov/elections/election-results.html",
+      "allowedHosts": [
+        "sos.ks.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "74b511273f8131d53f3bb309856f9425050670498199f11b6ff3a6b2eb181886",
+        "title": "Kansas Secretary of State | Elections | Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://sos.ks.gov/elections/election-results.html",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Official result page links 2026 primary XLSX files and older general results. No November2026 general export was linked at review; primary winners are not elected officeholders."
+      }
+    },
+    {
+      "stateId": "KY",
+      "name": "Kentucky",
+      "authorityUrl": "https://elect.ky.gov/Pages/default.aspx",
+      "resultsUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+      "allowedHosts": [
+        "elect.ky.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "cea1759df7563ecf93885c4034a09c65fb287f8770c1b93818b89d0e45cd8122",
+        "title": "Election Results - State Board of Elections"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "LA",
+      "name": "Louisiana",
+      "authorityUrl": "https://www.sos.la.gov/ElectionsAndVoting/Pages/default.aspx",
+      "resultsUrl": "https://voterportal.sos.la.gov/graphical",
+      "allowedHosts": [
+        "voterportal.sos.la.gov",
+        "www.sos.la.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "267325ddeb5ff66b054c031f16cd80779cc76ce79fe062383e0b205a58737115",
+        "title": "Louisiana Secretary of State - Live Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://voterportal.sos.la.gov/graphical",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "MA",
+      "name": "Massachusetts",
+      "authorityUrl": "https://www.sec.state.ma.us/divisions/elections/elections-and-voting.htm",
+      "resultsUrl": "https://electionstats.state.ma.us/",
+      "allowedHosts": [
+        "electionstats.state.ma.us",
+        "www.sec.state.ma.us"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "b4f144780e30fb8a06b248741e80a5670e2575d61368a70a975101a7eba58ea7",
+        "title": "PD43+ \u00bb Massachusetts Election Results and Statistics"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionstats.state.ma.us/",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "MD",
+      "name": "Maryland",
+      "authorityUrl": "https://elections.maryland.gov/",
+      "resultsUrl": "https://elections.maryland.gov/elections/2026/index.html",
+      "allowedHosts": [
+        "elections.maryland.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "bac926a4eaf229667c81fab8c138f463d8e1bdea1fe1f2f145bb3a09b5fb1861",
+        "title": "2026 Gubernatorial Election"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://elections.maryland.gov/elections/2026/index.html",
+        "status": "access_blocked",
+        "note": "Official 2026 Data Files page currently lists primary result exports, not general-result CSV files. Do not promote primary winners into government offices."
+      },
+      "alternateInformationSources": [
+        {
+          "url": "https://elections.maryland.gov/elections/2026/election_data/index.html",
+          "purpose": "2026 raw data directory; currently lists primary result exports. The general election result link on the parent page is explicitly unofficial.",
+          "status": "not_retrieved",
+          "note": "Official page contents reviewed through the government website index; local direct download returns HTTP403."
+        }
+      ]
+    },
+    {
+      "stateId": "ME",
+      "name": "Maine",
+      "authorityUrl": "https://www.maine.gov/sos/cec/elec/index.html",
+      "resultsUrl": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+      "allowedHosts": [
+        "www.maine.gov",
+        "www1.maine.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "57f35f6f97e8a405db1b323915704fb2882ad5aad0469749861bceee9fe0ca39",
+        "title": "Election Results/Data | SOS"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov26%20CG2%20RCV%20Summary%20Report%2020261112_0.csv",
+          "format": "csv",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "Summary Report",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/CVR%20Export%2020261110_3.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "CVR Export 20261110",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/CVR%20Export%2020261110%20-%201_0.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "CVR Export 20261110-1",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/CVR%20Export%2020261110%20-%202_1.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "CVR Export 20261110-2",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/CVR%20Export%2020261110%20-%203.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "CVR Export 20261110-3",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov26%20CG2%20Manual%20Auxiliary%20%231.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "Nov26 CG2 Manual Auxiliary #1",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov26%20CG2%20Manual%20Auxiliary%20%232.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "Nov26 CG2 Manual Auxiliary #2",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov26%20CG2%20UOCAVA%20Manual%20Auxiliary.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "Nov26 CG2 UOCAVA Manual Auxiliary",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        },
+        {
+          "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Representative%20to%20Congress%20District%202.xlsx",
+          "format": "xlsx",
+          "officialLinkSource": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.maine.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Congressional District2 ranked-choice tabulation or cast vote records.",
+          "label": "Representative to Congress District 2",
+          "limitations": "A linked export alone does not verify certification or a winner; cast vote records and auxiliary sheets are not statewide results."
+        }
+      ],
+      "previousResultsUrls": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data"
+      ],
+      "resultsDiscovery": {
+        "previousUrl": "https://www.maine.gov/sos/elections-voting/election-results-data",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Current government election results endpoint retrieved successfully."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www1.maine.gov/sos/elections-voting/election-results-data",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "MI",
+      "name": "Michigan",
+      "authorityUrl": "https://www.michigan.gov/sos/elections",
+      "resultsUrl": "https://www.michigan.gov/sos/elections/election-results-and-data",
+      "allowedHosts": [
+        "www.michigan.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "c92b2e99fd44adf18c2de7ed401bb8cceb79d811b54712516d7d8d6509a165f4",
+        "title": "Election results and data"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.michigan.gov/sos/elections/election-results-and-data",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "MN",
+      "name": "Minnesota",
+      "authorityUrl": "https://www.sos.state.mn.us/elections-voting/",
+      "resultsUrl": "https://electionresults.sos.mn.gov/20261103",
+      "allowedHosts": [
+        "electionresults.sos.mn.gov",
+        "www.house.mn.gov",
+        "www.sos.state.mn.us"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "f0ce66dd6f638b07e33e95720933706b9f640b621c3715f70e2b2b4b9bd8060c",
+        "title": "Home - Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.sos.mn.gov/20261103",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      },
+      "certificationSources": [
+        {
+          "url": "https://www.house.mn.gov/SessionDaily/Story/19215",
+          "kind": "government_report_of_state_canvass",
+          "reportedCertifiedOn": "2026-11-19",
+          "datePrecision": "day",
+          "note": "Government report is discovery evidence. Contest promotion still requires independently downloaded verified result/canvass evidence and adapter checks."
+        }
+      ]
+    },
+    {
+      "stateId": "MO",
+      "name": "Missouri",
+      "authorityUrl": "https://www.sos.mo.gov/elections/",
+      "resultsUrl": "https://www.sos.mo.gov/elections/s_default",
+      "allowedHosts": [
+        "www.sos.mo.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "d6e26f296b47c61efa483d4cee2b606b0743f0ce0144d7034f4d946adbfc4547",
+        "title": "Secretary of State: Elections"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.sos.mo.gov/elections/s_default",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "MS",
+      "name": "Mississippi",
+      "authorityUrl": "https://www.sos.ms.gov/elections-voting",
+      "resultsUrl": "https://www.sos.ms.gov/elections-voting/election-results",
+      "allowedHosts": [
+        "www.sos.ms.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "e530a66acd5ac012d4de3e2cbf2e79a084da993f8e932520eee3f4d51c5e8337",
+        "title": "Election Results | MS SOS"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.sos.ms.gov/elections-voting/election-results",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "MT",
+      "name": "Montana",
+      "authorityUrl": "https://sosmt.gov/elections/",
+      "resultsUrl": "https://electionresults.mt.gov/",
+      "allowedHosts": [
+        "electionresults.mt.gov",
+        "sosmt.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "692b99c3994f27c566a7ae780e0add25157bdcd71aecba59bac3f83072a7ade4",
+        "title": "Montana Secretary of State"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://electionresults.mt.gov/ResultsExport.aspx",
+          "format": "export_form",
+          "officialLinkSource": "https://electionresults.mt.gov/",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.mt.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Statewide, legislative, and county exports.",
+          "downloadControl": {
+            "mechanism": "aspnet_postback",
+            "statewideTarget": "ctl00$MainContent$Statewide",
+            "legislativeTarget": "ctl00$MainContent$Legislative"
+          },
+          "limitations": "Government export form uses session-bound form fields; write-in totals are not reported on this site. No direct file URL has been guessed."
+        }
+      ],
+      "previousResultsUrls": [
+        "https://sosmt.gov/elections/results/"
+      ],
+      "resultsDiscovery": {
+        "previousUrl": "https://sosmt.gov/elections/results/",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Current government election results endpoint retrieved successfully."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.mt.gov/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "NC",
+      "name": "North Carolina",
+      "authorityUrl": "https://www.ncsbe.gov/",
+      "resultsUrl": "https://er.ncsbe.gov/",
+      "allowedHosts": [
+        "er.ncsbe.gov",
+        "www.ncsbe.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "4aedd3b22d656c502dd1c4c3aae1591684a5494b7ba84d1e1cdaa38141b843ed",
+        "title": "North Carolina State Board of Elections - Contest Results"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://er.ncsbe.gov/downloads.html",
+          "format": "export_portal",
+          "officialLinkSource": "https://er.ncsbe.gov/",
+          "resultStatus": "unofficial",
+          "approvedHost": "er.ncsbe.gov",
+          "scope": "State Board of Elections election download selector.",
+          "limitations": "Election must be explicitly selected; no file URL or certification status is inferred from the selector."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://er.ncsbe.gov/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "ND",
+      "name": "North Dakota",
+      "authorityUrl": "https://vip.sos.nd.gov/PortalList.aspx",
+      "resultsUrl": "https://results.sos.nd.gov/",
+      "allowedHosts": [
+        "results.sos.nd.gov",
+        "vip.sos.nd.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "80a4ef6c504ff10d94dff32ecf25d49ccf5797c1e64b858122fbcda329b849c1",
+        "title": "North Dakota Secretary of State"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://results.sos.nd.gov/",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "NE",
+      "name": "Nebraska",
+      "authorityUrl": "https://www.nebraska.gov/featured/elections-voting/",
+      "resultsUrl": "https://electionresults.nebraska.gov/default.aspx",
+      "allowedHosts": [
+        "electionresults.nebraska.gov",
+        "www.nebraska.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "356cda2bb3b17cf8d75c45f238b684bc84d3dce4f83ce588b90cef70e5edc3be",
+        "title": "Nebraska Secretary of State"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.nebraska.gov/default.aspx",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "NH",
+      "name": "New Hampshire",
+      "authorityUrl": "https://www.sos.nh.gov/elections/voters",
+      "resultsUrl": "https://www.sos.nh.gov/2026-general-election-results",
+      "allowedHosts": [
+        "www.sos.nh.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "access_blocked",
+        "error": "HTTP Error 403: Forbidden"
+      },
+      "machineReadableFeeds": [],
+      "previousResultsUrls": [
+        "https://www.sos.nh.gov/elections/elections/election-results"
+      ],
+      "resultsDiscovery": {
+        "officialLinkSource": "https://www.sos.nh.gov/2026-election-results",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Official 2026 election index links the general election page. Direct automated retrieval currently returns403; indexed text is not a downloaded evidence snapshot."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.sos.nh.gov/2026-general-election-results",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "NJ",
+      "name": "New Jersey",
+      "authorityUrl": "https://www.nj.gov/state/elections/vote.shtml",
+      "resultsUrl": "https://www.nj.gov/state/elections/election-results.shtml",
+      "allowedHosts": [
+        "www.nj.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "508177b8e1cbd91c8613985fe00a8cb2aec66d06e88bf4e71dbbc548f8d157db",
+        "title": "NJ DOS - Division of Elections - Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.nj.gov/state/elections/election-results.shtml",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      },
+      "previousResultsUrls": [
+        "https://www.nj.gov/state/elections/election-information-results.shtml"
+      ],
+      "resultsDiscovery": {
+        "officialLinkSource": "https://www.nj.gov/state/elections/election-information-results.shtml",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Archive page linked current election-results directory; avoids checking only historical elections."
+      }
+    },
+    {
+      "stateId": "NM",
+      "name": "New Mexico",
+      "authorityUrl": "https://www.sos.nm.gov/voting-and-elections/voter-information-portal-nmvote-org/",
+      "resultsUrl": "https://electionresults.sos.nm.gov/",
+      "allowedHosts": [
+        "electionresults.sos.nm.gov",
+        "www.sos.nm.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "c05b4d1e5c2975cf9a0eed69894729008dea43c12a0860dfc062fd5954dd0a1d",
+        "title": "New Mexico Secretary of State"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "format": "export_portal",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Official reporting site Media/Results Exports link.",
+          "limitations": "Export page must be inspected to resolve exact files; a directory is not a certified contest result."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=STATE&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=FED&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=SW&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=LGX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=JDX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=ECX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=JMC&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=MGX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=CTY&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=MUX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=CLX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        },
+        {
+          "url": "https://electionresults.sos.nm.gov/resultsCSV.aspx?text=All&type=SWX&map=CTY",
+          "format": "csv",
+          "officialLinkSource": "https://electionresults.sos.nm.gov/ResultsMedia.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sos.nm.gov",
+          "electionDate": "2026-11-03",
+          "scope": "2026 general election result export; category and map parameters come from the official link.",
+          "limitations": "Write-in/canvass/finality evidence must be checked separately before promoting any official."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.sos.nm.gov/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "NV",
+      "name": "Nevada",
+      "authorityUrl": "https://www.nvsos.gov/sos/elections",
+      "resultsUrl": "https://results.nv.gov/",
+      "allowedHosts": [
+        "nvsos.gov",
+        "results.nv.gov",
+        "silverstateelection.nv.gov",
+        "www.nvsos.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "access_blocked",
+        "error": "The official Results.NV.gov address redirects to silverstateelection.nv.gov. Its security page requires an additional security check and explicitly prohibits automated traffic. No bypass was attempted."
+      },
+      "machineReadableFeeds": [],
+      "previousResultsUrls": [
+        "https://silverstateelection.nv.gov/"
+      ],
+      "resultsDiscovery": {
+        "officialLinkSource": "https://nvsos.gov/sos/elections/election-information/2026-election-information",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "The 2026 official election information page identifies Results.NV.gov as the current unofficial election results address."
+      },
+      "accessRequirements": {
+        "automation": "not_authorized_by_public_security_notice",
+        "manualEvidenceIntakeRequired": true,
+        "note": "Use government-published downloadable evidence obtained through an authorized manual channel; never interpret the security challenge as election data."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://results.nv.gov/",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "NY",
+      "name": "New York",
+      "authorityUrl": "https://www.elections.ny.gov/",
+      "resultsUrl": "https://elections.ny.gov/election-results",
+      "allowedHosts": [
+        "elections.ny.gov",
+        "www.elections.ny.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "96a2cfc2e0aea589a06c3f68f53cc36b8e318ad94232df37d4191f5feab17cb7",
+        "title": "Election Results | New York State Board of Elections"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://elections.ny.gov/election-results",
+        "status": "access_blocked",
+        "note": "Government landing page currently links certified2026 PRIMARY results and its official historical database. No November2026 general export was linked at review; primary certification is not general-election certification."
+      }
+    },
+    {
+      "stateId": "OH",
+      "name": "Ohio",
+      "authorityUrl": "https://www.sos.state.oh.us/elections/voters/",
+      "resultsUrl": "https://liveresults.ohiosos.gov/",
+      "allowedHosts": [
+        "liveresults.ohiosos.gov",
+        "www.ohiosos.gov",
+        "www.sos.state.oh.us"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "98db2513e32f3cc444a9923721edb52bfe6810d7228bdddbf7ebb1b84c502253",
+        "title": "Ohio Decides - Election Night Reporting"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://liveresults.ohiosos.gov/",
+          "format": "export_portal",
+          "officialLinkSource": "https://liveresults.ohiosos.gov/",
+          "resultStatus": "unofficial",
+          "approvedHost": "liveresults.ohiosos.gov",
+          "electionDate": "2026-11-03",
+          "availableFormats": [
+            "xml",
+            "xlsx"
+          ],
+          "downloadControl": {
+            "mechanism": "government_javascript_control",
+            "xml": "downloadReport('VSSC1622XmlFileBlob')",
+            "allResults": "downloadReport('GeneralElectionXlsFile')"
+          },
+          "limitations": "Public government page explicitly offers NIST1500-100 XML and Excel downloads. The download URL must be resolved from its public control; certification is a separate canvass process."
+        }
+      ],
+      "previousResultsUrls": [
+        "https://www.ohiosos.gov/elections/election-results-and-data/"
+      ],
+      "resultsDiscovery": {
+        "previousUrl": "https://www.ohiosos.gov/elections/election-results-and-data/",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Current government election results endpoint retrieved successfully."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://liveresults.ohiosos.gov/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "OK",
+      "name": "Oklahoma",
+      "authorityUrl": "https://oklahoma.gov/elections.html",
+      "resultsUrl": "https://oklahoma.gov/elections/elections-results/election-results.html",
+      "allowedHosts": [
+        "oklahoma.gov",
+        "results.okelections.us"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "27b8ee61ef85045b253c84b97ca15b57a2f00df5e57bbb16c2ebb90b17e48523",
+        "title": "Election Results"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://results.okelections.us/OKER/?elecDate=20261103",
+          "format": "export_portal",
+          "officialLinkSource": "https://oklahoma.gov/elections/elections-results/election-results/2026-election-results/november-general-election.html",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "results.okelections.us",
+          "electionDate": "2026-11-03",
+          "scope": "Government-linked November general election compressed county, race and precinct export controls.",
+          "accessStatus": "access_blocked",
+          "limitations": "The government index labels these official results and explains its export tab; certification evidence and complete contest validation remain required. Delegated portal currently returns HTTP403."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://oklahoma.gov/elections/elections-results/election-results.html",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      },
+      "certificationSources": [
+        {
+          "url": "https://oklahoma.gov/elections/elections-results/election-results/2026-election-results/november-general-election.html",
+          "kind": "government_official_results_directory",
+          "electionDate": "2026-11-03",
+          "note": "Directory heading says official results and was modified November13. No certification date or statewide signed certificate is asserted from that heading."
+        }
+      ]
+    },
+    {
+      "stateId": "OR",
+      "name": "Oregon",
+      "authorityUrl": "https://sos.oregon.gov/voting-elections/Pages/default.aspx",
+      "resultsUrl": "https://results.oregonvotes.gov/",
+      "allowedHosts": [
+        "results.oregonvotes.gov",
+        "sos.oregon.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:59:36.639856Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "471cb2b552d0915cbd17cfd4e183c1317dd3a4759150cee958016b13d2807fa3",
+        "title": "Oregon Secretary of State"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://results.oregonvotes.gov/ResultsExport.aspx",
+          "format": "export_form",
+          "officialLinkSource": "https://sos.oregon.gov/elections/Pages/current-election.aspx",
+          "resultStatus": "unofficial",
+          "approvedHost": "results.oregonvotes.gov",
+          "electionDate": "2026-11-03",
+          "availableFormats": [
+            "csv",
+            "xlsx",
+            "rss",
+            "xml"
+          ],
+          "scope": "Statewide, legislative, governor, nonpartisan and county export controls.",
+          "limitations": "Government page lists these formats; exact export must be selected in its public form. Write-in results are not reported on the portal."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://results.oregonvotes.gov/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      },
+      "certificationSources": [
+        {
+          "url": "https://sos.oregon.gov/elections/Pages/current-election.aspx",
+          "kind": "government_certification_schedule",
+          "scheduledCertificationDate": "2026-12-10",
+          "electionDate": "2026-11-03",
+          "note": "Scheduled future certification is not proof that any contest is certified. Government page explicitly labels the current November results unofficial."
+        }
+      ],
+      "previousResultsUrls": [
+        "https://sos.oregon.gov/elections/pages/historical-data.aspx"
+      ],
+      "resultsDiscovery": {
+        "officialLinkSource": "https://sos.oregon.gov/elections/Pages/current-election.aspx",
+        "verifiedAt": "2026-11-20T02:59:36.639856Z",
+        "reason": "Official current-election page links the live November2026 government results portal. Replaces historical voter-registration data page."
+      }
+    },
+    {
+      "stateId": "PA",
+      "name": "Pennsylvania",
+      "authorityUrl": "https://www.dos.pa.gov/VotingElections/Pages/default.aspx",
+      "resultsUrl": "https://www.electionreturns.pa.gov/",
+      "allowedHosts": [
+        "www.dos.pa.gov",
+        "www.electionreturns.pa.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "7705e5723803e2b380b9686400403a0dab3ed5e1d82301f7bdcfd23e023e6392",
+        "title": "Pennsylvania Elections - Summary Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.electionreturns.pa.gov/",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "RI",
+      "name": "Rhode Island",
+      "authorityUrl": "https://vote.sos.ri.gov/",
+      "resultsUrl": "https://electionresults.ri.gov/",
+      "allowedHosts": [
+        "electionresults.ri.gov",
+        "vote.sos.ri.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "e374c69267325f0d28186c493e930ed921e5983cdb98f79bb01a81536a252f88",
+        "title": "Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.ri.gov/",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "SC",
+      "name": "South Carolina",
+      "authorityUrl": "https://www.scvotes.org/",
+      "resultsUrl": "https://scvotes.gov/elections-statistics/election-results/",
+      "allowedHosts": [
+        "scvotes.gov",
+        "www.enr-scvotes.org",
+        "www.scvotes.org"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "d0f27d4946edc744dd52796d917b59ae784c6ef847f451fe9cf5695257a54922",
+        "title": "Election Results - SC Votes - South Carolina Election Commission"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://www.enr-scvotes.org/SC/127300/web.345435/",
+          "format": "html_portal",
+          "officialLinkSource": "https://scvotes.gov/elections-statistics/election-results/",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "www.enr-scvotes.org",
+          "electionDate": "2026-11-03",
+          "scope": "Statewide general election, linked by the South Carolina Election Commission.",
+          "accessStatus": "access_blocked",
+          "limitations": "Public delegated site presents a robot-verification challenge. Do not bypass it or count the challenge as downloaded result evidence."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://scvotes.gov/elections-statistics/election-results/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "SD",
+      "name": "South Dakota",
+      "authorityUrl": "https://sdsos.gov/elections-voting/default.aspx",
+      "resultsUrl": "https://electionresults.sd.gov/",
+      "allowedHosts": [
+        "electionresults.sd.gov",
+        "sdsos.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "a7037ae008f344c89ea186518aff916870c311fa315eb150427b3b8953584b76",
+        "title": "South Dakota Secretary of State"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://electionresults.sd.gov/ResultsExport.aspx?",
+          "format": "export_form",
+          "officialLinkSource": "https://electionresults.sd.gov/",
+          "resultStatus": "unofficial",
+          "approvedHost": "electionresults.sd.gov",
+          "electionDate": "2026-11-03",
+          "scope": "Official reporting site Exports link.",
+          "limitations": "Export control needs session-bound form processing; no direct file URL has been guessed."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.sd.gov/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "TN",
+      "name": "Tennessee",
+      "authorityUrl": "https://sos.tn.gov/elections",
+      "resultsUrl": "https://sos.tn.gov/elections/results",
+      "allowedHosts": [
+        "elections.tn.gov",
+        "sos.tn.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "access_blocked",
+        "error": "HTTP Error 403: Forbidden"
+      },
+      "machineReadableFeeds": [],
+      "accessRequirements": {
+        "manualEvidenceIntakeRequired": true,
+        "note": "Direct automated requests currently return HTTP403. Retain a visible access failure and allow an authorized manual government document intake."
+      },
+      "alternateInformationSources": [
+        {
+          "url": "https://elections.tn.gov/",
+          "purpose": "Official state election reporting portal.",
+          "status": "access_blocked",
+          "error": "HTTP Error 403: Forbidden"
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://sos.tn.gov/elections/results",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "TX",
+      "name": "Texas",
+      "authorityUrl": "https://www.sos.state.tx.us/elections/index.shtml",
+      "resultsUrl": "https://electionresults.sos.state.tx.us/results.html",
+      "allowedHosts": [
+        "electionresults.sos.state.tx.us",
+        "www.sos.state.tx.us"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "e1b44e2fd412dcd67ccb7fd60df33a2ae41e65c364affea7932138dd38546b4f",
+        "title": "Election Results - Tuesday, November 3, 2026"
+      },
+      "machineReadableFeeds": [],
+      "previousResultsUrls": [
+        "https://www.sos.state.tx.us/elections/historical/index.shtml"
+      ],
+      "resultsDiscovery": {
+        "previousUrl": "https://www.sos.state.tx.us/elections/historical/index.shtml",
+        "verifiedAt": "2026-11-20T02:57:16.000685Z",
+        "reason": "Current government election results endpoint retrieved successfully."
+      },
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.sos.state.tx.us/results.html",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "UT",
+      "name": "Utah",
+      "authorityUrl": "https://vote.utah.gov/",
+      "resultsUrl": "https://vote.utah.gov/election-results-data-historical-information/",
+      "allowedHosts": [
+        "vote.utah.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "d2708ebd55b3f70f3ed311c3087d5e7ea432eb81905975d05a50515ab63f24ee",
+        "title": "Election Results, Data & Historical Information - Utah Voter Information"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://vote.utah.gov/election-results-data-historical-information/",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "VA",
+      "name": "Virginia",
+      "authorityUrl": "https://www.elections.virginia.gov/",
+      "resultsUrl": "https://www.elections.virginia.gov/results/",
+      "allowedHosts": [
+        "enr.elections.virginia.gov",
+        "www.elections.virginia.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "943b58537b4090074f6361bbf610643d004d93cac5a09a0ef2b5e49041e2a0c2",
+        "title": "Virginia Dept. of Elections: Results"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General",
+          "format": "html_portal",
+          "officialLinkSource": "https://www.elections.virginia.gov/results/",
+          "resultStatus": "unofficial",
+          "approvedHost": "enr.elections.virginia.gov",
+          "electionDate": "2026-11-03",
+          "scope": "November general and special elections.",
+          "limitations": "The Department of Elections states JSON files are provided on the reporting site. Exact JSON export URL must be resolved from the public portal; the November election is currently listed under unofficial results."
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://www.elections.virginia.gov/results/",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "VT",
+      "name": "Vermont",
+      "authorityUrl": "https://sos.vermont.gov/elections/",
+      "resultsUrl": "https://electionresults.vermont.gov/",
+      "allowedHosts": [
+        "electionresults.vermont.gov",
+        "sos.vermont.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "8053eeb94e069661649b41599132c22c8d3c89a21ffe2bcef36a3f67e3a9fa00",
+        "title": "Vermont Election Night Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://electionresults.vermont.gov/",
+        "status": "no_current_general_export_link_on_reviewed_page",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "WA",
+      "name": "Washington",
+      "authorityUrl": "https://www.sos.wa.gov/elections",
+      "resultsUrl": "https://results.votewa.gov/results/public/washington",
+      "allowedHosts": [
+        "results.votewa.gov",
+        "www.sos.wa.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "40db0daab6d51727ebf3f6ad7ca91fe941d73d3b07b8ead2f20495002144ca0f",
+        "title": "Election Results"
+      },
+      "machineReadableFeeds": [],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://results.votewa.gov/results/public/washington",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "WI",
+      "name": "Wisconsin",
+      "authorityUrl": "https://myvote.wi.gov/en-us/",
+      "resultsUrl": "https://elections.wi.gov/elections/election-results",
+      "allowedHosts": [
+        "elections.wi.gov",
+        "myvote.wi.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "access_blocked",
+        "error": "HTTP Error 403: Forbidden"
+      },
+      "machineReadableFeeds": [],
+      "accessRequirements": {
+        "manualEvidenceIntakeRequired": true,
+        "note": "Direct automated requests currently return HTTP403. Retain a visible access failure and allow an authorized manual government document intake."
+      },
+      "alternateInformationSources": [
+        {
+          "url": "https://myvote.wi.gov/en-us/Election-Results",
+          "purpose": "Government instructions and links to county election result websites; does not supply statewide certified results.",
+          "status": "retrieved",
+          "sha256": "9a1284b93247a31a432c26d52196f368fe296a2d75aa172847079b0bf8f2d3f1"
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://elections.wi.gov/elections/election-results",
+        "status": "access_blocked",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "WV",
+      "name": "West Virginia",
+      "authorityUrl": "https://sos.wv.gov/elections/pages/default.aspx",
+      "resultsUrl": "https://sos.wv.gov/elections",
+      "allowedHosts": [
+        "sos.wv.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "ed953e410d620b1e2ee69bfd48e072ee9fa6a0d02e2a90a2403f65eff015b602",
+        "title": "Elections | WV Secretary of State"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://results.enr.clarityelections.com/WV/127496/web.345435/#/summary",
+          "format": "html_portal",
+          "officialLinkSource": "https://sos.wv.gov/elections",
+          "resultStatus": "unofficial",
+          "approvedHost": "results.enr.clarityelections.com"
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://sos.wv.gov/elections",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      }
+    },
+    {
+      "stateId": "WY",
+      "name": "Wyoming",
+      "authorityUrl": "https://sos.wyo.gov/Elections/Default.aspx",
+      "resultsUrl": "https://sos.wyo.gov/Elections/Docs/2026/2026GeneralResults.aspx",
+      "allowedHosts": [
+        "sos.wyo.gov"
+      ],
+      "authoritySourceUrl": "https://www.usa.gov/state-election-office",
+      "resultsFormat": "official_results_directory",
+      "certificationPolicy": "Explicit contest-level final/certified evidence required; source reachability or the word official alone never proves a contest is certified.",
+      "initialObservation": {
+        "checkedAt": "2026-11-20T02:43:30.148160Z",
+        "status": "retrieved",
+        "httpStatus": 200,
+        "sha256": "8c9417771ab6a05d4e5dcee9f89456832bc41b35742bcaed6967bd4dbb04fcb9",
+        "title": "Wyoming Secretary of State | 2026 General Election Results"
+      },
+      "machineReadableFeeds": [
+        {
+          "url": "https://sos.wyo.gov/Elections/Docs/2026/Results/General/2026_Wyoming_General_Results.zip",
+          "format": "zip_xlsx",
+          "officialLinkSource": "https://sos.wyo.gov/Elections/Docs/2026/2026GeneralResults.aspx",
+          "resultStatus": "requires_certification_document",
+          "approvedHost": "sos.wyo.gov"
+        }
+      ],
+      "exportDiscovery": {
+        "checkedAt": "2026-11-20T02:57:16.000685Z",
+        "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2026/2026GeneralResults.aspx",
+        "status": "linked_exports_registered",
+        "note": "Only explicitly government-linked endpoints are registered. Missing exports are a coverage gap; a fetched directory is not parsed or certified contest coverage."
+      },
+      "certificationSources": [
+        {
+          "url": "https://sos.wyo.gov/Elections/Docs/2026/Results/General/2026_General_State_Canvassing_Board_Minutes.pdf",
+          "kind": "signed_state_canvass_certificate",
+          "certifiedOn": "2026-11-10",
+          "datePrecision": "day",
+          "sha256": "e6463cc4bb79069ed30242bdd9b825323307be28346f996568eaff514a0e5798",
+          "officialLinkSource": "https://sos.wyo.gov/Elections/Docs/2026/2026GeneralResults.aspx",
+          "evidenceReview": "Signed and sealed certificate on page6; state board adoption on page5. Exact bytes pinned in the Wyoming adapter."
+        }
+      ]
+    }
+  ]
+}

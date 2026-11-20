@@ -1,0 +1,9 @@
+{
+  "publishedAt": "2026-11-20T03:24:29.984608Z",
+  "dataVersion": "dedf2ce280ec3a87a13b079cad983f034535be5d150b6284c65fdc2c00561b22",
+  "approvedDataVersion": "dedf2ce280ec3a87a13b079cad983f034535be5d150b6284c65fdc2c00561b22",
+  "reviewReasons": [
+    "Large update affects 516 records; inspect the report before publication.",
+    "All-state election coverage is incomplete. Review source, contest, certification, and start-date gaps in the report before saving. Approval saves only verified records; it does not certify missing results."
+  ]
+}
