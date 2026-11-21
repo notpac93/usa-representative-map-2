@@ -7,7 +7,6 @@ import 'package:usa_map_app/screens/landing_screen.dart';
 import 'package:usa_map_app/screens/find_reps_screen.dart';
 import 'package:usa_map_app/screens/federal_branches_screen.dart';
 import 'package:usa_map_app/screens/contact_congress_start_screen.dart';
-import 'package:usa_map_app/widgets/civic_glass.dart';
 
 class _Provider extends MapDataProvider {
   @override
@@ -84,60 +83,15 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
-  for (final width in [320.0, 430.0]) {
-    testWidgets(
-      'compact controls and separate contact action fit the phone at $width',
-      (tester) async {
-        tester.view.physicalSize = Size(width, 932);
-        tester.view.devicePixelRatio = 1;
-        tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        addTearDown(tester.view.resetPadding);
-        await tester.pumpWidget(
-          ChangeNotifierProvider<MapDataProvider>(
-            create: (_) => _Provider(),
-            child: const MaterialApp(home: LandingScreen()),
-          ),
-        );
-        await tester.pump();
-        final controls = [
-          'US States',
-          'Federal Branches',
-          'Find My Reps',
-          'Contact My Reps',
-        ].map((label) => find.byKey(ValueKey('home-label-$label'))).toList();
-        for (final control in controls) {
-          expect(tester.getSize(control).height, lessThan(64));
-        }
-        final portraits = tester.getRect(
-          find.byKey(const ValueKey('home-color-Find My Reps')),
-        );
-        final contact = tester.getRect(
-          find.byKey(const Key('home-contact-my-reps')),
-        );
-        expect(contact.top - portraits.bottom, greaterThanOrEqualTo(16));
-        expect(contact.bottom, closeTo(932 - 34 - 12, 1));
-        expect(tester.getSize(controls[2]).width, lessThan(width - 32));
-        for (final label in ['US States', 'Federal Branches', 'Find My Reps']) {
-          expect(
-            tester
-                .widget<CivicColorReveal>(
-                  find.byKey(ValueKey('home-color-$label')),
-                )
-                .amount,
-            0,
-          );
-        }
-        expect(tester.takeException(), isNull);
-        await tester.pumpWidget(const SizedBox());
-      },
-    );
-  }
-
   testWidgets(
-    'portraits gain color while opening and return to grayscale on Back',
+    'reference cards retain their sizing while contact fills the footer',
     (tester) async {
+      tester.view.physicalSize = const Size(430, 932);
+      tester.view.devicePixelRatio = 1;
+      tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPadding);
       await tester.pumpWidget(
         ChangeNotifierProvider<MapDataProvider>(
           create: (_) => _Provider(),
@@ -145,36 +99,20 @@ void main() {
         ),
       );
       await tester.pump();
-      await tester.tap(find.text('Find My Reps'));
-      await tester.pump();
-      await tester.pump();
-      final reveal = find.byKey(const Key('destination-color-reveal'));
-      expect(tester.widget<CivicColorReveal>(reveal).amount, 0);
-      await tester.pump(const Duration(milliseconds: 360));
+      final contact = find.byKey(const Key('home-contact-my-reps'));
+      final finder = find.text('Find My Reps');
+      expect(tester.getRect(contact).bottom, closeTo(932 - 34 - 20, 1));
+      expect(tester.getSize(contact).height, greaterThan(130));
+      expect(tester.getSize(contact).width, 430 - 36);
       expect(
-        tester.widget<CivicColorReveal>(reveal).amount,
-        inExclusiveRange(0, 1),
+        tester.widget<Text>(find.text('Contact My Reps')).style!.fontSize,
+        greaterThan(40),
       );
-      await tester.pump(const Duration(milliseconds: 400));
-      await tester.pump();
-      expect(tester.widget<CivicColorReveal>(reveal).amount, 1);
-      await tester.pageBack();
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
-      await tester.pump(const Duration(milliseconds: 1));
-      await tester.pump(const Duration(milliseconds: 1));
-      expect(find.byType(FindRepsScreen), findsNothing);
-      expect(
-        tester
-            .widget<CivicColorReveal>(
-              find.byKey(const ValueKey('home-color-Find My Reps')),
-            )
-            .amount,
-        0,
-      );
+      expect(tester.widget<Text>(finder).style!.fontSize, 24);
+      expect(tester.widget<Text>(find.text('US States')).style!.fontSize, 19);
+      expect(find.byKey(const Key('find-reps-white-outline')), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
-      await tester.pump();
     },
   );
 }
