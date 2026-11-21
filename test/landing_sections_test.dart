@@ -85,47 +85,54 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
   for (final width in [320.0, 430.0]) {
-    testWidgets('four matching home controls fill the phone at $width', (
-      tester,
-    ) async {
-      tester.view.physicalSize = Size(width, 932);
-      tester.view.devicePixelRatio = 1;
-      tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      addTearDown(tester.view.resetPadding);
-      await tester.pumpWidget(
-        ChangeNotifierProvider<MapDataProvider>(
-          create: (_) => _Provider(),
-          child: const MaterialApp(home: LandingScreen()),
-        ),
-      );
-      await tester.pump();
-      final controls = [
-        'US States',
-        'Federal Branches',
-        'Find My Reps',
-        'Contact My Reps',
-      ].map((label) => find.byKey(ValueKey('home-label-$label'))).toList();
-      final heights = controls.map((f) => tester.getSize(f).height);
-      for (final height in heights) {
-        expect(height, 80);
-      }
-      expect(tester.getSize(controls[2]), tester.getSize(controls[3]));
-      expect(tester.getBottomLeft(controls[3]).dy, closeTo(932 - 34 - 12, 1));
-      for (final label in ['US States', 'Federal Branches', 'Find My Reps']) {
-        expect(
-          tester
-              .widget<CivicColorReveal>(
-                find.byKey(ValueKey('home-color-$label')),
-              )
-              .amount,
-          0,
+    testWidgets(
+      'compact controls and separate contact action fit the phone at $width',
+      (tester) async {
+        tester.view.physicalSize = Size(width, 932);
+        tester.view.devicePixelRatio = 1;
+        tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPadding);
+        await tester.pumpWidget(
+          ChangeNotifierProvider<MapDataProvider>(
+            create: (_) => _Provider(),
+            child: const MaterialApp(home: LandingScreen()),
+          ),
         );
-      }
-      expect(tester.takeException(), isNull);
-      await tester.pumpWidget(const SizedBox());
-    });
+        await tester.pump();
+        final controls = [
+          'US States',
+          'Federal Branches',
+          'Find My Reps',
+          'Contact My Reps',
+        ].map((label) => find.byKey(ValueKey('home-label-$label'))).toList();
+        for (final control in controls) {
+          expect(tester.getSize(control).height, lessThan(64));
+        }
+        final portraits = tester.getRect(
+          find.byKey(const ValueKey('home-color-Find My Reps')),
+        );
+        final contact = tester.getRect(
+          find.byKey(const Key('home-contact-my-reps')),
+        );
+        expect(contact.top - portraits.bottom, greaterThanOrEqualTo(16));
+        expect(contact.bottom, closeTo(932 - 34 - 12, 1));
+        expect(tester.getSize(controls[2]).width, lessThan(width - 32));
+        for (final label in ['US States', 'Federal Branches', 'Find My Reps']) {
+          expect(
+            tester
+                .widget<CivicColorReveal>(
+                  find.byKey(ValueKey('home-color-$label')),
+                )
+                .amount,
+            0,
+          );
+        }
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
   }
 
   testWidgets(

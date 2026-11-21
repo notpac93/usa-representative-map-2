@@ -161,15 +161,16 @@ class _LandingScreenState extends State<LandingScreen> {
                   final height = bounds.maxHeight < minimum
                       ? minimum
                       : bounds.maxHeight;
+                  final footerHeight = 76 * textScale + bottomInset;
                   return SingleChildScrollView(
                     child: SizedBox(
                       height: height,
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                            padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
                             child: SizedBox(
-                              height: (height - 24) * .45,
+                              height: (height - footerHeight - 30) * .46,
                               child: Row(
                                 children: [
                                   Expanded(
@@ -201,20 +202,55 @@ class _LandingScreenState extends State<LandingScreen> {
                           ),
                           const SizedBox(height: 12),
                           Expanded(
-                            child: _LandingTile(
-                              key: _repsKey,
-                              label: 'Find My Reps',
-                              icon: CivicIcons.representative,
-                              wide: true,
-                              bottomInset: bottomInset,
-                              onTap: () => _open(_LandingDestination.reps),
-                              image: RotatingLawmakerPortraits(
-                                key: _portraitsKey,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
                               ),
-                              contactAction: () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) =>
-                                      const ContactCongressStartScreen(),
+                              child: _LandingTile(
+                                key: _repsKey,
+                                label: 'Find My Reps',
+                                icon: CivicIcons.representative,
+                                wide: true,
+                                onTap: () => _open(_LandingDestination.reps),
+                                image: RotatingLawmakerPortraits(
+                                  key: _portraitsKey,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              18,
+                              16,
+                              18,
+                              12 + bottomInset,
+                            ),
+                            child: Center(
+                              child: Semantics(
+                                button: true,
+                                label: 'Contact My Reps',
+                                child: InkWell(
+                                  key: const Key('home-contact-my-reps'),
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute<void>(
+                                      builder: (_) =>
+                                          const ContactCongressStartScreen(),
+                                    ),
+                                  ),
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      minHeight: 48,
+                                    ),
+                                    child: const Center(
+                                      widthFactor: 1,
+                                      child: _LandingTileLabel(
+                                        label: 'Contact My Reps',
+                                        icon: Icons.mail_outline,
+                                        wide: true,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -241,23 +277,17 @@ class _LandingTile extends StatelessWidget {
     required this.image,
     required this.onTap,
     this.wide = false,
-    this.bottomInset = 0,
-    this.contactAction,
   });
   final String label;
   final IconData icon;
   final Widget image;
   final VoidCallback onTap;
   final bool wide;
-  final double bottomInset;
-  final VoidCallback? contactAction;
 
   @override
   Widget build(BuildContext context) => Material(
     color: const Color(0xFFDBE5F2),
-    borderRadius: wide
-        ? const BorderRadius.vertical(top: Radius.circular(28))
-        : BorderRadius.circular(28),
+    borderRadius: BorderRadius.circular(28),
     clipBehavior: Clip.antiAlias,
     child: Stack(
       fit: StackFit.expand,
@@ -280,41 +310,15 @@ class _LandingTile extends StatelessWidget {
         Positioned(
           left: 8,
           right: 8,
-          bottom: 12 + bottomInset,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IgnorePointer(
-                child: ExcludeSemantics(
-                  child: _LandingTileLabel(
-                    label: label,
-                    icon: icon,
-                    wide: wide,
-                  ),
-                ),
+          bottom: 10,
+          child: Center(
+            child: InkWell(
+              excludeFromSemantics: true,
+              onTap: onTap,
+              child: ExcludeSemantics(
+                child: _LandingTileLabel(label: label, icon: icon, wide: wide),
               ),
-              if (contactAction != null) ...[
-                const SizedBox(height: 12),
-                Semantics(
-                  button: true,
-                  label: 'Contact My Reps',
-                  onTap: contactAction,
-                  child: InkWell(
-                    key: const Key('home-contact-my-reps'),
-                    excludeFromSemantics: true,
-                    borderRadius: BorderRadius.circular(24),
-                    onTap: contactAction,
-                    child: const ExcludeSemantics(
-                      child: _LandingTileLabel(
-                        label: 'Contact My Reps',
-                        icon: Icons.mail_outline,
-                        wide: true,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
       ],
@@ -335,20 +339,18 @@ class _LandingTileLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     key: ValueKey('home-label-$label'),
-    constraints: BoxConstraints.tightFor(
-      height: 80 * (MediaQuery.textScalerOf(context).scale(18) / 18),
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(
       color: Colors.white.withValues(alpha: .96),
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(18),
       border: Border.all(color: _landingRed, width: 1.5),
     ),
     child: Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 22, color: _landingRed),
         const SizedBox(width: 6),
-        Expanded(
+        Flexible(
           child: Text(
             label,
             maxLines: 2,
@@ -378,7 +380,7 @@ class _LandingMapArtwork extends StatelessWidget {
         8 * (1 - expansion),
         8 * (1 - expansion),
         8 * (1 - expansion),
-        82 * (1 - expansion),
+        58 * (1 - expansion),
       ),
       child: provider.atlas != null && provider.pathCache != null
           ? NationalMap(
