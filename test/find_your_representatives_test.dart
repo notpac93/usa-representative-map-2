@@ -1,15 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 import 'package:usa_map_app/data/data_provider.dart';
+import 'package:usa_map_app/data/models.dart';
 import 'package:usa_map_app/utils/search_handler.dart';
-import 'package:usa_map_app/screens/landing_screen.dart';
-import 'package:usa_map_app/screens/local_detail_screen.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Find Your Representatives Search & Autofill Tests', () {
+    test('County searches retain their state when names repeat', () async {
+      final provider = MapDataProvider()
+        ..counties = [
+          OverlayFeature(id: '06059', name: 'Orange', path: '', bbox: []),
+          OverlayFeature(id: '12095', name: 'Orange', path: '', bbox: []),
+        ];
+      final results = (await SearchHandler().search(
+        'Orange',
+        provider,
+      )).where((r) => r.type == SearchResultType.county).toList();
+      expect(results.map((r) => r.stateId), ['CA', 'FL']);
+      expect(results.map((r) => r.title), [
+        'Orange County, CA',
+        'Orange County, FL',
+      ]);
+    });
+
     test('SearchHandler parses and autofills home ZIP code', () async {
       final handler = SearchHandler();
       await handler.loadData();
@@ -84,86 +98,5 @@ void main() {
       final plainResults = await handler.search('Austin', provider);
       expect(plainResults.any((r) => r.cityName == 'Austin'), isTrue);
     });
-
-    testWidgets('LandingScreen reframed around finding Your representatives', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (_) => MapDataProvider(),
-          child: const MaterialApp(home: LandingScreen()),
-        ),
-      );
-
-      for (int i = 0; i < 5; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
-
-      await tester.ensureVisible(find.text('Find My Reps'));
-      await tester.tap(find.text('Find My Reps'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-
-      // Check header
-      expect(find.text('Find Your Representatives'), findsOneWidget);
-      expect(find.text('USA Representative Map'), findsNothing);
-      expect(
-        find.text(
-          'Enter your home address, ZIP code, city, or state to see your local, state, and federal elected officials.',
-        ),
-        findsNothing,
-      );
-
-      // Check search bar hint text
-      expect(
-        find.text('Enter your home address, ZIP code, city, or state...'),
-        findsOneWidget,
-      );
-
-      // Verify quick suggestion chips are not present
-      expect(find.text('ZIP: 90210'), findsNothing);
-      expect(find.text('Address: 1600 Pennsylvania Ave'), findsNothing);
-    });
-
-    testWidgets(
-      'Entering ZIP code in search bar navigates to LocalDetailScreen with Your Representatives banner',
-      (tester) async {
-        await tester.pumpWidget(
-          ChangeNotifierProvider(
-            create: (_) => MapDataProvider(),
-            child: const MaterialApp(home: LandingScreen()),
-          ),
-        );
-
-        for (int i = 0; i < 5; i++) {
-          await tester.pump(const Duration(milliseconds: 100));
-        }
-
-        await tester.ensureVisible(find.text('Find My Reps'));
-        await tester.tap(find.text('Find My Reps'));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 400));
-
-        final textField = find.byType(TextField);
-        expect(textField, findsOneWidget);
-
-        await tester.enterText(textField, '90210');
-        for (int i = 0; i < 10; i++) {
-          await tester.pump(const Duration(milliseconds: 100));
-        }
-
-        final optionFinder = find.text('90210 — Beverly Hills, CA');
-        expect(optionFinder, findsOneWidget);
-        await tester.tap(optionFinder);
-
-        for (int i = 0; i < 10; i++) {
-          await tester.pump(const Duration(milliseconds: 100));
-        }
-
-        expect(find.byType(LocalDetailScreen), findsOneWidget);
-        expect(find.text('90210 — Beverly Hills, CA'), findsWidgets);
-        expect(find.text('Current Reps'), findsOneWidget);
-      },
-    );
   });
 }

@@ -34,139 +34,44 @@ class StateLabelRenderer {
     double baseScale,
     double zoomLevel,
   ) {
-    final List<Rect> occupiedSpaces = [];
-    final double effectiveScale = baseScale * zoomLevel;
-    final double mapSpaceMultiplier = 1.0 / effectiveScale;
-
-    final double fontSize = 14.0 * mapSpaceMultiplier;
-    final double smallFontSize = 12.0 * mapSpaceMultiplier;
-
-    final linePaint = Paint()
-      ..color = Colors.black54
-      ..strokeWidth = 1.0 * mapSpaceMultiplier
-      ..style = PaintingStyle.stroke;
-
-    for (final state in atlas.states) {
-      final Offset centroid = Offset(state.centroid[0], state.centroid[1]);
-
-      // Calculate approximate state size in map space
-      final double width = state.bbox[2] - state.bbox[0];
-      final double height = state.bbox[3] - state.bbox[1];
-
-      // Format text
-      final textSpan = TextSpan(
-        text: state.name,
-        style: TextStyle(
-          color: Colors.black87,
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-          shadows: [
-            Shadow(
-              color: Colors.white.withValues(alpha: 0.9),
-              blurRadius: 3.0 * mapSpaceMultiplier,
-              offset: const Offset(0, 0),
-            ),
-          ],
-        ),
-      );
-
-      final textPainter = TextPainter(
-        text: textSpan,
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-
-      // Does the text fit comfortably inside the state bounding box?
-      // We check if the state's width and height (with some margin) is larger than the text
-      bool fits =
-          (width * 0.7 > textPainter.width) &&
-          (height * 0.7 > textPainter.height);
-
-      if (fits || !smallStateOffsets.containsKey(state.fips)) {
-        // Draw centered
-        // If it doesn't fit but it's not a small state, we still draw it centered (might overlap borders slightly but usually fine)
-        final Offset textOffset = Offset(
-          centroid.dx - (textPainter.width / 2),
-          centroid.dy - (textPainter.height / 2),
-        );
-        textPainter.paint(canvas, textOffset);
-
-        final Rect textRect = Rect.fromLTWH(
-          textOffset.dx,
-          textOffset.dy,
-          textPainter.width,
-          textPainter.height,
-        );
-        occupiedSpaces.add(
-          textRect.inflate(10.0 * mapSpaceMultiplier),
-        ); // Generous margin around state name
-      } else {
-        // It's a small state and doesn't fit: draw with an offset line
-        final Offset offsetMapSpace = smallStateOffsets[state.fips]!;
-
-        // Scale the hardcoded offset slightly based on zoom so it doesn't fly away too far when zoomed in
-        // but keeps enough distance when zoomed out
-        final double offsetScale = (1.0 / zoomLevel).clamp(0.5, 2.0);
-
-        final Offset labelPos = Offset(
-          centroid.dx + (offsetMapSpace.dx * offsetScale),
-          centroid.dy + (offsetMapSpace.dy * offsetScale),
-        );
-
-        // Draw line
-        canvas.drawLine(centroid, labelPos, linePaint);
-
-        // Draw abbreviation
-        final abbrSpan = TextSpan(
+    final occupiedSpaces = <Rect>[];
+    final effectiveScale = baseScale * zoomLevel;
+    if (effectiveScale <= 0) return occupiedSpaces;
+    final multiplier = 1 / effectiveScale;
+    // Place larger states first. Small labels appear as zoom creates room,
+    // rather than piling up over neighboring northeastern states.
+    final states = [...atlas.states]
+      ..sort((a, b) {
+        double area(StateRecord s) =>
+            (s.bbox[2] - s.bbox[0]) * (s.bbox[3] - s.bbox[1]);
+        return area(b).compareTo(area(a));
+      });
+    for (final state in states) {
+      final width = state.bbox[2] - state.bbox[0];
+      final height = state.bbox[3] - state.bbox[1];
+      final painter = TextPainter(
+        text: TextSpan(
           text: stateAbbreviations[state.fips] ?? state.name,
           style: TextStyle(
-            color: Colors.black87,
-            fontSize: smallFontSize,
-            fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: Colors.white.withValues(alpha: 0.9),
-                blurRadius: 3.0 * mapSpaceMultiplier,
-                offset: const Offset(0, 0),
-              ),
-            ],
+            color: Colors.white,
+            fontSize: 11 * multiplier,
+            fontWeight: FontWeight.w600,
           ),
-        );
-
-        final abbrPainter = TextPainter(
-          text: abbrSpan,
-          textDirection: TextDirection.ltr,
-        );
-        abbrPainter.layout();
-
-        // Adjust text offset so the line points nicely to the text
-        Offset finalLabelOffset;
-        if (offsetMapSpace.dx > 0) {
-          // Label is to the right, line points to left-middle of text
-          finalLabelOffset = Offset(
-            labelPos.dx + (2 * mapSpaceMultiplier),
-            labelPos.dy - (abbrPainter.height / 2),
-          );
-        } else {
-          // Label is to the left, line points to right-middle of text
-          finalLabelOffset = Offset(
-            labelPos.dx - abbrPainter.width - (2 * mapSpaceMultiplier),
-            labelPos.dy - (abbrPainter.height / 2),
-          );
-        }
-
-        abbrPainter.paint(canvas, finalLabelOffset);
-
-        final Rect textRect = Rect.fromLTWH(
-          finalLabelOffset.dx,
-          finalLabelOffset.dy,
-          abbrPainter.width,
-          abbrPainter.height,
-        );
-        occupiedSpaces.add(textRect.inflate(6.0 * mapSpaceMultiplier));
-      }
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      if (width < painter.width * 1.2 || height < painter.height * 1.15)
+        continue;
+      final origin = Offset(
+        state.centroid[0] - painter.width / 2,
+        state.centroid[1] - painter.height / 2,
+      );
+      final rect = origin & painter.size;
+      final padded = rect.inflate(3 * multiplier);
+      if (occupiedSpaces.any((r) => r.overlaps(padded))) continue;
+      painter.paint(canvas, origin);
+      occupiedSpaces.add(padded);
     }
-
     return occupiedSpaces;
   }
 }

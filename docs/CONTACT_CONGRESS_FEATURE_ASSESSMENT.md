@@ -4,6 +4,16 @@ Status: Planning recommendation
 Assessment date: 2026-09-15  
 Product goal: Help a constituent identify and contact the correct members of Congress with very little effort, while protecting constituent data and congressional offices from automated abuse.
 
+Scope update (2026-10-16): The user's minimum release requires actual in-app
+transmission through at least one viable channel per supported office AND a
+repeatable official bulk-data import performed ahead of use, with prepared data
+embedded in the app. Browsing/sending must not fetch government roster data. Assisted handoff
+remains a fallback and does not satisfy that minimum. The current priority order,
+data contract, and release gates are in the
+[workflow plan](CONTACT_CONGRESS_WORKFLOW_PLAN.md#minimum-release-scope-and-priority);
+they supersede the assisted-first release recommendation below. This assessment
+remains background research, not evidence of a deployed service.
+
 ## Executive Decision
 
 The feature is feasible, but direct delivery is not a client-only Flutter feature. It requires:

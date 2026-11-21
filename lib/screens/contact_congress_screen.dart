@@ -7,6 +7,7 @@ import '../design/civic_palette.dart';
 import '../services/contact_congress_verification_service.dart';
 import '../services/congressional_delivery_service.dart';
 import '../services/congressional_district_service.dart';
+import '../utils/fips_mapping.dart';
 
 class ContactCongressRecipient {
   final String name;
@@ -55,6 +56,10 @@ class ContactCongressScreen extends StatefulWidget {
   final ContactCongressVerificationGateway? verificationGateway;
   final CongressionalDeliveryGateway deliveryGateway;
 
+  /// A known office selected from the embedded directory. No district lookup.
+  /// Direct delivery for this path awaits a provider's recipient eligibility rules.
+  final bool directoryContact;
+
   const ContactCongressScreen({
     super.key,
     required this.stateName,
@@ -65,6 +70,7 @@ class ContactCongressScreen extends StatefulWidget {
     this.districtLookup,
     this.verificationGateway,
     this.deliveryGateway = const PlaceholderCongressionalDeliveryGateway(),
+    this.directoryContact = false,
   });
 
   @override
@@ -91,6 +97,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
   final _messageController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _senderStateController = TextEditingController();
   late final TextEditingController _addressController;
 
   int _step = 0;
@@ -102,6 +109,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
   String? _districtNotice;
   ContactCongressRecipient? _resolvedHouseRecipient;
   CongressionalDeliveryResult? _deliveryResult;
+  bool _showConfirmation = false;
   late final IdempotentCongressionalDeliveryService _deliveryService;
   late final ContactCongressVerificationGateway _verificationGateway;
   late CongressionalAddressProof _addressProof;
@@ -121,7 +129,9 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
       .toList(growable: false);
 
   bool get _addressAlreadyMatched =>
-      widget.initialAddress != null && widget.houseCandidates.isEmpty;
+      !widget.directoryContact &&
+      widget.initialAddress != null &&
+      widget.houseCandidates.isEmpty;
 
   @override
   void initState() {
@@ -142,6 +152,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
 
   @override
   void dispose() {
+    _senderStateController.dispose();
     _subjectController.dispose();
     _messageController.dispose();
     _nameController.dispose();
@@ -160,7 +171,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope<void>(
-      canPop: _step == 0,
+      canPop: _step == 0 || _showConfirmation,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop && _step > 0) _goToPreviousStep();
       },
@@ -168,33 +179,39 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
         backgroundColor: CivicPalette.canvas,
         appBar: AppBar(
           leading: BackButton(onPressed: _goBack),
-          title: const Text('Contact Congress'),
+          title: const Text('Direct Message'),
           backgroundColor: _navy,
           foregroundColor: Colors.white,
         ),
         body: SafeArea(
-          child: Column(
-            children: [
-              _ProgressHeader(currentStep: _step),
-              Expanded(
-                child: IndexedStack(
-                  index: _step,
+          child: _showConfirmation
+              ? _buildConfirmation()
+              : Column(
                   children: [
-                    _buildComposeStep(),
-                    _buildDetailsStep(),
-                    _buildReviewStep(),
+                    _ProgressHeader(currentStep: _step),
+                    Expanded(
+                      child: IndexedStack(
+                        index: _step,
+                        children: [
+                          _buildComposeStep(),
+                          _buildDetailsStep(),
+                          _buildReviewStep(),
+                        ],
+                      ),
+                    ),
+                    if (_step < 2) _buildBottomNavigation(),
                   ],
                 ),
-              ),
-              if (_step < 2) _buildBottomNavigation(),
-            ],
-          ),
         ),
       ),
     );
   }
 
   void _goBack() {
+    if (_showConfirmation) {
+      Navigator.of(context).maybePop();
+      return;
+    }
     if (_step > 0) {
       _goToPreviousStep();
       return;
@@ -220,10 +237,26 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
         ),
         eyebrow: 'WRITE ONE MESSAGE',
         accent: CivicPalette.teal,
-        title: 'Write once. Contact each office.',
-        description:
-            'Write one message and choose which of your congressional offices should receive it.',
+        title: widget.directoryContact
+            ? 'Write to this office'
+            : 'Write once. Contact each office.',
+        description: widget.directoryContact
+            ? 'Send a message directly to this office.'
+            : 'Write one message and choose which of your congressional offices should receive it.',
+        sidePanel: const _DeliveryMethodField(),
         children: [
+          if (!_deliveryService.canAttemptDirectDelivery)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Text(
+                'Draft preview: message delivery is not connected yet. Nothing will be sent.',
+                key: Key('contact-preview-notice'),
+                style: TextStyle(
+                  color: CivicPalette.purple,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           _RecipientsCard(
             recipients: _recipients,
             selectedRecipientKeys: _selectedRecipientKeys,
@@ -318,7 +351,9 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
         eyebrow: 'REPLIES AND VERIFICATION',
         accent: CivicPalette.actionBlue,
         title: 'Where replies go',
-        description: _addressAlreadyMatched
+        description: widget.directoryContact
+            ? 'Add your own reply details. Choosing an office does not mean that you live in its district or state.'
+            : _addressAlreadyMatched
             ? 'Your address is already matched to these offices. Add your name and email so they can accept and reply to your message.'
             : 'Congressional offices ask for these details to confirm that you are a constituent and to reply.',
         children: [
@@ -375,6 +410,27 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
             },
           ),
           const SizedBox(height: 12),
+          if (widget.directoryContact) ...[
+            TextFormField(
+              key: const Key('contact-sender-state-field'),
+              controller: _senderStateController,
+              textCapitalization: TextCapitalization.characters,
+              maxLength: 2,
+              decoration: _fieldDecoration(
+                'Your state or territory',
+                hint: 'Two-letter code, e.g. CA',
+                icon: CivicIcons.homeAddress,
+              ),
+              validator: (value) {
+                final code = (value ?? '').trim().toUpperCase();
+                return FipsMapping.stateToFips.containsKey(code) ||
+                        const {'AS', 'GU', 'MP', 'PR', 'VI'}.contains(code)
+                    ? null
+                    : 'Enter your two-letter state or territory code';
+              },
+            ),
+            const SizedBox(height: 12),
+          ],
           if (_addressAlreadyMatched) ...[
             const Row(
               children: [
@@ -397,15 +453,20 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
               color: CivicPalette.blueTint,
               borderRadius: BorderRadius.circular(18),
             ),
-            child: const Row(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(CivicIcons.privacy, color: _blue, size: 21),
-                SizedBox(width: 10),
+                const Icon(CivicIcons.privacy, color: _blue, size: 21),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Why we ask: Congressional offices use your home address to determine whether you are a constituent. To find your House district, we send the address to the official U.S. Census Geocoder. This app does not store it.',
-                    style: TextStyle(color: Color(0xFF1E3A8A), height: 1.4),
+                    widget.directoryContact
+                        ? 'Why we ask: Offices use your address to identify constituents and reply. In this draft preview, your address is not sent to a government lookup service. It is kept only while this screen is open.'
+                        : 'Why we ask: Congressional offices use your home address to determine whether you are a constituent. To find your House district, we send the address to the official U.S. Census Geocoder. This app does not store it.',
+                    style: const TextStyle(
+                      color: Color(0xFF1E3A8A),
+                      height: 1.4,
+                    ),
                   ),
                 ),
               ],
@@ -423,8 +484,14 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
             },
             contentPadding: EdgeInsets.zero,
             controlAffinity: ListTileControlAffinity.leading,
-            title: Text('I live at this address in ${widget.stateName}.'),
-            subtitle: const Text('I authorize the message shown here.'),
+            title: Text(
+              widget.directoryContact
+                  ? 'I live at the address entered above.'
+                  : 'I live at this address in ${widget.stateName}.',
+            ),
+            subtitle: const Text(
+              'I authorize this message and an emailed copy to me.',
+            ),
           ),
           if (!_attested)
             const Padding(
@@ -471,6 +538,7 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
           addressProof: _addressProof,
           emailProof: _emailProof,
           attested: _attested,
+          directoryContact: widget.directoryContact,
         ),
         const SizedBox(height: 14),
         _ReviewCard(
@@ -571,7 +639,14 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
       FocusManager.instance.primaryFocus?.unfocus();
       final emailVerified = await _ensureEmailVerified();
       if (!emailVerified || !mounted) return;
-      await _resolveHouseRecipient();
+      if (widget.directoryContact) {
+        // This is only a local preview proof, not a claim of district matching.
+        _addressProof = CongressionalAddressProof.preview(
+          address: _addressController.text.trim(),
+        );
+      } else {
+        await _resolveHouseRecipient();
+      }
       if (!mounted) return;
       setState(() => _step = 2);
     }
@@ -795,7 +870,64 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
     );
   }
 
+  Widget _buildConfirmation() {
+    final preview = !_deliveryService.canAttemptDirectDelivery;
+    final copyText = switch (_deliveryResult!.senderCopyStatus) {
+      SenderCopyStatus.sent => 'A copy has been emailed to you.',
+      SenderCopyStatus.pending => 'Your email copy is being sent.',
+      SenderCopyStatus.failed => 'Your email copy could not be sent.',
+      SenderCopyStatus.notConfirmed =>
+        'Your email copy could not be confirmed.',
+    };
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 520),
+          child: Column(
+            key: const Key('direct-message-confirmation'),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                preview
+                    ? Icons.visibility_outlined
+                    : Icons.check_circle_outline,
+                size: 48,
+                color: CivicPalette.teal,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                preview ? 'Preview complete' : 'Message submitted successfully',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 8),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  preview ? 'No message or email was sent.' : copyText,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                onPressed: () => Navigator.of(context).maybePop(),
+                child: const Text('Done'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _submitDirect() async {
+    if (widget.directoryContact && _deliveryService.canAttemptDirectDelivery) {
+      _showVerificationError(
+        'Direct delivery to a directory-selected office is not configured yet.',
+      );
+      return;
+    }
     setState(() => _submittingDirect = true);
     CongressionalDeliveryRequest? request;
     try {
@@ -841,7 +973,9 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
           fullName: _nameController.text.trim(),
           email: _emailController.text.trim(),
           address: _addressController.text.trim(),
-          state: widget.stateName,
+          state: widget.directoryContact
+              ? _senderStateController.text.trim().toUpperCase()
+              : widget.stateName,
         ),
         topic: _topic,
         subject: _subjectController.text.trim(),
@@ -853,7 +987,12 @@ class _ContactCongressScreenState extends State<ContactCongressScreen> {
       );
       final result = await _deliveryService.submit(request);
       if (!mounted) return;
-      setState(() => _deliveryResult = result);
+      setState(() {
+        _deliveryResult = result;
+        _showConfirmation =
+            !_deliveryService.canAttemptDirectDelivery ||
+            result.confirmsSubmissionFor(request!);
+      });
     } on ContactCongressVerificationException catch (error) {
       if (!mounted) return;
       _showVerificationError(error.message);
@@ -977,11 +1116,13 @@ class _VerificationSummary extends StatelessWidget {
     required this.addressProof,
     required this.emailProof,
     required this.attested,
+    this.directoryContact = false,
   });
 
   final CongressionalAddressProof addressProof;
   final EmailVerificationProof? emailProof;
   final bool attested;
+  final bool directoryContact;
 
   @override
   Widget build(BuildContext context) {
@@ -1006,8 +1147,10 @@ class _VerificationSummary extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _VerificationSummaryRow(
-            text:
-                'Address matched to district ${addressProof.stateAbbreviation}-${addressProof.districtCode}',
+            text: directoryContact
+                ? 'Reply address provided; constituency has not been verified'
+                : 'Address matched to district ${addressProof.stateAbbreviation}-${addressProof.districtCode}',
+            success: !directoryContact,
           ),
           _VerificationSummaryRow(
             text: emailProof == null
@@ -1186,6 +1329,30 @@ class _EmailVerificationDialogState extends State<_EmailVerificationDialog> {
   }
 }
 
+class _DeliveryMethodField extends StatelessWidget {
+  const _DeliveryMethodField();
+
+  @override
+  Widget build(BuildContext context) => DropdownButtonFormField<String>(
+    key: const Key('contact-delivery-method'),
+    initialValue: 'electronic',
+    isExpanded: true,
+    decoration: const InputDecoration(
+      labelText: 'Delivery Method',
+      border: OutlineInputBorder(),
+    ),
+    items: const [
+      DropdownMenuItem(
+        value: 'electronic',
+        child: Text('Congressional electronic delivery'),
+      ),
+    ],
+    // No fax/email route has been configured. Do not advertise unsupported
+    // delivery options; the backend capability contract will supply them.
+    onChanged: null,
+  );
+}
+
 class _GuidedStepScroll extends StatelessWidget {
   const _GuidedStepScroll({
     super.key,
@@ -1196,6 +1363,7 @@ class _GuidedStepScroll extends StatelessWidget {
     required this.description,
     required this.children,
     this.bottomPadding = 104,
+    this.sidePanel,
   });
 
   final Widget artwork;
@@ -1205,6 +1373,7 @@ class _GuidedStepScroll extends StatelessWidget {
   final String description;
   final List<Widget> children;
   final double bottomPadding;
+  final Widget? sidePanel;
 
   @override
   Widget build(BuildContext context) {
@@ -1213,7 +1382,9 @@ class _GuidedStepScroll extends StatelessWidget {
       children: [
         Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 680),
+            constraints: BoxConstraints(
+              maxWidth: sidePanel == null ? 680 : 1040,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -1246,7 +1417,36 @@ class _GuidedStepScroll extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                ...children,
+                if (sidePanel == null)
+                  ...children
+                else
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < 850) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            sidePanel!,
+                            const SizedBox(height: 20),
+                            ...children,
+                          ],
+                        );
+                      }
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: children,
+                            ),
+                          ),
+                          const SizedBox(width: 24),
+                          SizedBox(width: 300, child: sidePanel),
+                        ],
+                      );
+                    },
+                  ),
               ],
             ),
           ),

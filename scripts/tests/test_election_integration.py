@@ -1,4 +1,5 @@
 import copy
+import gzip
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -16,7 +17,7 @@ from election_adapters import mississippi
 
 class ElectionIntegrationTest(unittest.TestCase):
     def setUp(self):
-        self.snapshot=json.loads((ROOT/'assets/data/federal_officials.json').read_text())
+        self.snapshot=json.loads(gzip.decompress((ROOT/'scripts/tests/fixtures/federal_baseline.json.gz').read_bytes()))
         self.registry=json.loads((ROOT/'scripts/data/federal_sources.json').read_text())
         self.now=datetime(2026,11,19,20,tzinfo=timezone.utc)
         self.heading=b'<h1>2026 Senators-Elect Resume Collection</h1><h2>New Senators-Elect</h2><h3>Scott Colom (MS)</h3><h2>Other jobs</h2><h3>Someone Else (CA)</h3>'

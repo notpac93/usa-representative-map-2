@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'data/data_provider.dart';
 import 'map/national_map_painter.dart';
 import 'screens/state_detail_screen.dart';
-import 'widgets/supreme_court_widget.dart';
-import 'widgets/executive_branch_widget.dart';
 import 'data/civic_data_provider.dart';
 import 'screens/landing_screen.dart';
+import 'screens/find_reps_screen.dart';
+import 'widgets/civic_glass.dart';
 
 void main() {
   // PORT CONFIGURATION: Always run on port 8080 to ensure consistency.
@@ -24,22 +24,22 @@ class UsaMapApp extends StatelessWidget {
       providers: [ChangeNotifierProvider(create: (_) => MapDataProvider())],
       child: MaterialApp(
         title: 'USA Representative Map',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.blueGrey,
-        scaffoldBackgroundColor: const Color(0xFFF5F5F7), // Apple-like grey
-      ),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('es', 'US'), // Spanish
-        Locale('zh', 'CN'), // Chinese
-      ],
-      home: const LandingScreen(),
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.blueGrey,
+          scaffoldBackgroundColor: const Color(0xFFF5F5F7), // Apple-like grey
+        ),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('es', 'US'), // Spanish
+          Locale('zh', 'CN'), // Chinese
+        ],
+        home: const LandingScreen(),
       ),
     );
   }
@@ -64,7 +64,9 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     // Trigger load
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MapDataProvider>().loadAllData();
+      if (!mounted) return;
+      final provider = context.read<MapDataProvider>();
+      if (provider.atlas == null) provider.loadAllData();
       CivicDataProvider().loadData();
     });
 
@@ -122,7 +124,7 @@ class _MapScreenState extends State<MapScreen> {
           ),
         )
         .then((_) {
-          setState(() => _selectedStateId = null);
+          if (mounted) setState(() => _selectedStateId = null);
         });
   }
 
@@ -130,33 +132,39 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<MapDataProvider>();
 
-    if (provider.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (provider.isLoading && provider.atlas == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFDBE5F2),
+        appBar: civicGlassAppBar('US States'),
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
 
-    if (provider.atlas == null) {
-      return const Scaffold(
-        body: Center(child: Text("Failed to load map data.")),
+    if (provider.atlas == null || provider.pathCache == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFDBE5F2),
+        appBar: civicGlassAppBar('US States'),
+        body: const Center(child: Text('Map data is unavailable. Please try again.')),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("USA Representative Map"),
+      backgroundColor: const Color(0xFFDBE5F2),
+      appBar: civicGlassAppBar(
+        'US States',
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).pop(); // Go back to landing screen to search
-            },
+            tooltip: 'Find My Reps',
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const FindRepsScreen())),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Image.asset('assets/img/logo.png', width: 32, height: 32),
+          IconButton(
+            icon: const Icon(Icons.center_focus_strong),
+            tooltip: 'Reset map',
+            onPressed: () => _transformController.value = Matrix4.identity(),
           ),
-          IconButton(icon: const Icon(Icons.info_outline), onPressed: () {}),
         ],
       ),
       body: Stack(
@@ -187,6 +195,7 @@ class _MapScreenState extends State<MapScreen> {
                         color: Colors.transparent,
                         child: CustomPaint(
                           painter: NationalMapPainter(
+                            fillColor: const Color(0xFF456A99),
                             atlas: provider.atlas!,
                             pathCache: provider.pathCache!,
                             selectedStateId: _selectedStateId,
@@ -201,8 +210,6 @@ class _MapScreenState extends State<MapScreen> {
               );
             },
           ),
-          const Positioned(top: 24, left: 24, child: ExecutiveBranchWidget()),
-          const Positioned(top: 24, right: 24, child: SupremeCourtWidget()),
         ],
       ),
     );

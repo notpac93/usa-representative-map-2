@@ -1,11 +1,11 @@
-import 'dart:convert';
+import '../widgets/direct_message_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/civic_data_provider.dart';
 import '../data/data_provider.dart';
 import '../data/models.dart';
+import '../data/congressional_roster.dart';
 import '../data/bill_models.dart';
 import 'lawmaker_detail_screen.dart';
 import 'bill_detail_screen.dart';
@@ -64,31 +64,11 @@ class _CongressScreenState extends State<CongressScreen>
         });
       }
     } else {
-      // Otherwise load directly from asset JSONs
+      // Use the same embedded snapshot as the map and contact screens.
       try {
-        final senStr = await rootBundle.loadString('assets/data/senators.json');
-        final senList = json.decode(senStr) as List;
-        final Map<String, List<Senator>> senMap = {};
-        for (var item in senList) {
-          final stateId = item['stateId'] as String?;
-          final senJsonList = item['senators'] as List?;
-          if (stateId != null && senJsonList != null) {
-            senMap[stateId] =
-                senJsonList.map((e) => Senator.fromJson(e)).toList();
-          }
-        }
-
-        final repStr = await rootBundle.loadString('assets/data/houseMembers.json');
-        final repList = json.decode(repStr) as List;
-        final Map<String, List<Representative>> repMap = {};
-        for (var item in repList) {
-          final stateId = item['stateId'] as String?;
-          final repJsonList = item['representatives'] as List?;
-          if (stateId != null && repJsonList != null) {
-            repMap[stateId] =
-                repJsonList.map((e) => Representative.fromJson(e)).toList();
-          }
-        }
+        final roster = await CongressionalRoster.load();
+        final senMap = roster.senators;
+        final repMap = roster.houseMembers;
 
         if (mounted) {
           setState(() {
@@ -528,7 +508,7 @@ class _CongressScreenState extends State<CongressScreen>
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
-                childAspectRatio: crossAxisCount == 1 ? 2.6 : 1.5,
+                mainAxisExtent: 210,
               ),
               itemBuilder: (context, index) {
                 final entry = senators[index];
@@ -653,6 +633,8 @@ class _CongressScreenState extends State<CongressScreen>
                     'U.S. Senator',
                     style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
                   ),
+                  const SizedBox(height: 8),
+                  DirectMessageButton.forOfficial(official: senator, stateId: stateId),
                 ],
               ),
             ),
@@ -692,7 +674,7 @@ class _CongressScreenState extends State<CongressScreen>
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
-                childAspectRatio: crossAxisCount == 1 ? 2.6 : 1.5,
+                mainAxisExtent: 210,
               ),
               itemBuilder: (context, index) {
                 final entry = reps[index];
@@ -819,6 +801,8 @@ class _CongressScreenState extends State<CongressScreen>
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 8),
+                  DirectMessageButton.forOfficial(official: rep, stateId: stateId),
                 ],
               ),
             ),

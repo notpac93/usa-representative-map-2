@@ -499,9 +499,13 @@ class _ContactCongressStartScreenState
           )
           .toList(growable: false);
       if (matchingHouse.length != 1) {
+        final officeId =
+            'house:${_stateCode!}${result.match!.districtNumber.toString().padLeft(2, '0')}';
+        final vacancy = provider.congressionalRoster?.vacancies[officeId];
         setState(() {
-          _error =
-              'Your district was found, but the current member roster did not identify exactly one House office. We will not guess or send to the wrong office.';
+          _error = vacancy != null
+              ? 'The bundled official roster lists your House seat as vacant. $vacancy You can still find your senators in the Congress directory.'
+              : 'Your district was found, but the current member roster did not identify exactly one House office. We will not guess or send to the wrong office.';
         });
         return;
       }

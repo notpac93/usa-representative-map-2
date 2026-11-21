@@ -302,10 +302,10 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
             children: [
               const Icon(Icons.account_balance, size: 18, color: Color(0xFF1E3A8A)),
               const SizedBox(width: 8),
-              const Text(
+              const Expanded(child: Text(
                 "Select Presidential Administration:",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5, color: Color(0xFF0F172A)),
-              ),
+              )),
             ],
           ),
           const SizedBox(height: 10),
@@ -437,7 +437,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      spacing: 8, runSpacing: 8,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -609,14 +610,14 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                 child: const Icon(Icons.gavel, color: Color(0xFF1E3A8A), size: 22),
               ),
               const SizedBox(width: 12),
-              const Text(
+              const Expanded(child: Text(
                 "Article II Powers",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17,
                   color: Color(0xFF0F172A),
                 ),
-              ),
+              )),
             ],
           ),
           const SizedBox(height: 16),
@@ -712,7 +713,8 @@ class _PresidentDetailScreenState extends State<PresidentDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      spacing: 8, runSpacing: 8,
                       children: [
                         const Text(
                           "Executive Orders",

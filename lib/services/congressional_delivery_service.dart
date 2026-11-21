@@ -6,6 +6,9 @@
 /// this Flutter package.
 enum CongressionalChamber { house, senate }
 
+/// Reported independently of congressional submission; never inferred from it.
+enum SenderCopyStatus { notConfirmed, pending, sent, failed }
+
 enum CongressionalDeliveryStatus {
   /// The app backend is not configured or the chamber has not been approved.
   unavailable,
@@ -76,6 +79,10 @@ class CongressionalDeliveryRequest {
   final List<CongressionalDeliveryRecipient> recipients;
   final DateTime authorizedAt;
 
+  /// The backend must email a copy to the verified constituent email after
+  /// submission. No separate destination or client-side mail handoff is allowed.
+  bool get sendCopyToConstituent => true;
+
   /// Opaque, short-lived capability minted by the application backend after
   /// address, email, attestation, and bot checks succeed.
   final String? sendAuthorizationToken;
@@ -105,16 +112,34 @@ class CongressionalDeliveryResult {
     required this.idempotencyKey,
     required this.offices,
     this.wasDuplicate = false,
+    this.senderCopyStatus = SenderCopyStatus.notConfirmed,
   });
 
   final String idempotencyKey;
   final List<CongressionalOfficeDeliveryResult> offices;
   final bool wasDuplicate;
+  final SenderCopyStatus senderCopyStatus;
+
+  /// A successful result must account for exactly the offices reviewed by the
+  /// user. Empty, partial, duplicate, or unrelated responses cannot show success.
+  bool confirmsSubmissionFor(CongressionalDeliveryRequest request) {
+    String identity(CongressionalDeliveryRecipient recipient) =>
+        '${recipient.chamber.name}:${recipient.bioguideId ?? recipient.officialUrl}:${recipient.name}';
+    final expected = request.recipients.map(identity).toSet();
+    final actual = offices.map((office) => identity(office.recipient)).toSet();
+    return idempotencyKey == request.idempotencyKey &&
+        expected.isNotEmpty &&
+        offices.length == expected.length &&
+        actual.length == expected.length &&
+        actual.containsAll(expected) &&
+        offices.every((office) => !office.requiresFollowUp);
+  }
 
   CongressionalDeliveryResult asDuplicate() => CongressionalDeliveryResult(
     idempotencyKey: idempotencyKey,
     offices: offices,
     wasDuplicate: true,
+    senderCopyStatus: senderCopyStatus,
   );
 }
 

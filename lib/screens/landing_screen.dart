@@ -1,847 +1,441 @@
-import 'federal_officials_screen.dart';
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
-import '../map/national_map_painter.dart';
 import 'package:provider/provider.dart';
+
 import '../data/data_provider.dart';
-import '../utils/search_handler.dart';
-import '../main.dart';
-import 'state_detail_screen.dart';
-import 'local_detail_screen.dart';
-import 'president_detail_screen.dart';
-import 'congress_screen.dart';
-import 'supreme_court_screen.dart';
-import '../data/civic_data_provider.dart';
+import '../data/models.dart';
 import '../design/civic_icons.dart';
-import '../widgets/executive_section_card.dart';
-import '../widgets/congress_scroll_section.dart';
-import '../widgets/civic_icon_badge.dart';
-import '../widgets/judicial_section_card.dart';
+import '../main.dart';
+import '../map/atlas_path_cache.dart';
+import '../widgets/rotating_lawmaker_portraits.dart';
+import '../widgets/civic_glass.dart';
+import '../widgets/portrait_page_artwork.dart';
+import '../navigation/expanding_image_route.dart';
+import 'federal_branches_screen.dart';
+import 'find_reps_screen.dart';
 import 'contact_congress_start_screen.dart';
+
+const _landingNavy = Color(0xFF102D54);
+const _landingRed = Color(0xFF9E4352);
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
-
   @override
   State<LandingScreen> createState() => _LandingScreenState();
 }
 
+enum _LandingDestination { states, branches, reps }
+
 class _LandingScreenState extends State<LandingScreen> {
+  final _statesKey = GlobalKey(),
+      _branchesKey = GlobalKey(),
+      _repsKey = GlobalKey();
+  final _portraitsKey = GlobalKey<RotatingLawmakerPortraitsState>();
+  bool _opening = false;
   @override
   void initState() {
     super.initState();
-    CivicDataProvider().loadData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MapDataProvider>().loadAllData();
+      if (mounted) context.read<MapDataProvider>().loadAllData();
     });
   }
 
-  void _navigateToMap() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (ctx) => const MapScreen()));
-  }
-
-  void _handleSelection(SearchResult result) {
-    if (result.type == SearchResultType.president) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => const PresidentDetailScreen()),
-      );
-    } else if (result.type == SearchResultType.congress) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (ctx) => const CongressScreen()));
-    } else if (result.type == SearchResultType.supremeCourt) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (ctx) => const SupremeCourtScreen()));
-    } else if (result.type == SearchResultType.state) {
-      if (result.stateId != null) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (ctx) => StateDetailScreen(
-              stateId: result.stateId!,
-              showLeadership: true,
-            ),
-          ),
-        );
-      }
-    } else {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (ctx) => LocalDetailScreen(searchResult: result),
+  Future<void> _open(_LandingDestination destination) async {
+    if (_opening) return;
+    final key = switch (destination) {
+      _LandingDestination.states => _statesKey,
+      _LandingDestination.branches => _branchesKey,
+      _LandingDestination.reps => _repsKey,
+    };
+    final box = key.currentContext?.findRenderObject();
+    final navigator = Navigator.of(context);
+    final navigatorBox = navigator.context.findRenderObject();
+    if (box is! RenderBox || navigatorBox is! RenderBox || !box.hasSize) return;
+    final origin =
+        box.localToGlobal(Offset.zero, ancestor: navigatorBox) & box.size;
+    final provider = context.read<MapDataProvider>();
+    final isReps = destination == _LandingDestination.reps;
+    final portraits = isReps
+        ? _portraitsKey.currentState?.pauseAndCapture()
+        : null;
+    final portraitPool = _portraitsKey.currentState?.portraitPool;
+    final hasPortraits = _portraitsKey.currentState?.hasPortraits ?? false;
+    final (label, icon, screen) = switch (destination) {
+      _LandingDestination.states => (
+        'US States',
+        CivicIcons.district,
+        const MapScreen(),
+      ),
+      _LandingDestination.branches => (
+        'Federal Branches',
+        CivicIcons.president,
+        const FederalBranchesScreen(managedBackdrop: true),
+      ),
+      _LandingDestination.reps => (
+        'Find My Reps',
+        CivicIcons.representative,
+        const FindRepsScreen(imageBackground: true),
+      ),
+    };
+    _opening = true;
+    try {
+      final route = ExpandingImageRoute<void>(
+        origin: origin,
+        wide: isReps,
+        reducedMotion: MediaQuery.disableAnimationsOf(context),
+        departureLabel: _LandingTileLabel(
+          label: label,
+          icon: icon,
+          wide: isReps,
         ),
+        imageBuilder: (progress) => switch (destination) {
+          _LandingDestination.states => _LandingMapArtwork(
+            provider: provider,
+            expansion: progress,
+          ),
+          _LandingDestination.branches => FederalBranchArtwork(
+            colorAmount: progress,
+          ),
+          _LandingDestination.reps => PortraitPageArtwork(
+            portraits: hasPortraits ? portraits : null,
+            pool: portraitPool ?? const [],
+            expansion: progress,
+          ),
+        },
+        screen: screen,
       );
+      await navigator.push(route);
+      await route.completed;
+    } finally {
+      _opening = false;
+      if (isReps) _portraitsKey.currentState?.resume();
     }
   }
 
-  Widget _buildSearchCenter(
-    MapDataProvider provider, {
-    bool isWidescreen = false,
-    double maxWidth = 560,
-  }) {
-    final searchBoxMaxWidth = isWidescreen ? maxWidth : 640.0;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Image.asset(
-          'assets/img/logo.png',
-          height: isWidescreen ? 90 : 72,
-          fit: BoxFit.contain,
-        ),
-        const SizedBox(height: 14),
-        Text(
-          'Find Your Representatives',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: isWidescreen ? 29 : 24,
-            color: const Color(0xFF0F172A),
-            letterSpacing: -0.3,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        TextButton.icon(
-          key: const Key('federal_officials_directory'),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialsScreen())),
-          icon: const Icon(Icons.verified_outlined, size: 16),
-          label: const Text('Federal officials · official records'),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-          decoration: BoxDecoration(
-            color: const Color(0xFFEFF6FF),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFBFDBFE)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                CivicIcons.election,
-                size: 17,
-                color: Color(0xFF1D4ED8),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  'Election Records • Official Voting Information & Representatives',
-                  style: TextStyle(
-                    color: const Color(0xFF1E40AF),
-                    fontSize: isWidescreen ? 12.5 : 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 18),
-        Container(
-          constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
-          child: Autocomplete<SearchResult>(
-            optionsBuilder: (TextEditingValue textEditingValue) async {
-              if (textEditingValue.text.trim().toLowerCase() == 'map') {
-                return const Iterable<SearchResult>.empty();
-              }
-              if (textEditingValue.text.isEmpty) {
-                return const Iterable<SearchResult>.empty();
-              }
-              return await SearchHandler().search(
-                textEditingValue.text,
-                provider,
-              );
-            },
-            displayStringForOption: (SearchResult option) => option.title,
-            onSelected: (SearchResult selection) {
-              _handleSelection(selection);
-            },
-            fieldViewBuilder:
-                (context, controller, focusNode, onEditingComplete) {
-                  return TextField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    onEditingComplete: () {
-                      if (controller.text.trim().toLowerCase() == 'map') {
-                        _navigateToMap();
-                      }
-                      onEditingComplete();
-                    },
-                    style: TextStyle(fontSize: isWidescreen ? 15.5 : 14),
-                    decoration: InputDecoration(
-                      hintText:
-                          'Enter your home address, ZIP code, city, or state...',
-                      hintStyle: TextStyle(
-                        fontSize: isWidescreen ? 14.5 : 13.5,
-                        color: Colors.blueGrey.shade400,
-                      ),
-                      prefixIcon: const Icon(
-                        CivicIcons.search,
-                        color: Color(0xFF1E3A8A),
-                        size: 22,
-                      ),
-                      suffixIcon: controller.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(CivicIcons.close, size: 20),
-                              onPressed: () {
-                                controller.clear();
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide(color: Colors.blueGrey.shade200),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide(color: Colors.blueGrey.shade200),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF1E3A8A),
-                          width: 2,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: isWidescreen ? 16 : 12,
-                      ),
-                    ),
-                    onSubmitted: (value) async {
-                      final query = value.trim();
-                      if (query.isEmpty) return;
-                      if (query.toLowerCase() == 'map') {
-                        _navigateToMap();
-                        return;
-                      }
-                      final results = await SearchHandler().search(
-                        query,
-                        provider,
-                      );
-                      if (results.isNotEmpty) {
-                        controller.text = results.first.title;
-                        _handleSelection(results.first);
-                      }
-                    },
-                  );
-                },
-            optionsViewBuilder: (context, onSelected, options) {
-              return Align(
-                alignment: Alignment.topLeft,
-                child: Material(
-                  elevation: 6,
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    width: searchBoxMaxWidth,
-                    constraints: const BoxConstraints(maxHeight: 340),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.blueGrey.shade200),
-                    ),
-                    child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      itemCount: options.length,
-                      separatorBuilder: (_, _) =>
-                          Divider(height: 1, color: Colors.blueGrey.shade100),
-                      itemBuilder: (BuildContext context, int index) {
-                        final option = options.elementAt(index);
-                        return ListTile(
-                          title: Text(
-                            option.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.5,
-                            ),
-                          ),
-                          subtitle: Text(
-                            option.subtitle,
-                            style: TextStyle(
-                              color: Colors.blueGrey.shade700,
-                              fontSize: 12.5,
-                            ),
-                          ),
-                          leading: Icon(
-                            option.type == SearchResultType.address
-                                ? CivicIcons.homeAddress
-                                : option.type == SearchResultType.president
-                                ? CivicIcons.president
-                                : option.type == SearchResultType.congress
-                                ? CivicIcons.congress
-                                : option.type == SearchResultType.supremeCourt
-                                ? CivicIcons.court
-                                : option.type == SearchResultType.state
-                                ? CivicIcons.state
-                                : option.type == SearchResultType.city
-                                ? CivicIcons.city
-                                : option.type == SearchResultType.county
-                                ? CivicIcons.county
-                                : CivicIcons.message,
-                            color: option.type == SearchResultType.address
-                                ? const Color(0xFF0284C7)
-                                : option.type == SearchResultType.president
-                                ? const Color(0xFF1E3A8A)
-                                : option.type == SearchResultType.congress
-                                ? const Color(0xFF0F766E)
-                                : option.type == SearchResultType.supremeCourt
-                                ? const Color(0xFF3B0764)
-                                : option.type == SearchResultType.state
-                                ? const Color(0xFF4F46E5)
-                                : option.type == SearchResultType.city
-                                ? const Color(0xFF0D9488)
-                                : const Color(0xFF2563EB),
-                          ),
-                          trailing: const Icon(
-                            CivicIcons.forward,
-                            size: 16,
-                            color: Colors.blueGrey,
-                          ),
-                          onTap: () {
-                            onSelected(option);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 18),
-        Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          alignment: WrapAlignment.center,
-          children: [
-            OutlinedButton.icon(
-              onPressed: _navigateToMap,
-              icon: const Icon(
-                CivicIcons.explore,
-                size: 18,
-                color: Color(0xFF1E3A8A),
-              ),
-              label: const Text('Explore National Map'),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF1E3A8A),
-                side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: isWidescreen ? 13 : 12.5,
-                ),
-              ),
-            ),
-            if (!isWidescreen) ...[
-              OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (ctx) => const PresidentDetailScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  CivicIcons.president,
-                  size: 17,
-                  color: Color(0xFF1E3A8A),
-                ),
-                label: const Text('Executive Branch'),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF1E3A8A),
-                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12.5,
-                  ),
-                ),
-              ),
-              OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const CongressScreen()),
-                  );
-                },
-                icon: const Icon(
-                  CivicIcons.congress,
-                  size: 17,
-                  color: Color(0xFF1E3A8A),
-                ),
-                label: const Text('Legislative Branch'),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF1E3A8A),
-                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12.5,
-                  ),
-                ),
-              ),
-              OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (ctx) => const SupremeCourtScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  CivicIcons.court,
-                  size: 17,
-                  color: Color(0xFF1E3A8A),
-                ),
-                label: const Text('Judicial Branch'),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF1E3A8A),
-                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12.5,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 12),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
-          child: FilledButton.icon(
-            key: const Key('landing-contact-congress-button'),
-            onPressed: provider.isLoading
-                ? null
-                : () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const ContactCongressStartScreen(),
-                    ),
-                  ),
-            icon: const CivicIconBadge(
-              icon: CivicIcons.send,
-              size: 36,
-              iconSize: 21,
-              foregroundColor: Colors.white,
-              backgroundColor: Color(0x33FFFFFF),
-            ),
-            label: const Text('Contact Congress'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
-              backgroundColor: const Color(0xFF1E3A8A),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              textStyle: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showFinder(MapDataProvider provider) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: const Text('Find My Reps')),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: _buildSearchCenter(provider),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showFederalBranches() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Federal Branches')),
-          body: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              for (final item in [
-                (
-                  'Executive Branch',
-                  Icons.account_balance,
-                  const PresidentDetailScreen(),
-                ),
-                ('Legislative Branch', Icons.groups, const CongressScreen()),
-                ('Judicial Branch', Icons.gavel, const SupremeCourtScreen()),
-              ])
-                Card(
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(18),
-                    leading: Icon(item.$2, color: const Color(0xFF102E50)),
-                    title: Text(item.$1),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.of(
-                      context,
-                    ).push(MaterialPageRoute(builder: (_) => item.$3)),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMobileHome(MapDataProvider provider) {
-    const navy = Color(0xFF102E50);
-    const pink = Color(0xFFE9A6B6);
-    Widget card({
-      required String label,
-      required IconData icon,
-      required Widget artwork,
-      required VoidCallback onTap,
-      bool wide = false,
-    }) {
-      return Semantics(
-        button: true,
-        label: label,
-        child: Material(
-          color: const Color(0xFF304B69),
-          borderRadius: BorderRadius.circular(26),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            child: Stack(
-              fit: StackFit.expand,
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<MapDataProvider>();
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F6FA),
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: ListView(
               children: [
-                artwork,
-                Positioned(
-                  left: 10,
-                  right: 10,
-                  bottom: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 18,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xF21A2D43),
-                      borderRadius: BorderRadius.circular(wide ? 40 : 20),
-                      border: Border.all(
-                        color: wide ? pink : Colors.white24,
-                        width: wide ? 2 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(icon, color: wide ? pink : Colors.white, size: 25),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: Text(
-                            label,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: wide ? 22 : 18,
-                              height: 1.1,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        if (wide)
-                          const Icon(
-                            Icons.arrow_forward,
-                            color: pink,
-                            size: 19,
-                          ),
-                      ],
+                Container(
+                  decoration: const BoxDecoration(
+                    color: _landingNavy,
+                    border: Border(
+                      bottom: BorderSide(color: _landingRed, width: 4),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      color: const Color(0xFF0D1B2D),
-      child: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: const BoxDecoration(
-                color: navy,
-                border: Border(bottom: BorderSide(color: pink, width: 4)),
-              ),
-              child: Row(
-                children: [
-                  Image.asset('assets/img/logo.png', width: 44, height: 44),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Your Representatives',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 19,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, bounds) => SingleChildScrollView(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
+                  padding: const EdgeInsets.all(22),
+                  child: Row(
                     children: [
-                      SizedBox(
-                        height: (bounds.maxHeight * .49).clamp(220.0, 310.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: card(
-                                label: 'US States',
-                                icon: Icons.map_outlined,
-                                onTap: _navigateToMap,
-                                artwork: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    12,
-                                    16,
-                                    78,
-                                  ),
-                                  child:
-                                      provider.atlas != null &&
-                                          provider.pathCache != null
-                                      ? CustomPaint(
-                                          painter: NationalMapPainter(
-                                            atlas: provider.atlas!,
-                                            pathCache: provider.pathCache!,
-                                          ),
-                                        )
-                                      : const Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: card(
-                                label: 'Federal Branches',
-                                icon: Icons.account_balance_outlined,
-                                onTap: _showFederalBranches,
-                                artwork: ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(
-                                    Color(0xFFB6CEE8),
-                                    BlendMode.color,
-                                  ),
-                                  child: Image.asset(
-                                    'assets/img/capitol.jpg',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/img/logo.png',
+                          width: 46,
+                          height: 46,
                         ),
                       ),
-                      TextButton.icon(
-                        key: const Key('federal_officials_directory_mobile'),
-                        style: TextButton.styleFrom(foregroundColor: Colors.white),
-                        onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialsScreen())),
-                        icon: const Icon(Icons.verified_outlined, size: 16),
-                        label: const Text('Federal officials · official records'),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: (bounds.maxHeight * .47).clamp(235.0, 310.0),
-                        child: card(
-                          label: 'Find My Reps',
-                          icon: Icons.badge_outlined,
-                          wide: true,
-                          onTap: () => _showFinder(provider),
-                          artwork: Row(
-                            children: [
-                              for (final photo in [
-                                'senators/ak-lisa-murkowski.jpg',
-                                'senators/nj-cory-a-booker.jpg',
-                                'representatives/CA-doris-matsui.jpg',
-                              ])
-                                Expanded(
-                                  child: Image.asset(
-                                    'assets/img/$photo',
-                                    height: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                            ],
+                      const SizedBox(width: 13),
+                      const Expanded(
+                        child: Text(
+                          'Your Representatives',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.watch<MapDataProvider>();
-
-    if (!provider.isLoading) {
-      SearchHandler().loadData();
-      CivicDataProvider().loadData();
-    }
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // Desktop and iPad view: width >= 950px
-          final isWidescreen = constraints.maxWidth >= 950;
-
-          if (!isWidescreen) {
-            // Mobile and compact tablet view (centered clean search)
-            return _buildMobileHome(provider);
-          }
-
-          // 4 Major Quadrants Layout (Desktop & iPad):
-          // 1. Executive fills the LEFT quadrant (left: 0, top: 0, width: leftWidth, height: topQuadrantHeight)
-          // 2. Supreme Court fills the RIGHT quadrant (right: 0, top: 0, width: rightWidth, height: topQuadrantHeight)
-          // 3. Congress fills the entire BOTTOM quadrant (bottom: 0, left: 0, right: 0, height: congressHeight)
-          // 4. Center Search Hub fills the CENTER quadrant
-          final congressHeight = constraints.maxHeight < 760 ? 185.0 : 205.0;
-          final topQuadrantHeight = constraints.maxHeight - congressHeight;
-
-          // Generously sized quadrants for Executive and Judicial sections
-          final leftWidth = constraints.maxWidth < 1180
-              ? 360.0
-              : (constraints.maxWidth < 1480 ? 430.0 : 490.0);
-          final rightWidth = constraints.maxWidth < 1180
-              ? 420.0
-              : (constraints.maxWidth < 1480 ? 490.0 : 560.0);
-          final centerMaxWidth =
-              (constraints.maxWidth - leftWidth - rightWidth - 32).clamp(
-                360.0,
-                720.0,
-              );
-
-          return SizedBox(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-            child: Stack(
-              children: [
-                // Center Search Hub (Spanning between left & right quadrants, above bottom Congress)
-                Positioned.fill(
-                  left: leftWidth,
-                  right: rightWidth,
-                  bottom: congressHeight,
-                  child: Center(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: 16.0,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: _LandingTile(
+                              key: _statesKey,
+                              label: 'US States',
+                              icon: CivicIcons.district,
+                              color: Colors.white,
+                              onTap: () => _open(_LandingDestination.states),
+                              image: _LandingMapArtwork(provider: provider),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _LandingTile(
+                              key: _branchesKey,
+                              label: 'Federal Branches',
+                              icon: CivicIcons.president,
+                              color: Colors.white,
+                              onTap: () => _open(_LandingDestination.branches),
+                              image: const FederalBranchArtwork(colorAmount: 0),
+                            ),
+                          ),
+                        ],
                       ),
-                      child: _buildSearchCenter(
-                        provider,
-                        isWidescreen: true,
-                        maxWidth: centerMaxWidth,
+                      const SizedBox(height: 12),
+                      _LandingTile(
+                        key: _repsKey,
+                        label: 'Find My Reps',
+                        icon: CivicIcons.representative,
+                        color: Colors.white,
+                        wide: true,
+                        onTap: () => _open(_LandingDestination.reps),
+                        image: RotatingLawmakerPortraits(key: _portraitsKey),
                       ),
-                    ),
-                  ),
-                ),
-
-                // Left Quadrant: Executive Branch (President, VP & Cabinet)
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  width: leftWidth,
-                  height: topQuadrantHeight,
-                  child: ExecutiveSectionCard(
-                    isDocked: true,
-                    width: leftWidth,
-                    height: topQuadrantHeight,
-                  ),
-                ),
-
-                // Right Quadrant: Judicial Branch / Supreme Court (3x3 Grid of 9 Justices)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  width: rightWidth,
-                  height: topQuadrantHeight,
-                  child: JudicialSectionCard(
-                    isDocked: true,
-                    width: rightWidth,
-                    height: topQuadrantHeight,
-                  ),
-                ),
-
-                // Bottom Quadrant: Congress Leadership Auto-Scroll Ribbon
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: congressHeight,
-                  child: CongressScrollSection(
-                    height: congressHeight,
-                    isDocked: true,
+                      const SizedBox(height: 16),
+                      FilledButton.icon(
+                        key: const Key('home-contact-my-reps'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: _landingNavy,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(0, 54),
+                        ),
+                        icon: const Icon(Icons.mail_outline),
+                        label: const Text('Contact My Reps'),
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const ContactCongressStartScreen(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
+}
+
+class _LandingTile extends StatelessWidget {
+  const _LandingTile({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.image,
+    required this.onTap,
+    this.wide = false,
+  });
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Widget image;
+  final VoidCallback onTap;
+  final bool wide;
+
+  @override
+  Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(20) > 26;
+    final labelPanel = _LandingTileLabel(label: label, icon: icon, wide: wide);
+    return Semantics(
+      button: true,
+      label: label,
+      onTap: onTap,
+      child: ExcludeSemantics(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x22102D54),
+                blurRadius: 20,
+                offset: Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Material(
+            color: color,
+            borderRadius: BorderRadius.circular(28),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: largeText
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 176, child: image),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: labelPanel,
+                        ),
+                      ],
+                    )
+                  : SizedBox(
+                      height: wide ? 270 : 252,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          image,
+                          Positioned(
+                            left: wide ? 12 : 8,
+                            right: wide ? 12 : 8,
+                            bottom: 12,
+                            child: wide
+                                ? labelPanel
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                        sigmaX: 18,
+                                        sigmaY: 18,
+                                      ),
+                                      child: labelPanel,
+                                    ),
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LandingTileLabel extends StatelessWidget {
+  const _LandingTileLabel({
+    required this.label,
+    required this.icon,
+    required this.wide,
+  });
+  final String label;
+  final IconData icon;
+  final bool wide;
+  static const foreground = _landingNavy;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: wide ? const Key('find-reps-white-outline') : null,
+      constraints: BoxConstraints(minHeight: wide ? 66 : 80),
+      padding: EdgeInsets.symmetric(horizontal: wide ? 14 : 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: wide ? 1 : .94),
+        borderRadius: BorderRadius.circular(wide ? 40 : 20),
+        border: Border.all(
+          color: wide ? _landingRed : Colors.white.withValues(alpha: .8),
+          width: wide ? 2 : 1,
+        ),
+        boxShadow: [
+          if (wide)
+            BoxShadow(
+              color: Colors.white.withValues(alpha: .35),
+              spreadRadius: 5,
+            ),
+          const BoxShadow(
+            color: Color(0x22102D54),
+            blurRadius: 18,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: wide ? 30 : 24,
+            color: wide ? _landingRed : foreground,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: wide ? 24 : 19,
+                height: 1.15,
+                fontWeight: FontWeight.w700,
+                color: foreground,
+              ),
+            ),
+          ),
+          if (wide)
+            const Icon(CivicIcons.forward, size: 20, color: _landingRed),
+        ],
+      ),
+    );
+  }
+}
+
+class _LandingMapArtwork extends StatelessWidget {
+  const _LandingMapArtwork({required this.provider, this.expansion = 0});
+  final MapDataProvider provider;
+  final double expansion;
+  @override
+  Widget build(BuildContext context) => ColoredBox(
+    color: const Color(0xFFDBE5F2),
+    child: Padding(
+      padding: EdgeInsets.fromLTRB(
+        8 * (1 - expansion),
+        8 * (1 - expansion),
+        8 * (1 - expansion),
+        82 * (1 - expansion),
+      ),
+      child: provider.atlas != null && provider.pathCache != null
+          ? CustomPaint(
+              painter: _LandingMapPainter(provider.atlas!, provider.pathCache!),
+            )
+          : const Center(
+              child: Icon(
+                CivicIcons.district,
+                size: 72,
+                color: Color(0xFF456A99),
+              ),
+            ),
+    ),
+  );
+}
+
+class _LandingMapPainter extends CustomPainter {
+  _LandingMapPainter(this.atlas, this.cache);
+  final Atlas atlas;
+  final AtlasPathCache cache;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scale = (size.width / atlas.width) < (size.height / atlas.height)
+        ? size.width / atlas.width
+        : size.height / atlas.height;
+    canvas.save();
+    canvas.translate(
+      (size.width - atlas.width * scale) / 2,
+      (size.height - atlas.height * scale) / 2,
+    );
+    canvas.scale(scale);
+    final fill = Paint()..color = const Color(0xFF456A99);
+    final border = Paint()
+      ..color = const Color(0xFFDBE5F2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.3;
+    for (final state in atlas.states) {
+      final path = cache.getPath(state.id);
+      if (path != null) {
+        canvas.drawPath(path, fill);
+        canvas.drawPath(path, border);
+      }
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_LandingMapPainter oldDelegate) =>
+      atlas != oldDelegate.atlas;
 }

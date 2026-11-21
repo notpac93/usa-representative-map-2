@@ -5,369 +5,375 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/data_provider.dart';
 import '../utils/search_handler.dart';
-import '../data/models.dart';
 import '../data/bill_models.dart';
 import '../data/civic_data_provider.dart';
-import '../services/congressional_delivery_service.dart';
+import '../widgets/official_list_tile.dart';
 import 'bill_detail_screen.dart';
-import 'contact_congress_screen.dart';
-import 'contact_congress_start_screen.dart';
+import 'house_district_screen.dart';
 import 'lawmaker_detail_screen.dart';
 import 'voter_rules_screen.dart';
 
+enum LocationPage {
+  representatives,
+  explore,
+  elections,
+  ballot,
+  bills,
+  voting,
+  officials,
+}
+
 class LocalDetailScreen extends StatefulWidget {
   final SearchResult searchResult;
-
-  const LocalDetailScreen({super.key, required this.searchResult});
-
+  final LocationPage page;
+  const LocalDetailScreen({
+    super.key,
+    required this.searchResult,
+    this.page = LocationPage.representatives,
+  });
   @override
   State<LocalDetailScreen> createState() => _LocalDetailScreenState();
 }
 
 class _LocalDetailScreenState extends State<LocalDetailScreen> {
-  // 0: On Your Ballot (Candidates & Propositions) - DEFAULT & PRIORITIZED
-  // 1: Bills & Laws (Pending votes & legislation)
-  // 2: Current Representatives (Elected officials with re-election terms)
-  // 3: Voter Guide & Deadlines
-  int _selectedTab = 0;
-  String _candidateFilter = 'All'; // 'All', 'Federal', 'State', 'Local'
+  String _candidateFilter = 'All';
+  bool _loadingCivic = true;
 
   @override
   void initState() {
     super.initState();
-    CivicDataProvider().loadData();
+    CivicDataProvider().loadData().then((_) {
+      if (mounted) setState(() => _loadingCivic = false);
+    });
   }
 
   Future<void> _launchExternalUrl(String urlString) async {
-    try {
-      final uri = Uri.parse(urlString);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } catch (e) {
-      debugPrint("Could not launch $urlString: $e");
+    final uri = Uri.tryParse(urlString);
+    if (uri != null && await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
+
+  void _open(LocationPage page) => Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) =>
+          LocalDetailScreen(searchResult: widget.searchResult, page: page),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<MapDataProvider>();
-    final searchResult = widget.searchResult;
-    final stateId = searchResult.stateId ?? 'US';
-
-    // Extract state
-    StateRecord? stateRecord;
-    if (searchResult.stateId != null && provider.atlas != null) {
-      try {
-        stateRecord = provider.atlas!.states.firstWhere(
-          (s) => s.id == searchResult.stateId,
+    final r = widget.searchResult;
+    final state = r.stateId;
+    final stateName = SearchHandler.stateCodeToName[state] ?? state ?? '';
+    final civic = CivicDataProvider();
+    final page = widget.page;
+    final title = switch (page) {
+      LocationPage.representatives => 'Your representatives',
+      LocationPage.explore => 'Explore this area',
+      LocationPage.elections => 'Elections',
+      LocationPage.ballot => 'Ballot records',
+      LocationPage.bills => 'Bills & laws',
+      LocationPage.voting => 'Voting guide',
+      LocationPage.officials => 'State & local officials',
+    };
+    final children = <Widget>[];
+    if (page == LocationPage.representatives) {
+      final senators = provider.senators?[state] ?? [];
+      final members = provider.houseMembers?[state] ?? [];
+      final atLarge = members.where((m) => m.districtNumber == 0).toList();
+      if (state == null) {
+        children.add(
+          const Text(
+            'Choose a location with a state to see its representatives.',
+          ),
         );
-      } catch (e) {
-        // Not found
+      } else if (provider.senators == null &&
+          provider.houseMembers == null &&
+          provider.isLoading) {
+        children.add(const Center(child: CircularProgressIndicator()));
+      } else {
+        children.add(_heading('U.S. Senate'));
+        if (senators.isEmpty) {
+          children.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(
+                const ['DC', 'PR', 'GU', 'AS', 'MP', 'VI'].contains(state)
+                    ? 'This jurisdiction has no U.S. senators.'
+                    : 'No senators are available in the current roster.',
+              ),
+            ),
+          );
+        }
+        for (final senator in senators) {
+          children.add(
+            OfficialListTile(
+              name: senator.name,
+              subtitle: 'U.S. Senator · $state',
+              photoPath: senator.photoLocalPath,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LawmakerDetailScreen(
+                    lawmaker: senator,
+                    role: 'Senator',
+                    stateId: state,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+        children.add(_heading('U.S. House'));
+        if (members.length == 1 && atLarge.length == 1) {
+          final member = atLarge.single;
+          children.add(
+            OfficialListTile(
+              name: member.name,
+              subtitle: 'At-large · $state',
+              photoPath: member.photoLocalPath,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LawmakerDetailScreen(
+                    lawmaker: member,
+                    role: 'Representative',
+                    stateId: state,
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          children.add(
+            _route(
+              'Your House district',
+              Icons.location_on_outlined,
+              () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => HouseDistrictScreen(searchResult: r),
+                ),
+              ),
+              subtitle: 'Street address needed',
+            ),
+          );
+        }
       }
-    }
-
-    // Extract Governor
-    Governor? governor;
-    if (searchResult.stateId != null && provider.governors != null) {
-      governor = provider.governors![searchResult.stateId!];
-    }
-
-    // Extract Senators
-    List<Senator> senators = [];
-    if (searchResult.stateId != null && provider.senators != null) {
-      senators = provider.senators![searchResult.stateId!] ?? [];
-    }
-
-    // Extract Mayor(s)
-    List<Mayor> localMayors = [];
-    if (searchResult.cityName != null &&
-        searchResult.stateId != null &&
-        provider.mayors != null) {
-      final stateMayors = provider.mayors![searchResult.stateId!] ?? [];
-      localMayors = stateMayors
-          .where(
-            (m) => m.city.toLowerCase() == searchResult.cityName!.toLowerCase(),
-          )
-          .toList();
-    }
-
-    // Extract County Demographics
-    CountyDemographics? demographics;
-    if (searchResult.featureId != null && provider.countyDemo != null) {
-      demographics = provider.countyDemo![searchResult.featureId];
-    } else if (searchResult.countyName != null && provider.counties != null) {
-      try {
-        final countyFeature = provider.counties!.firstWhere(
-          (f) => f.name.toLowerCase() == searchResult.countyName!.toLowerCase(),
+      children.add(const SizedBox(height: 16));
+      children.add(
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: const Color(0xFF102D54)),
+          onPressed: () => _open(LocationPage.explore),
+          child: const Text('Explore this area'),
+        ),
+      );
+    } else if (page == LocationPage.explore) {
+      children.addAll([
+        _route(
+          'Representatives',
+          Icons.people_outline,
+          () => _open(LocationPage.representatives),
+        ),
+        _route(
+          'Elections',
+          Icons.how_to_vote_outlined,
+          () => _open(LocationPage.elections),
+        ),
+        _route(
+          'Bills & laws',
+          Icons.description_outlined,
+          () => _open(LocationPage.bills),
+        ),
+        _route(
+          'State & local officials',
+          Icons.account_balance_outlined,
+          () => _open(LocationPage.officials),
+        ),
+      ]);
+    } else if (page == LocationPage.officials) {
+      final governor = provider.governors?[state];
+      final mayors = (provider.mayors?[state] ?? []).where(
+        (m) => m.city.toLowerCase() == r.cityName?.toLowerCase(),
+      );
+      if (governor != null) {
+        children.add(
+          OfficialListTile(
+            name: governor.name,
+            subtitle: 'Governor · $state',
+            photoPath: governor.photoLocalPath,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => LawmakerDetailScreen(
+                  lawmaker: governor,
+                  role: 'Governor',
+                  stateId: state!,
+                ),
+              ),
+            ),
+          ),
         );
-        demographics = provider.countyDemo?[countyFeature.id];
-      } catch (e) {
-        // Not found
+      }
+      for (final mayor in mayors) {
+        children.add(
+          OfficialListTile(
+            name: mayor.name,
+            subtitle: 'Mayor · ${mayor.city}',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => LawmakerDetailScreen(
+                  lawmaker: mayor,
+                  role: 'Mayor',
+                  stateId: state!,
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      if (children.isEmpty) {
+        children.add(
+          const Text(
+            'No state or local officials are available for this location.',
+          ),
+        );
+      }
+    } else if (_loadingCivic) {
+      children.add(const Center(child: CircularProgressIndicator()));
+    } else {
+      final election = civic.getElectionForState(state ?? 'US');
+      switch (page) {
+        case LocationPage.elections:
+          children.addAll([
+            _buildElectionHubBanner(election, stateName),
+            const SizedBox(height: 20),
+            _route(
+              election.phaseOn(DateTime.now()) == ElectionPhase.upcoming
+                  ? 'On your ballot'
+                  : 'Ballot records',
+              Icons.ballot_outlined,
+              () => _open(LocationPage.ballot),
+            ),
+            _route(
+              'Voting guide',
+              Icons.how_to_reg_outlined,
+              () => _open(LocationPage.voting),
+            ),
+          ]);
+        case LocationPage.ballot:
+          final candidates = civic
+              .getCandidatesForJurisdiction(state ?? 'US', cityName: r.cityName)
+              .where(
+                (c) =>
+                    _candidateFilter == 'All' ||
+                    c.level.toLowerCase() == _candidateFilter.toLowerCase(),
+              )
+              .toList();
+          children.add(
+            _buildBallotAndCandidatesSection(
+              candidates,
+              civic.getPropositionsForJurisdiction(
+                state ?? 'US',
+                cityName: r.cityName,
+              ),
+            ),
+          );
+        case LocationPage.bills:
+          children.add(
+            _buildBillsAndLegislationSection(
+              civic.getBillsForState(state ?? 'US'),
+            ),
+          );
+        case LocationPage.voting:
+          children.add(_buildVoterGuideSection(election, stateName));
+        default:
+          break;
       }
     }
-
-    // Extract Representatives (House Members)
-    List<Representative> houseMembers = [];
-    if (searchResult.stateId != null && provider.houseMembers != null) {
-      houseMembers = provider.houseMembers![searchResult.stateId!] ?? [];
-    }
-
-    final isAddress =
-        searchResult.type == SearchResultType.address ||
-        searchResult.streetAddress != null;
-    final isZip = searchResult.type == SearchResultType.zipCode;
-
-    // Load Election, Candidate, and Proposition records
-    final civicProvider = CivicDataProvider();
-    final electionInfo = civicProvider.getElectionForState(stateId);
-    final allCandidates = civicProvider.getCandidatesForJurisdiction(
-      stateId,
-      cityName: searchResult.cityName,
-    );
-    final propositions = civicProvider.getPropositionsForJurisdiction(
-      stateId,
-      cityName: searchResult.cityName,
-    );
-    final bills = civicProvider.getBillsForState(stateId);
-
-    // Filter candidates based on selected sub-filter
-    final filteredCandidates = allCandidates.where((c) {
-      if (_candidateFilter == 'Federal') {
-        return c.level.toLowerCase() == 'federal';
-      }
-      if (_candidateFilter == 'State') return c.level.toLowerCase() == 'state';
-      if (_candidateFilter == 'Local') return c.level.toLowerCase() == 'local';
-      return true;
-    }).toList();
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFF4F6FA),
       appBar: AppBar(
+        title: Text(title),
         actions: [
           EntityDetailsButton(
-            name: searchResult.title,
-            category: searchResult.type == SearchResultType.city
+            name: r.title,
+            category: r.type == SearchResultType.city
                 ? 'City'
-                : searchResult.type == SearchResultType.county
+                : r.type == SearchResultType.county
                 ? 'County'
                 : 'Local jurisdiction',
-            stateId: searchResult.stateId,
+            stateId: state,
             facts: {
-              if (searchResult.cityName != null) 'City': searchResult.cityName!,
-              if (searchResult.countyName != null)
-                'County': searchResult.countyName!,
-              if (localMayors.isNotEmpty)
-                'Mayor in directory': localMayors.first.name,
+              if (r.cityName != null) 'City': r.cityName!,
+              if (r.countyName != null) 'County': r.countyName!,
             },
           ),
         ],
-        title: Text(
-          searchResult.title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-        ),
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFF102D54),
         foregroundColor: Colors.white,
-        elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          // 1. JURISDICTION / ADDRESS BANNER
-          _buildJurisdictionBanner(isAddress, isZip, searchResult),
-
-          const SizedBox(height: 10),
-
-          // Prominent assisted contact flow. A House member is included only
-          // when the state has a single, unambiguous at-large district.
-          if (senators.isNotEmpty)
-            _buildContactCongressCard(
-              senators: senators,
-              houseMember: houseMembers.length == 1 ? houseMembers.first : null,
-              houseCandidates: houseMembers.length > 1
-                  ? houseMembers
-                  : const [],
-              stateName: stateRecord?.name ?? stateId,
-              initialAddress: isAddress ? searchResult.title : null,
-            ),
-
-          if (senators.isNotEmpty) const SizedBox(height: 16),
-
-          // 2. UPCOMING ELECTION & VOTER COUNTDOWN BANNER (HIGH PRIORITY)
-          _buildElectionHubBanner(electionInfo, stateRecord?.name ?? stateId),
-
-          const SizedBox(height: 16),
-
-          // 3. PRIORITIZED SECTION TABS
-          _buildSectionNavigationTabs(
-            filteredCandidates.length,
-            propositions.length,
-            bills.length,
-            electionInfo,
-          ),
-
-          const SizedBox(height: 16),
-
-          // 4. TAB CONTENT
-          if (_selectedTab == 0) ...[
-            _buildBallotAndCandidatesSection(
-              filteredCandidates,
-              propositions,
-              electionInfo,
-            ),
-          ] else if (_selectedTab == 1) ...[
-            _buildBillsAndLegislationSection(bills),
-          ] else if (_selectedTab == 2) ...[
-            _buildCurrentRepresentativesSection(
-              localMayors: localMayors,
-              governor: governor,
-              senators: senators,
-              houseMembers: houseMembers,
-              demographics: demographics,
-              stateRecord: stateRecord,
-              civicProvider: civicProvider,
-            ),
-          ] else ...[
-            _buildVoterGuideSection(electionInfo, stateRecord?.name ?? stateId),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildJurisdictionBanner(
-    bool isAddress,
-    bool isZip,
-    SearchResult searchResult,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          Icon(
-            isAddress
-                ? Icons.home
-                : isZip
-                ? Icons.mark_as_unread
-                : Icons.location_on,
-            color: const Color(0xFF1E293B),
-            size: 20,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              searchResult.title,
-              style: const TextStyle(
-                color: Color(0xFF1E293B),
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactCongressCard({
-    required List<Senator> senators,
-    required Representative? houseMember,
-    required List<Representative> houseCandidates,
-    required String stateName,
-    required String? initialAddress,
-  }) {
-    final recipients = <ContactCongressRecipient>[
-      for (final senator in senators)
-        if ((senator.contactUrl ?? senator.website)?.isNotEmpty ?? false)
-          ContactCongressRecipient(
-            name: senator.name,
-            role: 'U.S. Senator',
-            officialUrl: senator.contactUrl ?? senator.website!,
-            bioguideId: senator.bioguideId,
-            photoAsset: senator.photoLocalPath == null
-                ? null
-                : 'assets/img/${senator.photoLocalPath}',
-            chamber: CongressionalChamber.senate,
-          ),
-      if (houseMember != null &&
-          (houseMember.contactUrl ?? houseMember.website)?.isNotEmpty == true)
-        ContactCongressRecipient(
-          name: houseMember.name,
-          role: 'U.S. Representative',
-          officialUrl: houseMember.contactUrl ?? houseMember.website!,
-          bioguideId: houseMember.bioguideId,
-          photoAsset: houseMember.photoLocalPath == null
-              ? null
-              : 'assets/img/${houseMember.photoLocalPath}',
-          chamber: CongressionalChamber.house,
-        ),
-    ];
-
-    if (recipients.isEmpty) return const SizedBox.shrink();
-
-    return Card(
-      key: const Key('contact-congress-entry-card'),
-      elevation: 0,
-      color: const Color(0xFF1E3A8A),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: ListView(
+              padding: const EdgeInsets.all(20),
               children: [
-                Icon(Icons.forum_outlined, color: Colors.white, size: 22),
-                SizedBox(width: 9),
-                Text(
-                  'Contact Congress',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w800,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    r.title,
+                    style: const TextStyle(color: Color(0xFF51647B)),
                   ),
                 ),
+                ...children,
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Confirm your full home address to find your two senators and your district-specific House representative.',
-              style: const TextStyle(color: Color(0xFFDBEAFE), height: 1.4),
-            ),
-            const SizedBox(height: 14),
-            FilledButton.icon(
-              key: const Key('contact-congress-start-button'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ContactCongressStartScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.edit_outlined),
-              label: const Text('Find my members'),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(48),
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF1E3A8A),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'You’ll review everything once before submitting the same message to your selected offices.',
-              style: TextStyle(color: Color(0xFFBFDBFE), fontSize: 12),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
+  Widget _heading(String text) => Padding(
+    padding: const EdgeInsets.only(top: 6, bottom: 12),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF51647B),
+      ),
+    ),
+  );
+
+  Widget _route(
+    String title,
+    IconData icon,
+    VoidCallback onTap, {
+    String? subtitle,
+  }) => Card(
+    color: Colors.white,
+    elevation: 0,
+    margin: const EdgeInsets.only(bottom: 12),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: const BorderSide(color: Color(0xFFD9E1EC)),
+    ),
+    child: ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      leading: Icon(icon, color: const Color(0xFF102D54)),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF102D54),
+        ),
+      ),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: const Icon(Icons.chevron_right, color: Color(0xFF102D54)),
+      onTap: onTap,
+    ),
+  );
   Widget _buildElectionHubBanner(ElectionRecord election, String stateName) {
     return ElectionStatusBanner(
       election: election,
@@ -377,85 +383,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     );
   }
 
-  Widget _buildSectionNavigationTabs(
-    int candidatesCount,
-    int propositionsCount,
-    int billsCount,
-    ElectionRecord election,
-  ) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _buildTabButton(
-              0,
-              election.phaseOn(DateTime.now()) == ElectionPhase.upcoming
-                  ? 'On Your Ballot'
-                  : 'Ballot Records',
-              Icons.ballot,
-            ),
-            _buildTabButton(1, 'Bills & Laws', Icons.gavel),
-            _buildTabButton(2, 'Current Reps', Icons.account_balance),
-            _buildTabButton(3, 'Voter Guide', Icons.how_to_reg),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTabButton(int index, String title, IconData icon) {
-    final isSelected = _selectedTab == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedTab = index;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: isSelected ? const Color(0xFF0F172A) : Colors.transparent,
-              width: 2,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: isSelected
-                  ? const Color(0xFF0F172A)
-                  : Colors.blueGrey.shade400,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected
-                    ? const Color(0xFF0F172A)
-                    : Colors.blueGrey.shade500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // --- TAB 1: WHAT'S ON YOUR BALLOT (PRIORITIZED) ---
   Widget _buildBallotAndCandidatesSection(
     List<CandidateRecord> candidates,
     List<PropositionRecord> propositions,
-    ElectionRecord election,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,28 +394,24 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Electoral Candidates',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF0F172A),
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Electoral Candidates',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF0F172A),
                   ),
-                  Text(
-                    election.phaseOn(DateTime.now()) == ElectionPhase.upcoming
-                        ? 'Recorded candidates for this jurisdiction'
-                        : 'Historical or unverified candidate records · not certified results',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blueGrey.shade600,
-                    ),
+                ),
+                Text(
+                  'Recorded candidates · not certified results',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.blueGrey.shade600,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
@@ -508,7 +434,9 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
                     ),
                   ),
                   selected: isChosen,
-                  selectedColor: const Color(0xFF1E3A8A).withOpacity(0.15),
+                  selectedColor: const Color(
+                    0xFF1E3A8A,
+                  ).withValues(alpha: 0.15),
                   checkmarkColor: const Color(0xFF1E3A8A),
                   onSelected: (val) {
                     setState(() {
@@ -958,394 +886,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     );
   }
 
-  // --- TAB 3: CURRENT REPRESENTATIVES (WITH RE-ELECTION TIMELINES) ---
-  Widget _buildCurrentRepresentativesSection({
-    required List<Mayor> localMayors,
-    required Governor? governor,
-    required List<Senator> senators,
-    required List<Representative> houseMembers,
-    required CountyDemographics? demographics,
-    required StateRecord? stateRecord,
-    required CivicDataProvider civicProvider,
-  }) {
-    final stateId = widget.searchResult.stateId ?? 'US';
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.account_balance,
-              size: 18,
-              color: Color(0xFF1E3A8A),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              'Your Current Elected Officials',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-          ],
-        ),
-        Text(
-          'Current incumbents and their scheduled election cycles',
-          style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade600),
-        ),
-        const SizedBox(height: 12),
-
-        // Local Mayor
-        if (localMayors.isNotEmpty) ...[
-          const Text(
-            'Local Executive',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: Color(0xFF334155),
-            ),
-          ),
-          const SizedBox(height: 4),
-          for (var mayor in localMayors)
-            _buildOfficialCard(
-              title: mayor.name,
-              subtitle: 'Mayor of ${mayor.city}',
-              reelectionTag: civicProvider.getIncumbentReelectionTimeline(
-                'Mayor',
-                stateId,
-                name: mayor.name,
-              ),
-              icon: Icons.person,
-              photoPath: null,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LawmakerDetailScreen(
-                      lawmaker: mayor,
-                      role: "Mayor",
-                      stateId: stateId,
-                    ),
-                  ),
-                );
-              },
-            ),
-          const SizedBox(height: 12),
-        ],
-
-        // State Governor
-        if (governor != null) ...[
-          const Text(
-            'State Executive',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: Color(0xFF334155),
-            ),
-          ),
-          const SizedBox(height: 4),
-          _buildOfficialCard(
-            title: governor.name,
-            subtitle:
-                'Governor of $stateId (${governor.party ?? "State Executive"})',
-            reelectionTag: civicProvider.getIncumbentReelectionTimeline(
-              'Governor',
-              stateId,
-              name: governor.name,
-            ),
-            icon: Icons.person,
-            photoPath: governor.photoLocalPath,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LawmakerDetailScreen(
-                    lawmaker: governor,
-                    role: "Governor",
-                    stateId: stateId,
-                  ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // U.S. Senators
-        if (senators.isNotEmpty) ...[
-          const Text(
-            'U.S. Senators (Federal)',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: Color(0xFF334155),
-            ),
-          ),
-          const SizedBox(height: 4),
-          for (var senator in senators)
-            _buildOfficialCard(
-              title: senator.name,
-              subtitle:
-                  'U.S. Senator (${senator.party ?? "Senator"}) • $stateId',
-              reelectionTag: civicProvider.getIncumbentReelectionTimeline(
-                'Senator',
-                stateId,
-                name: senator.name,
-              ),
-              icon: Icons.person,
-              photoPath: senator.photoLocalPath,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LawmakerDetailScreen(
-                      lawmaker: senator,
-                      role: "Senator",
-                      stateId: stateId,
-                    ),
-                  ),
-                );
-              },
-            ),
-          const SizedBox(height: 12),
-        ],
-
-        // State Representatives (House)
-        if (houseMembers.isNotEmpty) ...[
-          const Text(
-            'U.S. House of Representatives',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: Color(0xFF334155),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const CircleAvatar(
-                        backgroundColor: Color(0xFFE2E8F0),
-                        child: Icon(Icons.groups, color: Color(0xFF1E3A8A)),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '$stateId Congressional Delegation (${houseMembers.length} Districts)',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              civicProvider.getIncumbentReelectionTimeline(
-                                'Representative',
-                                stateId,
-                              ),
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xFF047857),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Cities and counties may span multiple congressional districts. Select your specific district on the map or explore candidates on the "On Your Ballot" tab.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blueGrey.shade700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // County Demographics
-        if (demographics != null) ...[
-          const Text(
-            'County Voter Profile',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: Color(0xFF334155),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (demographics.population != null)
-                    Text(
-                      'Total Population: ${demographics.population}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  const SizedBox(height: 4),
-                  if (demographics.republican != null &&
-                      demographics.democrat != null)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1D4ED8).withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Democratic',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFF1D4ED8),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  '${(demographics.democrat! * 100).toStringAsFixed(1)}%',
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFDC2626).withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Republican',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFFDC2626),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  '${(demographics.republican! * 100).toStringAsFixed(1)}%',
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (demographics.description != null) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      demographics.description!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.blueGrey.shade700,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildOfficialCard({
-    required String title,
-    required String subtitle,
-    required String reelectionTag,
-    required IconData icon,
-    required String? photoPath,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: const Color(0xFFE2E8F0),
-          backgroundImage: photoPath != null
-              ? AssetImage('assets/img/$photoPath')
-              : null,
-          child: photoPath == null
-              ? Icon(icon, color: const Color(0xFF1E3A8A))
-              : null,
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(subtitle, style: const TextStyle(fontSize: 12)),
-            const SizedBox(height: 3),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.blueGrey.shade200),
-              ),
-              child: Text(
-                reelectionTag,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF0F766E),
-                ),
-              ),
-            ),
-          ],
-        ),
-        trailing: const Icon(Icons.chevron_right, color: Colors.blueGrey),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  // --- TAB 4: VOTER GUIDE & DEADLINES ---
+  // Dedicated voting guide page.
   Widget _buildVoterGuideSection(ElectionRecord election, String stateName) {
     if (election.phaseOn(DateTime.now()) != ElectionPhase.upcoming) {
       return Column(
@@ -1372,25 +913,6 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            const Icon(Icons.how_to_reg, size: 18, color: Color(0xFF1E3A8A)),
-            const SizedBox(width: 6),
-            Text(
-              'Voter Guide & Key Deadlines: $stateName',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-          ],
-        ),
-        Text(
-          'Everything you need to be prepared to cast your vote',
-          style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade600),
-        ),
-        const SizedBox(height: 12),
-
         _buildGuideCard(
           icon: Icons.badge,
           title: 'Voter ID Requirements',
@@ -1517,8 +1039,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
 class CandidateCardWidget extends StatefulWidget {
   final CandidateRecord candidate;
 
-  const CandidateCardWidget({Key? key, required this.candidate})
-    : super(key: key);
+  const CandidateCardWidget({super.key, required this.candidate});
 
   @override
   State<CandidateCardWidget> createState() => _CandidateCardWidgetState();
@@ -1556,7 +1077,7 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
         border: Border.all(color: Colors.grey.shade200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1571,7 +1092,7 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: partyColor.withOpacity(0.08),
+                backgroundColor: partyColor.withValues(alpha: 0.08),
                 child: Text(
                   candidate.name
                       .split(' ')
@@ -1609,7 +1130,7 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.08),
+                              color: statusColor.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -1641,7 +1162,7 @@ class _CandidateCardWidgetState extends State<CandidateCardWidget> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: partyColor.withOpacity(0.08),
+                            color: partyColor.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(

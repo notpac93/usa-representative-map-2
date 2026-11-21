@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:path_drawing/path_drawing.dart';
 import '../data/models.dart';
 import 'city_renderer.dart';
 import 'state_label_renderer.dart';
@@ -7,6 +6,7 @@ import 'atlas_path_cache.dart';
 
 class NationalMapPainter extends CustomPainter {
   final Atlas atlas;
+  final Color? fillColor;
   final AtlasPathCache pathCache;
   final String? selectedStateId;
   final String? hoveredStateId;
@@ -22,6 +22,7 @@ class NationalMapPainter extends CustomPainter {
 
   NationalMapPainter({
     required this.atlas,
+    this.fillColor,
     required this.pathCache,
     this.selectedStateId,
     this.hoveredStateId,
@@ -63,7 +64,7 @@ class NationalMapPainter extends CustomPainter {
       } else if (isHovered) {
         _fillPaint.color = Colors.blueGrey[300]!;
       } else {
-        _fillPaint.color = Colors.grey[200]!;
+        _fillPaint.color = fillColor ?? Colors.grey[200]!;
       }
 
       canvas.drawPath(path, _fillPaint);
@@ -85,22 +86,24 @@ class NationalMapPainter extends CustomPainter {
     );
 
     // Draw cities using the shared renderer, passing state label bounds
-    CityRenderer.drawCities(
-      canvas,
-      cities,
-      scale,
-      currentZoom,
-      isNationalMap: true,
-      pathCache: pathCache,
-      existingOccupiedSpaces: stateLabelBounds,
-    );
+    if (currentZoom >= 2)
+      CityRenderer.drawCities(
+        canvas,
+        cities,
+        scale,
+        currentZoom,
+        isNationalMap: true,
+        pathCache: pathCache,
+        existingOccupiedSpaces: stateLabelBounds,
+      );
 
     canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant NationalMapPainter oldDelegate) {
-    return oldDelegate.selectedStateId != selectedStateId ||
+    return oldDelegate.fillColor != fillColor ||
+        oldDelegate.selectedStateId != selectedStateId ||
         oldDelegate.hoveredStateId != hoveredStateId ||
         oldDelegate.cities != cities;
   }

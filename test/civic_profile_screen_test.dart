@@ -108,28 +108,27 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await pump(
       tester,
-      MaterialApp(
-        home: LawmakerDetailScreen(
-          lawmaker: Senator(
-            name: 'Test Senator',
-            phone: '202-555-0100',
-            website: 'https://example.gov',
+      ChangeNotifierProvider(
+        create: (_) => MapDataProvider(),
+        child: MaterialApp(
+          home: LawmakerDetailScreen(
+            lawmaker: Senator(
+              name: 'Test Senator',
+              phone: '202-555-0100',
+              website: 'https://example.gov',
+            ),
+            role: 'Senator',
+            stateId: 'CA',
           ),
-          role: 'Senator',
-          stateId: 'CA',
         ),
       ),
     );
     await tester.pumpAndSettle();
     expect(find.byType(CivicProfileScreen), findsNothing);
-    expect(find.byKey(const Key('leader_call_office')), findsOneWidget);
-    expect(find.byKey(const Key('leader_official_website')), findsOneWidget);
-    expect(
-      tester.getTopLeft(find.byKey(const Key('leader_call_office'))).dy,
-      lessThan(
-        tester.getTopLeft(find.byKey(const Key('leader_details_button'))).dy,
-      ),
-    );
+    expect(find.text('202-555-0100'), findsOneWidget);
+    expect(find.text('Official website'), findsOneWidget);
+    expect(find.text('Direct Message'), findsOneWidget);
+    expect(tester.getTopLeft(find.text('202-555-0100')).dy, lessThan(780));
     expect(tester.takeException(), isNull);
   });
 

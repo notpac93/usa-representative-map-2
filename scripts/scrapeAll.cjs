@@ -1,9 +1,8 @@
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const path = require('path');
 
 const tasks = [
-  { name: 'House', script: './scrapeHouse.mjs' },
-  { name: 'Senate', script: './scrapeSenate.mjs' },
+  { name: 'Official Congress bulk roster', runtime: 'python3', script: 'refresh_congress.py', args: ['--congress', '119', '--download', '--publish'] },
   { name: 'Governors', script: './scrapeGovernors.mjs' },
   { name: 'Mayors (Various)', script: './scrapeMayors.cjs' },
   { name: 'Supreme Court', script: './scrapeSupremeCourt.mjs' }
@@ -16,7 +15,7 @@ tasks.forEach((task, index) => {
     console.log(`[${index + 1}/${tasks.length}] Running ${task.name} script: ${task.script}...`);
     console.log(`---------------------------------------------------------`);
     try {
-        execSync(`node scripts/${task.script.replace('./', '')}`, { stdio: 'inherit' });
+        execFileSync(task.runtime || 'node', [path.join('scripts', task.script), ...(task.args || [])], { stdio: 'inherit' });
     } catch (error) {
         console.error(`❌ Error running ${task.name}. Pipeline stopped.`);
         process.exit(1);

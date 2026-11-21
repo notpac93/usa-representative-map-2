@@ -6,6 +6,84 @@ import 'package:usa_map_app/services/congressional_district_service.dart';
 import 'package:usa_map_app/services/congressional_delivery_service.dart';
 
 void main() {
+  testWidgets(
+    'directory draft keeps the chosen office without a district lookup',
+    (tester) async {
+      tester.view.physicalSize = const Size(900, 2200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      var lookups = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ContactCongressScreen(
+            stateName: 'NY',
+            directoryContact: true,
+            recipients: const [
+              ContactCongressRecipient(
+                name: 'Chosen Senator',
+                role: 'U.S. Senator',
+                officialUrl: 'https://chosen.senate.gov/',
+                chamber: CongressionalChamber.senate,
+              ),
+            ],
+            districtLookup: (_) async {
+              lookups++;
+              throw StateError(
+                'Directory contact must not query government data',
+              );
+            },
+          ),
+        ),
+      );
+      expect(find.byKey(const Key('contact-preview-notice')), findsOneWidget);
+      await tester.tap(find.text('Choose a topic'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Education').last);
+      await tester.enterText(
+        find.byKey(const Key('contact-subject-field')),
+        'Public schools',
+      );
+      await tester.enterText(
+        find.byKey(const Key('contact-message-field')),
+        'Please support stable funding for public schools.',
+      );
+      await tester.tap(find.byKey(const Key('contact-continue-button')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Full name'),
+        'Taylor Citizen',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Email address'),
+        'taylor@example.com',
+      );
+      await tester.enterText(
+        find.byKey(const Key('contact-address-field')),
+        '123 Main St, Los Angeles, CA 90012',
+      );
+      await tester.enterText(
+        find.byKey(const Key('contact-sender-state-field')),
+        'CA',
+      );
+      expect(find.text('I live at this address in NY.'), findsNothing);
+      await tester.tap(find.byKey(const Key('contact-attestation')));
+      await tester.tap(find.byKey(const Key('contact-continue-button')));
+      await tester.pumpAndSettle();
+      await _confirmPreviewEmail(tester);
+      expect(
+        find.text('Reply address provided; constituency has not been verified'),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const Key('direct-delivery-submit')));
+      await tester.pumpAndSettle();
+      expect(find.text('Preview complete'), findsOneWidget);
+      expect(find.text('No message or email was sent.'), findsOneWidget);
+      expect(lookups, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   const recipients = [
     ContactCongressRecipient(
       name: 'Alex Senator',
@@ -83,10 +161,10 @@ void main() {
     await tester.tap(find.byKey(const Key('direct-delivery-submit')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Submission preview complete'), findsOneWidget);
-    expect(find.text('Alex Senator • Not sent'), findsOneWidget);
-    expect(find.text('Jordan Senator • Not sent'), findsOneWidget);
-    expect(find.textContaining('Nothing was transmitted'), findsNWidgets(2));
+    expect(find.text('Preview complete'), findsOneWidget);
+    expect(find.text('No message or email was sent.'), findsOneWidget);
+    expect(find.text('Message submitted successfully'), findsNothing);
+    expect(find.byKey(const Key('direct-delivery-card')), findsNothing);
   });
 
   test('accepts only official House and Senate HTTPS URLs', () {
@@ -231,6 +309,44 @@ void main() {
     expect(find.text('Jordan Senator • Needs attention'), findsOneWidget);
     expect(find.textContaining('not read by staff'), findsOneWidget);
   });
+
+  for (final copyStatus in SenderCopyStatus.values) {
+    testWidgets('successful submission keeps confirmation short: $copyStatus', (
+      tester,
+    ) async {
+      final gateway = _SuccessfulGateway(copyStatus);
+      await _pumpAtReview(
+        tester,
+        recipients: recipients,
+        deliveryGateway: gateway,
+      );
+      await tester.ensureVisible(
+        find.byKey(const Key('direct-delivery-submit')),
+      );
+      await tester.tap(find.byKey(const Key('direct-delivery-submit')));
+      await tester.pumpAndSettle();
+      expect(find.text('Message submitted successfully'), findsOneWidget);
+      expect(gateway.lastRequest!.sendCopyToConstituent, isTrue);
+      expect(gateway.lastRequest!.constituent.email, 'taylor@example.com');
+      expect(
+        find.text('A copy has been emailed to you.'),
+        copyStatus == SenderCopyStatus.sent ? findsOneWidget : findsNothing,
+      );
+      expect(find.byKey(const Key('direct-delivery-card')), findsNothing);
+      expect(find.text('Edit message'), findsNothing);
+      expect(find.text('Preview the email copy'), findsNothing);
+      final texts = tester.widgetList<Text>(
+        find.descendant(
+          of: find.byKey(const Key('direct-message-confirmation')),
+          matching: find.byType(Text),
+        ),
+      );
+      expect(texts.length, 3); // Heading, one sentence, Done.
+      tester.view.physicalSize = const Size(320, 640);
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   testWidgets('allows a constituent to choose which offices to contact', (
     tester,
@@ -415,6 +531,32 @@ class _MixedGateway implements CongressionalDeliveryGateway {
           status: CongressionalDeliveryStatus.needsUserAction,
           message: 'Additional verification is required.',
         ),
+      ],
+    );
+  }
+}
+
+class _SuccessfulGateway implements CongressionalDeliveryGateway {
+  _SuccessfulGateway(this.copyStatus);
+  final SenderCopyStatus copyStatus;
+  CongressionalDeliveryRequest? lastRequest;
+  @override
+  bool get canAttemptDirectDelivery => true;
+  @override
+  Future<CongressionalDeliveryResult> submit(
+    CongressionalDeliveryRequest request,
+  ) async {
+    lastRequest = request;
+    return CongressionalDeliveryResult(
+      idempotencyKey: request.idempotencyKey,
+      senderCopyStatus: copyStatus,
+      offices: [
+        for (final recipient in request.recipients)
+          CongressionalOfficeDeliveryResult(
+            recipient: recipient,
+            status: CongressionalDeliveryStatus.acceptedForRouting,
+            message: 'Accepted for routing.',
+          ),
       ],
     );
   }

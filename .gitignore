@@ -12,6 +12,10 @@ xml_usc*/
 target/
 usa-data-pipeline/target/
 
+# Python data tools
+__pycache__/
+*.pyc
+
 # Environment / secrets
 .env
 *.env
@@ -19,6 +23,7 @@ usa-data-pipeline/.env
 
 # Data/Raw (large shapes)
 data/raw/
+data/generated/congressional_roster.json
 tmp/
 scratch/
 test_parse

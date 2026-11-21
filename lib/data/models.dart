@@ -310,6 +310,8 @@ class Senator {
   final String? address;
   final String? website;
   final String? contactUrl;
+  final String? fax;
+  final String? email;
   final String? bioguideId;
 
   Senator({
@@ -321,6 +323,8 @@ class Senator {
     this.address,
     this.website,
     this.contactUrl,
+    this.fax,
+    this.email,
     this.bioguideId,
   });
 
@@ -334,6 +338,8 @@ class Senator {
       address: json['officeAddress'],
       website: json['website'],
       contactUrl: json['contactUrl'],
+      fax: json['fax'],
+      email: json['email'],
       bioguideId: json['bioguideId'],
     );
   }
@@ -350,6 +356,8 @@ class Representative {
   final String? office;
   final String? website;
   final String? contactUrl;
+  final String? fax;
+  final String? email;
   final String? bioguideId;
   final int? districtNumber;
 
@@ -363,6 +371,8 @@ class Representative {
     this.office,
     this.website,
     this.contactUrl,
+    this.fax,
+    this.email,
     this.bioguideId,
     this.districtNumber,
   });
@@ -378,6 +388,8 @@ class Representative {
       office: json['office'],
       website: json['website'],
       contactUrl: json['contactUrl'],
+      fax: json['fax'],
+      email: json['email'],
       bioguideId: json['bioguideId'],
       districtNumber: _parseDistrictNumber(json['districtNumber']),
     );

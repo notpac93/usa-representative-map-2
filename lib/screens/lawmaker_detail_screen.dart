@@ -18,8 +18,9 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../data/civic_data_provider.dart';
-import '../data/bill_models.dart';
 import '../data/jd_vance_image.dart';
+import '../widgets/direct_message_button.dart';
+import '../widgets/congressional_profile_card.dart';
 
 class LawmakerDetailScreen extends StatefulWidget {
   final dynamic lawmaker; // Governor, Senator, or Representative
@@ -92,6 +93,9 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
     String? website;
     List<String> extraInfo = [];
 
+    final isCongressional =
+        widget.lawmaker is Senator || widget.lawmaker is Representative;
+
     // Extract Data
     if (widget.lawmaker is Governor) {
       final g = widget.lawmaker as Governor;
@@ -120,9 +124,6 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
       phone = r.phone;
       address = r.office;
       website = r.website;
-      if (r.district != null) {
-        extraInfo.add("District: ${r.district}");
-      }
     } else if (widget.lawmaker is Mayor) {
       final m = widget.lawmaker as Mayor;
       name = m.name;
@@ -210,6 +211,12 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
         return FederalOfficialProfileScreen(
           officeId: officeId,
           recordsPersonId: bio,
+          primaryAction: isCongressional
+              ? DirectMessageButton.forOfficial(
+                  official: widget.lawmaker,
+                  stateId: widget.stateId,
+                )
+              : null,
           onRecords: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) => LawmakerDetailScreen(
@@ -223,66 +230,67 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
         );
       }
 
-      return LeaderQuickProfileScreen(
-        name: name,
-        role: roleDisplay,
-        statusPanel:
-            widget.lawmaker is Governor &&
-                snapshot != null &&
-                snapshot.offices.containsKey(
-                  'us:state:${widget.stateId}:governor',
-                )
-            ? FederalTransitionNotice(
-                snapshot: snapshot,
-                view: snapshot.view(
-                  'us:state:${widget.stateId}:governor',
-                  DateTime.now(),
-                ),
-              )
-            : null,
-        jurisdiction:
-            subTitle ??
-            SearchHandler.stateCodeToName[widget.stateId] ??
-            widget.stateId,
-        party: party,
-        phone: phone,
-        address: address,
-        website: website,
-        photoPath: photoLocalPath,
-        recordedTerm: widget.lawmaker is Governor
-            ? (widget.lawmaker as Governor).terms.lastOrNull
-            : null,
-        onDetails: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => widget.lawmaker is Governor
-                ? CivicProfileScreen(
-                    stateId: widget.stateId,
-                    stateName:
-                        SearchHandler.stateCodeToName[widget.stateId] ??
-                        widget.stateId,
-                    governor: widget.lawmaker as Governor,
-                    governorProfile: true,
-                    onState: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) =>
-                            StateDetailScreen(stateId: widget.stateId),
-                      ),
-                    ),
+      if (!isCongressional)
+        return LeaderQuickProfileScreen(
+          name: name,
+          role: roleDisplay,
+          statusPanel:
+              widget.lawmaker is Governor &&
+                  snapshot != null &&
+                  snapshot.offices.containsKey(
+                    'us:state:${widget.stateId}:governor',
                   )
-                : LawmakerDetailScreen(
-                    lawmaker: widget.lawmaker,
-                    role: widget.role,
-                    stateId: widget.stateId,
-                    showDetails: true,
+              ? FederalTransitionNotice(
+                  snapshot: snapshot,
+                  view: snapshot.view(
+                    'us:state:${widget.stateId}:governor',
+                    DateTime.now(),
                   ),
+                )
+              : null,
+          jurisdiction:
+              subTitle ??
+              SearchHandler.stateCodeToName[widget.stateId] ??
+              widget.stateId,
+          party: party,
+          phone: phone,
+          address: address,
+          website: website,
+          photoPath: photoLocalPath,
+          recordedTerm: widget.lawmaker is Governor
+              ? (widget.lawmaker as Governor).terms.lastOrNull
+              : null,
+          onDetails: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => widget.lawmaker is Governor
+                  ? CivicProfileScreen(
+                      stateId: widget.stateId,
+                      stateName:
+                          SearchHandler.stateCodeToName[widget.stateId] ??
+                          widget.stateId,
+                      governor: widget.lawmaker as Governor,
+                      governorProfile: true,
+                      onState: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) =>
+                              StateDetailScreen(stateId: widget.stateId),
+                        ),
+                      ),
+                    )
+                  : LawmakerDetailScreen(
+                      lawmaker: widget.lawmaker,
+                      role: widget.role,
+                      stateId: widget.stateId,
+                      showDetails: true,
+                    ),
+            ),
           ),
-        ),
-      );
+        );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(isCongressional ? 'Profile' : name),
         elevation: 0,
         actions: [
           EntityDetailsButton(
@@ -300,6 +308,18 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
                 'Additional record': extraInfo.join('\n'),
             },
           ),
+          if (isCongressional)
+            SizedBox(
+              width: (MediaQuery.sizeOf(context).width - 240).clamp(
+                80.0,
+                160.0,
+              ),
+              child: DirectMessageButton.forOfficial(
+                key: const Key('lawmaker-direct-message'),
+                official: widget.lawmaker,
+                stateId: widget.stateId,
+              ),
+            ),
           IconButton(
             key: const Key('share_voter_card_button'),
             icon: const Icon(Icons.share),
@@ -320,7 +340,17 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 1. Header Section (Photo + Bio | Map)
-                if (isDesktop)
+                if (isCongressional) ...[
+                  Screenshot(
+                    controller: _screenshotController,
+                    child: _buildCongressionalProfile(context),
+                  ),
+                  const SizedBox(height: 12),
+                  ExpansionTile(
+                    title: const Text('Jurisdiction map'),
+                    children: [_buildJurisdictionMapWrapper(context)],
+                  ),
+                ] else if (isDesktop)
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -390,7 +420,7 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
                     ),
 
                     // Contact Info
-                    if (phone != null || address != null)
+                    if (!isCongressional && (phone != null || address != null))
                       _buildGridItem(
                         width: isDesktop
                             ? (constraints.maxWidth - 48 - 24) / 2
@@ -418,7 +448,7 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
                       ),
 
                     // Website
-                    if (website != null)
+                    if (!isCongressional && website != null)
                       _buildGridItem(
                         width: isDesktop
                             ? (constraints.maxWidth - 48 - 24) / 2
@@ -609,6 +639,44 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildCongressionalProfile(BuildContext context) {
+    final official = widget.lawmaker;
+    final isSenator = official is Senator;
+    final rep = isSenator ? null : official as Representative;
+    final state = context
+        .read<MapDataProvider>()
+        .atlas
+        ?.states
+        .firstWhereOrNull(
+          (state) =>
+              state.id == widget.stateId ||
+              state.fips == _stateFips[widget.stateId],
+        );
+    final district = rep?.districtNumber == 0
+        ? 'At-large'
+        : rep?.districtNumber != null
+        ? 'District ${rep!.districtNumber}'
+        : rep?.district;
+    return CongressionalProfileCard(
+      name: isSenator ? official.name : rep!.name,
+      role: isSenator ? 'U.S. Senator' : 'U.S. Representative',
+      jurisdiction: [
+        state?.name ?? widget.stateId,
+        if (district != null) district,
+      ].join(' · '),
+      party: isSenator ? official.party : rep!.party,
+      photoAsset: official.photoLocalPath == null
+          ? null
+          : 'assets/img/${official.photoLocalPath}',
+      phone: isSenator ? official.phone : rep!.phone,
+      address: isSenator ? official.address : rep!.office,
+      website: isSenator ? official.website : rep!.website,
+      contactUrl: isSenator ? official.contactUrl : rep!.contactUrl,
+      fax: isSenator ? official.fax : rep!.fax,
+      email: isSenator ? official.email : rep!.email,
     );
   }
 
