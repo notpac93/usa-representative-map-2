@@ -69,7 +69,31 @@ class FederalBranchArtwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = colorAmount.clamp(0.0, 1.0);
+    return CivicColorReveal(
+      amount: colorAmount,
+      child: Image.asset(
+        'assets/img/federal-branches.png',
+        fit: BoxFit.cover,
+        alignment: Alignment.topCenter,
+        excludeFromSemantics: true,
+      ),
+    );
+  }
+}
+
+/// Shared saturation treatment for home artwork and its opening transition.
+class CivicColorReveal extends StatelessWidget {
+  const CivicColorReveal({
+    super.key,
+    required this.amount,
+    required this.child,
+  });
+  final double amount;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = amount.clamp(0.0, 1.0);
     final r = .2126 * (1 - s), g = .7152 * (1 - s), b = .0722 * (1 - s);
     return ColorFiltered(
       colorFilter: ColorFilter.matrix([
@@ -94,12 +118,7 @@ class FederalBranchArtwork extends StatelessWidget {
         1,
         0,
       ]),
-      child: Image.asset(
-        'assets/img/federal-branches.png',
-        fit: BoxFit.cover,
-        alignment: Alignment.topCenter,
-        excludeFromSemantics: true,
-      ),
+      child: child,
     );
   }
 }
