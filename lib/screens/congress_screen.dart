@@ -9,6 +9,7 @@ import '../data/congressional_roster.dart';
 import '../data/bill_models.dart';
 import 'lawmaker_detail_screen.dart';
 import 'bill_detail_screen.dart';
+import 'congress_votes_screen.dart';
 
 class CongressScreen extends StatefulWidget {
   final int initialTabIndex;
@@ -278,7 +279,23 @@ class _CongressScreenState extends State<CongressScreen>
                     children: [
                       _buildSenateTab(),
                       _buildHouseTab(),
-                      _buildBillsTab(),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: OutlinedButton.icon(
+                              icon: const Icon(Icons.how_to_vote_outlined),
+                              label: const Text('Browse bills and recorded roll calls'),
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const CongressVotesScreen(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(child: _buildBillsTab()),
+                        ],
+                      ),
                       _buildPowersTab(),
                     ],
                   ),

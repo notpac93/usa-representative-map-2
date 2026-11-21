@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// A compact profile entry. Messaging belongs on the profile itself.
+/// A compact profile entry. Contact is available before opening the profile.
 class OfficialListTile extends StatelessWidget {
   const OfficialListTile({
     super.key,
@@ -8,10 +8,12 @@ class OfficialListTile extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.photoPath,
+    this.contactAction,
   });
   final String name, subtitle;
   final String? photoPath;
   final VoidCallback onTap;
+  final Widget? contactAction;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -69,7 +71,10 @@ class OfficialListTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 6),
-              const Icon(Icons.chevron_right, color: Color(0xFF102D54)),
+              if (contactAction != null)
+                contactAction!
+              else
+                const Icon(Icons.chevron_right, color: Color(0xFF102D54)),
             ],
           ),
         ),

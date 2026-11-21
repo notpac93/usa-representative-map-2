@@ -1,3 +1,4 @@
+import '../widgets/leader_contact_button.dart';
 import 'federal_officials_screen.dart';
 import '../services/federal_officials_service.dart';
 import 'leader_quick_profile_screen.dart';
@@ -232,6 +233,7 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
 
       if (!isCongressional)
         return LeaderQuickProfileScreen(
+          contactButton: LeaderContactButton(leader: widget.lawmaker),
           name: name,
           role: roleDisplay,
           statusPanel:
@@ -339,6 +341,7 @@ class _LawmakerDetailScreenState extends State<LawmakerDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                LeaderContactButton(leader: widget.lawmaker),
                 // 1. Header Section (Photo + Bio | Map)
                 if (isCongressional) ...[
                   Screenshot(

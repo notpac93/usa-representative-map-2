@@ -1,3 +1,4 @@
+import '../widgets/leader_contact_button.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -200,6 +201,12 @@ class _FederalOfficialProfileScreenState
                 style: TextStyle(fontSize: 11),
               ),
             FederalTransitionNotice(snapshot: snapshot, view: view),
+            if (term != null)
+              LeaderContactButton.contacts(
+                form: term.contact['contactUrl'],
+                phone: term.contact['phone'],
+                website: term.contact['website'],
+              ),
             if (widget.primaryAction != null &&
                 widget.recordsPersonId == term?.personId)
               widget.primaryAction!,

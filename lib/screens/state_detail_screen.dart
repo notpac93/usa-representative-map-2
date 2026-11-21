@@ -1,3 +1,4 @@
+import '../widgets/leader_contact_button.dart';
 import 'civic_profile_screen.dart';
 import '../utils/search_handler.dart';
 import 'package:flutter/material.dart';
@@ -1028,6 +1029,7 @@ class _StateDetailScreenState extends State<StateDetailScreen> {
 
     return ListTile(
       key: Key('lawmaker_tile_$name'),
+      trailing: LeaderContactButton(leader: leader),
       onTap: () {
         Navigator.push(
           context,

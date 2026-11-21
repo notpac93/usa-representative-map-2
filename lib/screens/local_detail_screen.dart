@@ -1,3 +1,4 @@
+import '../widgets/leader_contact_button.dart';
 import '../widgets/election_status_banner.dart';
 import 'entity_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +111,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
         for (final senator in senators) {
           children.add(
             OfficialListTile(
+              contactAction: LeaderContactButton(leader: senator),
               name: senator.name,
               subtitle: 'U.S. Senator · $state',
               photoPath: senator.photoLocalPath,
@@ -130,6 +132,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
           final member = atLarge.single;
           children.add(
             OfficialListTile(
+              contactAction: LeaderContactButton(leader: member),
               name: member.name,
               subtitle: 'At-large · $state',
               photoPath: member.photoLocalPath,
@@ -198,6 +201,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
       if (governor != null) {
         children.add(
           OfficialListTile(
+            contactAction: LeaderContactButton(leader: governor),
             name: governor.name,
             subtitle: 'Governor · $state',
             photoPath: governor.photoLocalPath,
@@ -216,6 +220,7 @@ class _LocalDetailScreenState extends State<LocalDetailScreen> {
       for (final mayor in mayors) {
         children.add(
           OfficialListTile(
+            contactAction: LeaderContactButton(leader: mayor),
             name: mayor.name,
             subtitle: 'Mayor · ${mayor.city}',
             onTap: () => Navigator.of(context).push(

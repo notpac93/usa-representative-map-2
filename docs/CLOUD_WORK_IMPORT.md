@@ -53,9 +53,41 @@ The map uses collision-aware state labels and defers city labels until zoomed.
 All 161 app tests pass after these changes. The changed application files
 have no analyzer errors; two style notices remain in the map renderers.
 
-The user identified two additional Codex Cloud chats: **Build Official Congress
-Vote Data** and **Improve mobile map layout**. These chats are not returned by
-the connected chat-history or cloud task tools. Browser access requires signing
-in to the same cloud account as the phone. Their contents and changes have
-**not yet been audited or confirmed as imported**. The local branch/snapshot
-audit must not be represented as an audit of these two chats.
+## Completed cloud chat audit
+
+The signed-in browser exposed the actual cloud chats on November 20, 2026:
+
+- [Improve mobile map layout](https://chatgpt.com/local/6b007653-ea8c-83ea-942a-c2de927bd035)
+- [Build Official Congress Vote Data](https://chatgpt.com/local/6b0080a3-46b8-83e8-87ed-5942bde64011)
+
+Their latest complete patches are preserved in `docs/cloud-import/2026-11-20/`:
+`mobile-contact.patch` and `iphone-build.patch`. These patches were saved in
+cloud workspaces and were never applied to the local checkout. The older
+startup-cleanup snapshot was not a replacement for these changes.
+
+The combined patch contains three commits: official congressional roll calls,
+the bottom home contact button, and the approved state explorer with focused
+House/Senate rosters. The earlier mobile patch adds matching colors, rotating
+portraits, direct entry to location search, representatives first, and direct
+Contact actions on previews and profiles.
+
+All patch changes have now been reviewed and integrated. The current centered
+finder and automatic focus preserve the user's later requests; the established
+portrait transitions and verified official profiles remain intact. The explorer
+uses the same map artwork on the landing tile and full map, selects a state on
+first tap, opens its page on a second tap or its name, and opens the appropriate
+state/chamber roster from each seat count. The House district lookup remains
+address-based rather than treating every state House member as a user's match.
+
+Validation: 168 app tests and 155 pipeline tests pass. The source analyzer has
+no errors; existing warnings and style notices remain.
+
+### Roll-call data delivery limitation
+
+The new screens and collector are present, but the `congress-votes-data` branch
+has not been published. A local collection reached the House session archive
+before an official source returned HTTP 403. No partial or synthetic vote feed
+was published. The UI's unavailable/retry state remains accurate until the first
+verified feed is published. The imported GitHub workflow is saved locally; it
+has not been pushed or enabled by this integration. No production data service
+or App Store release was published.

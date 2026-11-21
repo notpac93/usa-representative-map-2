@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/data_provider.dart';
-import '../data/models.dart';
 import '../design/civic_icons.dart';
 import '../main.dart';
-import '../map/atlas_path_cache.dart';
+import '../map/national_map_painter.dart';
 import '../widgets/rotating_lawmaker_portraits.dart';
 import '../widgets/civic_glass.dart';
 import '../widgets/portrait_page_artwork.dart';
@@ -204,6 +203,10 @@ class _LandingScreenState extends State<LandingScreen> {
                           backgroundColor: _landingNavy,
                           foregroundColor: Colors.white,
                           minimumSize: const Size(0, 54),
+                          side: const BorderSide(
+                            color: _landingRed,
+                            width: 1.5,
+                          ),
                         ),
                         icon: const Icon(Icons.mail_outline),
                         label: const Text('Contact My Reps'),
@@ -391,8 +394,10 @@ class _LandingMapArtwork extends StatelessWidget {
         82 * (1 - expansion),
       ),
       child: provider.atlas != null && provider.pathCache != null
-          ? CustomPaint(
-              painter: _LandingMapPainter(provider.atlas!, provider.pathCache!),
+          ? NationalMap(
+              atlas: provider.atlas!,
+              pathCache: provider.pathCache!,
+              selectedStateId: 'CA',
             )
           : const Center(
               child: Icon(
@@ -403,39 +408,4 @@ class _LandingMapArtwork extends StatelessWidget {
             ),
     ),
   );
-}
-
-class _LandingMapPainter extends CustomPainter {
-  _LandingMapPainter(this.atlas, this.cache);
-  final Atlas atlas;
-  final AtlasPathCache cache;
-  @override
-  void paint(Canvas canvas, Size size) {
-    final scale = (size.width / atlas.width) < (size.height / atlas.height)
-        ? size.width / atlas.width
-        : size.height / atlas.height;
-    canvas.save();
-    canvas.translate(
-      (size.width - atlas.width * scale) / 2,
-      (size.height - atlas.height * scale) / 2,
-    );
-    canvas.scale(scale);
-    final fill = Paint()..color = const Color(0xFF456A99);
-    final border = Paint()
-      ..color = const Color(0xFFDBE5F2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.3;
-    for (final state in atlas.states) {
-      final path = cache.getPath(state.id);
-      if (path != null) {
-        canvas.drawPath(path, fill);
-        canvas.drawPath(path, border);
-      }
-    }
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(_LandingMapPainter oldDelegate) =>
-      atlas != oldDelegate.atlas;
 }
