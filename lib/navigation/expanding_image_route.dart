@@ -9,7 +9,6 @@ class ExpandingImageRoute<T> extends PageRouteBuilder<T> {
     required Widget departureLabel,
     required Widget screen,
     bool reducedMotion = false,
-    bool wide = false,
   }) : super(
          transitionDuration: reducedMotion
              ? Duration.zero
@@ -59,10 +58,7 @@ class ExpandingImageRoute<T> extends PageRouteBuilder<T> {
                                  children: [
                                    imageBuilder(progress),
                                    if (labelOpacity > 0)
-                                     Positioned(
-                                       left: wide ? 12 : 8,
-                                       right: wide ? 12 : 8,
-                                       bottom: 12,
+                                     Positioned.fill(
                                        child: Opacity(
                                          opacity: labelOpacity,
                                          child: departureLabel,

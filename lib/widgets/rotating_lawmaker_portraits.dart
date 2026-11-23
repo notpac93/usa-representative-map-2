@@ -83,7 +83,7 @@ class RotatingLawmakerPortraitsState extends State<RotatingLawmakerPortraits>
       });
       await _service.remember(ready);
       if (!mounted) return;
-      _timer = Timer.periodic(const Duration(seconds: 8), (_) => _rotate());
+      _timer = Timer.periodic(const Duration(seconds: 4), (_) => _rotate());
     } catch (_) {
       // The navigation button stays usable even if an asset cannot be read.
     }

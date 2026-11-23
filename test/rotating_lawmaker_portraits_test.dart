@@ -47,7 +47,7 @@ void main() {
       expect(find.byType(Image), findsNWidgets(3));
       final initial = List<String>.of(service.saved);
       expect(initial.any(['0', '1', '2'].contains), isFalse);
-      await tester.pump(const Duration(seconds: 8));
+      await tester.pump(const Duration(seconds: 4));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 800));
       expect(find.byType(Image), findsNWidgets(4));
@@ -91,7 +91,7 @@ void main() {
       await tester.pump();
     }
     final initial = List.of(service.saved);
-    await tester.pump(const Duration(seconds: 8));
+    await tester.pump(const Duration(seconds: 4));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
     key.currentState!.pauseAndCapture();

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import '../design/civic_icons.dart';
 import '../services/landing_portrait_service.dart';
 import 'civic_glass.dart';
 
-/// The captured landing trio becomes the first row. Additional locally bundled
-/// portraits are shuffled once per visit, never during a rebuild or keyboard edit.
+/// The landing trio expands into a gently drifting mosaic. One row at a time
+/// crossfades to fresh locally bundled portraits, including while typing.
 class PortraitPageArtwork extends StatefulWidget {
   const PortraitPageArtwork({
     super.key,
@@ -28,6 +29,12 @@ class _PortraitPageArtworkState extends State<PortraitPageArtwork>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController _float;
   List<LandingPortrait> _portraits = [];
+  final _replacements = <int, List<LandingPortrait>>{};
+  final _versions = <int, int>{};
+  final _random = math.Random();
+  Timer? _rotationTimer;
+  int _columns = 3, _visibleRows = 1, _nextRow = 0;
+  bool _rotating = false;
   bool _foreground = true;
 
   @override
@@ -40,6 +47,10 @@ class _PortraitPageArtworkState extends State<PortraitPageArtwork>
     WidgetsBinding.instance.addObserver(this);
     _portraits = List.of(widget.pool)..shuffle();
     if (_portraits.isEmpty) _load();
+    _rotationTimer = Timer.periodic(
+      const Duration(seconds: 4),
+      (_) => _rotateRow(),
+    );
   }
 
   Future<void> _load() async {
@@ -51,14 +62,66 @@ class _PortraitPageArtworkState extends State<PortraitPageArtwork>
     }
   }
 
+  bool get _motionEnabled =>
+      mounted &&
+      _foreground &&
+      !MediaQuery.disableAnimationsOf(context) &&
+      TickerMode.of(context) &&
+      widget.expansion == 1;
+
   void _updateMotion() {
-    final enabled = _foreground &&
-        !MediaQuery.disableAnimationsOf(context) &&
-        MediaQuery.viewInsetsOf(context).bottom == 0 &&
-        TickerMode.of(context) &&
-        widget.expansion == 1;
+    final enabled = _motionEnabled;
     if (enabled && !_float.isAnimating) _float.repeat();
     if (!enabled && _float.isAnimating) _float.stop();
+  }
+
+  List<LandingPortrait> _rowPortraits(int row, int columns) =>
+      _replacements[row] ??
+      (_portraits.isEmpty
+          ? const []
+          : List.generate(
+              columns,
+              (column) =>
+                  _portraits[(row * columns + column) % _portraits.length],
+            ));
+
+  Future<void> _rotateRow() async {
+    if (_rotating || !_motionEnabled || _portraits.isEmpty) return;
+    _rotating = true;
+    try {
+      final row = _nextRow % _visibleRows;
+      final columns = _columns;
+      final visible = {
+        for (var i = 0; i < _visibleRows + 1; i++)
+          for (final portrait in _rowPortraits(i, columns)) portrait.id,
+      };
+      final candidates =
+          _portraits
+              .where((portrait) => !visible.contains(portrait.id))
+              .toList()
+            ..shuffle(_random);
+      // Keep small pools stable when there are no unused portraits available.
+      if (candidates.length < columns) return;
+      final next = candidates.take(columns).toList();
+      for (final portrait in next) {
+        if (!mounted) return;
+        var loaded = true;
+        await precacheImage(
+          ResizeImage.resizeIfNeeded(360, null, AssetImage(portrait.asset)),
+          context,
+          onError: (_, _) => loaded = false,
+        );
+        if (!loaded) return;
+      }
+      if (!_motionEnabled || columns != _columns) return;
+      setState(() {
+        _replacements[row] = next;
+        _versions[row] = (_versions[row] ?? 0) + 1;
+        _nextRow = (row + 1) % _visibleRows;
+      });
+    } finally {
+      _rotating = false;
+    }
   }
 
   @override
@@ -75,49 +138,57 @@ class _PortraitPageArtworkState extends State<PortraitPageArtwork>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _foreground = state == AppLifecycleState.resumed;
+    setState(() => _foreground = state == AppLifecycleState.resumed);
     _updateMotion();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _rotationTimer?.cancel();
     _float.dispose();
     super.dispose();
   }
 
-  Widget _row(int index, int columns) => Row(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      for (var column = 0; column < columns; column++) ...[
-        if (column > 0) const SizedBox(width: 4),
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: _portraits.isEmpty
-                ? const ColoredBox(
-                    color: civicNavy,
-                    child: Icon(CivicIcons.representative, color: Colors.white),
-                  )
-                : Image.asset(
-                    _portraits[(index * columns + column) % _portraits.length]
-                        .asset,
-                    key: ValueKey(_portraits[
-                        (index * columns + column) % _portraits.length].id),
-                    fit: BoxFit.cover,
-                    alignment: const Alignment(0, -.75),
-                    cacheWidth: 360,
-                    excludeFromSemantics: true,
-                    errorBuilder: (_, _, _) => const ColoredBox(
+  Widget _row(int index, int columns) {
+    final portraits = _rowPortraits(index, columns);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var column = 0; column < columns; column++) ...[
+          if (column > 0) const SizedBox(width: 4),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: portraits.isEmpty
+                  ? const ColoredBox(
                       color: civicNavy,
-                      child: Icon(CivicIcons.representative, color: Colors.white),
+                      child: Icon(
+                        CivicIcons.representative,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Image.asset(
+                      portraits[column % portraits.length].asset,
+                      key: ValueKey(portraits[column % portraits.length].id),
+                      fit: BoxFit.cover,
+                      alignment: const Alignment(0, -.75),
+                      cacheWidth: 360,
+                      excludeFromSemantics: true,
+                      errorBuilder: (_, _, _) => const ColoredBox(
+                        color: civicNavy,
+                        child: Icon(
+                          CivicIcons.representative,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
+            ),
           ),
-        ),
+        ],
       ],
-    ],
-  );
+    );
+  }
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
@@ -129,11 +200,15 @@ class _PortraitPageArtworkState extends State<PortraitPageArtwork>
             builder: (context, constraints) {
               final progress = widget.expansion;
               final columns = math.max(3, (constraints.maxWidth / 150).ceil());
-              final rowHeight = (constraints.maxWidth / columns * 1.35)
-                  .clamp(170.0, 230.0);
-              final firstHeight = constraints.maxHeight * (1 - progress) +
-                  rowHeight * progress;
+              final rowHeight = (constraints.maxWidth / columns * 1.35).clamp(
+                170.0,
+                230.0,
+              );
+              final firstHeight =
+                  constraints.maxHeight * (1 - progress) + rowHeight * progress;
               final rows = (constraints.maxHeight / rowHeight).ceil() + 1;
+              _columns = columns;
+              _visibleRows = math.max(1, rows - 1);
               return Stack(
                 children: [
                   for (var row = 0; row < rows; row++)
@@ -148,14 +223,49 @@ class _PortraitPageArtworkState extends State<PortraitPageArtwork>
                         animation: _float,
                         child: RepaintBoundary(
                           key: ValueKey('portrait-background-row-$row'),
-                          child: row == 0 && widget.portraits != null
-                              ? widget.portraits!
-                              : _row(row, columns),
+                          child: TickerMode(
+                            enabled: _motionEnabled,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 1800),
+                              switchInCurve: Curves.easeInOut,
+                              switchOutCurve: Curves.easeInOut,
+                              layoutBuilder: (current, previous) => Stack(
+                                fit: StackFit.expand,
+                                children: [...previous, ?current],
+                              ),
+                              // Keep the old row opaque under the incoming fade.
+                              transitionBuilder: (child, animation) =>
+                                  AnimatedBuilder(
+                                    animation: animation,
+                                    child: child,
+                                    builder: (_, child) => Opacity(
+                                      opacity:
+                                          animation.status ==
+                                              AnimationStatus.reverse
+                                          ? 1
+                                          : animation.value,
+                                      child: child,
+                                    ),
+                                  ),
+                              child: SizedBox.expand(
+                                key: ValueKey(
+                                  'portrait-row-$row-${_versions[row] ?? 0}',
+                                ),
+                                child:
+                                    row == 0 &&
+                                        widget.portraits != null &&
+                                        !_replacements.containsKey(row)
+                                    ? widget.portraits!
+                                    : _row(row, columns),
+                              ),
+                            ),
+                          ),
                         ),
                         builder: (context, child) => Transform.translate(
                           offset: Offset(
                             math.sin(_float.value * math.pi * 2) *
-                                (row.isEven ? 14 : -14) * progress,
+                                (row.isEven ? 14 : -14) *
+                                progress,
                             0,
                           ),
                           child: child,

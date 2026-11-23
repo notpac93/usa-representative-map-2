@@ -84,7 +84,7 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
   testWidgets(
-    'reference cards retain their sizing while contact fills the footer',
+    'image gallery stacks equal panels above a compact separate contact action',
     (tester) async {
       tester.view.physicalSize = const Size(430, 932);
       tester.view.devicePixelRatio = 1;
@@ -100,19 +100,66 @@ void main() {
       );
       await tester.pump();
       final contact = find.byKey(const Key('home-contact-my-reps'));
-      final finder = find.text('Find My Reps');
-      expect(tester.getRect(contact).bottom, closeTo(932 - 34 - 20, 1));
-      expect(tester.getSize(contact).height, greaterThan(130));
-      expect(tester.getSize(contact).width, 430 - 36);
+      Rect panel(String label) => tester.getRect(
+        find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
+      );
+      final states = panel('US States');
+      final branches = panel('Federal Branches');
+      final reps = panel('Find My Reps');
+      expect(states.width, 430 - 28);
+      expect(branches.size, states.size);
+      expect(reps.height, closeTo(states.height, .01));
+      expect(branches.top - states.bottom, 12);
+      expect(reps.top - branches.bottom, 12);
+      expect(tester.getRect(contact).top - reps.bottom, 12);
+      expect(tester.getRect(contact).bottom, closeTo(932 - 34 - 12, 1));
+      expect(tester.getSize(contact).height, 60);
+      expect(tester.getSize(contact).width, 430 - 28);
       expect(
         tester.widget<Text>(find.text('Contact My Reps')).style!.fontSize,
-        greaterThan(40),
+        21,
       );
-      expect(tester.widget<Text>(finder).style!.fontSize, 24);
-      expect(tester.widget<Text>(find.text('US States')).style!.fontSize, 19);
-      expect(find.byKey(const Key('find-reps-white-outline')), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.text('Find My Reps')).style!.fontSize,
+        25,
+      );
+      expect(find.byKey(const Key('find-reps-white-outline')), findsNothing);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
   );
+
+  testWidgets('gallery remains usable on a short phone with enlarged text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      ChangeNotifierProvider<MapDataProvider>(
+        create: (_) => _Provider(),
+        child: MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!,
+          ),
+          home: const LandingScreen(),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    final contact = find.byKey(const Key('home-contact-my-reps'));
+    await tester.ensureVisible(contact);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    await tester.tap(contact);
+    await tester.pumpAndSettle();
+    expect(find.byType(ContactCongressStartScreen), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
 }

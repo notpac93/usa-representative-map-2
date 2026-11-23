@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -102,9 +104,49 @@ class _FindRepsScreenState extends State<FindRepsScreen> {
     super.dispose();
   }
 
+  Widget _searchForm() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const Text(
+        'Find My Reps',
+        key: Key('finder-page-title'),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: civicNavy,
+        ),
+      ),
+      const SizedBox(height: 24),
+      TextField(
+        controller: _controller,
+        focusNode: _focusNode,
+        textInputAction: TextInputAction.search,
+        onSubmitted: (_) => _search(),
+        decoration: const InputDecoration(
+          hintText: 'ZIP code or location',
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: Icon(CivicIcons.search),
+          border: OutlineInputBorder(),
+        ),
+      ),
+      const SizedBox(height: 16),
+      FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: civicNavy,
+          minimumSize: const Size(0, 52),
+        ),
+        onPressed: _searching ? null : _search,
+        child: Text(_searching ? 'Searching…' : 'Search'),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: widget.imageBackground ? Colors.transparent : civicCanvas,
+    extendBodyBehindAppBar: widget.imageBackground,
     appBar: AppBar(
       backgroundColor: Colors.transparent,
       foregroundColor: civicNavy,
@@ -112,6 +154,10 @@ class _FindRepsScreenState extends State<FindRepsScreen> {
       scrolledUnderElevation: 0,
     ),
     body: SafeArea(
+      top: !widget.imageBackground,
+      minimum: EdgeInsets.only(
+        top: widget.imageBackground ? MediaQuery.viewPaddingOf(context).top : 0,
+      ),
       child: LayoutBuilder(
         builder: (context, bounds) => SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -121,58 +167,27 @@ class _FindRepsScreenState extends State<FindRepsScreen> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 640),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+                  padding: const EdgeInsets.all(24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CivicGlassPanel(
-                        key: const ValueKey('location-search-panel'),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const Text(
-                              'Find My Reps',
-                              key: Key('finder-page-title'),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                                color: civicNavy,
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            TextField(
-                              controller: _controller,
-                              focusNode: _focusNode,
-                              textInputAction: TextInputAction.search,
-                              onSubmitted: (_) => _search(),
-                              decoration: const InputDecoration(
-                                hintText: 'ZIP code or location',
-                                filled: true,
-                                fillColor: Colors.white,
-                                prefixIcon: Icon(CivicIcons.search),
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF102D54),
-                                minimumSize: const Size(0, 52),
-                              ),
-                              onPressed: _searching ? null : _search,
-                              child: Text(_searching ? 'Searching…' : 'Search'),
-                            ),
-                          ],
+                      if (widget.imageBackground)
+                        _FeatheredSearchPanel(
+                          key: const ValueKey('location-search-panel'),
+                          child: _searchForm(),
+                        )
+                      else
+                        CivicGlassPanel(
+                          key: const ValueKey('location-search-panel'),
+                          child: _searchForm(),
                         ),
-                      ),
                       if (_error != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 20),
                           child: CivicGlassPanel(child: Text(_error!)),
                         ),
-                      const SizedBox(height: 20),
+                      if (_results.isNotEmpty) const SizedBox(height: 20),
                       for (final result in _results)
                         Card(
                           color: Colors.white,
@@ -198,5 +213,36 @@ class _FindRepsScreenState extends State<FindRepsScreen> {
         ),
       ),
     ),
+  );
+}
+
+/// Only the pale backdrop is blurred. Text and controls stay crisp, while the
+/// surface feathers into the portraits instead of ending at a card border.
+class _FeatheredSearchPanel extends StatelessWidget {
+  const _FeatheredSearchPanel({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    clipBehavior: Clip.none,
+    children: [
+      Positioned.fill(
+        child: IgnorePointer(
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: civicCanvas,
+                borderRadius: BorderRadius.circular(44),
+              ),
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: child,
+      ),
+    ],
   );
 }

@@ -41,6 +41,12 @@ void main() {
           expect(current.widget.focusNode.hasFocus, isTrue);
           expect(tester.testTextInput.hasAnyClients, isTrue);
           expect(current.widget.controller.text, '926');
+          final panel = find.byKey(const ValueKey('location-search-panel'));
+          final top = background ? 0.0 : kToolbarHeight;
+          expect(
+            tester.getCenter(panel).dy,
+            closeTo((932 - inset + top) / 2, 1),
+          );
         }
         await tester.enterText(find.byType(TextField), '92688');
         expect(find.text('92688'), findsOneWidget);

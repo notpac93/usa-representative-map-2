@@ -1,5 +1,3 @@
-import 'dart:ui' show ImageFilter;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -81,13 +79,8 @@ class _LandingScreenState extends State<LandingScreen> {
     try {
       final route = ExpandingImageRoute<void>(
         origin: origin,
-        wide: isReps,
         reducedMotion: MediaQuery.disableAnimationsOf(context),
-        departureLabel: _LandingTileLabel(
-          label: label,
-          icon: icon,
-          wide: isReps,
-        ),
+        departureLabel: _LandingTileLabel(label: label, icon: icon),
         imageBuilder: (progress) => switch (destination) {
           _LandingDestination.states => _LandingMapArtwork(
             provider: provider,
@@ -116,16 +109,18 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<MapDataProvider>();
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FA),
+      backgroundColor: civicCanvas,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 520),
             child: LayoutBuilder(
               builder: (context, bounds) {
+                // Fill a phone's available height; scroll on short displays or
+                // with enlarged text rather than clipping the four actions.
                 final textScale =
-                    MediaQuery.textScalerOf(context).scale(19) / 19;
-                final minimum = 782.0 * textScale.clamp(1.0, 2.0);
+                    MediaQuery.textScalerOf(context).scale(25) / 25;
+                final minimum = 680.0 * textScale.clamp(1.0, 2.0);
                 final height = bounds.maxHeight < minimum
                     ? minimum
                     : bounds.maxHeight;
@@ -138,19 +133,21 @@ class _LandingScreenState extends State<LandingScreen> {
                           decoration: const BoxDecoration(
                             color: _landingNavy,
                             border: Border(
-                              bottom: BorderSide(color: _landingRed, width: 4),
+                              bottom: BorderSide(color: _landingRed, width: 3),
                             ),
                           ),
-                          padding: const EdgeInsets.all(22),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
                           child: Row(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  'assets/img/logo.png',
-                                  width: 46,
-                                  height: 46,
-                                ),
+                              Image.asset(
+                                'assets/img/logo.png',
+                                width: 34,
+                                height: 40,
+                                fit: BoxFit.contain,
+                                excludeFromSemantics: true,
                               ),
                               const SizedBox(width: 13),
                               const Expanded(
@@ -158,7 +155,8 @@ class _LandingScreenState extends State<LandingScreen> {
                                   'Your Representatives',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 19,
+                                    fontSize: 21,
+                                    height: 1.15,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -168,105 +166,86 @@ class _LandingScreenState extends State<LandingScreen> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
+                            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: _LandingTile(
-                                        key: _statesKey,
-                                        label: 'US States',
-                                        icon: CivicIcons.district,
-                                        color: Colors.white,
-                                        onTap: () =>
-                                            _open(_LandingDestination.states),
-                                        image: _LandingMapArtwork(
-                                          provider: provider,
-                                        ),
-                                      ),
+                                Expanded(
+                                  child: _LandingTile(
+                                    key: _statesKey,
+                                    label: 'US States',
+                                    icon: CivicIcons.district,
+                                    onTap: () =>
+                                        _open(_LandingDestination.states),
+                                    image: _LandingMapArtwork(
+                                      provider: provider,
                                     ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: _LandingTile(
-                                        key: _branchesKey,
-                                        label: 'Federal Branches',
-                                        icon: CivicIcons.president,
-                                        color: Colors.white,
-                                        onTap: () =>
-                                            _open(_LandingDestination.branches),
-                                        image: const FederalBranchArtwork(
-                                          colorAmount: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                _LandingTile(
-                                  key: _repsKey,
-                                  label: 'Find My Reps',
-                                  icon: CivicIcons.representative,
-                                  color: Colors.white,
-                                  wide: true,
-                                  onTap: () => _open(_LandingDestination.reps),
-                                  image: RotatingLawmakerPortraits(
-                                    key: _portraitsKey,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 12),
                                 Expanded(
-                                  child: LayoutBuilder(
-                                    builder: (context, area) {
-                                      final fontSize = (area.maxHeight * .32)
-                                          .clamp(26.0, 56.0);
-                                      return FilledButton.icon(
-                                        key: const Key('home-contact-my-reps'),
-                                        style: FilledButton.styleFrom(
-                                          backgroundColor: _landingNavy,
-                                          foregroundColor: Colors.white,
-                                          minimumSize: const Size(
-                                            double.infinity,
-                                            double.infinity,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 18,
-                                            vertical: 8,
-                                          ),
-                                          side: const BorderSide(
-                                            color: _landingRed,
-                                            width: 1.5,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              32,
-                                            ),
-                                          ),
-                                        ),
-                                        icon: Icon(
-                                          Icons.mail_outline,
-                                          size: fontSize,
-                                        ),
-                                        label: Text(
-                                          'Contact My Reps',
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                            fontSize: fontSize,
-                                            height: 1.05,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        onPressed: () => Navigator.of(context).push(
-                                          MaterialPageRoute<void>(
-                                            builder: (_) =>
-                                                const ContactCongressStartScreen(),
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                  child: _LandingTile(
+                                    key: _branchesKey,
+                                    label: 'Federal Branches',
+                                    icon: CivicIcons.president,
+                                    onTap: () =>
+                                        _open(_LandingDestination.branches),
+                                    image: const FederalBranchArtwork(
+                                      colorAmount: 0,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Expanded(
+                                  child: _LandingTile(
+                                    key: _repsKey,
+                                    label: 'Find My Reps',
+                                    icon: CivicIcons.representative,
+                                    onTap: () =>
+                                        _open(_LandingDestination.reps),
+                                    image: RotatingLawmakerPortraits(
+                                      key: _portraitsKey,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                OutlinedButton.icon(
+                                  key: const Key('home-contact-my-reps'),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: _landingNavy,
+                                    minimumSize: const Size.fromHeight(60),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 14,
+                                    ),
+                                    side: const BorderSide(
+                                      color: _landingRed,
+                                      width: 1.5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                  ),
+                                  icon: const Icon(
+                                    Icons.mail_outline,
+                                    color: _landingRed,
+                                    size: 22,
+                                  ),
+                                  label: const Text(
+                                    'Contact My Reps',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 21,
+                                      height: 1.15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute<void>(
+                                      builder: (_) =>
+                                          const ContactCongressStartScreen(),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -291,179 +270,128 @@ class _LandingTile extends StatelessWidget {
     super.key,
     required this.label,
     required this.icon,
-    required this.color,
     required this.image,
     required this.onTap,
-    this.wide = false,
   });
   final String label;
   final IconData icon;
-  final Color color;
   final Widget image;
   final VoidCallback onTap;
-  final bool wide;
 
   @override
-  Widget build(BuildContext context) {
-    final largeText = MediaQuery.textScalerOf(context).scale(20) > 26;
-    final labelPanel = _LandingTileLabel(label: label, icon: icon, wide: wide);
-    return Semantics(
-      button: true,
-      label: label,
-      onTap: onTap,
-      child: ExcludeSemantics(
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x22102D54),
-                blurRadius: 20,
-                offset: Offset(0, 8),
-              ),
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: label,
+    onTap: onTap,
+    child: ExcludeSemantics(
+      child: Material(
+        color: const Color(0xFFDBE5F2),
+        borderRadius: BorderRadius.circular(24),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              image,
+              _LandingTileLabel(label: label, icon: icon),
             ],
           ),
-          child: Material(
-            color: color,
-            borderRadius: BorderRadius.circular(28),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: onTap,
-              child: largeText
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: 176, child: image),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: labelPanel,
-                        ),
-                      ],
-                    )
-                  : SizedBox(
-                      height: wide ? 270 : 252,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          image,
-                          Positioned(
-                            left: wide ? 12 : 8,
-                            right: wide ? 12 : 8,
-                            bottom: 12,
-                            child: wide
-                                ? labelPanel
-                                : ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: 18,
-                                        sigmaY: 18,
-                                      ),
-                                      child: labelPanel,
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
-          ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
+/// The same full-image overlay accompanies the artwork as its page opens.
 class _LandingTileLabel extends StatelessWidget {
-  const _LandingTileLabel({
-    required this.label,
-    required this.icon,
-    required this.wide,
-  });
+  const _LandingTileLabel({required this.label, required this.icon});
   final String label;
   final IconData icon;
-  final bool wide;
-  static const foreground = _landingNavy;
+  static const _textStyle = TextStyle(
+    fontSize: 25,
+    height: 1.05,
+    letterSpacing: -.4,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: wide ? const Key('find-reps-white-outline') : null,
-      constraints: BoxConstraints(minHeight: wide ? 66 : 80),
-      padding: EdgeInsets.symmetric(horizontal: wide ? 14 : 10, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: wide ? 1 : .94),
-        borderRadius: BorderRadius.circular(wide ? 40 : 20),
-        border: Border.all(
-          color: wide ? _landingRed : Colors.white.withValues(alpha: .8),
-          width: wide ? 2 : 1,
-        ),
-        boxShadow: [
-          if (wide)
-            BoxShadow(
-              color: Colors.white.withValues(alpha: .35),
-              spreadRadius: 5,
-            ),
-          const BoxShadow(
-            color: Color(0x22102D54),
-            blurRadius: 18,
-            offset: Offset(0, 5),
-          ),
-        ],
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Color(0xEE102D54), Color(0x00102D54)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
       ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: wide ? 30 : 24,
-            color: wide ? _landingRed : foreground,
+    ),
+    child: LayoutBuilder(
+      builder: (context, bounds) {
+        final line = switch (label) {
+          'Find My Reps' => 'My Reps',
+          'Federal Branches' => 'Branches',
+          _ => label,
+        };
+        final measure = TextPainter(
+          text: TextSpan(
+            text: line,
+            style: DefaultTextStyle.of(context).style.merge(_textStyle),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: wide ? 24 : 19,
-                height: 1.15,
-                fontWeight: FontWeight.w700,
-                color: foreground,
+          textScaler: MediaQuery.textScalerOf(context),
+          textDirection: Directionality.of(context),
+        )..layout();
+        final labelWidth = (measure.width + 2).clamp(0.0, bounds.maxWidth - 36);
+        measure.dispose();
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: labelWidth),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(icon, size: 20, color: const Color(0xFFE9B4C0)),
+                  const SizedBox(height: 8),
+                  Text(label, style: _textStyle),
+                ],
               ),
             ),
           ),
-          if (wide)
-            const Icon(CivicIcons.forward, size: 20, color: _landingRed),
-        ],
-      ),
-    );
-  }
+        );
+      },
+    ),
+  );
 }
 
 class _LandingMapArtwork extends StatelessWidget {
   const _LandingMapArtwork({required this.provider, this.expansion = 0});
   final MapDataProvider provider;
   final double expansion;
+
   @override
   Widget build(BuildContext context) => ColoredBox(
     color: const Color(0xFFDBE5F2),
-    child: Padding(
-      padding: EdgeInsets.fromLTRB(
-        8 * (1 - expansion),
-        8 * (1 - expansion),
-        8 * (1 - expansion),
-        82 * (1 - expansion),
+    child: FractionallySizedBox(
+      widthFactor: .65 + .35 * expansion,
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: EdgeInsets.all(8 * (1 - expansion)),
+        child: Center(
+          child: provider.atlas != null && provider.pathCache != null
+              ? NationalMap(
+                  atlas: provider.atlas!,
+                  pathCache: provider.pathCache!,
+                  selectedStateId: 'CA',
+                )
+              : const Icon(
+                  CivicIcons.district,
+                  size: 72,
+                  color: Color(0xFF456A99),
+                ),
+        ),
       ),
-      child: provider.atlas != null && provider.pathCache != null
-          ? NationalMap(
-              atlas: provider.atlas!,
-              pathCache: provider.pathCache!,
-              selectedStateId: 'CA',
-            )
-          : const Center(
-              child: Icon(
-                CivicIcons.district,
-                size: 72,
-                color: Color(0xFF456A99),
-              ),
-            ),
     ),
   );
 }
