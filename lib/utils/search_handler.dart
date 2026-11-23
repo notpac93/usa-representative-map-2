@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../data/data_provider.dart';
+import 'fips_mapping.dart';
 
 enum SearchResultType {
   state,
@@ -560,10 +561,20 @@ class SearchHandler {
           .take(6);
 
       for (var county in matchingCounties) {
+        // County names repeat across states; use the county GEOID, not its name.
+        final geoid = county.id.padLeft(5, '0');
+        String? countyState;
+        if (RegExp(r'^\d{5}$').hasMatch(geoid)) {
+          for (final entry in FipsMapping.stateToFips.entries) {
+            if (entry.value == geoid.substring(0, 2)) countyState = entry.key;
+          }
+        }
         results.add(
           SearchResult(
             type: SearchResultType.county,
-            title: '${county.name} County',
+            title:
+                '${county.name} County${countyState == null ? '' : ', $countyState'}',
+            stateId: countyState,
             subtitle: 'Your County Representatives & Demographics',
             countyName: county.name,
             featureId: county.id,

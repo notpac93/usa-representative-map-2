@@ -1,0 +1,112 @@
+name: Congressional roll calls
+
+on:
+  schedule:
+    - cron: '23 11 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/congress-votes.yml'
+      - 'scripts/congress_votes.py'
+      - 'scripts/tests/test_congress_votes.py'
+      - 'lib/screens/congress*'
+      - 'test/congress_votes_screen_test.dart'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - run: python3 -m unittest discover -s scripts/tests -p test_congress_votes.py
+
+  check-app:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            lib
+            test
+            assets
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.5'
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos --no-fatal-warnings lib/screens/congress_votes_screen.dart lib/screens/congress_screen.dart
+      - run: flutter test test/congress_votes_screen_test.dart
+
+  check-feeds:
+    if: github.event_name == 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Verify current official sources without publishing
+        run: python3 scripts/congress_votes.py --output "$RUNNER_TEMP/congress-data"
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: write
+    concurrency:
+      group: congress-votes-publication
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - uses: actions/cache@v4
+        with:
+          path: tmp/congress-votes-cache
+          key: congress-xml-v1-${{ github.run_id }}
+          restore-keys: congress-xml-v1-
+      - name: Build and publish the validated snapshot
+        shell: bash
+        env:
+          GH_DATA_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          data_dir="$RUNNER_TEMP/congress-data"
+          remote="https://github.com/$GITHUB_REPOSITORY.git"
+          cat > "$RUNNER_TEMP/congress-askpass" <<'SH'
+          #!/bin/sh
+          case "$1" in
+            *Username*) printf '%s\n' x-access-token ;;
+            *) printf '%s\n' "$GH_DATA_TOKEN" ;;
+          esac
+          SH
+          chmod 700 "$RUNNER_TEMP/congress-askpass"
+          export GIT_ASKPASS="$RUNNER_TEMP/congress-askpass" GIT_TERMINAL_PROMPT=0
+          trap 'rm -f "$GIT_ASKPASS"' EXIT
+          git init --initial-branch=congress-votes-data "$data_dir"
+          if git ls-remote --exit-code --heads "$remote" congress-votes-data; then
+            git -C "$data_dir" fetch --depth 1 --no-tags "$remote" refs/heads/congress-votes-data
+            git -C "$data_dir" checkout --detach FETCH_HEAD
+          else
+            result=$?
+            if [ "$result" -ne 2 ]; then exit "$result"; fi
+          fi
+          env -u GH_DATA_TOKEN -u GIT_ASKPASS python3 scripts/congress_votes.py --output "$data_dir"
+          cd "$data_dir"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          git diff --cached --quiet && exit 0
+          git commit -m "Refresh official congressional votes"
+          git push "$remote" HEAD:refs/heads/congress-votes-data

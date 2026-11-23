@@ -1,0 +1,20 @@
+{
+  "retrievedAt": "2026-10-17T00:45:23.303575+00:00",
+  "sources": {
+    "house.xml": {
+      "url": "https://clerk.house.gov/xml/lists/MemberData.xml",
+      "sha256": "01833c6c646873b2247950e8ab9c7ecc2c57fd2bf019d1014bd64a58b496ed3d",
+      "bytes": 557203
+    },
+    "senate.xml": {
+      "url": "https://www.senate.gov/general/contact_information/senators_cfm.xml",
+      "sha256": "01459d6977e9b5590e7d27cb333ff062cf9cf0783c934373393512fe2542b5e2",
+      "bytes": 52533
+    },
+    "house-directory.html": {
+      "url": "https://www.house.gov/representatives",
+      "sha256": "cee25e75e31240e8ee257e95fa1f21d29e5fbac34fa849082f2e781caa1b15c6",
+      "bytes": 1234220
+    }
+  }
+}

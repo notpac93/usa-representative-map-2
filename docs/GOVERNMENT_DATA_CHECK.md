@@ -43,3 +43,9 @@ Check artifacts are downloadable for 90 days. Saved releases, recovery copies, a
 On November 19, 2026 (Pacific time), the [government check](https://github.com/notpac93/usa-representative-map-2/actions/runs/44667039065), [reviewed archive save](https://github.com/notpac93/usa-representative-map-2/actions/runs/44667351086), and [check against the saved archive](https://github.com/notpac93/usa-representative-map-2/actions/runs/44667643100) all succeeded. The saved version added 144 incoming records and retained 560 serving federal records. The follow-up check found zero meaningful record changes. It still reported incomplete election coverage, as intended.
 
 Archive commit `d369540f0598487155898d39f26417d8907aecdc` retains the reviewed snapshot, previous version, reports, 155 passed government responses, and the exact 18 collection-rule/configuration files. Their preserved hashes were independently verified. This validation did not replace the app's bundled officials snapshot or release an app update.
+
+## Local app data selection — November 20, 2026
+
+The local app now bundles the reviewed officials snapshot from archive commit `d369540f0598487155898d39f26417d8907aecdc`, data version `dedf2ce280ec3a87a13b079cad983f034535be5d150b6284c65fdc2c00561b22`. This adds the 144 incoming records to the bundled data while retaining the 560 serving records and explicit election coverage gaps. The imported snapshot passed schema and data-version validation, and the iPhone build's bundled asset matched it byte for byte. This is a selected saved snapshot, not a new government collection or a claim of complete election coverage. Checks remain manual and the hosted snapshot setting remains unset.
+
+Publisher and election integration tests use `scripts/tests/fixtures/federal_baseline.json.gz`, a fixed copy of the pre-import baseline, so app data selections do not change their test conditions.

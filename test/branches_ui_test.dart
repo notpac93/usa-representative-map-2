@@ -30,7 +30,7 @@ void main() {
       await tester.ensureVisible(find.text('Federal Branches'));
       await tester.tap(find.text('Federal Branches'));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 800));
       expect(find.text('Executive Branch'), findsOneWidget);
       expect(find.text('Legislative Branch'), findsOneWidget);
       expect(find.text('Judicial Branch'), findsOneWidget);
@@ -53,7 +53,7 @@ void main() {
         await tester.ensureVisible(find.text('Federal Branches'));
         await tester.tap(find.text('Federal Branches'));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pump(const Duration(milliseconds: 800));
 
         final scotusButton = find.text('Judicial Branch');
         expect(scotusButton, findsOneWidget);
@@ -86,7 +86,7 @@ void main() {
       await tester.ensureVisible(find.text('Federal Branches'));
       await tester.tap(find.text('Federal Branches'));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 800));
 
       final congressButton = find.text('Legislative Branch');
       expect(congressButton, findsOneWidget);

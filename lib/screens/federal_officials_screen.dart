@@ -1,3 +1,4 @@
+import '../widgets/leader_contact_button.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -104,6 +105,7 @@ class FederalOfficialProfileScreen extends StatefulWidget {
   final DateTime Function()? clock;
   final VoidCallback? onRecords;
   final String? recordsPersonId;
+  final Widget? primaryAction;
   const FederalOfficialProfileScreen({
     super.key,
     required this.officeId,
@@ -111,6 +113,7 @@ class FederalOfficialProfileScreen extends StatefulWidget {
     this.clock,
     this.onRecords,
     this.recordsPersonId,
+    this.primaryAction,
   });
   @override
   State<FederalOfficialProfileScreen> createState() =>
@@ -198,6 +201,15 @@ class _FederalOfficialProfileScreenState
                 style: TextStyle(fontSize: 11),
               ),
             FederalTransitionNotice(snapshot: snapshot, view: view),
+            if (term != null)
+              LeaderContactButton.contacts(
+                form: term.contact['contactUrl'],
+                phone: term.contact['phone'],
+                website: term.contact['website'],
+              ),
+            if (widget.primaryAction != null &&
+                widget.recordsPersonId == term?.personId)
+              widget.primaryAction!,
             TextButton.icon(
               onPressed: () => _showSources(context, snapshot, view.office.id),
               icon: const Icon(Icons.verified_outlined, size: 16),

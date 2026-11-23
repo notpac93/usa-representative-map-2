@@ -1,107 +1,162 @@
 import 'package:flutter/material.dart';
-import 'package:path_drawing/path_drawing.dart';
+
 import '../data/models.dart';
-import 'city_renderer.dart';
-import 'state_label_renderer.dart';
+import '../utils/map_transform.dart';
 import 'atlas_path_cache.dart';
 
-class NationalMapPainter extends CustomPainter {
-  final Atlas atlas;
-  final AtlasPathCache pathCache;
-  final String? selectedStateId;
-  final String? hoveredStateId;
-  final TransformationController? transformController;
-  final List<CityFeature> cities;
-
-  // Paints (created once or passed in would be better, but lazy init here is fine for now)
-  final Paint _fillPaint = Paint()..style = PaintingStyle.fill;
-  final Paint _strokePaint = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 0.5
-    ..color = Colors.white;
-
-  NationalMapPainter({
+/// Shared map artwork for the national screen and the US States landing tile.
+class NationalMap extends StatelessWidget {
+  const NationalMap({
+    super.key,
     required this.atlas,
     required this.pathCache,
     this.selectedStateId,
-    this.hoveredStateId,
-    this.transformController,
-    this.cities = const [],
-  }) : super(repaint: transformController) {
-    // Ensure cache is populated
-    pathCache.parseAndCache(atlas);
+    this.onStateSelected,
+  });
+
+  final Atlas atlas;
+  final AtlasPathCache pathCache;
+  final String? selectedStateId;
+  final ValueChanged<String>? onStateSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final canvas = LayoutBuilder(
+      builder: (context, constraints) {
+        final transform = MapTransform.calculateFit([
+          0,
+          0,
+          atlas.width,
+          atlas.height,
+        ], constraints.biggest);
+        final artwork = CustomPaint(
+          size: constraints.biggest,
+          painter: _NationalMapPainter(
+            atlas,
+            pathCache,
+            transform,
+            selectedStateId,
+          ),
+        );
+        final selectState = onStateSelected;
+        if (selectState == null) return artwork;
+        return GestureDetector(
+          onTapUp: (tap) {
+            final point = transform.screenToData(tap.localPosition);
+            for (final state in atlas.states) {
+              if (pathCache.getPath(state.id)?.contains(point) ?? false) {
+                selectState(state.id);
+                return;
+              }
+            }
+          },
+          child: artwork,
+        );
+      },
+    );
+
+    return AspectRatio(
+      aspectRatio: atlas.width / atlas.height,
+      child: onStateSelected == null
+          ? canvas
+          : Semantics(
+              label:
+                  'United States map. All states are available in the state picker.',
+              child: InteractiveViewer(maxScale: 8, child: canvas),
+            ),
+    );
   }
+}
+
+class _NationalMapPainter extends CustomPainter {
+  const _NationalMapPainter(
+    this.atlas,
+    this.pathCache,
+    this.transform,
+    this.selectedStateId,
+  );
+
+  static const _labeledStates = {
+    'AK',
+    'HI',
+    'CA',
+    'WA',
+    'MT',
+    'CO',
+    'TX',
+    'MN',
+    'MI',
+    'NY',
+    'FL',
+    'GA',
+    'ME',
+  };
+  static const _smallPreviewLabels = {'AK', 'CA', 'TX', 'NY', 'FL'};
+
+  final Atlas atlas;
+  final AtlasPathCache pathCache;
+  final MapTransform transform;
+  final String? selectedStateId;
 
   @override
   void paint(Canvas canvas, Size size) {
-    // D3 Projection alignment:
-    // The SVG paths are pre-projected to fit within atlas.width x atlas.height (e.g. 960x600).
-    // We must scale the canvas to fit these paths into the widget Size.
-
-    final scaleX = size.width / atlas.width;
-    final scaleY = size.height / atlas.height;
-    final scale = scaleX < scaleY ? scaleX : scaleY; // fit contain
-
-    // Center the map
-    final offsetX = (size.width - (atlas.width * scale)) / 2;
-    final offsetY = (size.height - (atlas.height * scale)) / 2;
-
     canvas.save();
-    canvas.translate(offsetX, offsetY);
-    canvas.scale(scale);
+    canvas.translate(transform.offset.dx, transform.offset.dy);
+    canvas.scale(transform.scale);
 
-    for (var state in atlas.states) {
+    final fill = Paint()..color = const Color(0xFFC5D7E9);
+    final edge = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1 / transform.scale
+      ..color = const Color(0xFFF6F8FC);
+
+    for (final state in atlas.states) {
       final path = pathCache.getPath(state.id);
-      if (path == null) continue;
-
-      // Styling
-      bool isSelected = state.id == selectedStateId;
-      bool isHovered = state.id == hoveredStateId;
-
-      if (isSelected) {
-        _fillPaint.color = Colors.blueGrey[800]!;
-      } else if (isHovered) {
-        _fillPaint.color = Colors.blueGrey[300]!;
-      } else {
-        _fillPaint.color = Colors.grey[200]!;
-      }
-
-      canvas.drawPath(path, _fillPaint);
-      canvas.drawPath(path, _strokePaint);
+      if (path == null || state.id == selectedStateId) continue;
+      canvas.drawPath(path, fill);
+      canvas.drawPath(path, edge);
+    }
+    final selectedPath = pathCache.getPath(selectedStateId ?? '');
+    if (selectedPath != null) {
+      canvas.drawPath(selectedPath, fill..color = const Color(0xFF264A72));
+      canvas.drawPath(selectedPath, edge..color = const Color(0xFFE9A6B6));
     }
 
-    // Determine dynamic zoom level from InteractiveViewer
-    double currentZoom = 1.0;
-    if (transformController != null) {
-      currentZoom = transformController!.value.getMaxScaleOnAxis();
+    final labels = size.width < 260 ? _smallPreviewLabels : _labeledStates;
+    final labelSize = size.width < 260 ? 9.0 : 13.0;
+    for (final state in atlas.states) {
+      if (!labels.contains(state.id) || state.centroid.length != 2) continue;
+      final label = TextPainter(
+        text: TextSpan(
+          text: state.id,
+          style: TextStyle(
+            color: state.id == selectedStateId
+                ? Colors.white
+                : const Color(0xFF152A43),
+            fontSize: labelSize / transform.scale,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      label.paint(
+        canvas,
+        Offset(
+          state.centroid[0] - label.width / 2,
+          state.centroid[1] - label.height / 2,
+        ),
+      );
+      label.dispose();
     }
-
-    // Draw state labels first, which returns the occupied bounds of the state names
-    final List<Rect> stateLabelBounds = StateLabelRenderer.drawStateLabels(
-      canvas,
-      atlas,
-      scale,
-      currentZoom,
-    );
-
-    // Draw cities using the shared renderer, passing state label bounds
-    CityRenderer.drawCities(
-      canvas,
-      cities,
-      scale,
-      currentZoom,
-      isNationalMap: true,
-      pathCache: pathCache,
-      existingOccupiedSpaces: stateLabelBounds,
-    );
 
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant NationalMapPainter oldDelegate) {
-    return oldDelegate.selectedStateId != selectedStateId ||
-        oldDelegate.hoveredStateId != hoveredStateId ||
-        oldDelegate.cities != cities;
-  }
+  bool shouldRepaint(_NationalMapPainter oldDelegate) =>
+      atlas != oldDelegate.atlas ||
+      pathCache != oldDelegate.pathCache ||
+      selectedStateId != oldDelegate.selectedStateId ||
+      transform.scale != oldDelegate.transform.scale ||
+      transform.offset != oldDelegate.transform.offset;
 }

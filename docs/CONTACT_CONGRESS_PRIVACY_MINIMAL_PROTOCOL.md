@@ -15,7 +15,7 @@ Use synchronous pass-through delivery:
 1. The device keeps the draft in application memory.
 2. The backend receives the final payload over TLS, validates it in request memory, and immediately calls the approved House/Senate adapter.
 3. Request-body logging, tracing, analytics, crash capture, and session replay are disabled or redacted for every sensitive endpoint.
-4. The backend discards the raw payload when the request completes.
+4. After submission, the backend sends a copy and confirmation to the verified sender email using the same in-memory payload, then discards the raw payload when the request completes. Email-copy failure must not trigger a second congressional send. No application message archive is created.
 5. If a chamber is unavailable, the app keeps the draft on the device and asks the constituent to retry. The backend does not silently create a raw-message retry queue.
 
 An asynchronous encrypted queue may be added only if a chamber contract requires it or users explicitly choose delayed retry after a clear retention disclosure. Its key and record must be destroyed after terminal delivery or the shortest approved retry window.
@@ -97,7 +97,8 @@ Near-duplicate or semantic-message retention is excluded from the privacy-minima
 | Processor | Minimum data received | Data deliberately excluded |
 | --- | --- | --- |
 | Census Geocoder | Address needed for the lookup | Email, message, recipients |
-| Email provider | Destination email and generic verification code | Address, message, congressional offices |
+| Email provider — verification | Destination email and generic verification code | Address, message, congressional offices |
+| Email provider — sender copy | Verified sender email, exact submitted message, recipient(s), submission time and reference | Unnecessary raw home-address fields, internal risk signals |
 | Bot provider | Challenge token and necessary browser/security signals | Form fields and message content |
 | House/Senate gateway and office CRM | Approved constituent and message payload | Internal risk signals and rate counters |
 

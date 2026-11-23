@@ -8,6 +8,7 @@ class LeaderQuickProfileScreen extends StatelessWidget {
   final String? party, phone, address, website, photoPath, recordedTerm;
   final VoidCallback onDetails;
   final Widget? statusPanel;
+  final Widget? contactButton;
   const LeaderQuickProfileScreen({
     super.key,
     required this.name,
@@ -21,6 +22,7 @@ class LeaderQuickProfileScreen extends StatelessWidget {
     this.photoPath,
     this.recordedTerm,
     this.statusPanel,
+    this.contactButton,
   });
 
   Future<void> _open(BuildContext context, String value) async {
@@ -113,6 +115,7 @@ class LeaderQuickProfileScreen extends StatelessWidget {
                   ],
                 ),
                 if (statusPanel != null) statusPanel!,
+                if (contactButton != null) contactButton!,
                 const SizedBox(height: 20),
                 if (recordedTerm?.isNotEmpty ?? false) ...[
                   Text(

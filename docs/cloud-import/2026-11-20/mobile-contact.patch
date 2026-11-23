@@ -1,0 +1,850 @@
+--- a/lib/map/national_map_painter.dart
++++ b/lib/map/national_map_painter.dart
+@@ -12,6 +12,7 @@
+   final String? hoveredStateId;
+   final TransformationController? transformController;
+   final List<CityFeature> cities;
++  final bool showStateLabels;
+ 
+   // Paints (created once or passed in would be better, but lazy init here is fine for now)
+   final Paint _fillPaint = Paint()..style = PaintingStyle.fill;
+@@ -27,6 +28,7 @@
+     this.hoveredStateId,
+     this.transformController,
+     this.cities = const [],
++    this.showStateLabels = true,
+   }) : super(repaint: transformController) {
+     // Ensure cache is populated
+     pathCache.parseAndCache(atlas);
+@@ -77,12 +79,9 @@
+     }
+ 
+     // Draw state labels first, which returns the occupied bounds of the state names
+-    final List<Rect> stateLabelBounds = StateLabelRenderer.drawStateLabels(
+-      canvas,
+-      atlas,
+-      scale,
+-      currentZoom,
+-    );
++    final stateLabelBounds = showStateLabels
++        ? StateLabelRenderer.drawStateLabels(canvas, atlas, scale, currentZoom)
++        : const <Rect>[];
+ 
+     // Draw cities using the shared renderer, passing state label bounds
+     CityRenderer.drawCities(
+@@ -102,6 +101,7 @@
+   bool shouldRepaint(covariant NationalMapPainter oldDelegate) {
+     return oldDelegate.selectedStateId != selectedStateId ||
+         oldDelegate.hoveredStateId != hoveredStateId ||
+-        oldDelegate.cities != cities;
++        oldDelegate.cities != cities ||
++        oldDelegate.showStateLabels != showStateLabels;
+   }
+ }
+--- a/lib/screens/landing_screen.dart
++++ b/lib/screens/landing_screen.dart
+@@ -1,3 +1,5 @@
++import 'dart:async';
++
+ import 'federal_officials_screen.dart';
+ import 'package:flutter/material.dart';
+ import '../map/national_map_painter.dart';
+@@ -41,7 +43,7 @@
+     ).push(MaterialPageRoute(builder: (ctx) => const MapScreen()));
+   }
+ 
+-  void _handleSelection(SearchResult result) {
++  void _handleSelection(SearchResult result, {bool findReps = false}) {
+     if (result.type == SearchResultType.president) {
+       Navigator.of(context).push(
+         MaterialPageRoute(builder: (ctx) => const PresidentDetailScreen()),
+@@ -68,7 +70,10 @@
+     } else {
+       Navigator.of(context).push(
+         MaterialPageRoute(
+-          builder: (ctx) => LocalDetailScreen(searchResult: result),
++          builder: (ctx) => LocalDetailScreen(
++            searchResult: result,
++            showRepresentativesFirst: findReps,
++          ),
+         ),
+       );
+     }
+@@ -81,72 +86,85 @@
+   }) {
+     final searchBoxMaxWidth = isWidescreen ? maxWidth : 640.0;
+ 
++    final records = <Widget>[
++      TextButton.icon(
++        key: const Key('federal_officials_directory'),
++        onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialsScreen())),
++        icon: const Icon(Icons.verified_outlined, size: 16),
++        label: Text(
++          isWidescreen ? 'Federal officials · official records' : 'Federal records',
++          maxLines: 1,
++          overflow: TextOverflow.ellipsis,
++        ),
++      ),
++      const SizedBox(height: 8),
++      Container(
++        constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
++        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
++        decoration: BoxDecoration(
++          color: const Color(0xFFEFF6FF),
++          borderRadius: BorderRadius.circular(20),
++          border: Border.all(color: const Color(0xFFBFDBFE)),
++        ),
++        child: Row(
++          mainAxisSize: MainAxisSize.min,
++          mainAxisAlignment: MainAxisAlignment.center,
++          children: [
++            const Icon(
++              CivicIcons.election,
++              size: 17,
++              color: Color(0xFF1D4ED8),
++            ),
++            const SizedBox(width: 8),
++            Flexible(
++              child: Text(
++                isWidescreen
++                    ? 'Election Records • Official Voting Information & Representatives'
++                    : 'Official voting information',
++                maxLines: 1,
++                style: TextStyle(
++                  color: const Color(0xFF1E40AF),
++                  fontSize: isWidescreen ? 12.5 : 11,
++                  fontWeight: FontWeight.w600,
++                ),
++                textAlign: TextAlign.center,
++                overflow: TextOverflow.ellipsis,
++              ),
++            ),
++          ],
++        ),
++      ),
++    ];
++
+     return Column(
+       mainAxisAlignment: MainAxisAlignment.center,
+       crossAxisAlignment: CrossAxisAlignment.center,
+       children: [
+-        Image.asset(
+-          'assets/img/logo.png',
+-          height: isWidescreen ? 90 : 72,
+-          fit: BoxFit.contain,
+-        ),
+-        const SizedBox(height: 14),
+-        Text(
+-          'Find Your Representatives',
+-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+-            fontWeight: FontWeight.bold,
+-            fontSize: isWidescreen ? 29 : 24,
+-            color: const Color(0xFF0F172A),
+-            letterSpacing: -0.3,
++        if (isWidescreen) ...[
++          Image.asset(
++            'assets/img/logo.png',
++            height: isWidescreen ? 90 : 72,
++            fit: BoxFit.contain,
+           ),
+-          textAlign: TextAlign.center,
+-        ),
+-        TextButton.icon(
+-          key: const Key('federal_officials_directory'),
+-          onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FederalOfficialsScreen())),
+-          icon: const Icon(Icons.verified_outlined, size: 16),
+-          label: const Text('Federal officials · official records'),
+-        ),
+-        const SizedBox(height: 8),
+-        Container(
+-          constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
+-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+-          decoration: BoxDecoration(
+-            color: const Color(0xFFEFF6FF),
+-            borderRadius: BorderRadius.circular(20),
+-            border: Border.all(color: const Color(0xFFBFDBFE)),
+-          ),
+-          child: Row(
+-            mainAxisSize: MainAxisSize.min,
+-            mainAxisAlignment: MainAxisAlignment.center,
+-            children: [
+-              const Icon(
+-                CivicIcons.election,
+-                size: 17,
+-                color: Color(0xFF1D4ED8),
+-              ),
+-              const SizedBox(width: 8),
+-              Flexible(
+-                child: Text(
+-                  'Election Records • Official Voting Information & Representatives',
+-                  style: TextStyle(
+-                    color: const Color(0xFF1E40AF),
+-                    fontSize: isWidescreen ? 12.5 : 11,
+-                    fontWeight: FontWeight.w600,
+-                  ),
+-                  textAlign: TextAlign.center,
+-                  overflow: TextOverflow.ellipsis,
+-                ),
+-              ),
+-            ],
++          const SizedBox(height: 14),
++          Text(
++            'Find Your Representatives',
++            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
++              fontWeight: FontWeight.bold,
++              fontSize: isWidescreen ? 29 : 24,
++              color: const Color(0xFF0F172A),
++              letterSpacing: -0.3,
++            ),
++            textAlign: TextAlign.center,
+           ),
+-        ),
+-        const SizedBox(height: 18),
++          ...records,
++          const SizedBox(height: 18),
++        ],
+         Container(
+           constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
+           child: Autocomplete<SearchResult>(
+             optionsBuilder: (TextEditingValue textEditingValue) async {
+-              if (textEditingValue.text.trim().toLowerCase() == 'map') {
++              if (isWidescreen && textEditingValue.text.trim().toLowerCase() == 'map') {
+                 return const Iterable<SearchResult>.empty();
+               }
+               if (textEditingValue.text.isEmpty) {
+@@ -159,23 +177,25 @@
+             },
+             displayStringForOption: (SearchResult option) => option.title,
+             onSelected: (SearchResult selection) {
+-              _handleSelection(selection);
++              _handleSelection(selection, findReps: !isWidescreen);
+             },
+             fieldViewBuilder:
+                 (context, controller, focusNode, onEditingComplete) {
+                   return TextField(
+                     controller: controller,
+                     focusNode: focusNode,
++                    autofocus: !isWidescreen,
+                     onEditingComplete: () {
+-                      if (controller.text.trim().toLowerCase() == 'map') {
++                      if (isWidescreen && controller.text.trim().toLowerCase() == 'map') {
+                         _navigateToMap();
+                       }
+                       onEditingComplete();
+                     },
+                     style: TextStyle(fontSize: isWidescreen ? 15.5 : 14),
+                     decoration: InputDecoration(
+-                      hintText:
+-                          'Enter your home address, ZIP code, city, or state...',
++                      hintText: isWidescreen
++                          ? 'Enter your home address, ZIP code, city, or state...'
++                          : 'Address, ZIP, city, or state',
+                       hintStyle: TextStyle(
+                         fontSize: isWidescreen ? 14.5 : 13.5,
+                         color: Colors.blueGrey.shade400,
+@@ -218,7 +238,7 @@
+                     onSubmitted: (value) async {
+                       final query = value.trim();
+                       if (query.isEmpty) return;
+-                      if (query.toLowerCase() == 'map') {
++                      if (isWidescreen && query.toLowerCase() == 'map') {
+                         _navigateToMap();
+                         return;
+                       }
+@@ -228,7 +248,7 @@
+                       );
+                       if (results.isNotEmpty) {
+                         controller.text = results.first.title;
+-                        _handleSelection(results.first);
++                        _handleSelection(results.first, findReps: !isWidescreen);
+                       }
+                     },
+                   );
+@@ -316,132 +336,42 @@
+             },
+           ),
+         ),
+-        const SizedBox(height: 18),
+-        Wrap(
+-          spacing: 10,
+-          runSpacing: 10,
+-          alignment: WrapAlignment.center,
+-          children: [
+-            OutlinedButton.icon(
+-              onPressed: _navigateToMap,
+-              icon: const Icon(
+-                CivicIcons.explore,
+-                size: 18,
+-                color: Color(0xFF1E3A8A),
+-              ),
+-              label: const Text('Explore National Map'),
+-              style: OutlinedButton.styleFrom(
+-                backgroundColor: Colors.white,
+-                foregroundColor: const Color(0xFF1E3A8A),
+-                side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+-                padding: const EdgeInsets.symmetric(
+-                  horizontal: 16,
+-                  vertical: 12,
+-                ),
+-                shape: RoundedRectangleBorder(
+-                  borderRadius: BorderRadius.circular(10),
+-                ),
+-                textStyle: TextStyle(
+-                  fontWeight: FontWeight.w600,
+-                  fontSize: isWidescreen ? 13 : 12.5,
+-                ),
+-              ),
+-            ),
+-            if (!isWidescreen) ...[
+-              OutlinedButton.icon(
+-                onPressed: () {
+-                  Navigator.of(context).push(
+-                    MaterialPageRoute(
+-                      builder: (ctx) => const PresidentDetailScreen(),
+-                    ),
+-                  );
+-                },
+-                icon: const Icon(
+-                  CivicIcons.president,
+-                  size: 17,
+-                  color: Color(0xFF1E3A8A),
+-                ),
+-                label: const Text('Executive Branch'),
+-                style: OutlinedButton.styleFrom(
+-                  backgroundColor: Colors.white,
+-                  foregroundColor: const Color(0xFF1E3A8A),
+-                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+-                  padding: const EdgeInsets.symmetric(
+-                    horizontal: 14,
+-                    vertical: 12,
+-                  ),
+-                  shape: RoundedRectangleBorder(
+-                    borderRadius: BorderRadius.circular(10),
+-                  ),
+-                  textStyle: const TextStyle(
+-                    fontWeight: FontWeight.w600,
+-                    fontSize: 12.5,
+-                  ),
+-                ),
+-              ),
+-              OutlinedButton.icon(
+-                onPressed: () {
+-                  Navigator.of(context).push(
+-                    MaterialPageRoute(builder: (ctx) => const CongressScreen()),
+-                  );
+-                },
+-                icon: const Icon(
+-                  CivicIcons.congress,
+-                  size: 17,
+-                  color: Color(0xFF1E3A8A),
+-                ),
+-                label: const Text('Legislative Branch'),
+-                style: OutlinedButton.styleFrom(
+-                  backgroundColor: Colors.white,
+-                  foregroundColor: const Color(0xFF1E3A8A),
+-                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+-                  padding: const EdgeInsets.symmetric(
+-                    horizontal: 14,
+-                    vertical: 12,
+-                  ),
+-                  shape: RoundedRectangleBorder(
+-                    borderRadius: BorderRadius.circular(10),
+-                  ),
+-                  textStyle: const TextStyle(
+-                    fontWeight: FontWeight.w600,
+-                    fontSize: 12.5,
+-                  ),
+-                ),
+-              ),
++        if (!isWidescreen) ...records,
++        if (isWidescreen) ...[
++          const SizedBox(height: 18),
++          Wrap(
++            spacing: 10,
++            runSpacing: 10,
++            alignment: WrapAlignment.center,
++            children: [
+               OutlinedButton.icon(
+-                onPressed: () {
+-                  Navigator.of(context).push(
+-                    MaterialPageRoute(
+-                      builder: (ctx) => const SupremeCourtScreen(),
+-                    ),
+-                  );
+-                },
++                onPressed: _navigateToMap,
+                 icon: const Icon(
+-                  CivicIcons.court,
+-                  size: 17,
++                  CivicIcons.explore,
++                  size: 18,
+                   color: Color(0xFF1E3A8A),
+                 ),
+-                label: const Text('Judicial Branch'),
++                label: const Text('Explore National Map'),
+                 style: OutlinedButton.styleFrom(
+                   backgroundColor: Colors.white,
+                   foregroundColor: const Color(0xFF1E3A8A),
+                   side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.5),
+                   padding: const EdgeInsets.symmetric(
+-                    horizontal: 14,
++                    horizontal: 16,
+                     vertical: 12,
+                   ),
+                   shape: RoundedRectangleBorder(
+                     borderRadius: BorderRadius.circular(10),
+                   ),
+-                  textStyle: const TextStyle(
++                  textStyle: TextStyle(
+                     fontWeight: FontWeight.w600,
+-                    fontSize: 12.5,
++                    fontSize: isWidescreen ? 13 : 12.5,
+                   ),
+                 ),
+               ),
+             ],
+-          ],
+-        ),
++          ),
++        ],
+         const SizedBox(height: 12),
+         ConstrainedBox(
+           constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
+@@ -534,6 +464,7 @@
+   Widget _buildMobileHome(MapDataProvider provider) {
+     const navy = Color(0xFF102E50);
+     const pink = Color(0xFFE9A6B6);
++    const artworkTint = ColorFilter.mode(Color(0xFFB6CEE8), BlendMode.color);
+     Widget card({
+       required String label,
+       required IconData icon,
+@@ -553,7 +484,7 @@
+             child: Stack(
+               fit: StackFit.expand,
+               children: [
+-                artwork,
++                ColorFiltered(colorFilter: artworkTint, child: artwork),
+                 Positioned(
+                   left: 10,
+                   right: 10,
+@@ -566,14 +497,11 @@
+                     decoration: BoxDecoration(
+                       color: const Color(0xF21A2D43),
+                       borderRadius: BorderRadius.circular(wide ? 40 : 20),
+-                      border: Border.all(
+-                        color: wide ? pink : Colors.white24,
+-                        width: wide ? 2 : 1,
+-                      ),
++                      border: Border.all(color: pink, width: 1.5),
+                     ),
+                     child: Row(
+                       children: [
+-                        Icon(icon, color: wide ? pink : Colors.white, size: 25),
++                        Icon(icon, color: Colors.white, size: 25),
+                         const SizedBox(width: 9),
+                         Expanded(
+                           child: Text(
+@@ -658,6 +586,7 @@
+                                           painter: NationalMapPainter(
+                                             atlas: provider.atlas!,
+                                             pathCache: provider.pathCache!,
++                                            showStateLabels: false,
+                                           ),
+                                         )
+                                       : const Center(
+@@ -674,15 +603,9 @@
+                                 label: 'Federal Branches',
+                                 icon: Icons.account_balance_outlined,
+                                 onTap: _showFederalBranches,
+-                                artwork: ColorFiltered(
+-                                  colorFilter: const ColorFilter.mode(
+-                                    Color(0xFFB6CEE8),
+-                                    BlendMode.color,
+-                                  ),
+-                                  child: Image.asset(
+-                                    'assets/img/capitol.jpg',
+-                                    fit: BoxFit.cover,
+-                                  ),
++                                artwork: Image.asset(
++                                  'assets/img/capitol.jpg',
++                                  fit: BoxFit.cover,
+                                 ),
+                               ),
+                             ),
+@@ -704,22 +627,7 @@
+                           icon: Icons.badge_outlined,
+                           wide: true,
+                           onTap: () => _showFinder(provider),
+-                          artwork: Row(
+-                            children: [
+-                              for (final photo in [
+-                                'senators/ak-lisa-murkowski.jpg',
+-                                'senators/nj-cory-a-booker.jpg',
+-                                'representatives/CA-doris-matsui.jpg',
+-                              ])
+-                                Expanded(
+-                                  child: Image.asset(
+-                                    'assets/img/$photo',
+-                                    height: double.infinity,
+-                                    fit: BoxFit.cover,
+-                                  ),
+-                                ),
+-                            ],
+-                          ),
++                          artwork: const _RotatingLeaderPortraits(),
+                         ),
+                       ),
+                     ],
+@@ -845,3 +753,72 @@
+     );
+   }
+ }
++
++class _RotatingLeaderPortraits extends StatefulWidget {
++  const _RotatingLeaderPortraits();
++
++  @override
++  State<_RotatingLeaderPortraits> createState() =>
++      _RotatingLeaderPortraitsState();
++}
++
++class _RotatingLeaderPortraitsState extends State<_RotatingLeaderPortraits> {
++  static const _groups = [
++    [
++      'senators/ak-lisa-murkowski.jpg',
++      'senators/nj-cory-a-booker.jpg',
++      'representatives/CA-doris-matsui.jpg',
++    ],
++    [
++      'senators/il-tammy-duckworth.jpg',
++      'senators/sd-john-thune.jpg',
++      'representatives/NY-hakeem-jeffries.jpg',
++    ],
++    [
++      'senators/al-katie-boyd-britt.png',
++      'senators/ga-raphael-g-warnock.jpg',
++      'representatives/CA-nanette-barragan.jpg',
++    ],
++  ];
++
++  Timer? _timer;
++  int _groupIndex = 0;
++
++  @override
++  void didChangeDependencies() {
++    super.didChangeDependencies();
++    if (MediaQuery.disableAnimationsOf(context) || !TickerMode.of(context)) {
++      _timer?.cancel();
++      _timer = null;
++      return;
++    }
++
++    _timer ??= Timer.periodic(const Duration(seconds: 6), (_) {
++      setState(() => _groupIndex = (_groupIndex + 1) % _groups.length);
++    });
++  }
++
++  @override
++  void dispose() {
++    _timer?.cancel();
++    super.dispose();
++  }
++
++  @override
++  Widget build(BuildContext context) {
++    return Row(
++      children: [
++        for (final photo in _groups[_groupIndex])
++          Expanded(
++            child: Image.asset(
++              'assets/img/$photo',
++              height: double.infinity,
++              fit: BoxFit.cover,
++              gaplessPlayback: true,
++              excludeFromSemantics: true,
++            ),
++          ),
++      ],
++    );
++  }
++}
+--- a/lib/screens/lawmaker_detail_screen.dart
++++ b/lib/screens/lawmaker_detail_screen.dart
+@@ -1,3 +1,4 @@
++import '../widgets/leader_contact_button.dart';
+ import 'federal_officials_screen.dart';
+ import '../services/federal_officials_service.dart';
+ import 'leader_quick_profile_screen.dart';
+@@ -224,6 +225,7 @@
+       }
+ 
+       return LeaderQuickProfileScreen(
++        contactButton: LeaderContactButton(leader: widget.lawmaker),
+         name: name,
+         role: roleDisplay,
+         statusPanel:
+@@ -319,6 +321,7 @@
+             child: Column(
+               crossAxisAlignment: CrossAxisAlignment.stretch,
+               children: [
++                LeaderContactButton(leader: widget.lawmaker),
+                 // 1. Header Section (Photo + Bio | Map)
+                 if (isDesktop)
+                   Row(
+--- a/lib/screens/leader_quick_profile_screen.dart
++++ b/lib/screens/leader_quick_profile_screen.dart
+@@ -8,6 +8,7 @@
+   final String? party, phone, address, website, photoPath, recordedTerm;
+   final VoidCallback onDetails;
+   final Widget? statusPanel;
++  final Widget? contactButton;
+   const LeaderQuickProfileScreen({
+     super.key,
+     required this.name,
+@@ -21,6 +22,7 @@
+     this.photoPath,
+     this.recordedTerm,
+     this.statusPanel,
++    this.contactButton,
+   });
+ 
+   Future<void> _open(BuildContext context, String value) async {
+@@ -114,6 +116,7 @@
+                 ),
+                 if (statusPanel != null) statusPanel!,
+                 const SizedBox(height: 20),
++                if (contactButton != null) contactButton!,
+                 if (recordedTerm?.isNotEmpty ?? false) ...[
+                   Text(
+                     'Recorded term',
+--- a/lib/screens/local_detail_screen.dart
++++ b/lib/screens/local_detail_screen.dart
+@@ -1,3 +1,4 @@
++import '../widgets/leader_contact_button.dart';
+ import '../widgets/election_status_banner.dart';
+ import 'entity_details_screen.dart';
+ import 'package:flutter/material.dart';
+@@ -18,7 +19,13 @@
+ class LocalDetailScreen extends StatefulWidget {
+   final SearchResult searchResult;
+ 
+-  const LocalDetailScreen({super.key, required this.searchResult});
++  final bool showRepresentativesFirst;
++
++  const LocalDetailScreen({
++    super.key,
++    required this.searchResult,
++    this.showRepresentativesFirst = false,
++  });
+ 
+   @override
+   State<LocalDetailScreen> createState() => _LocalDetailScreenState();
+@@ -35,6 +42,7 @@
+   @override
+   void initState() {
+     super.initState();
++    if (widget.showRepresentativesFirst) _selectedTab = 2;
+     CivicDataProvider().loadData();
+   }
+ 
+@@ -1010,6 +1018,7 @@
+           for (var mayor in localMayors)
+             _buildOfficialCard(
+               title: mayor.name,
++              leader: mayor,
+               subtitle: 'Mayor of ${mayor.city}',
+               reelectionTag: civicProvider.getIncumbentReelectionTimeline(
+                 'Mayor',
+@@ -1047,6 +1056,7 @@
+           const SizedBox(height: 4),
+           _buildOfficialCard(
+             title: governor.name,
++            leader: governor,
+             subtitle:
+                 'Governor of $stateId (${governor.party ?? "State Executive"})',
+             reelectionTag: civicProvider.getIncumbentReelectionTimeline(
+@@ -1086,6 +1096,7 @@
+           for (var senator in senators)
+             _buildOfficialCard(
+               title: senator.name,
++              leader: senator,
+               subtitle:
+                   'U.S. Senator (${senator.party ?? "Senator"}) • $stateId',
+               reelectionTag: civicProvider.getIncumbentReelectionTimeline(
+@@ -1122,62 +1133,34 @@
+             ),
+           ),
+           const SizedBox(height: 4),
+-          Card(
+-            shape: RoundedRectangleBorder(
+-              borderRadius: BorderRadius.circular(10),
++          if (houseMembers.length > 1)
++            const Padding(
++              padding: EdgeInsets.only(bottom: 8),
++              child: Text('Check your district to identify your House member.'),
+             ),
+-            child: Padding(
+-              padding: const EdgeInsets.all(14),
+-              child: Column(
+-                crossAxisAlignment: CrossAxisAlignment.start,
+-                children: [
+-                  Row(
+-                    children: [
+-                      const CircleAvatar(
+-                        backgroundColor: Color(0xFFE2E8F0),
+-                        child: Icon(Icons.groups, color: Color(0xFF1E3A8A)),
+-                      ),
+-                      const SizedBox(width: 12),
+-                      Expanded(
+-                        child: Column(
+-                          crossAxisAlignment: CrossAxisAlignment.start,
+-                          children: [
+-                            Text(
+-                              '$stateId Congressional Delegation (${houseMembers.length} Districts)',
+-                              style: const TextStyle(
+-                                fontWeight: FontWeight.bold,
+-                                fontSize: 14,
+-                              ),
+-                            ),
+-                            const SizedBox(height: 2),
+-                            Text(
+-                              civicProvider.getIncumbentReelectionTimeline(
+-                                'Representative',
+-                                stateId,
+-                              ),
+-                              style: const TextStyle(
+-                                fontSize: 11,
+-                                color: Color(0xFF047857),
+-                                fontWeight: FontWeight.bold,
+-                              ),
+-                            ),
+-                          ],
+-                        ),
+-                      ),
+-                    ],
+-                  ),
+-                  const SizedBox(height: 8),
+-                  Text(
+-                    'Cities and counties may span multiple congressional districts. Select your specific district on the map or explore candidates on the "On Your Ballot" tab.',
+-                    style: TextStyle(
+-                      fontSize: 12,
+-                      color: Colors.blueGrey.shade700,
+-                    ),
++          for (final member in houseMembers)
++            _buildOfficialCard(
++              title: member.name,
++              leader: member,
++              subtitle: member.district == null
++                  ? 'U.S. Representative'
++                  : 'U.S. Representative · District ${member.district}',
++              reelectionTag: civicProvider.getIncumbentReelectionTimeline(
++                'Representative',
++                stateId,
++              ),
++              icon: Icons.person,
++              photoPath: member.photoLocalPath,
++              onTap: () => Navigator.of(context).push(
++                MaterialPageRoute<void>(
++                  builder: (_) => LawmakerDetailScreen(
++                    lawmaker: member,
++                    role: 'Representative',
++                    stateId: stateId,
+                   ),
+-                ],
++                ),
+               ),
+             ),
+-          ),
+           const SizedBox(height: 12),
+         ],
+ 
+@@ -1293,6 +1276,7 @@
+ 
+   Widget _buildOfficialCard({
+     required String title,
++    required Object leader,
+     required String subtitle,
+     required String reelectionTag,
+     required IconData icon,
+@@ -1339,7 +1323,7 @@
+             ),
+           ],
+         ),
+-        trailing: const Icon(Icons.chevron_right, color: Colors.blueGrey),
++        trailing: LeaderContactButton(leader: leader),
+         onTap: onTap,
+       ),
+     );
+--- a/lib/screens/state_detail_screen.dart
++++ b/lib/screens/state_detail_screen.dart
+@@ -1,3 +1,4 @@
++import '../widgets/leader_contact_button.dart';
+ import 'civic_profile_screen.dart';
+ import '../utils/search_handler.dart';
+ import 'package:flutter/material.dart';
+@@ -1028,6 +1029,7 @@
+ 
+     return ListTile(
+       key: Key('lawmaker_tile_$name'),
++      trailing: LeaderContactButton(leader: leader),
+       onTap: () {
+         Navigator.push(
+           context,
+--- /dev/null
++++ b/lib/widgets/leader_contact_button.dart
+@@ -0,0 +1,55 @@
++import 'package:flutter/material.dart';
++import 'package:url_launcher/url_launcher.dart';
++
++import '../data/models.dart';
++
++class LeaderContactButton extends StatelessWidget {
++  const LeaderContactButton({super.key, required this.leader});
++
++  final Object leader;
++
++  Uri? _webLink(String? value) {
++    final uri = Uri.tryParse(value?.trim() ?? '');
++    if (uri == null ||
++        (uri.scheme != 'https' && uri.scheme != 'http') ||
++        uri.host.isEmpty) {
++      return null;
++    }
++    return uri;
++  }
++
++  @override
++  Widget build(BuildContext context) {
++    final (form, phone, website) = switch (leader) {
++      Senator s => (s.contactUrl, s.phone, s.website),
++      Representative r => (r.contactUrl, r.phone, r.website),
++      Governor g => (null, g.phone, g.website),
++      Mayor m => (null, null, m.detailsUrl),
++      _ => (null, null, null),
++    };
++    final number = phone?.replaceAll(RegExp(r'[^0-9+]'), '') ?? '';
++    final uri = _webLink(form) ??
++        (RegExp(r'[0-9]').hasMatch(number)
++            ? Uri(scheme: 'tel', path: number)
++            : _webLink(website));
++    if (uri == null) return const SizedBox.shrink();
++
++    return TextButton(
++      onPressed: () async {
++        try {
++          if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
++            return;
++          }
++        } catch (_) {
++          // Report failed launches below.
++        }
++        if (context.mounted) {
++          ScaffoldMessenger.of(context).showSnackBar(
++            const SnackBar(content: Text('Could not open this office contact.')),
++          );
++        }
++      },
++      child: const Text('Contact'),
++    );
++  }
++}

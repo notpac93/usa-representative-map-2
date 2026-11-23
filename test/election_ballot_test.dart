@@ -122,7 +122,12 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }
 
-        // 1. The recorded election is historical, never a new upcoming election.
+        // Representatives come first; elections are a separate destination.
+        expect(find.text('Alex Padilla'), findsOneWidget);
+        await tester.tap(find.text('Explore this area'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Elections'));
+        await tester.pumpAndSettle();
         final election = civicProvider.getElectionForState('CA');
         expect(
           find.text('${election.nextElectionDate} • ${election.electionType}'),
@@ -133,18 +138,11 @@ void main() {
         expect(find.textContaining('Reg. Deadline:'), findsNothing);
         expect(find.text('Upcoming election'), findsNothing);
 
-        // 2. Verify Section tabs exist
-        expect(find.text('Ballot Records'), findsOneWidget);
-        expect(find.text('Bills & Laws'), findsOneWidget);
-        expect(find.text('Current Reps'), findsOneWidget);
-        expect(find.text('Voter Guide'), findsOneWidget);
-
-        // 3. Unverified examples cannot appear as candidate or measure records.
+        await tester.tap(find.text('Ballot records'));
+        await tester.pumpAndSettle();
         expect(find.text('Electoral Candidates'), findsOneWidget);
         expect(
-          find.text(
-            'Historical or unverified candidate records · not certified results',
-          ),
+          find.text('Recorded candidates · not certified results'),
           findsOneWidget,
         );
         expect(find.text('Alex Padilla'), findsNothing);
@@ -153,26 +151,10 @@ void main() {
         expect(find.text('WHAT A YES VOTE MEANS'), findsNothing);
         expect(find.text('WHAT A NO VOTE MEANS'), findsNothing);
 
-        // 4. Switch to "Current Reps" tab
-        await tester.tap(find.text('Current Reps'));
-        for (int i = 0; i < 5; i++) {
-          await tester.pump(const Duration(milliseconds: 100));
-        }
-
-        expect(find.text('Your Current Elected Officials'), findsOneWidget);
-        expect(
-          find.textContaining(
-            'Next election date not verified for this office',
-          ),
-          findsWidgets,
-        );
-
-        // 5. Switch to "Voter Guide" tab
-        await tester.tap(find.text('Voter Guide'));
-        for (int i = 0; i < 5; i++) {
-          await tester.pump(const Duration(milliseconds: 100));
-        }
-
+        await tester.pageBack();
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Voting guide'));
+        await tester.pumpAndSettle();
         expect(find.textContaining('Election information:'), findsOneWidget);
         expect(find.text('Voter Registration Deadline'), findsNothing);
         expect(find.text('Vote By Mail & Absentee Voting'), findsNothing);

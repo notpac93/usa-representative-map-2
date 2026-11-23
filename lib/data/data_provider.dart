@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'models.dart';
+import 'congressional_roster.dart';
 import '../map/atlas_path_cache.dart';
 import '../utils/fips_mapping.dart';
 
@@ -13,6 +14,7 @@ class MapDataProvider extends ChangeNotifier {
   Map<String, Governor>? governors;
   Map<String, List<Senator>>? senators;
   Map<String, List<Representative>>? houseMembers;
+  CongressionalRoster? congressionalRoster;
   Map<String, List<CityFeature>>? cities;
   List<CityFeature>? nationalCities;
   Map<String, List<Mayor>>? mayors;
@@ -174,44 +176,15 @@ class MapDataProvider extends ChangeNotifier {
       debugPrint("Error loading governors: $e");
     }
 
-    // Load Senators
+    // Both chambers come from one prevalidated, embedded official snapshot.
+    // This is local asset loading, not a government or backend lookup.
     try {
-      final senString = await rootBundle.loadString(
-        'assets/data/senators.json',
-      );
-      final senList = json.decode(senString) as List;
-      senators = {};
-      for (var item in senList) {
-        final stateId = item['stateId'] as String?;
-        final senJsonList = item['senators'] as List?;
-        if (stateId != null && senJsonList != null) {
-          senators![stateId] = senJsonList
-              .map((e) => Senator.fromJson(e))
-              .toList();
-        }
-      }
+      final roster = await CongressionalRoster.load();
+      congressionalRoster = roster;
+      senators = roster.senators;
+      houseMembers = roster.houseMembers;
     } catch (e) {
-      debugPrint("Error loading senators: $e");
-    }
-
-    // Load House Members
-    try {
-      final houseString = await rootBundle.loadString(
-        'assets/data/houseMembers.json',
-      );
-      final houseList = json.decode(houseString) as List;
-      houseMembers = {};
-      for (var item in houseList) {
-        final stateId = item['stateId'] as String?;
-        final repJsonList = item['representatives'] as List?;
-        if (stateId != null && repJsonList != null) {
-          houseMembers![stateId] = repJsonList
-              .map((e) => Representative.fromJson(e))
-              .toList();
-        }
-      }
-    } catch (e) {
-      debugPrint("Error loading house members: $e");
+      debugPrint("Error loading congressional roster: $e");
     }
 
     // Load Mayors

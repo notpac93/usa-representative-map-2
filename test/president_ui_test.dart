@@ -128,7 +128,7 @@ void main() {
       await tester.ensureVisible(find.text('Federal Branches'));
       await tester.tap(find.text('Federal Branches'));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 800));
 
       // Tap Executive Branch button
       final presButton = find.text('Executive Branch');

@@ -27,7 +27,7 @@ class FederalPipelineTest(unittest.TestCase):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((ROOT / relative).read_bytes())
-        self.original = json.loads((ROOT / 'assets/data/federal_officials.json').read_text())
+        self.original = json.loads(gzip.decompress((ROOT / 'scripts/tests/fixtures/federal_baseline.json.gz').read_bytes()))
         self.original.pop('dataVersion', None)
         pipeline.collector.atomic_json(self.snapshot, self.original)
         self.runs = self.root / 'runs'

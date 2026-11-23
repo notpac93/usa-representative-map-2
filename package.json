@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "data:congress:build": "python3 scripts/refresh_congress.py --congress 119 --publish",
+    "data:congress:refresh": "python3 scripts/refresh_congress.py --congress 119 --download --publish",
+    "test:congress-data": "python3 -m unittest discover -s scripts/tests -p 'test_refresh_congress.py'",
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",

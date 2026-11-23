@@ -93,6 +93,51 @@ void main() {
     },
   );
 
+  test(
+    'success requires exactly the reviewed offices and matching request',
+    () {
+      const accepted = CongressionalOfficeDeliveryResult(
+        recipient: house,
+        status: CongressionalDeliveryStatus.acceptedForRouting,
+        message: 'Accepted',
+      );
+      const delivered = CongressionalOfficeDeliveryResult(
+        recipient: senate,
+        status: CongressionalDeliveryStatus.delivered,
+        message: 'Delivered',
+      );
+      final submitted = request('checked');
+      for (final offices in <List<CongressionalOfficeDeliveryResult>>[
+        [],
+        [accepted],
+        [accepted, accepted],
+      ]) {
+        expect(
+          CongressionalDeliveryResult(
+            idempotencyKey: 'checked',
+            offices: offices,
+          ).confirmsSubmissionFor(submitted),
+          isFalse,
+        );
+      }
+      expect(
+        CongressionalDeliveryResult(
+          idempotencyKey: 'other',
+          offices: [accepted, delivered],
+        ).confirmsSubmissionFor(submitted),
+        isFalse,
+      );
+      final success = CongressionalDeliveryResult(
+        idempotencyKey: 'checked',
+        offices: [accepted, delivered],
+        senderCopyStatus: SenderCopyStatus.sent,
+      );
+      expect(success.confirmsSubmissionFor(submitted), isTrue);
+      expect(success.asDuplicate().senderCopyStatus, SenderCopyStatus.sent);
+      expect(submitted.sendCopyToConstituent, isTrue);
+    },
+  );
+
   test('same idempotency key reuses one in-flight submission', () async {
     var submissions = 0;
     final service = IdempotentCongressionalDeliveryService(

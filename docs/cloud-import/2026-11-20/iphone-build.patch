@@ -1,0 +1,3206 @@
+From d8c0716bd5952ce26a5bed97558faab2a82d3668 Mon Sep 17 00:00:00 2001
+From: Codex <codex@users.noreply.github.com>
+Date: Fri, 20 Nov 2026 17:33:00 +0000
+Subject: [PATCH 1/3] Add official congressional roll calls to USA Rep
+
+---
+ .github/workflows/congress-votes.yml     | 112 ++++
+ android/app/src/main/AndroidManifest.xml |   1 +
+ docs/CONGRESS_VOTES.md                   |  27 +
+ lib/screens/congress_screen.dart         |  19 +-
+ lib/screens/congress_votes_screen.dart   | 625 +++++++++++++++++++++++
+ macos/Runner/DebugProfile.entitlements   |   2 +
+ macos/Runner/Release.entitlements        |   2 +
+ scripts/congress_votes.py                | 503 ++++++++++++++++++
+ scripts/tests/test_congress_votes.py     | 128 +++++
+ test/congress_votes_screen_test.dart     | 112 ++++
+ 10 files changed, 1530 insertions(+), 1 deletion(-)
+ create mode 100644 .github/workflows/congress-votes.yml
+ create mode 100644 docs/CONGRESS_VOTES.md
+ create mode 100644 lib/screens/congress_votes_screen.dart
+ create mode 100644 scripts/congress_votes.py
+ create mode 100644 scripts/tests/test_congress_votes.py
+ create mode 100644 test/congress_votes_screen_test.dart
+
+diff --git a/.github/workflows/congress-votes.yml b/.github/workflows/congress-votes.yml
+new file mode 100644
+index 0000000..d6f2171
+--- /dev/null
++++ b/.github/workflows/congress-votes.yml
+@@ -0,0 +1,112 @@
++name: Congressional roll calls
++
++on:
++  schedule:
++    - cron: '23 11 * * *'
++  workflow_dispatch:
++  pull_request:
++    paths:
++      - '.github/workflows/congress-votes.yml'
++      - 'scripts/congress_votes.py'
++      - 'scripts/tests/test_congress_votes.py'
++      - 'lib/screens/congress*'
++      - 'test/congress_votes_screen_test.dart'
++
++permissions:
++  contents: read
++
++jobs:
++  validate:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
++          sparse-checkout: scripts
++      - run: python3 -m unittest discover -s scripts/tests -p test_congress_votes.py
++
++  check-app:
++    if: github.event_name == 'pull_request'
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
++          sparse-checkout: |
++            lib
++            test
++            assets
++      - uses: subosito/flutter-action@v2
++        with:
++          flutter-version: '3.38.5'
++      - run: flutter pub get
++      - run: flutter analyze --no-fatal-infos --no-fatal-warnings lib/screens/congress_votes_screen.dart lib/screens/congress_screen.dart
++      - run: flutter test test/congress_votes_screen_test.dart
++
++  check-feeds:
++    if: github.event_name == 'pull_request'
++    needs: validate
++    runs-on: ubuntu-latest
++    timeout-minutes: 35
++    steps:
++      - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
++          sparse-checkout: scripts
++      - name: Verify current official sources without publishing
++        run: python3 scripts/congress_votes.py --output "$RUNNER_TEMP/congress-data"
++
++  publish:
++    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
++    needs: validate
++    runs-on: ubuntu-latest
++    timeout-minutes: 35
++    permissions:
++      contents: write
++    concurrency:
++      group: congress-votes-publication
++      cancel-in-progress: false
++    steps:
++      - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
++          sparse-checkout: scripts
++      - uses: actions/cache@v4
++        with:
++          path: tmp/congress-votes-cache
++          key: congress-xml-v1-${{ github.run_id }}
++          restore-keys: congress-xml-v1-
++      - name: Build and publish the validated snapshot
++        shell: bash
++        env:
++          GH_DATA_TOKEN: ${{ github.token }}
++        run: |
++          set -euo pipefail
++          data_dir="$RUNNER_TEMP/congress-data"
++          remote="https://github.com/$GITHUB_REPOSITORY.git"
++          cat > "$RUNNER_TEMP/congress-askpass" <<'SH'
++          #!/bin/sh
++          case "$1" in
++            *Username*) printf '%s\n' x-access-token ;;
++            *) printf '%s\n' "$GH_DATA_TOKEN" ;;
++          esac
++          SH
++          chmod 700 "$RUNNER_TEMP/congress-askpass"
++          export GIT_ASKPASS="$RUNNER_TEMP/congress-askpass" GIT_TERMINAL_PROMPT=0
++          trap 'rm -f "$GIT_ASKPASS"' EXIT
++          git init --initial-branch=congress-votes-data "$data_dir"
++          if git ls-remote --exit-code --heads "$remote" congress-votes-data; then
++            git -C "$data_dir" fetch --depth 1 --no-tags "$remote" refs/heads/congress-votes-data
++            git -C "$data_dir" checkout --detach FETCH_HEAD
++          else
++            result=$?
++            if [ "$result" -ne 2 ]; then exit "$result"; fi
++          fi
++          env -u GH_DATA_TOKEN -u GIT_ASKPASS python3 scripts/congress_votes.py --output "$data_dir"
++          cd "$data_dir"
++          git config user.name 'github-actions[bot]'
++          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
++          git add --all
++          git diff --cached --quiet && exit 0
++          git commit -m "Refresh official congressional votes"
++          git push "$remote" HEAD:refs/heads/congress-votes-data
+diff --git a/android/app/src/main/AndroidManifest.xml b/android/app/src/main/AndroidManifest.xml
+index 48e08d5..15ec725 100644
+--- a/android/app/src/main/AndroidManifest.xml
++++ b/android/app/src/main/AndroidManifest.xml
+@@ -1,4 +1,5 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <uses-permission android:name="android.permission.INTERNET" />
+     <application
+         android:label="usa_map_app"
+         android:name="${applicationName}"
+diff --git a/docs/CONGRESS_VOTES.md b/docs/CONGRESS_VOTES.md
+new file mode 100644
+index 0000000..9019d85
+--- /dev/null
++++ b/docs/CONGRESS_VOTES.md
+@@ -0,0 +1,27 @@
++# Congressional roll calls
++
++In Flutter, open **The United States Congress**, select **Federal Legislation**, and choose **Browse bills and recorded roll calls**. Choose a roll call to see the exact question, announced result, and member-by-member positions. The **Not Voting** filter selects the people explicitly listed in that category by the chamber. Present votes are displayed separately. Vacancies and people absent from the record are excluded from those counts. The vice president's recorded tie-breaker appears separately from senator totals.
++
++## Government sources
++
++| Source | Use |
++| --- | --- |
++| [House Clerk vote archive](https://clerk.house.gov/Votes) and [House roll-call XML specification](https://xml.house.gov/) | Official House roll-call numbers, questions, results, vote-date member identities, and positions. |
++| [Senate roll-call XML directory](https://www.senate.gov/general/common/generic/XML_Availability.htm) | Official Senate session index, questions, results, vote-date positions, and the vice president's tie-breaker when recorded. |
++| [GovInfo BILLSTATUS](https://www.govinfo.gov/bulkdata/BILLSTATUS) and [GPO XML user guide](https://github.com/usgpo/bill-status/blob/main/BILLSTATUS-XML_User_User-Guide.md) | Government bill titles, CRS summaries labeled by stage, sponsors, cosponsors, committees, reports, subjects, policy area, related measures, CBO cost estimates, actions, text versions, and law citations when published. |
++| [Congress.gov](https://www.congress.gov/) | Official text versions and legislative history for each linked measure. The [Congress.gov API](https://api.congress.gov/) is an official alternative for bill metadata. |
++
++Data starts with the 119th Congress (2025–2026). The collector imports floor roll calls that a chamber explicitly connects to a bill or resolution, including procedural questions and amendments with an identified parent measure. The chamber's structured measure reference is required. Voice votes and unanimous consent can appear in a bill's action history. Neither procedure supplies individual voting positions. Committee votes, nominations, treaties, and votes with no structured bill link are outside the feed.
++
++## Run and verify
++
++Run the read-only pull request check or use the local commands below. Network access to the three official hosts is required. No commercial provider or Congress.gov API key is needed.
++
++```sh
++python3 -m unittest discover -s scripts/tests -p test_congress_votes.py
++python3 scripts/congress_votes.py --output tmp/congress-data
++```
++
++After merge, run **Congressional roll calls** from GitHub Actions for the first publication. The scheduled workflow checks daily at 11:23 UTC. It stores the normalized data on the separate `congress-votes-data` branch. The app reads that public JSON feed, so data updates after the app version containing this feature ships. The check timestamp is displayed in the app and GitHub Actions retains run failures and logs. For a test build, use `--dart-define=CONGRESS_VOTES_FEED_URL=<JSON origin with trailing slash>` to read a different snapshot.
++
++The script joins measures by Congress, type, and number, while preserving chamber, session, and roll number for every vote. The Senate index supplies its complete list of rolls. House discovery uses the Clerk’s year archive and current results list to establish the latest roll number, then verifies every sequentially numbered Clerk XML file through that number. Compare with [House Clerk roll calls](https://clerk.house.gov/Votes) if a session appears stale. The script retries transient source failures and checks member tallies against the official counts. Freshly linked measures can display before the GovInfo record arrives. The Senate sometimes indexes a roll before it posts member details. The feed reports these rolls as pending and retries them on the next refresh. A missing previously published record halts publication for review. Git sends a complete validated snapshot at once and the previous published snapshot stays available if validation or publication fails.
+diff --git a/lib/screens/congress_screen.dart b/lib/screens/congress_screen.dart
+index 0a779c6..3437741 100644
+--- a/lib/screens/congress_screen.dart
++++ b/lib/screens/congress_screen.dart
+@@ -9,6 +9,7 @@ import '../data/models.dart';
+ import '../data/bill_models.dart';
+ import 'lawmaker_detail_screen.dart';
+ import 'bill_detail_screen.dart';
++import 'congress_votes_screen.dart';
+ 
+ class CongressScreen extends StatefulWidget {
+   final int initialTabIndex;
+@@ -298,7 +299,23 @@ class _CongressScreenState extends State<CongressScreen>
+                     children: [
+                       _buildSenateTab(),
+                       _buildHouseTab(),
+-                      _buildBillsTab(),
++                      Column(
++                        children: [
++                          Padding(
++                            padding: const EdgeInsets.symmetric(horizontal: 16),
++                            child: OutlinedButton.icon(
++                              icon: const Icon(Icons.how_to_vote_outlined),
++                              label: const Text('Browse bills and recorded roll calls'),
++                              onPressed: () => Navigator.of(context).push(
++                                MaterialPageRoute<void>(
++                                  builder: (_) => const CongressVotesScreen(),
++                                ),
++                              ),
++                            ),
++                          ),
++                          Expanded(child: _buildBillsTab()),
++                        ],
++                      ),
+                       _buildPowersTab(),
+                     ],
+                   ),
+diff --git a/lib/screens/congress_votes_screen.dart b/lib/screens/congress_votes_screen.dart
+new file mode 100644
+index 0000000..30c5d18
+--- /dev/null
++++ b/lib/screens/congress_votes_screen.dart
+@@ -0,0 +1,625 @@
++import 'dart:convert';
++
++import 'package:flutter/material.dart';
++import 'package:flutter/services.dart';
++import 'package:http/http.dart' as http;
++import 'package:url_launcher/url_launcher.dart';
++
++typedef _Record = Map<String, dynamic>;
++
++const _feed = String.fromEnvironment(
++  'CONGRESS_VOTES_FEED_URL',
++  defaultValue:
++      'https://raw.githubusercontent.com/notpac93/usa-representative-map-2/congress-votes-data/',
++);
++const _positions = <String, (String, Color)>{
++  'yes': ('Yea / Aye', Color(0xFF08765D)),
++  'no': ('Nay / No', Color(0xFFAA3344)),
++  'present': ('Present', Color(0xFF7C57A5)),
++  'notVoting': ('Not Voting', Color(0xFF6B7280)),
++};
++
++List<_Record> _records(Object? value) =>
++    (value as List<dynamic>).cast<_Record>();
++
++Future<_Record> _getRecord(String path, http.Client? client) async {
++  final uri = Uri.parse('$_feed$path');
++  final response = await (client?.get(uri) ?? http.get(uri)).timeout(
++    const Duration(seconds: 15),
++  );
++  if (response.statusCode != 200) {
++    throw FormatException(
++      'Congressional data unavailable (${response.statusCode})',
++    );
++  }
++  return jsonDecode(utf8.decode(response.bodyBytes)) as _Record;
++}
++
++Future<_Record> _loadIndex(http.Client? client) async {
++  final record = await _getRecord('index.json', client);
++  if (record['schema'] != 1) {
++    throw const FormatException('Unsupported congressional data version');
++  }
++  return record;
++}
++
++class CongressVotesScreen extends StatefulWidget {
++  const CongressVotesScreen({super.key, this.client});
++  final http.Client? client;
++
++  @override
++  State<CongressVotesScreen> createState() => _CongressVotesScreenState();
++}
++
++class _CongressVotesScreenState extends State<CongressVotesScreen> {
++  late Future<_Record> _index = _loadIndex(widget.client);
++  int? _congress;
++  String _query = '';
++  String? _chamber;
++
++  @override
++  Widget build(BuildContext context) {
++    return Scaffold(
++      appBar: AppBar(title: const Text('Bills & roll calls')),
++      body: FutureBuilder<_Record>(
++        future: _index,
++        builder: (context, snapshot) {
++          if (snapshot.connectionState != ConnectionState.done) {
++            return const Center(child: CircularProgressIndicator());
++          }
++          if (snapshot.hasError) {
++            return _Retry(
++              message: 'The congressional vote feed is unavailable.',
++              onRetry: () => setState(() => _index = _loadIndex(widget.client)),
++            );
++          }
++          final index = snapshot.data!;
++          final congresses = _records(index['congresses']);
++          if (congresses.isEmpty) {
++            return const Center(
++              child: Text('No roll calls published in the feed yet.'),
++            );
++          }
++          final term = congresses.firstWhere(
++            (row) => row['congress'] == _congress,
++            orElse: () => congresses.first,
++          );
++          final pending = (term['pendingRolls'] as _Record? ?? {}).values
++              .fold<int>(0, (total, rolls) => total + (rolls as List).length);
++          final query = _query.toLowerCase().trim();
++          final referenceQuery = query.replaceAll(RegExp(r'[.\s-]'), '');
++          final bills = _records(term['bills']).where((row) {
++            final label = (row['label'] as String).toLowerCase().replaceAll(
++              RegExp(r'[.\s-]'),
++              '',
++            );
++            return (_chamber == null ||
++                    (row['chambers'] as List).contains(_chamber)) &&
++                ((row['title'] as String).toLowerCase().contains(query) ||
++                    label.contains(referenceQuery));
++          }).toList();
++          final updated = DateTime.tryParse(
++            index['checkedAt'] as String? ?? '',
++          )?.toLocal();
++          final checked = updated == null
++              ? 'Update time unavailable'
++              : 'Sources checked ${MaterialLocalizations.of(context).formatMediumDate(updated)}';
++          return Center(
++            child: ConstrainedBox(
++              constraints: const BoxConstraints(maxWidth: 960),
++              child: ListView.builder(
++                padding: const EdgeInsets.all(16),
++                itemCount: bills.isEmpty ? 2 : bills.length + 1,
++                itemBuilder: (context, index) {
++                  if (index == 0) {
++                    return Column(
++                      crossAxisAlignment: CrossAxisAlignment.start,
++                      children: [
++                        const Text(
++                          'Explore recorded House and Senate votes on bills and resolutions. Individual voting records are available for roll calls.',
++                        ),
++                        const SizedBox(height: 8),
++                        Text(checked),
++                        if (pending > 0)
++                          Text(
++                            'Chamber details pending for $pending indexed roll ${pending == 1 ? 'call' : 'calls'}.',
++                          ),
++                        const SizedBox(height: 16),
++                        Wrap(
++                          spacing: 20,
++                          runSpacing: 8,
++                          crossAxisAlignment: WrapCrossAlignment.center,
++                          children: [
++                            DropdownButton<int>(
++                              value: term['congress'] as int,
++                              items: congresses.map((row) {
++                                final number = row['congress'] as int;
++                                return DropdownMenuItem(
++                                  value: number,
++                                  child: Text('Congress $number'),
++                                );
++                              }).toList(),
++                              onChanged: (number) =>
++                                  setState(() => _congress = number),
++                            ),
++                            for (final chamber in ['House', 'Senate'])
++                              FilterChip(
++                                label: Text(chamber),
++                                selected: _chamber == chamber,
++                                onSelected: (selected) => setState(
++                                  () => _chamber = selected ? chamber : null,
++                                ),
++                              ),
++                          ],
++                        ),
++                        const SizedBox(height: 12),
++                        TextField(
++                          onChanged: (value) => setState(() => _query = value),
++                          decoration: const InputDecoration(
++                            labelText: 'Search by bill title or number',
++                            prefixIcon: Icon(Icons.search),
++                            border: OutlineInputBorder(),
++                          ),
++                        ),
++                        const SizedBox(height: 16),
++                        Text('${bills.length} measures'),
++                        const SizedBox(height: 8),
++                      ],
++                    );
++                  }
++                  if (bills.isEmpty) {
++                    return const ListTile(
++                      title: Text('No bills match these filters.'),
++                    );
++                  }
++                  final bill = bills[index - 1];
++                  final label = bill['label'] as String;
++                  final title = bill['title'] as String;
++                  final chambers = (bill['chambers'] as List).join(' · ');
++                  final rolls = (bill['rollIds'] as List).length;
++                  return Card(
++                    child: ListTile(
++                      title: Text(title == label ? label : '$label · $title'),
++                      subtitle: Text(
++                        '$chambers · $rolls roll ${rolls == 1 ? 'call' : 'calls'}\nLatest roll call ${bill['latestVote']}',
++                      ),
++                      trailing: const Icon(Icons.chevron_right),
++                      onTap: () => Navigator.of(context).push(
++                        MaterialPageRoute<void>(
++                          builder: (_) => _BillVotesScreen(
++                            bill: bill,
++                            preferredChamber: _chamber,
++                            client: widget.client,
++                          ),
++                        ),
++                      ),
++                    ),
++                  );
++                },
++              ),
++            ),
++          );
++        },
++      ),
++    );
++  }
++}
++
++class _BillVotesScreen extends StatefulWidget {
++  const _BillVotesScreen({
++    required this.bill,
++    required this.client,
++    this.preferredChamber,
++  });
++  final http.Client? client;
++  final _Record bill;
++  final String? preferredChamber;
++
++  @override
++  State<_BillVotesScreen> createState() => _BillVotesScreenState();
++}
++
++class _BillVotesScreenState extends State<_BillVotesScreen> {
++  late final Future<Map<String, String>> _houseNames = _loadHouseNames();
++
++  Future<Map<String, String>> _loadHouseNames() async {
++    try {
++      final groups = _records(
++        jsonDecode(
++          await rootBundle.loadString('assets/data/houseMembers.json'),
++        ),
++      );
++      return {
++        for (final group in groups)
++          for (final member in _records(group['representatives']))
++            if (member['bioguideId'] case final String id)
++              if (member['name'] case final String name) id: name,
++      };
++    } on Exception {
++      return {};
++    }
++  }
++
++  late Future<_Record> _bill = _loadBill();
++  int? _selectedRoll;
++
++  Future<_Record> _loadBill() async {
++    final detail = await _getRecord(
++      widget.bill['path'] as String,
++      widget.client,
++    );
++    if (detail['id'] != widget.bill['id']) {
++      throw const FormatException('Congressional bill identity mismatch');
++    }
++    return detail;
++  }
++
++  @override
++  Widget build(BuildContext context) {
++    return Scaffold(
++      appBar: AppBar(title: Text(widget.bill['label'] as String)),
++      body: FutureBuilder<_Record>(
++        future: _bill,
++        builder: (context, snapshot) {
++          if (snapshot.connectionState != ConnectionState.done) {
++            return const Center(child: CircularProgressIndicator());
++          }
++          if (snapshot.hasError) {
++            return _Retry(
++              message: 'The bill details could not be loaded.',
++              onRetry: () => setState(() => _bill = _loadBill()),
++            );
++          }
++          final bill = snapshot.data!;
++          final votes = _records(bill['votes']);
++          final preferred = votes.indexWhere(
++            (vote) => vote['chamber'] == widget.preferredChamber,
++          );
++          final selected = _selectedRoll ?? (preferred < 0 ? 0 : preferred);
++          final roll = votes[selected];
++          final metadata = bill['metadata'] as _Record?;
++          final summaries = metadata == null
++              ? <_Record>[]
++              : _records(metadata['summaries']);
++          return Center(
++            child: ConstrainedBox(
++              constraints: const BoxConstraints(maxWidth: 960),
++              child: ListView(
++                padding: const EdgeInsets.all(16),
++                children: [
++                  Text(
++                    bill['title'] as String,
++                    style: Theme.of(context).textTheme.headlineSmall,
++                  ),
++                  const SizedBox(height: 12),
++                  Text(
++                    'What the bill does',
++                    style: Theme.of(context).textTheme.titleLarge,
++                  ),
++                  if (summaries.isEmpty)
++                    const Padding(
++                      padding: EdgeInsets.symmetric(vertical: 8),
++                      child: Text(
++                        'An official bill summary is unavailable. See the bill text on Congress.gov.',
++                      ),
++                    )
++                  else
++                    for (final summary in summaries)
++                      ExpansionTile(
++                        tilePadding: EdgeInsets.zero,
++                        title: Text(
++                          'CRS summary · ${summary['stage']} · ${summary['date']}',
++                        ),
++                        expandedCrossAxisAlignment: CrossAxisAlignment.start,
++                        expandedAlignment: Alignment.centerLeft,
++                        children: [SelectableText(summary['text'] as String)],
++                      ),
++                  if (metadata != null) _BillMetadata(metadata: metadata),
++                  Wrap(
++                    spacing: 8,
++                    children: [
++                      _SourceLink(
++                        label: 'Bill on Congress.gov',
++                        url: bill['congressUrl'] as String,
++                      ),
++                      _SourceLink(
++                        label: 'Official bill text',
++                        url: "${bill['congressUrl']}/text",
++                      ),
++                      if (metadata != null)
++                        _SourceLink(
++                          label: 'GovInfo bill status XML',
++                          url: bill['metadataUrl'] as String,
++                        ),
++                    ],
++                  ),
++                  const Divider(height: 32),
++                  Text(
++                    'Recorded roll calls',
++                    style: Theme.of(context).textTheme.titleLarge,
++                  ),
++                  const SizedBox(height: 8),
++                  DropdownButtonFormField<int>(
++                    initialValue: selected,
++                    isExpanded: true,
++                    decoration: const InputDecoration(
++                      labelText: 'Select a roll call',
++                      border: OutlineInputBorder(),
++                    ),
++                    items: votes.indexed.map((entry) {
++                      final (index, vote) = entry;
++                      return DropdownMenuItem(
++                        value: index,
++                        child: Text(
++                          '${vote['chamber']} · ${vote['date']} · Roll ${vote['roll']} · ${vote['question']}',
++                          overflow: TextOverflow.ellipsis,
++                        ),
++                      );
++                    }).toList(),
++                    onChanged: (index) => setState(() => _selectedRoll = index),
++                  ),
++                  const SizedBox(height: 16),
++                  FutureBuilder<Map<String, String>>(
++                    future: roll['chamber'] == 'House' ? _houseNames : null,
++                    builder: (context, names) => _RollDetails(
++                      key: ValueKey(selected),
++                      roll: roll,
++                      fullNames: roll['chamber'] == 'House'
++                          ? names.data ?? const {}
++                          : const {},
++                    ),
++                  ),
++                ],
++              ),
++            ),
++          );
++        },
++      ),
++    );
++  }
++}
++
++class _BillMetadata extends StatelessWidget {
++  const _BillMetadata({required this.metadata});
++  final _Record metadata;
++
++  @override
++  Widget build(BuildContext context) {
++    final actions = _records(metadata['actions']);
++    final versions = _records(metadata['textVersions'] ?? []);
++    final costEstimates = _records(metadata['costEstimates'] ?? []);
++    final relatedBills = _records(metadata['relatedBills'] ?? []);
++    final fields = <String, String>{
++      'Introduced': metadata['introduced'] as String,
++      'Latest action':
++          "${metadata['latestActionDate']} ${metadata['latestAction']}".trim(),
++      'Policy area': metadata['policyArea'] as String,
++      'Committee reports': (metadata['committeeReports'] as List? ?? []).join(
++        ', ',
++      ),
++      for (final key in [
++        'sponsors',
++        'cosponsors',
++        'committees',
++        'subjects',
++        'laws',
++      ])
++        '${key[0].toUpperCase()}${key.substring(1)}': (metadata[key] as List)
++            .where((value) => value != '')
++            .join(', '),
++    };
++    return ExpansionTile(
++      tilePadding: EdgeInsets.zero,
++      title: const Text('Bill status and legislative history'),
++      expandedAlignment: Alignment.centerLeft,
++      expandedCrossAxisAlignment: CrossAxisAlignment.start,
++      children: [
++        for (final field in fields.entries)
++          if (field.value.isNotEmpty)
++            Padding(
++              padding: const EdgeInsets.only(bottom: 8),
++              child: Text('${field.key}  ${field.value}'),
++            ),
++        for (final version in versions)
++          _SourceLink(
++            label: "${version['stage']} · ${version['date']} (GovInfo XML)",
++            url: version['url'] as String,
++          ),
++        for (final estimate in costEstimates)
++          _SourceLink(
++            label: "CBO estimate · ${estimate['title']}",
++            url: estimate['url'] as String,
++          ),
++        for (final related in relatedBills)
++          _SourceLink(
++            label:
++                "Related measure · ${related['title']} · ${related['relationship']}",
++            url: related['url'] as String,
++          ),
++        for (final action in actions)
++          Padding(
++            padding: const EdgeInsets.only(bottom: 8),
++            child: Text('${action['date']}  ${action['text']}'),
++          ),
++      ],
++    );
++  }
++}
++
++class _RollDetails extends StatefulWidget {
++  const _RollDetails({super.key, required this.roll, required this.fullNames});
++  final _Record roll;
++  final Map<String, String> fullNames;
++
++  String displayName(_Record row) =>
++      fullNames[row['id']] ?? row['name'] as String;
++
++  @override
++  State<_RollDetails> createState() => _RollDetailsState();
++}
++
++class _RollDetailsState extends State<_RollDetails> {
++  String? _position;
++  String _query = '';
++
++  @override
++  Widget build(BuildContext context) {
++    final roll = widget.roll;
++    final counts = roll['counts'] as _Record;
++    final rows =
++        _records(roll['members']).where((row) {
++          final terms =
++              "${widget.displayName(row)} ${row['name']} ${row['state']} ${row['party']}"
++                  .toLowerCase();
++          return (_position == null || _position == row['position']) &&
++              terms.contains(_query.trim().toLowerCase());
++        }).toList()..sort(
++          (a, b) => (a['name'] as String).compareTo(b['name'] as String),
++        );
++    final description = roll['description'] as String;
++    final amendment = roll['amendment'] as String;
++    final amendmentDetail = roll['amendmentDetail'] as String;
++    final tieBreaker = roll['tieBreaker'] as String? ?? '';
++    return Column(
++      crossAxisAlignment: CrossAxisAlignment.start,
++      children: [
++        Text(
++          roll['question'] as String,
++          style: Theme.of(context).textTheme.titleMedium,
++        ),
++        if (description.isNotEmpty && description != roll['question'])
++          Text(description),
++        if (amendment.isNotEmpty)
++          Text(
++            'Amendment ${amendment.replaceFirst(RegExp(r'^S\.Amdt\.\s*'), '')}',
++          ),
++        if (amendmentDetail.isNotEmpty) Text(amendmentDetail),
++        const SizedBox(height: 8),
++        Text("Result  ${roll['result']}"),
++        if (tieBreaker.isNotEmpty)
++          Text('Vice-presidential tie-breaker  $tieBreaker'),
++        _SourceLink(
++          label: "Official ${roll['chamber']} roll call",
++          url: roll['url'] as String,
++        ),
++        const SizedBox(height: 8),
++        Semantics(
++          label: _positions.entries
++              .map((entry) => '${entry.value.$1} ${counts[entry.key]}')
++              .join(', '),
++          child: ClipRRect(
++            borderRadius: BorderRadius.circular(5),
++            child: SizedBox(
++              height: 12,
++              child: Row(
++                children: [
++                  for (final entry in _positions.entries)
++                    if ((counts[entry.key] as int) > 0)
++                      Expanded(
++                        flex: counts[entry.key] as int,
++                        child: ColoredBox(color: entry.value.$2),
++                      ),
++                ],
++              ),
++            ),
++          ),
++        ),
++        const SizedBox(height: 10),
++        Wrap(
++          spacing: 8,
++          runSpacing: 4,
++          children: [
++            for (final entry in _positions.entries)
++              FilterChip(
++                avatar: Icon(Icons.circle, color: entry.value.$2, size: 12),
++                label: Text('${entry.value.$1} ${counts[entry.key]}'),
++                selected: _position == entry.key,
++                onSelected: (selected) =>
++                    setState(() => _position = selected ? entry.key : null),
++              ),
++          ],
++        ),
++        const SizedBox(height: 8),
++        const Text(
++          '“Not Voting” is the chamber’s recorded position. Reasons are unavailable in the roll-call record.',
++        ),
++        const SizedBox(height: 12),
++        TextField(
++          onChanged: (value) => setState(() => _query = value),
++          decoration: const InputDecoration(
++            labelText: 'Find a member by name or state code',
++            prefixIcon: Icon(Icons.search),
++            border: OutlineInputBorder(),
++          ),
++        ),
++        const SizedBox(height: 8),
++        if (rows.isEmpty) const Text('No members match these filters.'),
++        for (final row in rows)
++          ListTile(
++            dense: true,
++            contentPadding: EdgeInsets.zero,
++            title: Text(widget.displayName(row)),
++            subtitle: Text(
++              [
++                if (row['party'] != '') row['party'],
++                if (row['state'] != '') row['state'],
++                if (row['district'] != '') 'District ${row['district']}',
++              ].join(' · '),
++            ),
++            trailing: Text(
++              row['vote'] as String,
++              style: TextStyle(
++                color: _positions[row['position']]?.$2,
++                fontWeight: FontWeight.w600,
++              ),
++            ),
++          ),
++      ],
++    );
++  }
++}
++
++class _SourceLink extends StatelessWidget {
++  const _SourceLink({required this.label, required this.url});
++  final String label;
++  final String url;
++
++  @override
++  Widget build(BuildContext context) {
++    return TextButton(
++      onPressed: () async {
++        if (!await launchUrl(
++              Uri.parse(url),
++              mode: LaunchMode.externalApplication,
++            ) &&
++            context.mounted) {
++          ScaffoldMessenger.of(context).showSnackBar(
++            const SnackBar(
++              content: Text('Could not open the official source.'),
++            ),
++          );
++        }
++      },
++      child: Text(label),
++    );
++  }
++}
++
++class _Retry extends StatelessWidget {
++  const _Retry({required this.message, required this.onRetry});
++  final String message;
++  final VoidCallback onRetry;
++
++  @override
++  Widget build(BuildContext context) {
++    return Center(
++      child: Column(
++        mainAxisSize: MainAxisSize.min,
++        children: [
++          Text(message),
++          TextButton(onPressed: onRetry, child: const Text('Try again')),
++        ],
++      ),
++    );
++  }
++}
+diff --git a/macos/Runner/DebugProfile.entitlements b/macos/Runner/DebugProfile.entitlements
+index dddb8a3..08c3ab1 100644
+--- a/macos/Runner/DebugProfile.entitlements
++++ b/macos/Runner/DebugProfile.entitlements
+@@ -8,5 +8,7 @@
+ 	<true/>
+ 	<key>com.apple.security.network.server</key>
+ 	<true/>
++	<key>com.apple.security.network.client</key>
++	<true/>
+ </dict>
+ </plist>
+diff --git a/macos/Runner/Release.entitlements b/macos/Runner/Release.entitlements
+index 852fa1a..ee95ab7 100644
+--- a/macos/Runner/Release.entitlements
++++ b/macos/Runner/Release.entitlements
+@@ -4,5 +4,7 @@
+ <dict>
+ 	<key>com.apple.security.app-sandbox</key>
+ 	<true/>
++	<key>com.apple.security.network.client</key>
++	<true/>
+ </dict>
+ </plist>
+diff --git a/scripts/congress_votes.py b/scripts/congress_votes.py
+new file mode 100644
+index 0000000..6352f27
+--- /dev/null
++++ b/scripts/congress_votes.py
+@@ -0,0 +1,503 @@
++#!/usr/bin/env python3
++"""Build a public, versioned index of bills with official floor roll calls."""
++
++import argparse
++from collections import Counter, defaultdict
++from concurrent.futures import ThreadPoolExecutor
++from datetime import date, datetime, timedelta, timezone
++import hashlib
++from html.parser import HTMLParser
++import json
++from pathlib import Path
++import re
++import sys
++from threading import Lock
++import time
++from urllib.error import HTTPError, URLError
++from urllib.parse import urlsplit
++from urllib.request import Request, urlopen
++import xml.etree.ElementTree as ET
++from zoneinfo import ZoneInfo
++
++HOUSE = 'https://clerk.house.gov'
++SENATE = 'https://www.senate.gov/legislative/LIS'
++GOVINFO = 'https://www.govinfo.gov'
++FIRST_CONGRESS = 119
++SENATE_PENDING_PAGE = b'<title>U.S. Senate: Roll Call Vote Unavailable</title>'
++PENDING = object()
++POSITIONS = {
++    'yea': 'yes', 'aye': 'yes', 'nay': 'no', 'no': 'no',
++    'present': 'present', 'present, giving live pair': 'present',
++    'not voting': 'notVoting',
++}
++BILL_TYPES = {
++    'hr': ('H.R.', 'house-bill'),
++    's': ('S.', 'senate-bill'),
++    'hjres': ('H.J.Res.', 'house-joint-resolution'),
++    'sjres': ('S.J.Res.', 'senate-joint-resolution'),
++    'hconres': ('H.Con.Res.', 'house-concurrent-resolution'),
++    'sconres': ('S.Con.Res.', 'senate-concurrent-resolution'),
++    'hres': ('H.Res.', 'house-resolution'),
++    'sres': ('S.Res.', 'senate-resolution'),
++}
++
++
++class OfficialSources:
++    def __init__(self, cache):
++        self.cache = cache
++        cache.mkdir(parents=True, exist_ok=True)
++        self.lock = Lock()
++        self.next_request = {}
++
++    def get(self, url, hours=0, allow_missing=False):
++        host = urlsplit(url).netloc
++        key = hashlib.sha256(url.encode()).hexdigest()
++        cached = self.cache / key
++        if cached.exists() and time.time() - cached.stat().st_mtime < hours * 3600:
++            return cached.read_bytes()
++        for attempt in range(4):
++            with self.lock:
++                now = time.monotonic()
++                start = max(now, self.next_request.get(host, now))
++                self.next_request[host] = start + 0.25
++            time.sleep(max(0, start - time.monotonic()))
++            try:
++                request = Request(url, headers={'User-Agent': 'USA-Representative-Map/1.0 congressional-data-sync'})
++                with urlopen(request, timeout=30) as response:
++                    if urlsplit(response.url).hostname != urlsplit(url).hostname:
++                        raise ValueError(f'Unexpected redirect for {url}')
++                    raw = response.read(25_000_001)
++                    if not raw or len(raw) > 25_000_000:
++                        raise ValueError(f'Unexpected document size for {url}')
++                if not url.endswith('.xml') or 'html' not in response.headers.get('Content-Type', '').lower():
++                    cached.write_bytes(raw)
++                return raw
++            except HTTPError as exc:
++                if exc.code == 404 and allow_missing:
++                    return None
++                if exc.code not in (408, 429, 500, 502, 503, 504):
++                    raise
++                retry_after = exc.headers.get('Retry-After', '')
++            except (URLError, TimeoutError):
++                retry_after = ''
++            if attempt < 3:
++                delay = int(retry_after) if retry_after.isdigit() else 2 ** attempt
++                time.sleep(min(60, delay))
++        raise RuntimeError(f'Could not retrieve {url} after four attempts')
++
++
++def xml(raw, root_tag):
++    root = ET.fromstring(raw)
++    for node in root.iter():
++        node.tag = node.tag.rsplit('}', 1)[-1]
++    if root.tag != root_tag:
++        raise ValueError(f'Expected {root_tag} document, found {root.tag}')
++    return root
++
++
++def value(node, path):
++    return (node.findtext(path) or '').strip()
++
++
++def bill_key(congress, reference):
++    match = re.fullmatch(r'([a-z]+)([1-9][0-9]*)', re.sub(r'[.\s]', '', reference.lower()))
++    if match and match[1] in BILL_TYPES and str(congress).isdigit():
++        return int(congress), match[1], int(match[2])
++    return None
++
++
++def member(identifier, name, state, party, vote, district=''):
++    return {
++        'id': identifier or f'{state}:{name}', 'name': name, 'state': state,
++        'party': party, 'district': district, 'vote': vote,
++        'position': POSITIONS.get(vote.casefold(), 'other'),
++    }
++
++
++def validate_members(rows, official, context):
++    if not rows or any(not row['name'] or not row['vote'] or not row['id'] for row in rows):
++        raise ValueError(f'{context}: missing member vote data')
++    if len({row['id'] for row in rows}) != len(rows):
++        raise ValueError(f'{context}: duplicate member IDs')
++    counts = Counter(row['position'] for row in rows)
++    expected = {key: int(total) for key, total in official.items() if total}
++    if not {'yes', 'no', 'notVoting'} <= expected.keys():
++        raise ValueError(f'{context}: missing official vote totals')
++    if any(counts[key] != count for key, count in expected.items()) or counts['other']:
++        raise ValueError(f'{context}: published totals {expected} disagree with member rows {counts}')
++    return {key: counts[key] for key in ('yes', 'no', 'present', 'notVoting')}
++
++
++def ordinal(text):
++    match = re.fullmatch(r'(\d+)(?:st|nd|rd|th)?', text, re.I)
++    if not match:
++        raise ValueError(f'Invalid ordinal: {text}')
++    return int(match[1])
++
++
++def house_record(raw, congress, session, number, year):
++    root = xml(raw, 'rollcall-vote')
++    meta = root.find('vote-metadata')
++    if meta is None or (
++        ordinal(value(meta, 'congress')),
++        ordinal(value(meta, 'session')),
++        int(value(meta, 'rollcall-num')),
++    ) != (congress, session, number):
++        raise ValueError(f'House {year} roll {number}: source identity mismatch')
++    key = bill_key(congress, value(meta, 'legis-num'))
++    if not key:
++        return None
++    rows = []
++    for entry in root.findall('vote-data/recorded-vote'):
++        legislator = entry.find('legislator')
++        rows.append(member(
++            legislator.get('name-id', ''), legislator.get('unaccented-name') or (legislator.text or '').strip(),
++            legislator.get('state', ''), legislator.get('party', ''), value(entry, 'vote'),
++            legislator.get('district', ''),
++        ))
++    tally = 'vote-totals/totals-by-vote/'
++    totals = {
++        'yes': value(meta, tally + 'yea-total') or value(meta, tally + 'aye-total'),
++        'no': value(meta, tally + 'nay-total') or value(meta, tally + 'no-total'),
++        'present': value(meta, tally + 'present-total'),
++        'notVoting': value(meta, tally + 'not-voting-total'),
++    }
++    return key, {
++        'chamber': 'House', 'congress': congress, 'session': session, 'roll': number,
++        'date': datetime.strptime(value(meta, 'action-date'), '%d-%b-%Y').date().isoformat(),
++        'time': value(meta, 'action-time'), 'question': value(meta, 'vote-question'),
++        'description': value(meta, 'vote-desc'), 'result': value(meta, 'vote-result'),
++        'amendment': value(meta, 'amendment-num'), 'amendmentDetail': value(meta, 'amendment-author'),
++        'url': f'{HOUSE}/Votes/{year}{number}',
++        'xmlUrl': f'{HOUSE}/evs/{year}/roll{number:03d}.xml',
++        'counts': validate_members(rows, totals, f'House {year} roll {number}'),
++        'members': rows,
++    }
++
++
++def senate_record(raw, congress, session, number):
++    root = xml(raw, 'roll_call_vote')
++    if tuple(int(value(root, field)) for field in ('congress', 'session', 'vote_number')) != (congress, session, number):
++        raise ValueError(f'Senate {congress}/{session}/{number}: source identity mismatch')
++    key = bill_key(congress, value(root, 'amendment/amendment_to_document_number'))
++    if key is None:
++        key = bill_key(
++            value(root, 'document/document_congress') or congress,
++            value(root, 'document/document_type') + value(root, 'document/document_number'),
++        )
++    if not key:
++        return None
++    rows = [
++        member(
++            value(entry, 'lis_member_id'),
++            ', '.join(part for part in (value(entry, 'last_name'), value(entry, 'first_name')) if part)
++            or value(entry, 'member_full'),
++            value(entry, 'state'), value(entry, 'party'), value(entry, 'vote_cast'),
++        )
++        for entry in root.findall('members/member')
++    ]
++    # The Secretary leaves tally fields empty when a category has no votes.
++    totals = {
++        position: value(root, f'count/{field}') or '0'
++        for position, field in (('yes', 'yeas'), ('no', 'nays'), ('present', 'present'), ('notVoting', 'absent'))
++        if root.find(f'count/{field}') is not None
++    }
++    tie_breaker = value(root, 'tie_breaker/tie_breaker_vote')
++    # Senate tallies can include the separately reported vice-presidential vote.
++    tie_position = POSITIONS.get(tie_breaker.casefold())
++    if tie_position in ('yes', 'no') and totals[tie_position]:
++        member_total = sum(row['position'] == tie_position for row in rows)
++        if int(totals[tie_position]) == member_total + 1:
++            totals[tie_position] = str(member_total)
++    url = f'{SENATE}/roll_call_votes/vote{congress}{session}/vote_{congress}_{session}_{number:05d}'
++    month_day, year, *clock = value(root, 'vote_date').split(', ')
++    amendment = value(root, 'amendment/amendment_number')
++    return key, {
++        'chamber': 'Senate', 'congress': congress, 'session': session, 'roll': number,
++        'date': datetime.strptime(f'{month_day}, {year}', '%B %d, %Y').date().isoformat(),
++        'time': ', '.join(clock).strip(), 'question': value(root, 'vote_question_text') or value(root, 'vote_question'),
++        'description': value(root, 'vote_title'), 'result': value(root, 'vote_result_text') or value(root, 'vote_result'),
++        'amendment': amendment,
++        'amendmentDetail': value(root, 'amendment/amendment_purpose') if amendment else '',
++        'tieBreaker': tie_breaker, 'url': url + '.htm', 'xmlUrl': url + '.xml',
++        'counts': validate_members(rows, totals, f'Senate {congress}/{session}/{number}'),
++        'members': rows,
++    }
++
++
++class BillSummary(HTMLParser):
++    def __init__(self, markup):
++        super().__init__(convert_charrefs=True)
++        self.parts = []
++        self.feed(markup)
++        self.close()
++
++    def handle_starttag(self, tag, attrs):
++        if tag in ('li', 'br'):
++            self.parts.append('\n')
++
++    def handle_endtag(self, tag):
++        if tag in ('p', 'ul', 'ol', 'div'):
++            self.parts.append('\n\n')
++
++    def handle_data(self, text):
++        self.parts.append(re.sub(r'\s+', ' ', text))
++
++    def text(self):
++        return re.sub(r'\n{3,}', '\n\n', ''.join(self.parts)).strip()
++
++
++def ordinal_label(number):
++    suffix = 'th' if 11 <= number % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(number % 10, 'th')
++    return f'{number}{suffix}'
++
++
++def congress_url(key):
++    congress, kind, number = key
++    return f'https://www.congress.gov/bill/{ordinal_label(congress)}-congress/{BILL_TYPES[kind][1]}/{number}'
++
++
++def bill_details(raw, key):
++    congress, kind, number = key
++    if raw is None:
++        return None
++    bill = xml(raw, 'billStatus').find('bill')
++    if bill is None or (int(value(bill, 'congress')), value(bill, 'type').lower(), int(value(bill, 'number'))) != key:
++        raise ValueError(f'GovInfo bill identity mismatch for {key}')
++    if not value(bill, 'title'):
++        raise ValueError(f'GovInfo bill has no title for {key}')
++    summaries = [
++        {'date': value(item, 'actionDate'), 'stage': value(item, 'actionDesc') or value(item, 'name'),
++         'text': BillSummary(value(item, 'text')).text()}
++        for item in bill.findall('summaries/summary') + bill.findall('summaries/billSummaries/item')
++        if value(item, 'text')
++    ]
++    related = []
++    for item in bill.findall('relatedBills/item'):
++        reference = bill_key(value(item, 'congress'), value(item, 'type') + value(item, 'number'))
++        if reference:
++            related.append({
++                'title': value(item, 'title'),
++                'relationship': value(item, 'relationshipDetails/item/type'),
++                'url': congress_url(reference),
++            })
++    return {
++        'title': value(bill, 'title'), 'introduced': value(bill, 'introducedDate'),
++        'latestAction': value(bill, 'latestAction/text'), 'latestActionDate': value(bill, 'latestAction/actionDate'),
++        'policyArea': value(bill, 'policyArea/name') or value(bill, 'subjects/billSubjects/primarySubjects/name'),
++        'subjects': [
++            value(item, 'name') for item in (
++                bill.findall('subjects/legislativeSubjects/item')
++                + bill.findall('subjects/billSubjects/otherSubjects/item')
++            )
++        ],
++        'sponsors': [value(item, 'fullName') or value(item, 'name') for item in bill.findall('sponsors/item')],
++        'cosponsors': [value(item, 'fullName') for item in bill.findall('cosponsors/item')],
++        'committees': [value(item, 'name') for item in bill.findall('committees/item')],
++        'laws': [f"{value(item, 'type')} {value(item, 'number')}".strip() for item in bill.findall('laws/item')],
++        'committeeReports': [
++            value(item, 'citation') for item in bill.findall('committeeReports/committeeReport')
++        ],
++        'costEstimates': [
++            {'title': value(item, 'title'), 'description': value(item, 'description'), 'url': url}
++            for item in bill.findall('cboCostEstimates/item')
++            if (url := value(item, 'url')).startswith('https://www.cbo.gov/')
++        ],
++        'relatedBills': related,
++        'textVersions': [
++            {'date': value(item, 'date')[:10], 'stage': value(item, 'type'), 'url': url}
++            for item in bill.findall('textVersions/item')
++            if (url := value(item, 'formats/item/url')).startswith(GOVINFO + '/')
++        ],
++        'summaries': sorted(summaries, key=lambda item: item['date'], reverse=True),
++        'actions': [
++            {'date': value(item, 'actionDate'), 'text': value(item, 'text')}
++            for item in bill.findall('actions/item') if value(item, 'text')
++        ],
++    }
++
++
++def session_year(congress, session):
++    return 1789 + (congress - 1) * 2 + session - 1
++
++
++def house_rolls(source, congress, session, previous, archived, executor):
++    year = session_year(congress, session)
++    archive = f'{HOUSE}/evslegacy/{year}'
++    session_label = '1st' if session == 1 else '2nd'
++    legacy = source.get(f'{archive}/index.asp', hours=1, allow_missing=True)
++    current = source.get(
++        f'{HOUSE}/Votes/MemberVotes?CongressNum={congress}&Session={session_label}',
++        hours=1,
++    )
++    published = set(int(n) for n in re.findall(rb'/Votes/' + str(year).encode() + rb'(\d+)(?=\b)', current, re.I))
++    if legacy:
++        pages = re.findall(rb'href=["\']?(ROLL_\d+\.asp)', legacy, flags=re.I)
++        documents = [legacy]
++        documents.extend(executor.map(
++            lambda path: source.get(f'{archive}/{path.decode()}', hours=6), sorted(set(pages))
++        ))
++        for document in documents:
++            published.update(int(n) for n in re.findall(rb'rollnumber=(\d+)', document, re.I))
++    if missing := set(previous) - published:
++        raise ValueError(f'House {year}: missing Clerk roll calls {sorted(missing)}')
++    if archived and not published:
++        raise ValueError(f'House {year}: archived session has no roll calls')
++    # House numbers are sequential within the session. A missing index page
++    # should not silently turn into missing saved member records.
++    numbers = range(1, max(published, default=0) + 1)
++
++    def load(number):
++        url = f'{HOUSE}/evs/{year}/roll{number:03d}.xml'
++        raw = source.get(url, hours=168 if archived else 24)
++        try:
++            return house_record(raw, congress, session, number, year)
++        except (ValueError, ET.ParseError) as error:
++            raise ValueError(f'{url}: {error}') from error
++
++    return dict(zip(numbers, executor.map(load, numbers), strict=True))
++
++
++def senate_rolls(source, congress, session, previous, archived, executor):
++    url = f'{SENATE}/roll_call_lists/vote_menu_{congress}_{session}.xml'
++    raw = source.get(url, hours=1, allow_missing=not archived and not previous)
++    if raw is None:
++        return {}
++    root = ET.fromstring(raw)
++    if (int(value(root, 'congress')), int(value(root, 'session'))) != (congress, session):
++        raise ValueError(f'Senate {congress}/{session}: invalid roll-call index')
++    numbers = sorted({int(value(row, 'vote_number')) for row in root.findall('votes/vote')})
++    if set(previous) - set(numbers) or archived and not numbers:
++        raise ValueError(f'Senate {congress}/{session}: official index lost roll calls')
++
++    def load(number):
++        url = f'{SENATE}/roll_call_votes/vote{congress}{session}/vote_{congress}_{session}_{number:05d}.xml'
++        raw = source.get(url, hours=168 if archived else 24)
++        if SENATE_PENDING_PAGE in raw:
++            return PENDING
++        try:
++            return senate_record(raw, congress, session, number)
++        except (ValueError, ET.ParseError) as error:
++            raise ValueError(f'{url}: {error}') from error
++
++    return dict(zip(numbers, executor.map(load, numbers), strict=True))
++
++
++def write_json(path, data):
++    path.parent.mkdir(parents=True, exist_ok=True)
++    pending = path.with_suffix('.tmp')
++    pending.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
++    pending.replace(path)
++
++
++def refresh(source, output, congress, today, executor, previous):
++    first_year = session_year(congress, 1)
++    number_index = previous.get('rollNumbers', {})
++    coverage = {}
++    pending = {}
++    grouped = defaultdict(list)
++    def collect_session(collect, session, label, archived):
++        with ThreadPoolExecutor(max_workers=6) as chamber_workers:
++            return collect(source, congress, session, number_index.get(label, []), archived, chamber_workers)
++
++    with ThreadPoolExecutor(max_workers=4) as chamber_sessions:
++        jobs = {}
++        for session in (1, 2):
++            year = session_year(congress, session)
++            if today < date(year, 1, 3):
++                continue
++            for chamber, collect in (('House', house_rolls), ('Senate', senate_rolls)):
++                label = f'{chamber}:{session}'
++                jobs[label] = chamber_sessions.submit(collect_session, collect, session, label, year < today.year)
++        for label, job in jobs.items():
++            rolls = job.result()
++            coverage[label] = sorted(rolls)
++            waiting = [number for number, entry in rolls.items() if entry is PENDING]
++            formerly_pending = previous.get('pendingRolls', {}).get(label, [])
++            if missing := set(waiting) & (set(number_index.get(label, [])) - set(formerly_pending)):
++                raise ValueError(f'{congress} {label}: previously available rolls became unavailable: {sorted(missing)}')
++            if waiting:
++                pending[label] = sorted(waiting)
++            for entry in rolls.values():
++                if entry and entry is not PENDING:
++                    key, vote = entry
++                    grouped[key].append(vote)
++            print(f'{congress} {label}: {len(rolls)} rolls indexed, {len(waiting)} awaiting source details', flush=True)
++
++    if not grouped and today > date(first_year, 1, 10):
++        raise ValueError(f'No bill-linked roll calls found for Congress {congress}')
++    previous_bills = {item['id']: item for item in previous.get('bills', [])}
++
++    def enrich(key):
++        bill_congress, kind, number = key
++        votes = sorted(grouped[key], key=lambda row: (row['date'], row['chamber'], row['roll']), reverse=True)
++        bill_id = f'{bill_congress}-{kind}-{number}'
++        display = BILL_TYPES[kind][0]
++        govinfo = f'{GOVINFO}/bulkdata/BILLSTATUS/{bill_congress}/{kind}/BILLSTATUS-{bill_congress}{kind}{number}.xml'
++        metadata = bill_details(source.get(govinfo, hours=24, allow_missing=True), key)
++        if metadata is None and previous_bills.get(bill_id, {}).get('hasMetadata'):
++            raise ValueError(f'GovInfo lost previously published data for {bill_id}')
++        old_rolls = set(previous_bills.get(bill_id, {}).get('rollIds', []))
++        roll_ids = sorted(f"{vote['chamber']}:{vote['session']}:{vote['roll']}" for vote in votes)
++        if old_rolls - set(roll_ids):
++            raise ValueError(f'Previously published rolls missing for {bill_id}')
++        entry = {
++            'id': bill_id, 'label': f'{display} {number}', 'congress': bill_congress,
++            'title': metadata['title'] if metadata else f'{display} {number}',
++            'latestVote': votes[0]['date'], 'rollIds': roll_ids, 'hasMetadata': metadata is not None,
++            'chambers': sorted({vote['chamber'] for vote in votes}),
++            'congressUrl': congress_url(key),
++            'metadataUrl': govinfo,
++        }
++        detail = dict(entry, metadata=metadata, votes=votes)
++        revision = hashlib.sha256(json.dumps(detail, ensure_ascii=False).encode()).hexdigest()[:16]
++        entry['path'] = f'{congress}/bills/{bill_id}-{revision}.json'
++        return entry, detail
++
++    if missing := previous_bills.keys() - {f'{c}-{k}-{n}' for c, k, n in grouped}:
++        raise ValueError(f'Previously published measures missing from Congress {congress}: {sorted(missing)}')
++    bills = []
++    for entry, detail in executor.map(enrich, sorted(grouped)):
++        write_json(output / entry['path'], detail)
++        bills.append(entry)
++    return {
++        'congress': congress, 'rollNumbers': coverage, 'pendingRolls': pending,
++        'bills': sorted(bills, key=lambda bill: bill['latestVote'], reverse=True),
++    }
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--output', required=True, type=Path)
++    parser.add_argument('--cache', type=Path, default=Path('tmp/congress-votes-cache'))
++    parser.add_argument('--congress', type=int, help='Rebuild just this Congress')
++    args = parser.parse_args()
++    index_path = args.output / 'index.json'
++    existing = json.loads(index_path.read_text()) if index_path.exists() else {'schema': 1, 'congresses': []}
++    if existing['schema'] != 1:
++        raise ValueError('Unexpected existing snapshot schema')
++    congresses = {item['congress']: item for item in existing['congresses']}
++    today = datetime.now(ZoneInfo('America/New_York')).date()
++    legislative_year = today.year - int(today.month == 1 and today.day < 3)
++    active = (legislative_year - 1789) // 2 + 1
++    requested = [args.congress] if args.congress is not None else [
++        number for number in range(FIRST_CONGRESS, active + 1)
++        if number not in congresses or number >= active - 1
++    ]
++    if not requested or not all(FIRST_CONGRESS <= number <= active for number in requested):
++        parser.error(f'Choose an available Congress between {FIRST_CONGRESS} and {active}')
++    source = OfficialSources(args.cache)
++    with ThreadPoolExecutor(max_workers=8) as executor:
++        for number in requested:
++            congresses[number] = refresh(source, args.output, number, today, executor, congresses.get(number, {}))
++    write_json(index_path, {
++        'schema': 1, 'checkedAt': datetime.now(timezone.utc).isoformat(),
++        'congresses': [congresses[number] for number in sorted(congresses, reverse=True)],
++    })
++
++
++if __name__ == '__main__':
++    try:
++        main()
++    except (ValueError, RuntimeError, OSError, ET.ParseError) as error:
++        sys.exit(f'Congressional votes refresh failed: {error}')
+diff --git a/scripts/tests/test_congress_votes.py b/scripts/tests/test_congress_votes.py
+new file mode 100644
+index 0000000..db05081
+--- /dev/null
++++ b/scripts/tests/test_congress_votes.py
+@@ -0,0 +1,128 @@
++from concurrent.futures import ThreadPoolExecutor
++from pathlib import Path
++from tempfile import TemporaryDirectory
++import unittest
++
++from scripts import congress_votes as votes
++
++
++HOUSE_ROLL = b'''<rollcall-vote>
++<vote-metadata><congress>119</congress><session>1st</session><rollcall-num>1</rollcall-num>
++<legis-num>H R 42</legis-num><vote-question>On Agreeing to the Amendment</vote-question>
++<amendment-num>17</amendment-num><action-date>3-Jan-2025</action-date><vote-result>Passed</vote-result>
++<vote-totals><totals-by-vote><aye-total>1</aye-total><no-total>0</no-total><present-total>1</present-total>
++<not-voting-total>1</not-voting-total></totals-by-vote></vote-totals></vote-metadata>
++<vote-data>
++<recorded-vote><legislator name-id="A000001" state="NY" party="D" district="01">Member A</legislator><vote>Aye</vote></recorded-vote>
++<recorded-vote><legislator name-id="B000001" state="NY" party="R">Member B</legislator><vote>Present</vote></recorded-vote>
++<recorded-vote><legislator name-id="C000001" state="NY" party="R">Member C</legislator><vote>Not Voting</vote></recorded-vote>
++</vote-data></rollcall-vote>'''
++
++SENATE_ROLL = b'''<roll_call_vote>
++<congress>119</congress><session>1</session><vote_number>1</vote_number>
++<vote_date>July 29, 2025, 07:12 PM</vote_date><vote_question_text>On the Cloture Motion</vote_question_text>
++<vote_title>Motion to invoke cloture on the amendment</vote_title><vote_result_text>Agreed to</vote_result_text>
++<document><document_type>S.Amdt.</document_type><document_number>92</document_number></document>
++<amendment><amendment_number>S.Amdt. 92</amendment_number><amendment_to_document_number>H.R. 42</amendment_to_document_number></amendment>
++<count><yeas>2</yeas><nays>1</nays><present>0</present><absent>1</absent></count>
++<tie_breaker><by_whom>Vice President</by_whom><tie_breaker_vote>Yea</tie_breaker_vote></tie_breaker>
++<members>
++<member><lis_member_id>S001</lis_member_id><first_name>First</first_name><last_name>One</last_name><state>CA</state><party>D</party><vote_cast>Yea</vote_cast></member>
++<member><lis_member_id>S002</lis_member_id><last_name>Two</last_name><state>CA</state><party>R</party><vote_cast>Nay</vote_cast></member>
++<member><lis_member_id>S003</lis_member_id><last_name>Three</last_name><state>NY</state><party>D</party><vote_cast>Not Voting</vote_cast></member>
++</members></roll_call_vote>'''
++
++BILL = b'''<billStatus><bill><congress>119</congress><type>HR</type><number>42</number><title>Test measure</title>
++<subjects><legislativeSubjects><item><name>Taxation</name></item></legislativeSubjects></subjects>
++<latestAction><actionDate>2025-01-03</actionDate><text>Referred.</text></latestAction>
++<summaries><summary><actionDate>2025-01-03</actionDate><actionDesc>Introduced in House</actionDesc>
++<text><![CDATA[<p>First &amp; second.</p><p>Third.</p>]]></text></summary></summaries>
++</bill></billStatus>'''
++
++
++class Source:
++    def __init__(self, responses):
++        self.responses = responses
++
++    def get(self, url, hours=0, allow_missing=False):
++        if allow_missing:
++            return self.responses.get(url)
++        return self.responses[url]
++
++
++class CongressionalVotesTest(unittest.TestCase):
++    def test_house_keeps_amendment_and_separates_present_from_not_voting(self):
++        key, vote = votes.house_record(HOUSE_ROLL, 119, 1, 1, 2025)
++        self.assertEqual(key, (119, 'hr', 42))
++        self.assertEqual(vote['amendment'], '17')
++        self.assertEqual(vote['counts'], {'yes': 1, 'no': 0, 'present': 1, 'notVoting': 1})
++        self.assertEqual([m['id'] for m in vote['members'] if m['position'] == 'notVoting'], ['C000001'])
++
++    def test_senate_uses_explicit_amendment_parent_and_keeps_vp_separate(self):
++        key, vote = votes.senate_record(SENATE_ROLL, 119, 1, 1)
++        self.assertEqual(key, (119, 'hr', 42))
++        self.assertEqual(vote['date'], '2025-07-29')
++        self.assertEqual(vote['tieBreaker'], 'Yea')
++        self.assertEqual(vote['counts'], {'yes': 1, 'no': 1, 'present': 0, 'notVoting': 1})
++
++    def test_senate_empty_absent_tally_is_zero(self):
++        raw = SENATE_ROLL.replace(b'<absent>1</absent>', b'<absent/>')
++        raw = raw[:raw.index(b'<member><lis_member_id>S003')] + b'</members></roll_call_vote>'
++        _, roll = votes.senate_record(raw, 119, 1, 1)
++        self.assertEqual(roll['counts']['notVoting'], 0)
++
++    def test_mismatched_totals_and_wrong_roll_fail_validation(self):
++        bad = HOUSE_ROLL.replace(b'<not-voting-total>1', b'<not-voting-total>4')
++        with self.assertRaisesRegex(ValueError, 'disagree'):
++            votes.house_record(bad, 119, 1, 1, 2025)
++        with self.assertRaisesRegex(ValueError, 'identity mismatch'):
++            votes.senate_record(SENATE_ROLL, 119, 1, 2)
++
++    def test_does_not_guess_bill_or_nonvoter_from_unrelated_record(self):
++        nomination = SENATE_ROLL.replace(b'<amendment_to_document_number>H.R. 42', b'<amendment_to_document_number>')
++        self.assertIsNone(votes.senate_record(nomination, 119, 1, 1))
++        self.assertIsNone(votes.bill_key(119, 'PN 42'))
++        self.assertIsNone(votes.bill_key(119, 'H.Amdt. 42'))
++
++    def test_govinfo_summary_keeps_plain_text_and_version(self):
++        metadata = votes.bill_details(BILL, (119, 'hr', 42))
++        self.assertEqual(metadata['subjects'], ['Taxation'])
++        self.assertEqual(metadata['summaries'][0]['stage'], 'Introduced in House')
++        self.assertEqual(metadata['summaries'][0]['text'], 'First & second.\n\nThird.')
++        with self.assertRaisesRegex(ValueError, 'identity mismatch'):
++            votes.bill_details(BILL, (119, 'hr', 43))
++
++    def test_discovery_does_not_accept_a_known_gap(self):
++        with ThreadPoolExecutor() as executor, self.assertRaisesRegex(ValueError, 'missing Clerk roll calls'):
++            votes.house_rolls(Source({
++                f'{votes.HOUSE}/Votes/MemberVotes?CongressNum=119&Session=1st': b'<html/>',
++            }), 119, 1, [1], False, executor)
++
++    def test_senate_explicit_unavailable_page_is_pending(self):
++        source = Source({
++            f'{votes.SENATE}/roll_call_lists/vote_menu_119_1.xml':
++                b'<vote_summary><congress>119</congress><session>1</session><votes><vote><vote_number>1</vote_number></vote></votes></vote_summary>',
++            f'{votes.SENATE}/roll_call_votes/vote1191/vote_119_1_00001.xml': votes.SENATE_PENDING_PAGE,
++        })
++        with ThreadPoolExecutor() as executor:
++            self.assertEqual(votes.senate_rolls(source, 119, 1, [], False, executor), {1: votes.PENDING})
++
++    def test_two_chambers_publish_versioned_detail_for_one_bill(self):
++        source = Source({
++            f'{votes.HOUSE}/Votes/MemberVotes?CongressNum=119&Session=1st': b'<a href="/Votes/20251">Vote</a>',
++            f'{votes.HOUSE}/evs/2025/roll001.xml': HOUSE_ROLL,
++            f'{votes.SENATE}/roll_call_lists/vote_menu_119_1.xml':
++                b'<vote_summary><congress>119</congress><session>1</session><votes><vote><vote_number>1</vote_number></vote></votes></vote_summary>',
++            f'{votes.SENATE}/roll_call_votes/vote1191/vote_119_1_00001.xml': SENATE_ROLL,
++            f'{votes.GOVINFO}/bulkdata/BILLSTATUS/119/hr/BILLSTATUS-119hr42.xml': BILL,
++        })
++        with TemporaryDirectory() as directory, ThreadPoolExecutor() as executor:
++            result = votes.refresh(source, Path(directory), 119, votes.date(2025, 10, 1), executor, {})
++            self.assertEqual(len(result['bills']), 1)
++            entry = result['bills'][0]
++            self.assertEqual(entry['chambers'], ['House', 'Senate'])
++            self.assertTrue((Path(directory) / entry['path']).is_file())
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/test/congress_votes_screen_test.dart b/test/congress_votes_screen_test.dart
+new file mode 100644
+index 0000000..092c29b
+--- /dev/null
++++ b/test/congress_votes_screen_test.dart
+@@ -0,0 +1,112 @@
++import 'dart:convert';
++
++import 'package:flutter/material.dart';
++import 'package:flutter_test/flutter_test.dart';
++import 'package:http/http.dart' as http;
++import 'package:http/testing.dart';
++import 'package:usa_map_app/screens/congress_votes_screen.dart';
++
++void main() {
++  testWidgets('opens the bill and filters only recorded non-voters', (
++    tester,
++  ) async {
++    final bill = {
++      'id': '119-hr-42',
++      'label': 'H.R. 42',
++      'title': 'Test measure',
++      'latestVote': '2025-05-01',
++      'rollIds': ['Senate:1:50'],
++      'chambers': ['Senate'],
++      'congressUrl':
++          'https://www.congress.gov/bill/119th-congress/house-bill/42',
++      'path': '119/bills/119-hr-42-fixture.json',
++    };
++    final client = MockClient((request) async {
++      final Object payload = request.url.path.endsWith('/index.json')
++          ? {
++              'schema': 1,
++              'checkedAt': '2025-05-01T13:00:00Z',
++              'congresses': [
++                {
++                  'congress': 119,
++                  'bills': [bill],
++                },
++              ],
++            }
++          : {
++              ...bill,
++              'metadata': {
++                'introduced': '2025-01-03',
++                'latestAction': 'Referred to committee.',
++                'latestActionDate': '2025-01-03',
++                'policyArea': 'Taxation',
++                'sponsors': ['A. Sponsor'],
++                'cosponsors': [],
++                'committees': ['Example Committee'],
++                'subjects': [],
++                'laws': [],
++                'actions': [],
++                'summaries': [
++                  {
++                    'stage': 'Introduced in House',
++                    'date': '2025-01-03',
++                    'text': 'Official explanation of the test measure.',
++                  },
++                ],
++              },
++              'metadataUrl': 'https://www.govinfo.gov/bulkdata/BILLSTATUS/',
++              'votes': [
++                {
++                  'chamber': 'Senate',
++                  'date': '2025-05-01',
++                  'roll': 50,
++                  'question': 'On the Cloture Motion',
++                  'description': 'Motion to invoke cloture',
++                  'result': 'Agreed to',
++                  'amendment': '',
++                  'amendmentDetail': '',
++                  'url': 'https://www.senate.gov/',
++                  'counts': {'yes': 0, 'no': 0, 'present': 1, 'notVoting': 1},
++                  'members': [
++                    {
++                      'name': 'Member Present',
++                      'state': 'NY',
++                      'party': 'D',
++                      'district': '',
++                      'position': 'present',
++                      'vote': 'Present',
++                    },
++                    {
++                      'name': 'Member Recorded Not Voting',
++                      'state': 'CA',
++                      'party': 'D',
++                      'district': '',
++                      'position': 'notVoting',
++                      'vote': 'Not Voting',
++                    },
++                  ],
++                },
++              ],
++            };
++      return http.Response(jsonEncode(payload), 200);
++    });
++    tester.view.physicalSize = const Size(1000, 1100);
++    tester.view.devicePixelRatio = 1;
++    addTearDown(tester.view.resetPhysicalSize);
++    addTearDown(tester.view.resetDevicePixelRatio);
++
++    await tester.pumpWidget(
++      MaterialApp(home: CongressVotesScreen(client: client)),
++    );
++    await tester.pumpAndSettle();
++    await tester.tap(find.text('H.R. 42 · Test measure'));
++    await tester.pumpAndSettle();
++
++    expect(find.text('Member Present'), findsOneWidget);
++    expect(find.text('Member Recorded Not Voting'), findsOneWidget);
++    await tester.tap(find.widgetWithText(FilterChip, 'Not Voting 1'));
++    await tester.pumpAndSettle();
++    expect(find.text('Member Present'), findsNothing);
++    expect(find.text('Member Recorded Not Voting'), findsOneWidget);
++  });
++}
+-- 
+2.52.0
+
+
+From 8995ddeb832e31622eba4ac327e7e1dae2cd0507 Mon Sep 17 00:00:00 2001
+From: Codex <codex@users.noreply.github.com>
+Date: Fri, 20 Nov 2026 20:05:48 +0000
+Subject: [PATCH 2/3] Move Contact Congress to the mobile landing page
+
+---
+ lib/screens/landing_screen.dart | 132 ++++++++++++++++++++++----------
+ test/landing_sections_test.dart |  84 ++++++++++++++------
+ 2 files changed, 151 insertions(+), 65 deletions(-)
+
+diff --git a/lib/screens/landing_screen.dart b/lib/screens/landing_screen.dart
+index cc246c6..ac2d672 100644
+--- a/lib/screens/landing_screen.dart
++++ b/lib/screens/landing_screen.dart
+@@ -442,44 +442,48 @@ class _LandingScreenState extends State<LandingScreen> {
+             ],
+           ],
+         ),
+-        const SizedBox(height: 12),
+-        ConstrainedBox(
+-          constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
+-          child: FilledButton.icon(
+-            key: const Key('landing-contact-congress-button'),
+-            onPressed: provider.isLoading
+-                ? null
+-                : () => Navigator.of(context).push(
+-                    MaterialPageRoute(
+-                      builder: (_) => const ContactCongressStartScreen(),
+-                    ),
+-                  ),
+-            icon: const CivicIconBadge(
+-              icon: CivicIcons.send,
+-              size: 36,
+-              iconSize: 21,
+-              foregroundColor: Colors.white,
+-              backgroundColor: Color(0x33FFFFFF),
+-            ),
+-            label: const Text('Contact Congress'),
+-            style: FilledButton.styleFrom(
+-              minimumSize: const Size.fromHeight(48),
+-              backgroundColor: const Color(0xFF1E3A8A),
+-              foregroundColor: Colors.white,
+-              shape: RoundedRectangleBorder(
+-                borderRadius: BorderRadius.circular(12),
++        if (isWidescreen) ...[
++          const SizedBox(height: 12),
++          ConstrainedBox(
++            constraints: BoxConstraints(maxWidth: searchBoxMaxWidth),
++            child: FilledButton.icon(
++              key: const Key('landing-contact-congress-button'),
++              onPressed: provider.isLoading ? null : _showContactCongress,
++              icon: const CivicIconBadge(
++                icon: CivicIcons.send,
++                size: 36,
++                iconSize: 21,
++                foregroundColor: Colors.white,
++                backgroundColor: Color(0x33FFFFFF),
+               ),
+-              textStyle: const TextStyle(
+-                fontSize: 15,
+-                fontWeight: FontWeight.w700,
++              label: const Text('Contact Congress'),
++              style: FilledButton.styleFrom(
++                minimumSize: const Size.fromHeight(48),
++                backgroundColor: const Color(0xFF1E3A8A),
++                foregroundColor: Colors.white,
++                shape: RoundedRectangleBorder(
++                  borderRadius: BorderRadius.circular(12),
++                ),
++                textStyle: const TextStyle(
++                  fontSize: 15,
++                  fontWeight: FontWeight.w700,
++                ),
+               ),
+             ),
+           ),
+-        ),
++        ],
+       ],
+     );
+   }
+ 
++  void _showContactCongress() {
++    Navigator.of(context).push(
++      MaterialPageRoute<void>(
++        builder: (_) => const ContactCongressStartScreen(),
++      ),
++    );
++  }
++
+   void _showFinder(MapDataProvider provider) {
+     Navigator.of(context).push(
+       MaterialPageRoute(
+@@ -534,6 +538,22 @@ class _LandingScreenState extends State<LandingScreen> {
+   Widget _buildMobileHome(MapDataProvider provider) {
+     const navy = Color(0xFF102E50);
+     const pink = Color(0xFFE9A6B6);
++    const cardLabelBackground = Color(0xF21A2D43);
++    const contactButtonHeight = 58.0;
++    const sectionGap = 12.0;
++    const contentPadding = 18.0;
++    const recordsLinkHeight = 48.0;
++
++    double cardHeight(BoxConstraints bounds, double fraction, double minimum) {
++      final available =
++          bounds.maxHeight -
++          (contactButtonHeight +
++              recordsLinkHeight +
++              2 * sectionGap +
++              2 * contentPadding);
++      return (available * fraction).clamp(minimum, 310.0);
++    }
++
+     Widget card({
+       required String label,
+       required IconData icon,
+@@ -564,7 +584,7 @@ class _LandingScreenState extends State<LandingScreen> {
+                       vertical: 18,
+                     ),
+                     decoration: BoxDecoration(
+-                      color: const Color(0xF21A2D43),
++                      color: cardLabelBackground,
+                       borderRadius: BorderRadius.circular(wide ? 40 : 20),
+                       border: Border.all(
+                         color: wide ? pink : Colors.white24,
+@@ -618,12 +638,14 @@ class _LandingScreenState extends State<LandingScreen> {
+                 children: [
+                   Image.asset('assets/img/logo.png', width: 44, height: 44),
+                   const SizedBox(width: 12),
+-                  const Text(
+-                    'Your Representatives',
+-                    style: TextStyle(
+-                      color: Colors.white,
+-                      fontWeight: FontWeight.w700,
+-                      fontSize: 19,
++                  const Expanded(
++                    child: Text(
++                      'Your Representatives',
++                      style: TextStyle(
++                        color: Colors.white,
++                        fontWeight: FontWeight.w700,
++                        fontSize: 19,
++                      ),
+                     ),
+                   ),
+                 ],
+@@ -632,11 +654,11 @@ class _LandingScreenState extends State<LandingScreen> {
+             Expanded(
+               child: LayoutBuilder(
+                 builder: (context, bounds) => SingleChildScrollView(
+-                  padding: const EdgeInsets.all(18),
++                  padding: const EdgeInsets.all(contentPadding),
+                   child: Column(
+                     children: [
+                       SizedBox(
+-                        height: (bounds.maxHeight * .49).clamp(220.0, 310.0),
++                        height: cardHeight(bounds, .51, 220.0),
+                         child: Row(
+                           children: [
+                             Expanded(
+@@ -696,9 +718,9 @@ class _LandingScreenState extends State<LandingScreen> {
+                         icon: const Icon(Icons.verified_outlined, size: 16),
+                         label: const Text('Federal officials · official records'),
+                       ),
+-                      const SizedBox(height: 12),
++                      const SizedBox(height: sectionGap),
+                       SizedBox(
+-                        height: (bounds.maxHeight * .47).clamp(235.0, 310.0),
++                        height: cardHeight(bounds, .49, 235.0),
+                         child: card(
+                           label: 'Find My Reps',
+                           icon: Icons.badge_outlined,
+@@ -722,6 +744,34 @@ class _LandingScreenState extends State<LandingScreen> {
+                           ),
+                         ),
+                       ),
++                      const SizedBox(height: sectionGap),
++                      SizedBox(
++                        width: double.infinity,
++                        child: OutlinedButton.icon(
++                          key: const Key('landing-contact-congress-button'),
++                          onPressed: provider.isLoading
++                              ? null
++                              : _showContactCongress,
++                          icon: const Icon(Icons.send_outlined, color: pink),
++                          label: const Text('Contact Congress'),
++                          style: OutlinedButton.styleFrom(
++                            alignment: AlignmentDirectional.centerStart,
++                            minimumSize: const Size(0, contactButtonHeight),
++                            padding: const EdgeInsets.symmetric(
++                              horizontal: 18,
++                              vertical: 14,
++                            ),
++                            backgroundColor: cardLabelBackground,
++                            foregroundColor: Colors.white,
++                            side: const BorderSide(color: pink, width: 2),
++                            shape: const StadiumBorder(),
++                            textStyle: const TextStyle(
++                              fontSize: 20,
++                              fontWeight: FontWeight.w700,
++                            ),
++                          ),
++                        ),
++                      ),
+                     ],
+                   ),
+                 ),
+diff --git a/test/landing_sections_test.dart b/test/landing_sections_test.dart
+index a4cfc42..e5a06ef 100644
+--- a/test/landing_sections_test.dart
++++ b/test/landing_sections_test.dart
+@@ -6,11 +6,20 @@ import 'package:flutter/material.dart';
+ import 'package:flutter_test/flutter_test.dart';
+ import 'package:provider/provider.dart';
+ import 'package:usa_map_app/data/data_provider.dart';
++import 'package:usa_map_app/screens/contact_congress_start_screen.dart';
+ import 'package:usa_map_app/screens/landing_screen.dart';
+ import 'package:usa_map_app/widgets/congress_scroll_section.dart';
+ import 'package:usa_map_app/widgets/executive_section_card.dart';
+ import 'package:usa_map_app/widgets/judicial_section_card.dart';
+ 
++class _ReadyMapDataProvider extends MapDataProvider {
++  @override
++  bool get isLoading => false;
++
++  @override
++  Future<void> loadAllData() async {}
++}
++
+ void main() {
+   setUp(() {
+     final registry = jsonDecode(
+@@ -25,32 +34,59 @@ void main() {
+     );
+   });
+   group('LandingScreen 3-Branch Federal Dashboard Tests', () {
+-    testWidgets(
+-      'Mobile home exposes verified federal records without side sections',
+-      (tester) async {
+-        tester.view.physicalSize = const Size(500, 900);
+-        tester.view.devicePixelRatio = 1.0;
+-        addTearDown(tester.view.resetPhysicalSize);
++    testWidgets('Mobile home puts Contact Congress below Find My Reps', (
++      tester,
++    ) async {
++      tester.view.physicalSize = const Size(393, 852);
++      tester.view.padding = const FakeViewPadding(top: 51, bottom: 34);
++      addTearDown(tester.view.resetPadding);
++      tester.view.devicePixelRatio = 1.0;
++      addTearDown(tester.view.resetPhysicalSize);
+ 
+-        await tester.pumpWidget(
+-          ChangeNotifierProvider(
+-            create: (_) => MapDataProvider(),
+-            child: const MaterialApp(home: LandingScreen()),
+-          ),
+-        );
+-        await tester.pump();
++      await tester.pumpWidget(
++        ChangeNotifierProvider<MapDataProvider>(
++          create: (_) => _ReadyMapDataProvider(),
++          child: const MaterialApp(home: LandingScreen()),
++        ),
++      );
++      await tester.pump();
+ 
+-        expect(find.text('Your Representatives'), findsOneWidget);
+-        expect(
+-          find.byKey(const Key('federal_officials_directory_mobile')),
+-          findsOneWidget,
+-        );
+-        expect(find.text('Find My Reps'), findsOneWidget);
+-        expect(find.byType(CongressScrollSection), findsNothing);
+-        expect(find.byType(ExecutiveSectionCard), findsNothing);
+-        expect(find.byType(JudicialSectionCard), findsNothing);
+-      },
+-    );
++      expect(find.text('Your Representatives'), findsOneWidget);
++      expect(
++        find.byKey(const Key('federal_officials_directory_mobile')),
++        findsOneWidget,
++      );
++      expect(find.text('Find My Reps'), findsOneWidget);
++      expect(find.byType(CongressScrollSection), findsNothing);
++      expect(find.byType(ExecutiveSectionCard), findsNothing);
++      expect(find.byType(JudicialSectionCard), findsNothing);
++
++      final contact = find.byKey(const Key('landing-contact-congress-button'));
++      expect(contact.hitTestable(), findsOneWidget);
++      expect(
++        tester.getTopLeft(contact).dy,
++        greaterThan(tester.getBottomLeft(find.text('Find My Reps')).dy),
++      );
++      await tester.tap(contact);
++      await tester.pump();
++      await tester.pump(const Duration(milliseconds: 350));
++      expect(find.byType(ContactCongressStartScreen), findsOneWidget);
++
++      await tester.pageBack();
++      await tester.pump();
++      await tester.pump(const Duration(seconds: 1));
++      await tester.pump();
++      await tester.tap(find.text('Find My Reps'));
++      await tester.pump();
++      await tester.pump(const Duration(milliseconds: 350));
++      final finderHeading = find.text('Find Your Representatives');
++      expect(finderHeading, findsOneWidget);
++      final finderPage = find.ancestor(
++        of: finderHeading,
++        matching: find.byType(Scaffold),
++      );
++      expect(find.descendant(of: finderPage, matching: contact), findsNothing);
++    });
+ 
+     testWidgets(
+       'Desktop / iPad view (>= 950px) renders firm Congress, Executive, and Judicial sections',
+-- 
+2.52.0
+
+
+From 8cd02c53b18ebe1c976860299a826254718d177a Mon Sep 17 00:00:00 2001
+From: Codex <codex@users.noreply.github.com>
+Date: Fri, 20 Nov 2026 20:30:25 +0000
+Subject: [PATCH 3/3] Add the state explorer and focused congressional rosters
+
+---
+ lib/data/static/us_house_apportionment.dart |  54 +++
+ lib/main.dart                               | 199 +----------
+ lib/map/national_map_painter.dart           | 219 +++++++-----
+ lib/screens/landing_screen.dart             |   6 +-
+ lib/screens/national_map_screen.dart        | 347 ++++++++++++++++++++
+ lib/screens/state_delegation_screen.dart    | 126 +++++++
+ test/national_map_navigation_test.dart      | 177 ++++++++++
+ 7 files changed, 860 insertions(+), 268 deletions(-)
+ create mode 100644 lib/data/static/us_house_apportionment.dart
+ create mode 100644 lib/screens/national_map_screen.dart
+ create mode 100644 lib/screens/state_delegation_screen.dart
+ create mode 100644 test/national_map_navigation_test.dart
+
+diff --git a/lib/data/static/us_house_apportionment.dart b/lib/data/static/us_house_apportionment.dart
+new file mode 100644
+index 0000000..fedd33c
+--- /dev/null
++++ b/lib/data/static/us_house_apportionment.dart
+@@ -0,0 +1,54 @@
++/// Voting House seats from the U.S. Census Bureau's 2020 apportionment.
++/// https://www.census.gov/data/tables/2020/dec/2020-apportionment-data.html
++const usHouseApportionment = <String, int>{
++  'AK': 1,
++  'AL': 7,
++  'AR': 4,
++  'AZ': 9,
++  'CA': 52,
++  'CO': 8,
++  'CT': 5,
++  'DE': 1,
++  'FL': 28,
++  'GA': 14,
++  'HI': 2,
++  'IA': 4,
++  'ID': 2,
++  'IL': 17,
++  'IN': 9,
++  'KS': 4,
++  'KY': 6,
++  'LA': 6,
++  'MA': 9,
++  'MD': 8,
++  'ME': 2,
++  'MI': 13,
++  'MN': 8,
++  'MO': 8,
++  'MS': 4,
++  'MT': 2,
++  'NC': 14,
++  'ND': 1,
++  'NE': 3,
++  'NH': 2,
++  'NJ': 12,
++  'NM': 3,
++  'NV': 4,
++  'NY': 26,
++  'OH': 15,
++  'OK': 5,
++  'OR': 6,
++  'PA': 17,
++  'RI': 2,
++  'SC': 7,
++  'SD': 1,
++  'TN': 9,
++  'TX': 38,
++  'UT': 4,
++  'VA': 11,
++  'VT': 1,
++  'WA': 10,
++  'WI': 8,
++  'WV': 2,
++  'WY': 1,
++};
+diff --git a/lib/main.dart b/lib/main.dart
+index b1903ad..d306700 100644
+--- a/lib/main.dart
++++ b/lib/main.dart
+@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
+ import 'package:flutter_localizations/flutter_localizations.dart';
+ import 'package:provider/provider.dart';
+ import 'data/data_provider.dart';
+-import 'map/national_map_painter.dart';
+-import 'screens/state_detail_screen.dart';
+-import 'widgets/supreme_court_widget.dart';
+-import 'widgets/executive_branch_widget.dart';
+-import 'data/civic_data_provider.dart';
+ import 'screens/landing_screen.dart';
+ 
++export 'screens/national_map_screen.dart' show MapScreen;
++
+ void main() {
+   // PORT CONFIGURATION: Always run on port 8080 to ensure consistency.
+   // Command: flutter run -d web-server --web-port=8080 --web-hostname=localhost
+@@ -24,186 +21,22 @@ class UsaMapApp extends StatelessWidget {
+       providers: [ChangeNotifierProvider(create: (_) => MapDataProvider())],
+       child: MaterialApp(
+         title: 'USA Representative Map',
+-      theme: ThemeData(
+-        brightness: Brightness.light,
+-        primarySwatch: Colors.blueGrey,
+-        scaffoldBackgroundColor: const Color(0xFFF5F5F7), // Apple-like grey
+-      ),
+-      localizationsDelegates: const [
+-        GlobalMaterialLocalizations.delegate,
+-        GlobalWidgetsLocalizations.delegate,
+-        GlobalCupertinoLocalizations.delegate,
+-      ],
+-      supportedLocales: const [
+-        Locale('en', 'US'),
+-        Locale('es', 'US'), // Spanish
+-        Locale('zh', 'CN'), // Chinese
+-      ],
+-      home: const LandingScreen(),
+-      ),
+-    );
+-  }
+-}
+-
+-class MapScreen extends StatefulWidget {
+-  const MapScreen({super.key});
+-
+-  @override
+-  State<MapScreen> createState() => _MapScreenState();
+-}
+-
+-class _MapScreenState extends State<MapScreen> {
+-  String? _selectedStateId;
+-  final TransformationController _transformController =
+-      TransformationController();
+-
+-  double _currentZoom = 1.0;
+-
+-  @override
+-  void initState() {
+-    super.initState();
+-    // Trigger load
+-    WidgetsBinding.instance.addPostFrameCallback((_) {
+-      context.read<MapDataProvider>().loadAllData();
+-      CivicDataProvider().loadData();
+-    });
+-
+-    _transformController.addListener(() {
+-      final newZoom = _transformController.value.getMaxScaleOnAxis();
+-      if ((newZoom - _currentZoom).abs() > 0.05) {
+-        // Throttled redraw
+-        setState(() {
+-          _currentZoom = newZoom;
+-        });
+-      }
+-    });
+-  }
+-
+-  @override
+-  void dispose() {
+-    _transformController.dispose();
+-    super.dispose();
+-  }
+-
+-  void _onMapTap(TapUpDetails details, double viewWidth, double viewHeight) {
+-    final provider = context.read<MapDataProvider>();
+-    if (provider.atlas == null || provider.pathCache == null) return;
+-
+-    final atlas = provider.atlas!;
+-    final cache = provider.pathCache!;
+-
+-    // Replicate Render Logic from Painter
+-    final scaleX = viewWidth / atlas.width;
+-    final scaleY = viewHeight / atlas.height;
+-    final scale = scaleX < scaleY ? scaleX : scaleY;
+-    final offsetX = (viewWidth - (atlas.width * scale)) / 2;
+-    final offsetY = (viewHeight - (atlas.height * scale)) / 2;
+-
+-    // Inverse Transform: Screen -> Atlas
+-    final dx = (details.localPosition.dx - offsetX) / scale;
+-    final dy = (details.localPosition.dy - offsetY) / scale;
+-
+-    for (var state in atlas.states) {
+-      final path = cache.getPath(state.id);
+-      if (path != null && path.contains(Offset(dx, dy))) {
+-        debugPrint("Tapped State: ${state.name} (${state.id})");
+-        _navigateToState(state.id);
+-        return;
+-      }
+-    }
+-  }
+-
+-  void _navigateToState(String stateId) {
+-    setState(() => _selectedStateId = stateId);
+-    Navigator.of(context)
+-        .push(
+-          MaterialPageRoute(
+-            builder: (ctx) => StateDetailScreen(stateId: stateId),
+-          ),
+-        )
+-        .then((_) {
+-          setState(() => _selectedStateId = null);
+-        });
+-  }
+-
+-  @override
+-  Widget build(BuildContext context) {
+-    final provider = context.watch<MapDataProvider>();
+-
+-    if (provider.isLoading) {
+-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+-    }
+-
+-    if (provider.atlas == null) {
+-      return const Scaffold(
+-        body: Center(child: Text("Failed to load map data.")),
+-      );
+-    }
+-
+-    return Scaffold(
+-      appBar: AppBar(
+-        title: const Text("USA Representative Map"),
+-        actions: [
+-          IconButton(
+-            icon: const Icon(Icons.search),
+-            onPressed: () {
+-              Navigator.of(
+-                context,
+-              ).pop(); // Go back to landing screen to search
+-            },
+-          ),
+-          Padding(
+-            padding: const EdgeInsets.only(right: 16.0),
+-            child: Image.asset('assets/img/logo.png', width: 32, height: 32),
+-          ),
+-          IconButton(icon: const Icon(Icons.info_outline), onPressed: () {}),
++        theme: ThemeData(
++          brightness: Brightness.light,
++          primarySwatch: Colors.blueGrey,
++          scaffoldBackgroundColor: const Color(0xFFF5F5F7), // Apple-like grey
++        ),
++        localizationsDelegates: const [
++          GlobalMaterialLocalizations.delegate,
++          GlobalWidgetsLocalizations.delegate,
++          GlobalCupertinoLocalizations.delegate,
+         ],
+-      ),
+-      body: Stack(
+-        children: [
+-          LayoutBuilder(
+-            builder: (context, constraints) {
+-              return InteractiveViewer(
+-                transformationController: _transformController,
+-                minScale: 0.5,
+-                maxScale: 20.0,
+-                boundaryMargin: const EdgeInsets.all(
+-                  double.infinity,
+-                ), // Allow free pan
+-                child: LayoutBuilder(
+-                  builder: (context, constraints) {
+-                    return GestureDetector(
+-                      onTapUp: (details) {
+-                        _onMapTap(
+-                          details,
+-                          constraints.maxWidth,
+-                          constraints.maxHeight,
+-                        );
+-                      },
+-                      child: Container(
+-                        // transparent container to catch hits
+-                        width: constraints.maxWidth,
+-                        height: constraints.maxHeight,
+-                        color: Colors.transparent,
+-                        child: CustomPaint(
+-                          painter: NationalMapPainter(
+-                            atlas: provider.atlas!,
+-                            pathCache: provider.pathCache!,
+-                            selectedStateId: _selectedStateId,
+-                            transformController: _transformController,
+-                            cities: provider.nationalCities ?? [],
+-                          ),
+-                        ),
+-                      ),
+-                    );
+-                  },
+-                ),
+-              );
+-            },
+-          ),
+-          const Positioned(top: 24, left: 24, child: ExecutiveBranchWidget()),
+-          const Positioned(top: 24, right: 24, child: SupremeCourtWidget()),
++        supportedLocales: const [
++          Locale('en', 'US'),
++          Locale('es', 'US'), // Spanish
++          Locale('zh', 'CN'), // Chinese
+         ],
++        home: const LandingScreen(),
+       ),
+     );
+   }
+diff --git a/lib/map/national_map_painter.dart b/lib/map/national_map_painter.dart
+index 4cc3b9b..c40e3d2 100644
+--- a/lib/map/national_map_painter.dart
++++ b/lib/map/national_map_painter.dart
+@@ -1,107 +1,162 @@
+ import 'package:flutter/material.dart';
+-import 'package:path_drawing/path_drawing.dart';
++
+ import '../data/models.dart';
+-import 'city_renderer.dart';
+-import 'state_label_renderer.dart';
++import '../utils/map_transform.dart';
+ import 'atlas_path_cache.dart';
+ 
+-class NationalMapPainter extends CustomPainter {
++/// Shared map artwork for the national screen and the US States landing tile.
++class NationalMap extends StatelessWidget {
++  const NationalMap({
++    super.key,
++    required this.atlas,
++    required this.pathCache,
++    this.selectedStateId,
++    this.onStateSelected,
++  });
++
+   final Atlas atlas;
+   final AtlasPathCache pathCache;
+   final String? selectedStateId;
+-  final String? hoveredStateId;
+-  final TransformationController? transformController;
+-  final List<CityFeature> cities;
++  final ValueChanged<String>? onStateSelected;
+ 
+-  // Paints (created once or passed in would be better, but lazy init here is fine for now)
+-  final Paint _fillPaint = Paint()..style = PaintingStyle.fill;
+-  final Paint _strokePaint = Paint()
+-    ..style = PaintingStyle.stroke
+-    ..strokeWidth = 0.5
+-    ..color = Colors.white;
++  @override
++  Widget build(BuildContext context) {
++    final canvas = LayoutBuilder(
++      builder: (context, constraints) {
++        final transform = MapTransform.calculateFit([
++          0,
++          0,
++          atlas.width,
++          atlas.height,
++        ], constraints.biggest);
++        final artwork = CustomPaint(
++          size: constraints.biggest,
++          painter: _NationalMapPainter(
++            atlas,
++            pathCache,
++            transform,
++            selectedStateId,
++          ),
++        );
++        final selectState = onStateSelected;
++        if (selectState == null) return artwork;
++        return GestureDetector(
++          onTapUp: (tap) {
++            final point = transform.screenToData(tap.localPosition);
++            for (final state in atlas.states) {
++              if (pathCache.getPath(state.id)?.contains(point) ?? false) {
++                selectState(state.id);
++                return;
++              }
++            }
++          },
++          child: artwork,
++        );
++      },
++    );
+ 
+-  NationalMapPainter({
+-    required this.atlas,
+-    required this.pathCache,
+-    this.selectedStateId,
+-    this.hoveredStateId,
+-    this.transformController,
+-    this.cities = const [],
+-  }) : super(repaint: transformController) {
+-    // Ensure cache is populated
+-    pathCache.parseAndCache(atlas);
++    return AspectRatio(
++      aspectRatio: atlas.width / atlas.height,
++      child: onStateSelected == null
++          ? canvas
++          : Semantics(
++              label:
++                  'United States map. All states are available in the state picker.',
++              child: InteractiveViewer(maxScale: 8, child: canvas),
++            ),
++    );
+   }
++}
+ 
+-  @override
+-  void paint(Canvas canvas, Size size) {
+-    // D3 Projection alignment:
+-    // The SVG paths are pre-projected to fit within atlas.width x atlas.height (e.g. 960x600).
+-    // We must scale the canvas to fit these paths into the widget Size.
+-
+-    final scaleX = size.width / atlas.width;
+-    final scaleY = size.height / atlas.height;
+-    final scale = scaleX < scaleY ? scaleX : scaleY; // fit contain
++class _NationalMapPainter extends CustomPainter {
++  const _NationalMapPainter(
++    this.atlas,
++    this.pathCache,
++    this.transform,
++    this.selectedStateId,
++  );
++
++  static const _labeledStates = {
++    'AK',
++    'HI',
++    'CA',
++    'WA',
++    'MT',
++    'CO',
++    'TX',
++    'MN',
++    'MI',
++    'NY',
++    'FL',
++    'GA',
++    'ME',
++  };
++  static const _smallPreviewLabels = {'AK', 'CA', 'TX', 'NY', 'FL'};
+ 
+-    // Center the map
+-    final offsetX = (size.width - (atlas.width * scale)) / 2;
+-    final offsetY = (size.height - (atlas.height * scale)) / 2;
++  final Atlas atlas;
++  final AtlasPathCache pathCache;
++  final MapTransform transform;
++  final String? selectedStateId;
+ 
++  @override
++  void paint(Canvas canvas, Size size) {
+     canvas.save();
+-    canvas.translate(offsetX, offsetY);
+-    canvas.scale(scale);
+-
+-    for (var state in atlas.states) {
+-      final path = pathCache.getPath(state.id);
+-      if (path == null) continue;
+-
+-      // Styling
+-      bool isSelected = state.id == selectedStateId;
+-      bool isHovered = state.id == hoveredStateId;
++    canvas.translate(transform.offset.dx, transform.offset.dy);
++    canvas.scale(transform.scale);
+ 
+-      if (isSelected) {
+-        _fillPaint.color = Colors.blueGrey[800]!;
+-      } else if (isHovered) {
+-        _fillPaint.color = Colors.blueGrey[300]!;
+-      } else {
+-        _fillPaint.color = Colors.grey[200]!;
+-      }
++    final fill = Paint()..color = const Color(0xFFC5D7E9);
++    final edge = Paint()
++      ..style = PaintingStyle.stroke
++      ..strokeWidth = 1 / transform.scale
++      ..color = const Color(0xFFF6F8FC);
+ 
+-      canvas.drawPath(path, _fillPaint);
+-      canvas.drawPath(path, _strokePaint);
++    for (final state in atlas.states) {
++      final path = pathCache.getPath(state.id);
++      if (path == null || state.id == selectedStateId) continue;
++      canvas.drawPath(path, fill);
++      canvas.drawPath(path, edge);
+     }
+-
+-    // Determine dynamic zoom level from InteractiveViewer
+-    double currentZoom = 1.0;
+-    if (transformController != null) {
+-      currentZoom = transformController!.value.getMaxScaleOnAxis();
++    final selectedPath = pathCache.getPath(selectedStateId ?? '');
++    if (selectedPath != null) {
++      canvas.drawPath(selectedPath, fill..color = const Color(0xFF264A72));
++      canvas.drawPath(selectedPath, edge..color = const Color(0xFFE9A6B6));
+     }
+ 
+-    // Draw state labels first, which returns the occupied bounds of the state names
+-    final List<Rect> stateLabelBounds = StateLabelRenderer.drawStateLabels(
+-      canvas,
+-      atlas,
+-      scale,
+-      currentZoom,
+-    );
+-
+-    // Draw cities using the shared renderer, passing state label bounds
+-    CityRenderer.drawCities(
+-      canvas,
+-      cities,
+-      scale,
+-      currentZoom,
+-      isNationalMap: true,
+-      pathCache: pathCache,
+-      existingOccupiedSpaces: stateLabelBounds,
+-    );
++    final labels = size.width < 260 ? _smallPreviewLabels : _labeledStates;
++    final labelSize = size.width < 260 ? 9.0 : 13.0;
++    for (final state in atlas.states) {
++      if (!labels.contains(state.id) || state.centroid.length != 2) continue;
++      final label = TextPainter(
++        text: TextSpan(
++          text: state.id,
++          style: TextStyle(
++            color: state.id == selectedStateId
++                ? Colors.white
++                : const Color(0xFF152A43),
++            fontSize: labelSize / transform.scale,
++            fontWeight: FontWeight.w700,
++          ),
++        ),
++        textDirection: TextDirection.ltr,
++      )..layout();
++      label.paint(
++        canvas,
++        Offset(
++          state.centroid[0] - label.width / 2,
++          state.centroid[1] - label.height / 2,
++        ),
++      );
++      label.dispose();
++    }
+ 
+     canvas.restore();
+   }
+ 
+   @override
+-  bool shouldRepaint(covariant NationalMapPainter oldDelegate) {
+-    return oldDelegate.selectedStateId != selectedStateId ||
+-        oldDelegate.hoveredStateId != hoveredStateId ||
+-        oldDelegate.cities != cities;
+-  }
++  bool shouldRepaint(_NationalMapPainter oldDelegate) =>
++      atlas != oldDelegate.atlas ||
++      pathCache != oldDelegate.pathCache ||
++      selectedStateId != oldDelegate.selectedStateId ||
++      transform.scale != oldDelegate.transform.scale ||
++      transform.offset != oldDelegate.transform.offset;
+ }
+diff --git a/lib/screens/landing_screen.dart b/lib/screens/landing_screen.dart
+index ac2d672..af7d51f 100644
+--- a/lib/screens/landing_screen.dart
++++ b/lib/screens/landing_screen.dart
+@@ -4,7 +4,7 @@ import '../map/national_map_painter.dart';
+ import 'package:provider/provider.dart';
+ import '../data/data_provider.dart';
+ import '../utils/search_handler.dart';
+-import '../main.dart';
++import 'national_map_screen.dart';
+ import 'state_detail_screen.dart';
+ import 'local_detail_screen.dart';
+ import 'president_detail_screen.dart';
+@@ -676,8 +676,8 @@ class _LandingScreenState extends State<LandingScreen> {
+                                   child:
+                                       provider.atlas != null &&
+                                           provider.pathCache != null
+-                                      ? CustomPaint(
+-                                          painter: NationalMapPainter(
++                                      ? Center(
++                                          child: NationalMap(
+                                             atlas: provider.atlas!,
+                                             pathCache: provider.pathCache!,
+                                           ),
+diff --git a/lib/screens/national_map_screen.dart b/lib/screens/national_map_screen.dart
+new file mode 100644
+index 0000000..14a928a
+--- /dev/null
++++ b/lib/screens/national_map_screen.dart
+@@ -0,0 +1,347 @@
++import 'package:flutter/material.dart';
++import 'package:provider/provider.dart';
++
++import '../data/data_provider.dart';
++import '../data/static/us_house_apportionment.dart';
++import '../map/national_map_painter.dart';
++import '../utils/search_handler.dart';
++import 'president_detail_screen.dart';
++import 'state_delegation_screen.dart';
++import 'state_detail_screen.dart';
++import 'supreme_court_screen.dart';
++
++class MapScreen extends StatefulWidget {
++  const MapScreen({super.key});
++
++  @override
++  State<MapScreen> createState() => _MapScreenState();
++}
++
++class _MapScreenState extends State<MapScreen> {
++  static const _navy = Color(0xFF102E50);
++  static const _selectedBlue = Color(0xFF264A72);
++  static const _pink = Color(0xFFE9A6B6);
++  static const _outline = Color(0xFFD4DEEB);
++  static const _muted = Color(0xFF4D637A);
++  static const _quickStates = [
++    'VT',
++    'NH',
++    'MA',
++    'RI',
++    'CT',
++    'NJ',
++    'DE',
++    'MD',
++    'DC',
++  ];
++
++  String? _pickedStateId;
++
++  String _name(String id) => SearchHandler.stateCodeToName[id] ?? id;
++
++  void _selectState(String id) {
++    if (_pickedStateId == id) {
++      _openState(id);
++    } else {
++      setState(() => _pickedStateId = id);
++    }
++  }
++
++  void _openState(String id) {
++    Navigator.of(context).push(
++      MaterialPageRoute<void>(builder: (_) => StateDetailScreen(stateId: id)),
++    );
++  }
++
++  void _openDelegation(String id, DelegationChamber chamber) {
++    Navigator.of(context).push(
++      MaterialPageRoute<void>(
++        builder: (_) => StateDelegationScreen(stateId: id, chamber: chamber),
++      ),
++    );
++  }
++
++  @override
++  Widget build(BuildContext context) {
++    final provider = context.watch<MapDataProvider>();
++    final atlas = provider.atlas;
++    final pathCache = provider.pathCache;
++    final stateIds = (atlas?.states.map((state) => state.id).toList() ?? [])
++      ..sort((a, b) => _name(a).compareTo(_name(b)));
++
++    return Scaffold(
++      backgroundColor: const Color(0xFFF6F8FC),
++      appBar: AppBar(
++        backgroundColor: _navy,
++        foregroundColor: Colors.white,
++        title: const Text('USA Representative Map'),
++        titleTextStyle: const TextStyle(
++          color: Colors.white,
++          fontSize: 17,
++          fontWeight: FontWeight.w700,
++        ),
++        bottom: const PreferredSize(
++          preferredSize: Size.fromHeight(3),
++          child: ColoredBox(
++            color: _pink,
++            child: SizedBox(height: 3, width: double.infinity),
++          ),
++        ),
++        actions: [
++          Padding(
++            padding: const EdgeInsetsDirectional.only(end: 16),
++            child: Image.asset('assets/img/logo.png', width: 28, height: 28),
++          ),
++        ],
++      ),
++      body: SafeArea(
++        child: Builder(
++          builder: (context) {
++            if (provider.isLoading) {
++              return const Center(child: CircularProgressIndicator());
++            }
++            if (atlas == null || pathCache == null || stateIds.isEmpty) {
++              return const Center(child: Text('Failed to load map data.'));
++            }
++            final picked = _pickedStateId;
++            final selected = stateIds.contains(picked)
++                ? picked!
++                : stateIds.contains('CA')
++                ? 'CA'
++                : stateIds.first;
++
++            return Center(
++              child: ConstrainedBox(
++                constraints: const BoxConstraints(maxWidth: 640),
++                child: ListView(
++                  padding: const EdgeInsets.all(16),
++                  children: [
++                    Wrap(
++                      spacing: 16,
++                      runSpacing: 8,
++                      alignment: WrapAlignment.spaceBetween,
++                      crossAxisAlignment: WrapCrossAlignment.center,
++                      children: [
++                        const Text(
++                          'Explore states',
++                          style: TextStyle(
++                            fontSize: 24,
++                            fontWeight: FontWeight.w800,
++                            color: _navy,
++                          ),
++                        ),
++                        Semantics(
++                          label: 'Choose a state or D.C.',
++                          child: SizedBox(
++                            width: 176,
++                            child: DropdownButton<String>(
++                              key: const Key('national-state-picker'),
++                              isExpanded: true,
++                              value: selected,
++                              items: [
++                                for (final id in stateIds)
++                                  DropdownMenuItem(
++                                    value: id,
++                                    child: Text(
++                                      _name(id),
++                                      overflow: TextOverflow.ellipsis,
++                                    ),
++                                  ),
++                              ],
++                              onChanged: (id) {
++                                if (id != null) _selectState(id);
++                              },
++                            ),
++                          ),
++                        ),
++                      ],
++                    ),
++                    const SizedBox(height: 8),
++                    NationalMap(
++                      key: const Key('interactive-national-map'),
++                      atlas: atlas,
++                      pathCache: pathCache,
++                      selectedStateId: selected,
++                      onStateSelected: _selectState,
++                    ),
++                    if (_quickStates.any(stateIds.contains)) ...[
++                      const SizedBox(height: 8),
++                      const Text(
++                        'Northeast & D.C.',
++                        style: TextStyle(
++                          color: _muted,
++                          fontWeight: FontWeight.w600,
++                        ),
++                      ),
++                      const SizedBox(height: 4),
++                      Wrap(
++                        spacing: 5,
++                        runSpacing: 4,
++                        children: [
++                          for (final id in _quickStates)
++                            if (stateIds.contains(id))
++                              OutlinedButton(
++                                key: ValueKey('national-state-$id'),
++                                onPressed: () => _selectState(id),
++                                style: OutlinedButton.styleFrom(
++                                  minimumSize: const Size(44, 44),
++                                  padding: EdgeInsets.zero,
++                                  backgroundColor: selected == id
++                                      ? _selectedBlue
++                                      : Colors.white,
++                                  foregroundColor: selected == id
++                                      ? Colors.white
++                                      : _navy,
++                                  side: const BorderSide(color: _outline),
++                                  shape: RoundedRectangleBorder(
++                                    borderRadius: BorderRadius.circular(8),
++                                  ),
++                                ),
++                                child: Tooltip(
++                                  message: _name(id),
++                                  child: Text(id),
++                                ),
++                              ),
++                        ],
++                      ),
++                    ],
++                    const SizedBox(height: 14),
++                    _delegationCard(selected),
++                    const SizedBox(height: 12),
++                    Wrap(
++                      spacing: 8,
++                      children: [
++                        TextButton(
++                          onPressed: () => Navigator.of(context).push(
++                            MaterialPageRoute<void>(
++                              builder: (_) => const PresidentDetailScreen(),
++                            ),
++                          ),
++                          child: const Text('The President'),
++                        ),
++                        TextButton(
++                          onPressed: () => Navigator.of(context).push(
++                            MaterialPageRoute<void>(
++                              builder: (_) => const SupremeCourtScreen(),
++                            ),
++                          ),
++                          child: const Text('Supreme Court'),
++                        ),
++                      ],
++                    ),
++                  ],
++                ),
++              ),
++            );
++          },
++        ),
++      ),
++    );
++  }
++
++  Widget _delegationCard(String id) {
++    final isDc = id == 'DC';
++    return Card(
++      margin: EdgeInsets.zero,
++      elevation: 0,
++      color: Colors.white,
++      shape: RoundedRectangleBorder(
++        borderRadius: BorderRadius.circular(16),
++        side: const BorderSide(color: _outline),
++      ),
++      child: Column(
++        crossAxisAlignment: CrossAxisAlignment.stretch,
++        children: [
++          ListTile(
++            key: const Key('selected-state-name'),
++            onTap: () => _openState(id),
++            leading: DecoratedBox(
++              decoration: BoxDecoration(
++                color: _navy,
++                borderRadius: BorderRadius.circular(10),
++              ),
++              child: SizedBox.square(
++                dimension: 42,
++                child: Center(
++                  child: Text(
++                    id,
++                    style: const TextStyle(
++                      color: Colors.white,
++                      fontWeight: FontWeight.w700,
++                    ),
++                  ),
++                ),
++              ),
++            ),
++            title: Text(
++              _name(id),
++              style: const TextStyle(
++                color: _navy,
++                fontSize: 19,
++                fontWeight: FontWeight.w700,
++              ),
++            ),
++            subtitle: const Text(
++              'Congressional delegation',
++              style: TextStyle(color: _muted),
++            ),
++            trailing: const Icon(Icons.chevron_right, color: _selectedBlue),
++          ),
++          const Divider(height: 1, indent: 16, endIndent: 16, color: _outline),
++          Padding(
++            padding: const EdgeInsets.all(8),
++            child: Row(
++              crossAxisAlignment: CrossAxisAlignment.start,
++              children: [
++                Expanded(
++                  child: _seatButton(
++                    id,
++                    DelegationChamber.senate,
++                    isDc ? 0 : 2,
++                    'U.S. Senate seats',
++                  ),
++                ),
++                Expanded(
++                  child: _seatButton(
++                    id,
++                    DelegationChamber.house,
++                    isDc ? 1 : usHouseApportionment[id],
++                    isDc ? 'Nonvoting House delegate' : 'U.S. House seats',
++                  ),
++                ),
++              ],
++            ),
++          ),
++        ],
++      ),
++    );
++  }
++
++  Widget _seatButton(
++    String id,
++    DelegationChamber chamber,
++    int? count,
++    String label,
++  ) {
++    return TextButton(
++      key: ValueKey('national-seats-${chamber.name}'),
++      onPressed: () => _openDelegation(id, chamber),
++      style: TextButton.styleFrom(
++        alignment: AlignmentDirectional.centerStart,
++        foregroundColor: _selectedBlue,
++        minimumSize: const Size(0, 54),
++        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
++      ),
++      child: Column(
++        crossAxisAlignment: CrossAxisAlignment.start,
++        children: [
++          Text(
++            count?.toString() ?? '—',
++            style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w800),
++          ),
++          Text(label),
++        ],
++      ),
++    );
++  }
++}
+diff --git a/lib/screens/state_delegation_screen.dart b/lib/screens/state_delegation_screen.dart
+new file mode 100644
+index 0000000..54829ad
+--- /dev/null
++++ b/lib/screens/state_delegation_screen.dart
+@@ -0,0 +1,126 @@
++import 'package:flutter/material.dart';
++import 'package:provider/provider.dart';
++
++import '../data/data_provider.dart';
++import '../data/models.dart';
++import '../utils/search_handler.dart';
++import 'lawmaker_detail_screen.dart';
++
++enum DelegationChamber { senate, house }
++
++typedef _DelegationMember = ({
++  Object record,
++  String name,
++  String? party,
++  String? photo,
++  String? district,
++});
++
++class StateDelegationScreen extends StatelessWidget {
++  const StateDelegationScreen({
++    super.key,
++    required this.stateId,
++    required this.chamber,
++  });
++
++  final String stateId;
++  final DelegationChamber chamber;
++
++  @override
++  Widget build(BuildContext context) {
++    final provider = context.watch<MapDataProvider>();
++    final isSenate = chamber == DelegationChamber.senate;
++    final isDelegate = !isSenate && stateId == 'DC';
++    final role = isSenate
++        ? 'Senator'
++        : (isDelegate ? 'Delegate' : 'Representative');
++    final title = isSenate ? 'U.S. Senate' : 'U.S. House';
++    final stateName = SearchHandler.stateCodeToName[stateId] ?? stateId;
++    final List<_DelegationMember> members = isSenate
++        ? [
++            for (final senator
++                in provider.senators?[stateId] ?? const <Senator>[])
++              (
++                record: senator,
++                name: senator.name,
++                party: senator.party,
++                photo: senator.photoLocalPath,
++                district: null,
++              ),
++          ]
++        : [
++            for (final representative
++                in provider.houseMembers?[stateId] ?? const <Representative>[])
++              (
++                record: representative,
++                name: representative.name,
++                party: representative.party,
++                photo: representative.photoLocalPath,
++                district: isDelegate
++                    ? 'Nonvoting delegate'
++                    : representative.district,
++              ),
++          ];
++
++    return Scaffold(
++      appBar: AppBar(title: Text('$stateName · $title')),
++      body: SafeArea(
++        child: members.isEmpty
++            ? Center(
++                child: Padding(
++                  padding: const EdgeInsets.all(24),
++                  child: Text(
++                    isSenate && stateId == 'DC'
++                        ? 'The District of Columbia has no U.S. Senate seats.'
++                        : 'No serving members are listed for this delegation.',
++                    textAlign: TextAlign.center,
++                  ),
++                ),
++              )
++            : Center(
++                child: ConstrainedBox(
++                  constraints: const BoxConstraints(maxWidth: 680),
++                  child: ListView.builder(
++                    padding: const EdgeInsets.all(16),
++                    itemCount: members.length,
++                    itemBuilder: (context, index) {
++                      final member = members[index];
++                      final photo = member.photo;
++                      final subtitle = [
++                        if (member.district case final district?
++                            when district.isNotEmpty)
++                          district,
++                        if (member.party case final party?
++                            when party.isNotEmpty)
++                          party,
++                      ].join(' · ');
++                      return Card(
++                        child: ListTile(
++                          leading: CircleAvatar(
++                            foregroundImage: photo == null || photo.isEmpty
++                                ? null
++                                : AssetImage('assets/img/$photo'),
++                            child: const Icon(Icons.person_outline),
++                          ),
++                          title: Text(member.name),
++                          subtitle: subtitle.isEmpty ? null : Text(subtitle),
++                          trailing: const Icon(Icons.chevron_right),
++                          onTap: () => Navigator.of(context).push(
++                            MaterialPageRoute<void>(
++                              builder: (_) => LawmakerDetailScreen(
++                                lawmaker: member.record,
++                                role: role,
++                                stateId: stateId,
++                              ),
++                            ),
++                          ),
++                        ),
++                      );
++                    },
++                  ),
++                ),
++              ),
++      ),
++    );
++  }
++}
+diff --git a/test/national_map_navigation_test.dart b/test/national_map_navigation_test.dart
+new file mode 100644
+index 0000000..f508661
+--- /dev/null
++++ b/test/national_map_navigation_test.dart
+@@ -0,0 +1,177 @@
++import 'package:flutter/material.dart';
++import 'package:flutter_test/flutter_test.dart';
++import 'package:provider/provider.dart';
++import 'package:usa_map_app/data/data_provider.dart';
++import 'package:usa_map_app/data/models.dart';
++import 'package:usa_map_app/data/static/us_house_apportionment.dart';
++import 'package:usa_map_app/map/atlas_path_cache.dart';
++import 'package:usa_map_app/screens/landing_screen.dart';
++import 'package:usa_map_app/screens/national_map_screen.dart';
++import 'package:usa_map_app/screens/state_delegation_screen.dart';
++import 'package:usa_map_app/screens/state_detail_screen.dart';
++
++class _MapFixture extends MapDataProvider {
++  _MapFixture() {
++    atlas = Atlas(
++      width: 100,
++      height: 60,
++      projection: 'test',
++      states: [_state('CA', 0, 40), _state('NY', 60, 90), _state('DC', 92, 95)],
++    );
++    pathCache = AtlasPathCache()..parseAndCache(atlas!);
++    senators = {
++      'CA': [Senator(name: 'California Senator')],
++      'NY': [Senator(name: 'New York Senator')],
++    };
++    houseMembers = {
++      'CA': [Representative(name: 'California Representative')],
++      'NY': [Representative(name: 'New York Representative')],
++      'DC': [Representative(name: 'District Delegate')],
++    };
++  }
++
++  @override
++  bool get isLoading => false;
++
++  @override
++  Future<void> loadAllData() async {}
++
++  static StateRecord _state(String id, double min, double max) => StateRecord(
++    id: id,
++    name: id,
++    fips: '',
++    path: 'M$min 5 H$max V55 H$min Z',
++    bbox: [min, 5, max, 55],
++    centroid: [(min + max) / 2, 30],
++  );
++}
++
++Future<void> _openMap(WidgetTester tester) async {
++  tester.view.physicalSize = const Size(393, 852);
++  tester.view.devicePixelRatio = 1;
++  tester.view.padding = const FakeViewPadding(top: 51, bottom: 34);
++  addTearDown(tester.view.resetPhysicalSize);
++  addTearDown(tester.view.resetDevicePixelRatio);
++  addTearDown(tester.view.resetPadding);
++  await tester.pumpWidget(
++    ChangeNotifierProvider<MapDataProvider>(
++      create: (_) => _MapFixture(),
++      child: const MaterialApp(home: MapScreen()),
++    ),
++  );
++  await tester.pumpAndSettle();
++}
++
++void main() {
++  const map = Key('interactive-national-map');
++  const stateName = Key('selected-state-name');
++
++  testWidgets('seat buttons open only the selected state and chamber', (
++    tester,
++  ) async {
++    await _openMap(tester);
++    final senate = find.byKey(const Key('national-seats-senate'));
++    final house = find.byKey(const Key('national-seats-house'));
++
++    expect(
++      find.descendant(of: senate, matching: find.text('2')),
++      findsOneWidget,
++    );
++    expect(
++      find.descendant(of: house, matching: find.text('52')),
++      findsOneWidget,
++    );
++
++    await tester.tap(senate);
++    await tester.pumpAndSettle();
++    expect(find.text('California Senator'), findsOneWidget);
++    expect(find.text('New York Senator'), findsNothing);
++    expect(find.text('California Representative'), findsNothing);
++
++    await tester.pageBack();
++    await tester.pumpAndSettle();
++    await tester.tap(house);
++    await tester.pumpAndSettle();
++    expect(find.text('California Representative'), findsOneWidget);
++    expect(find.text('New York Representative'), findsNothing);
++    expect(find.text('California Senator'), findsNothing);
++  });
++
++  testWidgets('selecting a state twice on the map opens its state page', (
++    tester,
++  ) async {
++    await _openMap(tester);
++    final bounds = tester.getRect(find.byKey(map));
++    final newYork = Offset(bounds.left + bounds.width * .75, bounds.center.dy);
++
++    await tester.tapAt(newYork);
++    await tester.pumpAndSettle();
++    expect(find.widgetWithText(ListTile, 'New York'), findsOneWidget);
++    expect(find.byType(StateDetailScreen), findsNothing);
++
++    await tester.tapAt(newYork);
++    await tester.pump();
++    await tester.pump(const Duration(milliseconds: 400));
++    expect(
++      tester.widget<StateDetailScreen>(find.byType(StateDetailScreen)).stateId,
++      'NY',
++    );
++  });
++
++  testWidgets('state name opens the state page and D.C. opens its delegate', (
++    tester,
++  ) async {
++    await _openMap(tester);
++    await tester.tap(find.byKey(const Key('national-state-DC')));
++    await tester.pumpAndSettle();
++    expect(
++      find.widgetWithText(ListTile, 'District of Columbia'),
++      findsOneWidget,
++    );
++    expect(find.text('Nonvoting House delegate'), findsOneWidget);
++
++    await tester.tap(find.byKey(const Key('national-seats-house')));
++    await tester.pumpAndSettle();
++    expect(find.text('District Delegate'), findsOneWidget);
++    expect(find.byType(StateDelegationScreen), findsOneWidget);
++
++    await tester.pageBack();
++    await tester.pumpAndSettle();
++    await tester.tap(find.byKey(stateName));
++    await tester.pump();
++    await tester.pump(const Duration(milliseconds: 400));
++    expect(
++      tester.widget<StateDetailScreen>(find.byType(StateDetailScreen)).stateId,
++      'DC',
++    );
++  });
++
++  for (final (width, label) in [
++    (393.0, 'US States'),
++    (1200.0, 'Explore National Map'),
++  ]) {
++    testWidgets('$label opens the shared national map', (tester) async {
++      tester.view.physicalSize = Size(width, 852);
++      tester.view.devicePixelRatio = 1;
++      addTearDown(tester.view.resetPhysicalSize);
++      addTearDown(tester.view.resetDevicePixelRatio);
++      await tester.pumpWidget(
++        ChangeNotifierProvider<MapDataProvider>(
++          create: (_) => _MapFixture(),
++          child: const MaterialApp(home: LandingScreen()),
++        ),
++      );
++      await tester.pump();
++      await tester.tap(find.text(label));
++      await tester.pump();
++      await tester.pump(const Duration(milliseconds: 400));
++      expect(find.byKey(map), findsOneWidget);
++    });
++  }
++
++  test('House apportionment covers all 50 states and 435 voting seats', () {
++    expect(usHouseApportionment, hasLength(50));
++    expect(usHouseApportionment.values.reduce((a, b) => a + b), 435);
++    expect(usHouseApportionment.containsKey('DC'), isFalse);
++  });
++}
+-- 
+2.52.0
+
